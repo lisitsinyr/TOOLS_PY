@@ -151,43 +151,48 @@ class TVersionInfo:
     #--------------------------------------------------
     def __init__(self):
         self.__FFileName = ''
+        self.__FInfo = None
+        self.__FFileDate = 0
+        self.__FFileVersion = ''
         self.__FFileInfoSize = 0
         self.__FInfoSize = 0
-        self.__FInfo = None
         self.__FFileInfo = None
-        self.__FFileDate = 0
-        self.__lang = ''
-        self.__codepage = ''
         self.__FCompanyName = ''
         self.__FFileDescription = ''
         self.__FInternalName = ''
-        self.__FLegalCopyright = ''
         self.__FLegalTrademarks = ''
-        self.__FOriginalFilename = ''
+        self.__FLegalCopyright = ''
         self.__FProductName = ''
+        self.__FOriginalFilename = ''
         self.__FProductVersion = ''
-        #self.__FFileDate = ''
         self.__FComments = ''
+
+        self.__lang = ''
+        self.__codepage = ''
+
+        self.__FTmp = None
+        self.__FTransInfo = None
+        self.__FTransInfoSize = 0
     #--------------------------------------------------
     # destructor
     #--------------------------------------------------
     def __del__(self):
         class_name = self.__class__.__name__  
-        print('{} уничтожен'.format(class_name))
+        #print('{} уничтожен'.format(class_name))
         pass
 
     #--------------------------------------------------
-    # __FFileName
+    # @property FileName
     #--------------------------------------------------
     # getter
     @property
-    def GetFileName(self):
+    def FileName(self):
     #beginfunction
         return self.__FFileName
     #endfunction
     # setter
-    @GetFileName.setter
-    def GetFileName(self, Value: str):
+    @FileName.setter
+    def FileName(self, Value: str):
         propNames = ('Comments', 'InternalName', 'ProductName',
                      'CompanyName', 'LegalCopyright', 'ProductVersion',
                      'FileDescription', 'LegalTrademarks', 'PrivateBuild',
@@ -212,120 +217,93 @@ class TVersionInfo:
         LFileTimeSource = os.path.getmtime(self.__FFileName)
         #convert timestamp into DateTime object
         self.__FFileDate = datetime.datetime.fromtimestamp(LFileTimeSource)
-        print (self.__FFileName)
-        print (LFileTimeSource)
-        print (self.__FFileDate)
 
         # Get the information
         #self.__FInfo = win32api.GetFileVersionInfo(self.__FFileName, 0, self.__FInfoSize, self.__FInfo)
         # backslash as parm returns dictionary of numeric info corresponding to VS_FIXEDFILEINFO struc
         self.__FInfo = win32api.GetFileVersionInfo (self.__FFileName, '\\')
-
         props ['FixedFileInfo'] = self.__FInfo
-        print (props ['FixedFileInfo'])
-
         props ['FileVersion'] = "%d.%d.%d.%d" % (self.__FInfo ['FileVersionMS'] / 65536,
                                                  self.__FInfo ['FileVersionMS'] % 65536,
                                                  self.__FInfo ['FileVersionLS'] / 65536,
                                                  self.__FInfo ['FileVersionLS'] % 65536)
-        print (props ['FileVersion'])
+        self.__FFileVersion = props ['FileVersion']
 
         # \VarFileInfo\Translation returns list of available (language, codepage)
         # pairs that can be used to retreive string info. We are using only the first pair.
         self.__lang, self.__codepage = win32api.GetFileVersionInfo (self.__FFileName, '\\VarFileInfo\\Translation') [0]
-        print (self.__lang)
-        print (self.__codepage)
+        #print ('__lang = ',self.__lang)
+        #print ('__codepage = ', self.__codepage)
 
         # any other must be of the form \StringfileInfo\%04X%04X\parm_name, middle
         # two are language/codepage pair returned from above
-
         strInfo = {}
         for propName in propNames:
             strInfoPath = u'\\StringFileInfo\\%04X%04X\\%s' % (self.__lang, self.__codepage, propName)
             ## print str_info
             strInfo [propName] = win32api.GetFileVersionInfo (self.__FFileName, strInfoPath)
-            print (propName, strInfo [propName])
-
         props ['StringFileInfo'] = strInfo
-        print (props ['StringFileInfo'])
-
-
-
-        # Query the information for the version
-        #VerQueryValue(FInfo, '\', Pointer(FFileInfo), FFileInfoSize)
-        # Query
-        #VerQueryValue(FInfo, '\VarFileInfo\Translation', pointer(FTransInfo), FTransInfoSize)
-        # Query
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'FileVersion'), pointer(FFileVersion), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'CompanyName'), pointer(FCompanyName), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'FileDescription'), pointer(FFileDescription), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'InternalName'), pointer(FInternalName), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'LegalCopyright'), pointer(FLegalCopyright), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'LegalTrademarks'), pointer(FLegalTrademarks), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'OriginalFilename'), pointer(FOriginalFilename), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'ProductName'), pointer(FProductName), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'ProductVersion'), pointer(FProductVersion), FTmp);
-        #VerQueryValue(FInfo, PChar('\StringFileInfo\'+LangCharSet+'\'+'Comments'), pointer(FComments), FTmp);
+        self.__FCompanyName = strInfo ['CompanyName']
+        self.__FFileDescription = strInfo ['FileDescription']
+        self.__FInternalName = strInfo ['InternalName']
+        self.__FLegalCopyright = strInfo ['LegalCopyright']
+        self.__FLegalTrademarks = strInfo ['LegalTrademarks']
+        self.__FOriginalFilename = strInfo ['OriginalFilename']
+        self.__FProductName = strInfo ['ProductName']
+        self.__FProductVersion = strInfo ['ProductVersion']
+        self.__FComments = strInfo ['Comments']
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Major1
     #--------------------------------------------------
     # getter
     @property
-    def GetMajor1(self):
+    def Major1(self):
     #beginfunction
-        LResult = 0
-        #Result = self.__FFileInfo.dwFileVersionMS shr 16
-        #LResult = self.__FInfo ['FileVersionMS'] / 65536
+        LResult = int(self.__FInfo ['FileVersionMS'] / 65536)
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Major2
     #--------------------------------------------------
     # getter
     @property
-    def GetMajor2(self):
+    def Major2(self):
     #beginfunction
-        LResult = 0
-        #Result = self.__FFileInfo.dwFileVersionMS and $FFFF
-        #LResult = self.__FInfo ['FileVersionMS'] % 65536
+        LResult = int(self.__FInfo ['FileVersionMS'] % 65536)
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Minor1
     #--------------------------------------------------
     # getter
     @property
-    def GetMinor1(self):
+    def Minor1(self):
     #beginfunction
-        LResult = 0
-        #Result = self.__FFileInfo.dwFileVersionLS shr 16
-        #LResult = self.__FInfo ['FileVersionLS'] / 65536
+        LResult = int(self.__FInfo ['FileVersionLS'] / 65536)
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Minor2
     #--------------------------------------------------
     # getter
     @property
-    def GetMinor2(self):
+    def Minor2(self):
     #beginfunction
-        LResult = 0
-        #Result = self.__FFileInfo.dwFileVersionLS and $FFFF
-        #LResult = self.__FInfo ['FileVersionLS'] % 65536
+        LResult = int(self.__FInfo ['FileVersionLS'] % 65536)
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Lang1
     #--------------------------------------------------
     # getter
     @property
-    def GetLang1(self):
+    def Lang1(self):
     #beginfunction
         #Result = self.__FTransInfo.dwLang1
         LResult = ''
@@ -333,11 +311,11 @@ class TVersionInfo:
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Lang2
     #--------------------------------------------------
     # getter
     @property
-    def GetLang2(self):
+    def Lang2(self):
     #beginfunction
         #Result = self.__FTransInfo.dwLang2
         LResult = ''
@@ -345,11 +323,11 @@ class TVersionInfo:
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property LangCharSet
     #--------------------------------------------------
     # getter
     @property
-    def GetLangCharSet(self):
+    def LangCharSet(self):
     #beginfunction
         #Result = IntToHex(Lang1,4)+IntToHex(Lang2,4)
         LResult = ''
@@ -357,122 +335,121 @@ class TVersionInfo:
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property FileVersion
     #--------------------------------------------------
     # getter
     @property
-    def GetFileVersion(self):
+    def FileVersion(self):
     #beginfunction
-        #LResult = StrPas(self.__FFileVersion)
-        LResult = ''
+        LResult = self.__FFileVersion
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property FileDate
     #--------------------------------------------------
     # getter
     @property
-    def GetFileDate(self):
+    def FileDate(self):
     #beginfunction
         LResult = self.__FFileDate
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property CompanyName
     #--------------------------------------------------
     # getter
     @property
-    def GetCompanyName(self):
+    def CompanyName(self):
     #beginfunction
         LResult = self.__FCompanyName
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property FileDescription
     #--------------------------------------------------
     # getter
     @property
-    def GetFileDescription(self):
+    def FileDescription(self):
     #beginfunction
         LResult = self.__FFileDescription
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property InternalName
     #--------------------------------------------------
     # getter
     @property
-    def GetInternalName(self):
+    def InternalName(self):
     #beginfunction
         LResult = self.__FInternalName
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property LegalCopyright
     #--------------------------------------------------
     # getter
     @property
-    def GetLegalCopyright(self):
+    def LegalCopyright(self):
     #beginfunction
         LResult = self.__FLegalCopyright
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property LegalTrademarks
     #--------------------------------------------------
     # getter
     @property
-    def GetLegalTrademarks(self):
+    def LegalTrademarks(self):
     #beginfunction
         LResult = self.__FLegalTrademarks
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property OriginalFilename
     #--------------------------------------------------
     # getter
     @property
-    def GetOriginalFilename(self):
+    def OriginalFilename(self):
     #beginfunction
         LResult = self.__FOriginalFilename
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property ProductName
     #--------------------------------------------------
     # getter
     @property
-    def GetProductName(self):
+    def ProductName(self):
     #beginfunction
         LResult = self.__FProductName
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property ProductVersion
     #--------------------------------------------------
     # getter
     @property
-    def GetProductVersion(self):
+    def ProductVersion(self):
     #beginfunction
         LResult = self.__FProductVersion
         return LResult
     #endfunction
 
     #--------------------------------------------------
-    # 
+    # @property Comments
     #--------------------------------------------------
     # getter
     @property
-    def GetComments(self):
+    def Comments(self):
     #beginfunction
         LResult = self.__FComments
         return LResult

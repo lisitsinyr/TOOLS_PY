@@ -28,15 +28,14 @@ if args.PYDir != "":
     PYDir = args.PYDir
 #endif
 sys.path.append(PYDir)
-print(PYDir)
-print(sys.path)
+#print(PYDir)
+#print(sys.path)
 #------------------------------------------
 P1 = 'C:\\Program Files\\Far Manager\\Far.exe'
 if args.P1 != '':
     P1 = args.P1
 #endif
 #------------------------------------------
-print('P1 = ',P1)
 
 #------------------------------------------
 #БИБЛИОТЕКА LU
@@ -50,24 +49,20 @@ import LUVersion
 def main():
 #beginfunction
     if P1 != '':
-        print (P1)
         VersionInfo = LUVersion.TVersionInfo()
-        VersionInfo.GetFileName = P1
-        print('FileName         : {0} {1:d} {2:d} {3:d} {4:d}'.format(
-            VersionInfo.GetFileName, VersionInfo.GetMajor1,
-            VersionInfo.GetMajor2, VersionInfo.GetMinor1, VersionInfo.GetMinor2
-            ))
-        print('FileVersion      : {0}'.format(VersionInfo.GetFileVersion))
-        print('FileDate         : {0}'.format(VersionInfo.GetFileDate))
-        print('CompanyName      : {0}'.format(VersionInfo.GetCompanyName))
-        print('FileDescription  : {0}'.format(VersionInfo.GetFileDescription))
-        print('InternalName     : {0}'.format(VersionInfo.GetInternalName))
-        print('LegalCopyright   : {0}'.format(VersionInfo.GetLegalCopyright))
-        print('LegalTrademarks  : {0}'.format(VersionInfo.GetLegalTrademarks))
-        print('OriginalFilename : {0}'.format(VersionInfo.GetOriginalFilename))
-        print('ProductName      : {0}'.format(VersionInfo.GetProductName))
-        print('ProductVersion   : {0}'.format(VersionInfo.GetProductVersion))
-        print('Comments         : {0}'.format(VersionInfo.GetComments))
+        VersionInfo.FileName = P1
+        print('FileName         : {0}'.format(VersionInfo.FileName))
+        print('FileVersion      : {0}'.format(VersionInfo.FileVersion))
+        print('FileDate         : {0}'.format(VersionInfo.FileDate))
+        print('CompanyName      : {0}'.format(VersionInfo.CompanyName))
+        print('FileDescription  : {0}'.format(VersionInfo.FileDescription))
+        print('InternalName     : {0}'.format(VersionInfo.InternalName))
+        print('LegalCopyright   : {0}'.format(VersionInfo.LegalCopyright))
+        print('LegalTrademarks  : {0}'.format(VersionInfo.LegalTrademarks))
+        print('OriginalFilename : {0}'.format(VersionInfo.OriginalFilename))
+        print('ProductName      : {0}'.format(VersionInfo.ProductName))
+        print('ProductVersion   : {0}'.format(VersionInfo.ProductVersion))
+        print('Comments         : {0}'.format(VersionInfo.Comments))
         del VersionInfo
     else:
         print ('файл не задан')
