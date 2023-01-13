@@ -52,9 +52,9 @@ def main():
     if P1 != '':
         print (P1)
         VersionInfo = LUVersion.TVersionInfo()
-        VersionInfo.FFileName = P1
+        VersionInfo.GetFileName = P1
         print('FileName         : {0} {1:d} {2:d} {3:d} {4:d}'.format(
-            VersionInfo.FFileName, VersionInfo.GetMajor1,
+            VersionInfo.GetFileName, VersionInfo.GetMajor1,
             VersionInfo.GetMajor2, VersionInfo.GetMinor1, VersionInfo.GetMinor2
             ))
         print('FileVersion      : {0}'.format(VersionInfo.GetFileVersion))

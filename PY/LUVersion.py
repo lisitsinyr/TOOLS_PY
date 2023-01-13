@@ -195,9 +195,9 @@ class TVersionInfo:
 
         props = {'FixedFileInfo': None, 'StringFileInfo': None, 'FileVersion': None}
     #beginfunction
-        self.__FFileName = Value
         if Value == '':
             return
+        self.__FFileName = Value
         # Get the size of the FileVersionInformatioin
         if self.__FInfoSize > 0:
             pass
@@ -212,20 +212,29 @@ class TVersionInfo:
         LFileTimeSource = os.path.getmtime(self.__FFileName)
         #convert timestamp into DateTime object
         self.__FFileDate = datetime.datetime.fromtimestamp(LFileTimeSource)
+        print (self.__FFileName)
+        print (LFileTimeSource)
+        print (self.__FFileDate)
 
         # Get the information
         #self.__FInfo = win32api.GetFileVersionInfo(self.__FFileName, 0, self.__FInfoSize, self.__FInfo)
         # backslash as parm returns dictionary of numeric info corresponding to VS_FIXEDFILEINFO struc
         self.__FInfo = win32api.GetFileVersionInfo (self.__FFileName, '\\')
+
         props ['FixedFileInfo'] = self.__FInfo
+        print (props ['FixedFileInfo'])
+
         props ['FileVersion'] = "%d.%d.%d.%d" % (self.__FInfo ['FileVersionMS'] / 65536,
                                                  self.__FInfo ['FileVersionMS'] % 65536,
                                                  self.__FInfo ['FileVersionLS'] / 65536,
                                                  self.__FInfo ['FileVersionLS'] % 65536)
+        print (props ['FileVersion'])
 
         # \VarFileInfo\Translation returns list of available (language, codepage)
         # pairs that can be used to retreive string info. We are using only the first pair.
         self.__lang, self.__codepage = win32api.GetFileVersionInfo (self.__FFileName, '\\VarFileInfo\\Translation') [0]
+        print (self.__lang)
+        print (self.__codepage)
 
         # any other must be of the form \StringfileInfo\%04X%04X\parm_name, middle
         # two are language/codepage pair returned from above
@@ -235,7 +244,10 @@ class TVersionInfo:
             strInfoPath = u'\\StringFileInfo\\%04X%04X\\%s' % (self.__lang, self.__codepage, propName)
             ## print str_info
             strInfo [propName] = win32api.GetFileVersionInfo (self.__FFileName, strInfoPath)
+            print (propName, strInfo [propName])
+
         props ['StringFileInfo'] = strInfo
+        print (props ['StringFileInfo'])
 
 
 
@@ -263,8 +275,9 @@ class TVersionInfo:
     @property
     def GetMajor1(self):
     #beginfunction
-        #Result = self.__FFileInfo.dwFileVersionMS shr 16
         LResult = 0
+        #Result = self.__FFileInfo.dwFileVersionMS shr 16
+        #LResult = self.__FInfo ['FileVersionMS'] / 65536
         return LResult
     #endfunction
 
@@ -275,8 +288,9 @@ class TVersionInfo:
     @property
     def GetMajor2(self):
     #beginfunction
-        #Result = self.__FFileInfo.dwFileVersionMS and $FFFF
         LResult = 0
+        #Result = self.__FFileInfo.dwFileVersionMS and $FFFF
+        #LResult = self.__FInfo ['FileVersionMS'] % 65536
         return LResult
     #endfunction
 
@@ -287,8 +301,9 @@ class TVersionInfo:
     @property
     def GetMinor1(self):
     #beginfunction
-        #Result = self.__FFileInfo.dwFileVersionLS shr 16
         LResult = 0
+        #Result = self.__FFileInfo.dwFileVersionLS shr 16
+        #LResult = self.__FInfo ['FileVersionLS'] / 65536
         return LResult
     #endfunction
 
@@ -299,8 +314,9 @@ class TVersionInfo:
     @property
     def GetMinor2(self):
     #beginfunction
-        #Result = self.__FFileInfo.dwFileVersionLS and $FFFF
         LResult = 0
+        #Result = self.__FFileInfo.dwFileVersionLS and $FFFF
+        #LResult = self.__FInfo ['FileVersionLS'] % 65536
         return LResult
     #endfunction
 
