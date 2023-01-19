@@ -1,4 +1,4 @@
-q#===============================================================
+#===============================================================
 # GITPY.py
 # GITPY.py "-PYDir='%PYDir%'" -Command=%1 -P1=%2 -P2=%3 -P5=%4 -P6=%5
 #===============================================================
@@ -19,15 +19,15 @@ import argparse
 # Разбор аргументов
 #------------------------------------------
 parser = argparse.ArgumentParser(description='Параметры')
-parser.add_argument('-PYDir', type=str, nargs='?', default='', dest='PYDir', help='Библиотека LU')
-args = parser.parse_args()
-print('-PYDir  = '+args.PYDir)
+#parser.add_argument('-PYDir', type=str, nargs='?', default='', dest='PYDir', help='Библиотека LU')
+#args = parser.parse_args()
+#print('-PYDir  = '+args.PYDir)
 #------------------------------------------
-PYDir: str = 'D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TOOLS_PY\\PY'
-if args.PYDir != "":
-    PYDir = args.PYDir
+#PYDir: str = 'D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TOOLS_PY\\PY'
+#if args.PYDir != "":
+#    PYDir = args.PYDir
 #endif
-sys.path.append(PYDir)
+#sys.path.append(PYDir)
 
 #------------------------------------------
 #БИБЛИОТЕКА LU
@@ -258,7 +258,7 @@ def main ():
 #beginfunction
     print (LUConst.Userid)
     print ("Кодировка")
-    print ('PYDir   = '+PYDir)
+    #print ('PYDir   = '+PYDir)
     print ('Log     = ',LUConst.Log)
     GIT()
 #endfunction

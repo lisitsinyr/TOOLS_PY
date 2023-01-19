@@ -16,6 +16,7 @@ set PYDir=\\S73FS01\APPInfo\tools
 goto PYDir_Exit
 :PYDir_Local
 set PYDir=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_PY\PY
+set PYDir=D:\TOOLS\TOOLS_PY\PY
 :PYDir_Exit
 rem -------------------------------------------------------------------
 
@@ -40,6 +41,8 @@ set NLevel=1
 rem -------------------------------------------------------------------
 
 :Begin
-python.exe ListDir.py "-PYDir='%PYDir%'" -Format=%Format% -NLevel=%NLevel%
+rem python.exe ListDir.py "-PYDir='%PYDir%'" -Format=%Format% -NLevel=%NLevel%
+set PYTHONPATH=%PYDir%
+python.exe ListDir.py -Format=%Format% -NLevel=%NLevel%
 
 :Exit

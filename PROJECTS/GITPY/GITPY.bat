@@ -16,6 +16,7 @@ set PYDir=\\S73FS01\APPInfo\tools
 goto PYDir_Exit
 :PYDir_Local
 set PYDir=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_PY\PY
+set PYDir=D:\TOOLS\TOOLS_PY\PY
 :PYDir_Exit
 rem -------------------------------------------------------------------
 
@@ -31,6 +32,8 @@ rem -------------------------------------------------------------------
 
 :Begin
 set Command=""
-python.exe GITPY.py "-PYDir='%PYDir%'"
+rem python.exe GITPY.py "-PYDir='%PYDir%'"
+set PYTHONPATH=%PYDir%
+python.exe GITPY.py
 
 :Exit

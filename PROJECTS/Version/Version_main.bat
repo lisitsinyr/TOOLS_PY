@@ -16,6 +16,7 @@ set PYDir=\\S73FS01\APPInfo\tools
 goto PYDir_Exit
 :PYDir_Local
 set PYDir=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_PY\PY
+set PYDir=D:\TOOLS\TOOLS_PY\PY
 :PYDir_Exit
 rem -------------------------------------------------------------------
 
@@ -30,6 +31,7 @@ set P1=C:\Program Files\Far Manager\Far.exe
 rem -------------------------------------------------------------------
 
 :Begin
-python.exe Version_main_PY "-PYDir='%PYDir%'" -P1=%P1%
+set PYTHONPATH=%PYDir%
+python.exe Version_main.py -P1="%P1%"
 
 :Exit

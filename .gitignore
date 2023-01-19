@@ -133,3 +133,6 @@ GIT_CONFIG
 # PyCharm
 .idea
 .idea/
+
+PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_batch
+PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_gui

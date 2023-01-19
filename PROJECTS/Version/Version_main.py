@@ -5,6 +5,7 @@
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
+import os
 import sys
 
 #------------------------------------------
@@ -12,24 +13,28 @@ import sys
 #------------------------------------------
 import argparse
 
-
 #------------------------------------------
 # Разбор аргументов
 #------------------------------------------
+print ('os.name->', os.name)  # ответ: nt
+print ("os.environ['PYTHONPATH']->", os.environ ['PYTHONPATH'])
+print ("sys.path->", sys.path)
 parser = argparse.ArgumentParser(description='Параметры')
-parser.add_argument('-PYDir', type=str, nargs='?', default='', dest='PYDir', help='Библиотека')
+#parser.add_argument('-PYDir', type=str, nargs='?', default='', dest='PYDir', help='Библиотека')
 parser.add_argument('-P1', type=str, nargs='?', default='', dest='P1', help='P1')
 args = parser.parse_args()
-print('-PYDir  = '+args.PYDir)
-print('-P1 = ',args.P1)
+#print('-PYDir  = '+args.PYDir)
+#print('-P1 = ',args.P1)
 #------------------------------------------
-PYDir = 'D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TOOLS_PY\\PY'
-if args.PYDir != "":
-    PYDir = args.PYDir
+#PYDir = 'D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TOOLS_PY\\PY'
+#PYDir = 'D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TOOLS_PY\\PY'
+#if args.PYDir != "":
+#    PYDir = args.PYDir
 #endif
-sys.path.append(PYDir)
+#sys.path.append(PYDir)
 #print(PYDir)
 #print(sys.path)
+
 #------------------------------------------
 P1 = 'C:\\Program Files\\Far Manager\\Far.exe'
 if args.P1 != '':
