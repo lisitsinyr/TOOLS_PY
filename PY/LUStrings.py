@@ -18,7 +18,7 @@
 #--------------------------------------------------------------------
 #AddChar (Pad, Input, Length):
 #--------------------------------------------------------------------
-def AddChar (APad, AInput, ALength):
+def AddChar (APad, AInput, ALength) -> str:
 #beginfunction
     x = len (AInput)
     for i in range (x, ALength, len (APad)):
@@ -288,33 +288,6 @@ def ExistWord (AString, ADelimiter, AWord):
 #  NEXT
 #  Fmt = SubStr(Fmt,1,iMax)
 #endfunction #Fmt()
-
-#--------------------------------------------------------------------
-#PadStr(Input, Pad, Length, optional PadSide)
-#--------------------------------------------------------------------
-#def PadStr(Input, Pad, Length, optional PadSide):
-#beginfunction
-#   PadStr = ""
-#   Input = "" + Input
-#   Pad = "" + Pad
-#   if PadSide = "" or len (PadSide) > 1 or Instr("LR",PadSide) = 0
-#       PadSide = "L"
-#   #endif
-#   x = Len(Input)
-#   for i=x to Length - 1 Step Len(Pad)
-#       if PadSide = "L"
-#           Input = Pad + Input
-#       else:
-#           Input = Input + Pad
-#       #endif
-#   #endfor
-#   if PadSide = "L"
-#       Input = Right(Input, Length)
-#   else:
-#       Input = Left(Input, Length)
-#   #endif
-#   return PadStr = Input
-#endfunction
 
 #--------------------------------------------------------------------
 # Like(string1, string2, optional wc, optional sc) 

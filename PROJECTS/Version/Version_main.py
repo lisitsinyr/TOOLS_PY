@@ -12,6 +12,7 @@ import sys
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import argparse
+from colorama import Fore, Back, Style
 
 #------------------------------------------
 # Разбор аргументов
@@ -69,6 +70,13 @@ def main():
         print('ProductVersion   : {0}'.format(VersionInfo.ProductVersion))
         print('Comments         : {0}'.format(VersionInfo.Comments))
         del VersionInfo
+
+        print (Fore.RED + 'some red text')
+        print (Back.GREEN + 'and with a green background')
+        print (Style.DIM + 'and in dim text')
+        print (Style.RESET_ALL)
+        print ('back to normal now')
+
     else:
         print ('файл не задан')
 #endif
