@@ -1,4 +1,4 @@
-"""LUsys.py"""
+"""LUProc.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
@@ -9,7 +9,7 @@ __annotations__ = """
      LU_PY
      Python (LU)
  Module:
-     LUsys.py
+     LUProc.py
 
  =======================================================
 """
@@ -17,7 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-import sys
+import enum
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -26,7 +26,26 @@ import sys
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-# sys.getrefcount(IvanFranko)
+cProcessWork = 'Идет процесс обработки ...'
+cProcessStop = 'Процесс обработки остановлен.'
+cProcessBegin = '********* Начало **********************************'
+cProcessEnd = '********* Конец ***********************************'
+
+@enum.unique
+class TStatApplication(enum.Enum):
+    """TStatApplication"""
+    caBreak    = enum.auto ()
+    caMain     = enum.auto ()
+    caTest     = enum.auto ()
+    caSheduler = enum.auto ()
+    caSetup    = enum.auto ()
+    caAbout    = enum.auto ()
+    saAction   = enum.auto ()
+    caSend     = enum.auto ()
+    caRefresh  = enum.auto ()
+    caViewLog  = enum.auto ()
+    caFree     = enum.auto ()
+#endclass
 
 #------------------------------------------
 def main ():

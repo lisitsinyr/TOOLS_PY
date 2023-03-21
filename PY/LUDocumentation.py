@@ -1,7 +1,7 @@
-"""LUsys.py"""
+"""LUDocumentation.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
- =======================================================
+------------------------------------------------------
  Copyright (c) 2023
  Author:
      Lisitsin Y.R.
@@ -9,15 +9,15 @@ __annotations__ = """
      LU_PY
      Python (LU)
  Module:
-     LUsys.py
+     LUDocumentation.py
 
- =======================================================
+------------------------------------------------------
 """
 
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-import sys
+
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -25,8 +25,18 @@ import sys
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+from LUDateTime import *
 
-# sys.getrefcount(IvanFranko)
+def PrintInfoObject (AObject):
+#beginfunction
+    print (f'{DateTimeStr(True,Now(),cFormatDateTimeLog01)} {AObject}')
+
+    # print (f'Class={AObject.__class__}')
+    # print (f'Name={AObject.__name__}')
+
+    # print (f'Doc={AObject.__doc__}')
+    # print (f'Annotations=({AObject.__annotations__})')
+#endfunction
 
 #------------------------------------------
 def main ():
