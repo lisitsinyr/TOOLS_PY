@@ -1,4 +1,4 @@
-"""LUsys.py"""
+"""LUProc.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
@@ -9,7 +9,7 @@ __annotations__ = """
      LU_PY
      Python (LU)
  Module:
-     LUsys.py
+     LUProc.py
 
  =======================================================
 """
@@ -17,7 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-
+import enum
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -25,6 +25,22 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+
+@enum.unique
+class TStatApplication(enum.Enum):
+    """TStatApplication"""
+    caBreak    = enum.auto ()
+    caMain     = enum.auto ()
+    caTest     = enum.auto ()
+    caSheduler = enum.auto ()
+    caSetup    = enum.auto ()
+    caAbout    = enum.auto ()
+    saAction   = enum.auto ()
+    caSend     = enum.auto ()
+    caRefresh  = enum.auto ()
+    caViewLog  = enum.auto ()
+    caFree     = enum.auto ()
+#endclass
 
 #------------------------------------------
 def main ():

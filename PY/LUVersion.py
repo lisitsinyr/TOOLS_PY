@@ -1,7 +1,18 @@
-#=======================================================================================
-# LUVersion.py
-#=======================================================================================
+"""LUVersion.py"""
+# -*- coding: UTF-8 -*-
+__annotations__ = """
+ =======================================================
+ Copyright (c) 2023
+ Author:
+     Lisitsin Y.R.
+ Project:
+     LU_PY
+     Python (LU)
+ Module:
+     LUVersion.py
 
+ =======================================================
+"""
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
@@ -14,10 +25,8 @@ import win32api
 import datetime
 
 class TVersionInfo:
-    #--------------------------------------------------
-    # static
-    #--------------------------------------------------
-    ruClassName = "TVersionInfo"
+    """TVersionInfo"""
+    luClassName = "TVersionInfo"
     
     #--------------------------------------------------
     # constructor
@@ -46,12 +55,13 @@ class TVersionInfo:
         self.__FTmp = None
         self.__FTransInfo = None
         self.__FTransInfoSize = 0
+
     #--------------------------------------------------
     # destructor
     #--------------------------------------------------
     def __del__(self):
-        class_name = self.__class__.__name__  
-        #print('{} уничтожен'.format(class_name))
+        LClassName = self.__class__.__name__
+        #print('{} уничтожен'.format(LClassName))
         pass
 
     #--------------------------------------------------
@@ -327,15 +337,23 @@ class TVersionInfo:
         LResult = self.__FComments
         return LResult
     #endfunction
+#endclass
 
 #-------------------------------------------------------------------------------
 # CreateVersion (AFileName: str): -> TVersionInfo
 #-------------------------------------------------------------------------------
-def CreateVersion (AFileName: str):
+def CreateVersion (AFileName: str) -> TVersionInfo:
+    """CreateVersion"""
 #beginfunction
-   LResult = TVersionInfo ()
-   LResult.__FFileName = AFileName
-   return LResult
+    LResult:TVersionInfo = TVersionInfo ()
+    LResult.__FFileName = AFileName
+    return LResult
+#endfunction
+
+#------------------------------------------
+def main ():
+#beginfunction
+    ...
 #endfunction
 
 #------------------------------------------
@@ -343,8 +361,7 @@ def CreateVersion (AFileName: str):
 #------------------------------------------
 #beginmodule
 if __name__ == "__main__":
-    ...
+    main()
 #endif
 
 #endmodule
-
