@@ -17,7 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-
+import datetime
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -274,19 +274,19 @@ def IncludeTrailingBackslash (APath: str) -> str:
     return LResult
 #endfunction
 
-def GetDirNameYYMMDD (ARootDir: str, ADate: datetime) -> str:
+def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMMDD"""
 #beginfunction
     # LYMD = LUDateTime.DecodeDate_ (ADate)
-    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateTimeYYMMDD)
+    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateYYMMDD_02, False)
     LResult = IncludeTrailingBackslash(ARootDir)+LYMDStr
     return LResult
 #endfunction
 
-def GetDirNameYYMM (ARootDir: str, ADate: datetime) -> str:
+def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMM"""
 #beginfunction
-    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateTimeYYMM)
+    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateYYMM, False)
     LResult = IncludeTrailingBackslash(ARootDir)+LYMDStr
     return LResult
 #endfunction

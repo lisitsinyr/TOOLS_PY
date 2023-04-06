@@ -18,25 +18,35 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import datetime
-# from datetime import *
+import time
 from calendar import *
-
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 
 #------------------------------------------
+# БИБЛИОТЕКИ LU
+#------------------------------------------
+import LUStrUtils
+
+#------------------------------------------
 # CONST
 #------------------------------------------
-"""CONST"""
-cFormatDateTimeLog01 = ('%H:%M:%S %f', '%d/%m/%Y %H:%M:%S %f')
-cFormatDateTimeLog02 = ('%H%M%S%f', '%Y%m%d %H%M%S%f')
-cFormatDateTimeLog03 = ('', '%Y%m%d')
-cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
-cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S %f', '%H:%M:%S %f')
-cFormatDateTimeYYMMDD = ('', '%Y/%m/%d')
-cFormatDateTimeYYMM = ('', '%Y/%m')
+# cFormatDateTimeLog01 = ('%H:%M:%S %f', '%d/%m/%Y %H:%M:%S %f')
+# cFormatDateTimeLog02 = ('%H%M%S%f', '%Y%m%d %H%M%S%f')
+# cFormatDateTimeLog03 = ('', '%Y%m%d')
+# cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
+# cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S %f', '%H:%M:%S %f')
+
+cFormatDateTimeLog01 = ('%H:%M:%S', '%d/%m/%Y %H:%M:%S')
+cFormatDateTimeLog02 = ('%H%M%S', '%Y%m%d %H%M%S')
+cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S')
+cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S', '%H:%M:%S')
+
+cFormatDateYYMMDD_01 = ('', '%Y%m%d')
+cFormatDateYYMMDD_02 = ('', '%Y/%m/%d')
+cFormatDateYYMM = ('', '%Y/%m')
 
 #---------------------------------------------------------------
 #
@@ -51,13 +61,24 @@ def Now () -> datetime:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def DateTimeStr (ATimeOnly: bool, ADateTime: datetime, AFormat: ()) -> str:
+def DateTimeStr (ATimeOnly: bool, ADateTime: datetime.datetime, AFormat: (), Amsecs: bool) -> str:
     """DateTimeStr"""
 #beginfunction
+    msecs = ADateTime.microsecond
+    msecs = msecs // 1000
+    smsecs = LUStrUtils.AddChar('0', str(msecs), 3)
+    # ct = time.time ()
+    # msecs = int((ct - int(ct)) * 1000) + 0.0 # see gh-89047
     if ATimeOnly:
-        LResult = ADateTime.strftime (AFormat[0])
+        if Amsecs:
+            LResult = ADateTime.strftime (AFormat[0]+' '+smsecs)
+        else:
+            LResult = ADateTime.strftime (AFormat [0])
     else:
-        LResult = ADateTime.strftime (AFormat[1])
+        if Amsecs:
+            LResult = ADateTime.strftime (AFormat[1]+' '+smsecs)
+        else:
+            LResult = ADateTime.strftime (AFormat[1])
     #endif
     return LResult
 #endfunction
@@ -65,7 +86,7 @@ def DateTimeStr (ATimeOnly: bool, ADateTime: datetime, AFormat: ()) -> str:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def DecodeDate (ADateTime: datetime):
+def DecodeDate (ADateTime: datetime.datetime):
     """DecodeDate"""
 #beginfunction
     LDate = ADateTime
@@ -76,7 +97,7 @@ def DecodeDate (ADateTime: datetime):
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def DecodeTime (ADateTime: datetime):
+def DecodeTime (ADateTime: datetime.datetime):
     """DecodeTime"""
 #beginfunction
     LTuple = (ADateTime.hour, ADateTime.minute, ADateTime.second, ADateTime.microsecond)
@@ -86,7 +107,7 @@ def DecodeTime (ADateTime: datetime):
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def DayOfWeek (ADateTime: datetime):
+def DayOfWeek (ADateTime: datetime.datetime):
     """DayOfWeek"""
 #beginfunction
     return ADateTime.weekday()
@@ -121,7 +142,7 @@ def DaysPerMonth(AYear: int, AMonth: int) -> int:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def EncodeDate (AYear: int, AMonth: int, ADay: int) -> datetime:
+def EncodeDate (AYear: int, AMonth: int, ADay: int) -> datetime.date:
     """EncodeDate"""
 #beginfunction
     return datetime.date(AYear, AMonth, ADay)
@@ -130,7 +151,7 @@ def EncodeDate (AYear: int, AMonth: int, ADay: int) -> datetime:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def EncodeTime (AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime:
+def EncodeTime (AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.time:
     """EncodeTime"""
 #beginfunction
     return datetime.time(AHour, AMin, ASec, AMSec)
@@ -139,7 +160,7 @@ def EncodeTime (AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime:
+def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.datetime:
     """EncodeDate"""
 #beginfunction
     return datetime.datetime(AYear, AMonth, ADay, AHour, AMin, ASec, AMSec)
@@ -148,7 +169,7 @@ def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, A
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def GenerateObjectIDStr (AObjectID: datetime) -> str:
+def GenerateObjectIDStr (AObjectID: datetime.datetime) -> str:
     """GenerateObjectIDStr"""
 #beginfunction
     LResult = DateTimeStr (False, AObjectID, cFormatDateTimeLog04)

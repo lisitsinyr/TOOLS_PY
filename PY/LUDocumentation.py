@@ -29,7 +29,7 @@ from LUDateTime import *
 
 def PrintInfoObject (AObject):
 #beginfunction
-    print (f'{DateTimeStr(True,Now(),cFormatDateTimeLog01)} {AObject}')
+    print (f'{DateTimeStr(True,Now(),cFormatDateTimeLog01, True)} {AObject}')
 
     # print (f'Class={AObject.__class__}')
     # print (f'Name={AObject.__name__}')

@@ -261,6 +261,7 @@ def FormatColorStr (s, **kwargs) -> str:
                 or AFG8 is not None or ABG8 is not None \
                 or AFG256 is not None or ABG256 is not None:
             LResult = sBEGIN
+        # --------------------------------------------
         if len (LStyles) > 0:
             LResult = LResult + LStyles
         # --------------------------------------------
@@ -269,28 +270,30 @@ def FormatColorStr (s, **kwargs) -> str:
                 LResult = LResult + ';' + AFG8
             else:
                 LResult = LResult + AFG8
+        # --------------------------------------------
         if ABG8 is not None:
-            if len (LStyles) > 0:
+            if len (LStyles) > 0 or AFG8 is not None:
                 LResult = LResult + ';' + ABG8
             else:
-                LResult = LResult + AFG8
+                LResult = LResult + ABG8
         # --------------------------------------------
-        if AFG256 is not None:
-            if len (LStyles) > 0:
-                LResult = LResult + ';' + sFG256_BEGIN + AFG256
-            else:
-                LResult = LResult + sFG256_BEGIN +AFG256
-        if ABG256 is not None:
-            if len (LStyles) > 0:
-                LResult = LResult + ';' + sBG256_BEGIN + ABG256
-            else:
-                LResult = LResult + sBG256_BEGIN + AFG256
+        if AFG8 is None and ABG8 is None:
+            if AFG256 is not None:
+                if len (LStyles) > 0:
+                    LResult = LResult + ';' + sFG256_BEGIN + AFG256
+                else:
+                    LResult = LResult + sFG256_BEGIN +AFG256
+            # --------------------------------------------
+            if ABG256 is not None:
+                if len (LStyles) > 0 or AFG256 is not None:
+                    LResult = LResult + ';' + sBG256_BEGIN + ABG256
+                else:
+                    LResult = LResult + sBG256_BEGIN + ABG256
         # --------------------------------------------
         if len (LResult) > 0:
             LResult = LResult + sEND + s + sRESET
         else:
             LResult = s
-
     return LResult
 #endfunction
 
