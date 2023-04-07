@@ -41,12 +41,13 @@ import LUStrUtils
 
 cFormatDateTimeLog01 = ('%H:%M:%S', '%d/%m/%Y %H:%M:%S')
 cFormatDateTimeLog02 = ('%H%M%S', '%Y%m%d %H%M%S')
-cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S')
+cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
 cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S', '%H:%M:%S')
 
 cFormatDateYYMMDD_01 = ('', '%Y%m%d')
 cFormatDateYYMMDD_02 = ('', '%Y/%m/%d')
-cFormatDateYYMM = ('', '%Y/%m')
+cFormatDateYYMM_01 = ('', '%Y/%m')
+cFormatDateYYMM_02 = ('', '%Y\\%m')
 
 #---------------------------------------------------------------
 #
@@ -97,11 +98,38 @@ def DecodeDate (ADateTime: datetime.datetime):
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
+def EncodeDate (AYear: int, AMonth: int, ADay: int) -> datetime.date:
+    """EncodeDate"""
+#beginfunction
+    return datetime.date(AYear, AMonth, ADay)
+#endfunction
+
+#---------------------------------------------------------------
+#
+#---------------------------------------------------------------
 def DecodeTime (ADateTime: datetime.datetime):
     """DecodeTime"""
 #beginfunction
     LTuple = (ADateTime.hour, ADateTime.minute, ADateTime.second, ADateTime.microsecond)
     return LTuple
+#endfunction
+
+#---------------------------------------------------------------
+#
+#---------------------------------------------------------------
+def EncodeTime (AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.time:
+    """EncodeTime"""
+#beginfunction
+    return datetime.time(AHour, AMin, ASec, AMSec)
+#endfunction
+
+#---------------------------------------------------------------
+#
+#---------------------------------------------------------------
+def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.datetime:
+    """EncodeDate"""
+#beginfunction
+    return datetime.datetime(AYear, AMonth, ADay, AHour, AMin, ASec, AMSec)
 #endfunction
 
 #---------------------------------------------------------------
@@ -142,37 +170,10 @@ def DaysPerMonth(AYear: int, AMonth: int) -> int:
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def EncodeDate (AYear: int, AMonth: int, ADay: int) -> datetime.date:
-    """EncodeDate"""
-#beginfunction
-    return datetime.date(AYear, AMonth, ADay)
-#endfunction
-
-#---------------------------------------------------------------
-#
-#---------------------------------------------------------------
-def EncodeTime (AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.time:
-    """EncodeTime"""
-#beginfunction
-    return datetime.time(AHour, AMin, ASec, AMSec)
-#endfunction
-
-#---------------------------------------------------------------
-#
-#---------------------------------------------------------------
-def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, ASec: int, AMSec: int) -> datetime.datetime:
-    """EncodeDate"""
-#beginfunction
-    return datetime.datetime(AYear, AMonth, ADay, AHour, AMin, ASec, AMSec)
-#endfunction
-
-#---------------------------------------------------------------
-#
-#---------------------------------------------------------------
 def GenerateObjectIDStr (AObjectID: datetime.datetime) -> str:
     """GenerateObjectIDStr"""
 #beginfunction
-    LResult = DateTimeStr (False, AObjectID, cFormatDateTimeLog04)
+    LResult = DateTimeStr (False, AObjectID, cFormatDateTimeLog04,Amsecs = False)
     return LResult
 #endfunction
 

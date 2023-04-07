@@ -18,16 +18,22 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import datetime
+import os
+import win32api
+import pathlib
+
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import shutil
+import chardet
 
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
 import LUErrors
 import LUStrDecode
+import LUDateTime
 
 """
 f = open(file_name, access_mode, encoding='')
@@ -54,23 +60,6 @@ ab+ Откроет для добавления нового содержимог
 """
 
 cDefaultEncoding = 'cp1251'
-
-#------------------------------------------
-# БИБЛИОТЕКИ python
-#------------------------------------------
-import os
-import win32api
-
-#------------------------------------------
-# БИБЛИОТЕКИ сторонние
-#------------------------------------------
-import datetime
-import chardet
-
-#------------------------------------------
-# БИБЛИОТЕКИ LU
-#------------------------------------------
-import LUDateTime
 
 def DirectoryExists (APath: str) -> bool:
     """DirectoryExists """
@@ -270,7 +259,11 @@ def IncludeTrailingBackslash (APath: str) -> str:
     """IncludeTrailingBackslash"""
 #beginfunction
     LResult = APath.rstrip('\\')+'\\'
-    LResult = APath.rstrip('/')+'/'
+
+    # LResult = pathlib.WindowsPath (APath)
+
+    # LResult = APath.rstrip('/')+'/'
+
     return LResult
 #endfunction
 
@@ -286,7 +279,7 @@ def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
 def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMM"""
 #beginfunction
-    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateYYMM, False)
+    LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateYYMM_02, False)
     LResult = IncludeTrailingBackslash(ARootDir)+LYMDStr
     return LResult
 #endfunction

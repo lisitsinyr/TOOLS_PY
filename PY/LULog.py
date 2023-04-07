@@ -30,6 +30,7 @@ import logging.config
 
 import ast
 import json
+import pickle
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -43,22 +44,23 @@ import coloredlogs
 import LUFile
 import LUConsole
 import LUDateTime
+import LULog
 import LUStrDecode
 
 # ===========================================================================
 # CONST
 # ===========================================================================
 """CONST"""
-ctlsNone = ' '
-ctlsBegin = '>'
-ctlsEnd = '<'
-ctlsInfo = 'I'
-ctlsError = 'E'
-ctlsWarning = 'W'
-ctlsProcess = 'P'
-ctlsText = ''
-ctlsDebug = 'D'
-ctlsCritical = 'C'
+ctlsNOTSET = ' '
+ctlsDEBUG = 'D'
+ctlsINFO = 'I'
+ctlsWARNING = 'W'
+ctlsERROR = 'E'
+ctlsCRITICAL = 'C'
+ctlsBEGIN = '>'
+ctlsEND = '<'
+ctlsPROCESS = 'P'
+ctlsTEXT = ''
 
 TruncLog = 1
 LogPath = ''
@@ -66,22 +68,32 @@ Log = 30
 LogDir = ''
 LogFile = ''
 
+# ДОБАВИТЬ LEVEL
+BEGIN = 60
+END = 70
+PROCESS = 80
+TEXT = 90
+logging.addLevelName(BEGIN, 'BEGIN')
+logging.addLevelName(END, 'END')
+logging.addLevelName(PROCESS, 'PROCESS')
+logging.addLevelName(TEXT, 'TEXT')
+
 # ===========================================================================
 # type
 # ===========================================================================
 @enum.unique
 class TTypeLogString(enum.Enum):
     """TTypeLogString"""
-    tlsNone = ctlsNone
-    tlsBegin = ctlsBegin
-    tlsEnd = ctlsEnd
-    tlsInfo = ctlsInfo
-    tlsError = ctlsError
-    tlsWarning = ctlsWarning
-    tlsProcess = ctlsProcess
-    tlsText = ctlsText
-    tlsDebug = ctlsDebug
-    tlsCritical = ctlsCritical
+    tlsNOTSET = ctlsNOTSET
+    tlsDEBUG = ctlsDEBUG
+    tlsINFO = ctlsINFO
+    tlsWARNING = ctlsWARNING
+    tlsERROR = ctlsERROR
+    tlsCRITICAL = ctlsCRITICAL
+    tlsBEGIN = ctlsBEGIN
+    tlsEND = ctlsEND
+    tlsPROCESS = ctlsPROCESS
+    tlsTEXT = ctlsTEXT
     @classmethod
     def Empty(cls):
         ...
@@ -111,7 +123,20 @@ class TLogOutput (enum.Enum):
 class TFileMemoLog (object):
     """TFileMemoLog"""
     luClassName = "TFileMemoLog"
-    
+    __COLORS = {
+        ctlsNOTSET: LUConsole.cS_BOLD + LUConsole.sEND,
+        ctlsDEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
+        ctlsINFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
+        ctlsWARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
+        ctlsERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
+        ctlsCRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
+
+        ctlsBEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
+        ctlsEND: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
+        ctlsPROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
+        ctlsTEXT: LUConsole.cS_BOLD + LUConsole.sEND,
+    }
+
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
@@ -288,40 +313,61 @@ class TFileMemoLog (object):
         ...
     #endfunction
 
-    def _color (self, T: TTypeLogString, s: str):
-        """_Execute"""
+    def _HandlerCONSOLE (self, T: TTypeLogString):
+        """_HandlerCONSOLE"""
     #beginfunction
-        match T:
-            case T.tlsBegin:
-                LUConsole.WriteLN (s, AStyles='',
-                                        AFG8=LUConsole.cFG8.GREEN.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsEnd:
-                LUConsole.WriteLN (s, AStyles=(),
-                                        AFG8=LUConsole.cFG8.GREEN.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsInfo:
-                LUConsole.WriteLN (s, AStyles=(),
-                                        AFG8=LUConsole.cFG8.CYAN.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsError:
-                LUConsole.WriteLN (s, AStyles=(LUConsole.cStyles.BOLD.value,LUConsole.cStyles.ITALIC.value),
-                                        AFG8=LUConsole.cFG8.RED.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsCritical:
-                LUConsole.WriteLN (s, AStyles=(LUConsole.cStyles.BOLD.value,LUConsole.cStyles.ITALIC.value),
-                                        AFG8=LUConsole.cFG8.BLACK.value, ABG8 = LUConsole.cBG8.RED.value)
-            case T.tlsWarning:
-                LUConsole.WriteLN (s, AStyles=(),
-                                        AFG8=LUConsole.cFG8.YELLOW.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsProcess:
-                LUConsole.WriteLN (s, AStyles=(),
-                                        AFG8=LUConsole.cFG8.GREEN.value, ABG8 = LUConsole.cBG8.BLACK.value)
-            case T.tlsDebug:
-                LUConsole.WriteLN (s, AStyles=(LUConsole.cStyles.BOLD.value,))
-            case T.tlsText:
-                LUConsole.WriteLN (s, AStyles=(LUConsole.cStyles.BOLD.value,))
-            case T.tlsNone:
-                LUConsole.WriteLN (s, AStyles=(LUConsole.cStyles.BOLD.value,))
-            case _:  # Pattern not attempted
-                LUConsole.WriteLN (s)
-        #endmatch
+        self.__FLogStrings.clear ()
+        self.__FLogStrings.append (self.__FLogStringAnsi)
+        for s in self.__FLogStrings:
+            _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+            LCOLOR = self.__COLORS.get (T.value)
+            if LCOLOR is not None:
+                LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
+            else:
+                LFmt = _s
+            LUConsole.WriteLN (LFmt)
+            # LUConsole.WriteLN (_s, AStyles=(LUConsole.cS_BOLD, LUConsole.cS_ITALIC))
+            # LUConsole.WriteLN (_s)
+        #endfor
+    #endfunction
+
+    def _HandlerFILE (self, T: TTypeLogString):
+        """_HandlerFILE"""
+    #beginfunction
+        s = LUFile.ExpandFileName (self.__FFileName)
+        s = LUFile.ExtractFileDir (s)
+        if len (s) > 0:
+            if not LUFile.DirectoryExists (s):
+                LUFile.ForceDirectories (s)
+            #endif
+        #endif
+
+        self.__FLogStrings.clear ()
+        self.__FLogStrings.append (self.__FLogStringAnsi)
+
+        """
+        LEncoding = LUFile.GetFileEncoding (self.__FFileName)
+        if LEncoding == '':
+            LEncoding = LUFile.cDefaultEncoding
+            LEncoding = self.__FLogCODE
+        # LEncoding = LUStrDecode.cUTF_8
+        """
+        LEncoding = self.__FLogCODE
+
+        # Откроет для добавления нового содержимого.
+        LFile = open (self.__FFileName, 'a+', encoding = LEncoding)
+        for s in self.__FLogStrings:
+            _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+            try:
+                # _s = str (s.encode ('utf-8'), 'cp1251')
+                # _s = str (s.encode ('cp1251'), 'cp1251')
+                _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
+                LFile.write (_s + '\n')
+            except:
+                print ('Неправильная кодировка журнала=', LEncoding, s)
+        #endfor
+        LFile.flush ()
+        LFile.close ()
     #endfunction
 
     def _Execute (self, T: TTypeLogString):
@@ -329,54 +375,12 @@ class TFileMemoLog (object):
     #beginfunction
         # StandardOut
         if self.__FStandardOut:                 # and isConsole:
-            self.__FLogStrings.clear()
-            self.__FLogStrings.append(self.__FLogStringAnsi)
-            for s in self.__FLogStrings:
-                _s = self._LogDateStr(False)+' '+T.value+' '+s
-                self._color(T,_s)
-                # LUConsole.WriteLN (_s, AStyles=(LUConsole.cS_BOLD, LUConsole.cS_ITALIC))
-                # LUConsole.WriteLN (_s)
-            #endfor
+            self._HandlerCONSOLE (T)
         #endif
-
         # Filename
         if self.__FFileName != '':
-            s = LUFile.ExpandFileName(self.__FFileName)
-            s = LUFile.ExtractFileDir (s)
-            if len(s) > 0:
-                if not LUFile.DirectoryExists(s):
-                    LUFile.ForceDirectories (s)
-                #endif
-            #endif
-
-            self.__FLogStrings.clear()
-            self.__FLogStrings.append(self.__FLogStringAnsi)
-
-            """
-            LEncoding = LUFile.GetFileEncoding (self.__FFileName)
-            if LEncoding == '':
-                LEncoding = LUFile.cDefaultEncoding
-                LEncoding = self.__FLogCODE
-            # LEncoding = LUStrDecode.cUTF_8
-            """
-            LEncoding = self.__FLogCODE
-
-            # Откроет для добавления нового содержимого.
-            LFile = open (self.__FFileName, 'a+', encoding = LEncoding)
-            for s in self.__FLogStrings:
-                _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
-                try:
-                    # _s = str (s.encode ('utf-8'), 'cp1251')
-                    # _s = str (s.encode ('cp1251'), 'cp1251')
-                    _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
-                    LFile.write(_s + '\n')
-                except:
-                    print ('Неправильная кодировка журнала=',LEncoding, s)
-            #endfor
-            LFile.flush()
-            LFile.close()
+            self._HandlerFILE (T)
         #endif
-
         # Memo
         if self.__FMemoLog is not None:
             self.__FLogStrings.clear()
@@ -464,7 +468,7 @@ class TFileMemoLog (object):
             try:
                 # работа с файлом
                 for s in LFile:
-                    self.SetLogString(TTypeLogString.tlsInfo, ATabCount, s)
+                    self.SetLogString(TTypeLogString.tlsINFO, ATabCount, s)
 
                     #file.next()    возвращает следующую строку файла
                 #endfor
@@ -480,7 +484,7 @@ class TFileMemoLog (object):
     def SetLogString (self, T: TTypeLogString, TabCount: int, Value: str):
         """SetLogString"""
     #beginfunction
-        if T != TTypeLogString.tlsText:
+        if T != TTypeLogString.tlsTEXT:
             s = ' '*TabCount*2 + Value
         else:
             s = Value
@@ -569,19 +573,19 @@ begin
             ProcessEnd := False;
             while not ProcessEnd do
             begin
-                if Ch = StlsBegin then
+                if Ch = StlsBEGIN then
                 begin
                     if IB < i then
                     begin
                         { нет символа конца }
-                        Ch := StlsEnd;
+                        Ch := StlsEND;
                         Dec (i);
                     end else begin
                         IB := i;
                         IP := 0;
                     end;
                 end;
-                if Ch = StlsEnd then
+                if Ch = StlsEND then
                 begin
                     if (i < TSIn.Count) then
                         IE := i
@@ -596,18 +600,18 @@ begin
                             FLogSave.Add (TSIn.Strings[J]);
                     IB := IE + 1;
                 end;
-                if Ch = ctlsError then
+                if Ch = ctlsERROR then
                     Inc (IP);
-                if Ch = ctlsWarning then
+                if Ch = ctlsWARNING then
                     Inc (IP);
-                if Ch = ctlsProcess then
+                if Ch = ctlsPROCESS then
                     Inc (IP);
                 { Next string }
                 Inc (i);
                 if (i < TSIn.Count) then
                     Ch := ExtractWordNew (4, TSIn.Strings[i], [' '])
                 else
-                    Ch := ctlsEnd;
+                    Ch := ctlsEND;
             end;
         end;
         TSIn.Free;
@@ -621,12 +625,13 @@ end;
 # TLogging
 #----------------------------------------------
 # строка формата сообщения
-Cstrfmt_01 = '[%(asctime)s: %(levelname)s] %(message)s'
-Cstrfmt_02 = '[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s'
-Cstrfmt_03 = '%(asctime)s %(msecs)d [%(name)s] %(levelname)s %(message)s %(ip)s'
-Cstrfmt_04 = 'format=%(asctime)s %(msecs)d [%(name)s] %(levelname)s %(module)s %(message)s'
+# Cstrfmt_01 = '[%(asctime)s: %(levelname)s] %(message)s'
+# Cstrfmt_02 = '[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s'
+# Cstrfmt_03 = '%(asctime)s %(msecs)d [%(name)s] %(levelname)s %(message)s %(ip)s'
+Cstrfmt_04 = '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s'
+
 # строка формата времени
-Cdatefmt_01 = '%Y-%m-%d %H:%M:%S'
+# Cdatefmt_01 = '%Y-%m-%d %H:%M:%S'
 Cdatefmt_02 = '%d/%m/%Y %H:%M:%S'
 # style
 Cstyle_01 = '%'
@@ -663,8 +668,6 @@ LOGGING_CONFIG = \
             'class': 'logging.StreamHandler',
             'level': logging.INFO,
             'formatter': 'FORMAT_01',
-            # 'filters': ['allow_foo'],
-            # 'stream': 'ext://sys.stderr',
             'stream': 'ext://sys.stdout'
         },
 
@@ -672,80 +675,69 @@ LOGGING_CONFIG = \
             'class': 'logging.handlers.RotatingFileHandler',
             'level': logging.DEBUG,
             'formatter': 'FORMAT_01',
-            # 'interval': 'midnight',
-            # 'maxBytes': 1024,
-            # 'backupCount': 5
             'filename': 'LOGGING_CONFIG.log'
         }
     },
 
     'formatters': {
         'FORMAT_01': {
-            'format': '%(asctime)s %(msecs)d [%(name)s] %(levelname)s %(message)s',
+            'format': '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s',
             'datefmt': '%d/%m/%Y %H:%M:%S',
             'style': '%'
         },
     },
 }
-
-#--------------------------------------------------
-# Вариант 1
-#--------------------------------------------------
-class CustomFormatter(logging.Formatter):
-    grey = "\x1b[38;20m"
-    yellow = "\x1b[33;20m"
-    red = "\x1b[31;20m"
-    bold_red = "\x1b[31;1m"
-    reset = "\x1b[0m"
-    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
-    FORMATS = {
-        logging.DEBUG: grey + format + reset,
-        logging.INFO: grey + format + reset,
-        logging.WARNING: yellow + format + reset,
-        logging.ERROR: red + format + reset,
-        logging.CRITICAL: bold_red + format + reset
+#-------------------------------------------------
+# TFormatter(logging.Formatter):
+#-------------------------------------------------
+class TFormatter(logging.Formatter):
+    """TFormatter"""
+    luClassName = "TFormatter"
+    __COLORS = {
+        logging.NOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
+        logging.DEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
+        logging.INFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
+        logging.WARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
+        logging.ERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
+        logging.CRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
+        LULog.BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        LULog.END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        LULog.PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        LULog.TEXT: LUConsole.cS_BOLD + LUConsole.sEND
     }
-    def format(self, record):
-        log_fmt = self.FORMATS.get(record.levelno)
-        formatter = logging.Formatter(log_fmt)
-        return formatter.format(record)
-#endclass
 
-#--------------------------------------------------
-# Вариант 2
-#--------------------------------------------------
-BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
-#The background is set with 40 plus the number of the color, and the foreground with 30
-#These are the sequences need to get colored ouput
-RESET_SEQ = "\033[0m"
-COLOR_SEQ = "\033[1;%dm"
-BOLD_SEQ = "\033[1m"
-
-def formatter_message(message, use_color = True):
-    if use_color:
-        message = message.replace("$RESET", RESET_SEQ).replace("$BOLD", BOLD_SEQ)
-    else:
-        message = message.replace("$RESET", "").replace("$BOLD", "")
-    return message
-
-COLORS = {
-    'WARNING': YELLOW,
-    'INFO': WHITE,
-    'DEBUG': BLUE,
-    'CRITICAL': YELLOW,
-    'ERROR': RED
-}
-class ColoredFormatter(logging.Formatter):
-    def __init__(self, msg, use_color = True):
-        logging.Formatter.__init__(self, msg)
-        self.use_color = use_color
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    def __init__(self, AOldFmt, AUseColor = True, **kwargs):
+        """Constructor"""
+    #beginfunction
+        # logging.Formatter.__init__(self, fmt = None,datefmt = None,style = None,validate = False,defaults = None)
+        logging.Formatter.__init__(self, **kwargs)
+        if len(AOldFmt) > 0:
+            self.__FFORMAT = AOldFmt
+        else:
+            self.__FFORMAT = kwargs['fmt']
+        self.__FUseColor = AUseColor
+    #endfunction
 
     def format(self, record):
+        """
         levelname = record.levelname
         if self.use_color and levelname in COLORS:
             levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
             record.levelname = levelname_color
-        return logging.Formatter.format(self, record)
+        """
+        if self.__FUseColor:
+            LCOLOR = self.__COLORS.get(record.levelno)
+            LFmt = LUConsole.sBEGIN_oct +  LCOLOR + self.__FFORMAT + LUConsole.sRESET
+            # установить новый fmt
+            Lformatter = logging.Formatter(LFmt)
+            return Lformatter.format (record)
+        else:
+            return logging.Formatter.format (self, record)
+        #endif
+    #endfunction
 #endclass
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -761,10 +753,6 @@ class TLogger (logging.Logger):
     """TLogging"""
     luClassName = "TLogging"
 
-    # Вариант 2
-    FORMAT = "[$BOLD%(name)-20s$RESET][%(levelname)-18s]  %(message)s ($BOLD%(filename)s$RESET:%(lineno)d)"
-    COLOR_FORMAT = formatter_message(FORMAT, True)
-
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
@@ -773,7 +761,7 @@ class TLogger (logging.Logger):
     #beginfunction
         super().__init__(ALogerName)
         # Formater
-        self.__Fstrfmt = Cstrfmt_03
+        self.__Fstrfmt = Cstrfmt_04
         self.__Fdatefmt = Cdatefmt_02
         self.__Fdefaults = Cdefaults
         self.__Fstyle = Cstyle_01
@@ -826,14 +814,10 @@ class TLogger (logging.Logger):
         # LFormaterConsole = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
         #                                          style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
 
-        # Вариант 1
-        LFormaterConsole = CustomFormatter ()
+        LFormaterConsole = TFormatter ('', True, fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+                                                 style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
+
         LHandlerConsole.setFormatter (LFormaterConsole)
-
-        # Вариант 2
-        # LFormaterConsole = ColoredFormatter (self.COLOR_FORMAT)
-        # LHandlerConsole.setFormatter (LFormaterConsole)
-
         self.addHandler (LHandlerConsole)
     #endfunction
 
@@ -882,6 +866,7 @@ class TLogger (logging.Logger):
 logger = logging.getLogger(__name__)
     
     # LEVEL
+    NOTSET
     DEBUG - уровень отладочной информации, зачастую помогает при разработке приложения на машине программиста.
     INFO - уровень вспомогательной информации о ходе работы приложения/скрипта.
     WARNING - уровень предупреждения. Например, мы можем предупреждать о том, что та или иная функция будет удалена в будущих версиях вашего приложения.
@@ -1199,11 +1184,15 @@ def CreateTLogger (AFileNameINI: str) -> TLogger:
     logging.setLoggerClass (TLogger)
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    # читаем конфигурацию из FileNameINI
+    # logging.config.fileConfig (AFileNameINI)
 
-    # # читаем конфигурацию из словаря
+    # читаем конфигурацию из FileNameINI
     # logging.basicConfig(filename = AFileNameINI)
-    logging.config.fileConfig(AFileNameINI)
+
+    # читаем конфигурацию из словаря
     # logging.config.dictConfig (LOGGING_CONFIG)
+
     # создаем регистратор
     LResult = TLogger('root')
     return LResult
@@ -1220,30 +1209,39 @@ def list_dict(dicts):
 def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger:
     """CreateLoggerCONFIG"""
 #beginfunction
-    if LUFile.FileExists(AFileNameCONFIG):
-        # читаем конфигурацию из файла
-        try:
-            with open (AFileNameCONFIG, 'r') as FileCONFIG:
-                s = FileCONFIG.read ()
-                print (s)
-                # CONFIG = ast.literal_eval (s)
-                # reconstructing the data as a dictionary
-                CONFIG = json.loads (s)
-                # читаем конфигурацию из словаря
-                logging.config.dictConfig (CONFIG)
-        except FileNotFoundError:
-            print ('Невозможно открыть файл')
-    else:
-        # читаем конфигурацию из словаря
-        logging.config.dictConfig (LOGGING_CONFIG)
-    #endif
+    # if LUFile.FileExists(AFileNameCONFIG):
+    #     # читаем конфигурацию из файла
+    #     try:
+    #         CONFIG = {}
+    #         with open (AFileNameCONFIG, 'r') as FileCONFIG:
+    #             json_sample = {}
+    #             s = FileCONFIG.read ()
+    #             # итерация по строкам
+    #             for s in FileCONFIG:
+    #                 s = s.strip ()
+    #                 if len(s) > 0:
+    #                     ...
+    #         with open (AFileNameCONFIG, 'rb') as FileCONFIG:
+    #             s = FileCONFIG.read ()
+    #
+    #     except FileNotFoundError:
+    #         print ('Невозможно открыть файл')
+    # else:
+    #     # читаем конфигурацию из словаря
+    #     logging.config.dictConfig (LOGGING_CONFIG)
+    # #endif
+
+    # читаем конфигурацию из словаря
+    logging.config.dictConfig (LOGGING_CONFIG)
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
     for item in LResult.handlers:
         if type(item) is logging.StreamHandler:
-            LFormaterConsole = CustomFormatter ()
-            # item.formatter = LFormaterConsole
+            print (item.formatter._fmt)
+            LFormaterConsole = TFormatter (item.formatter._fmt)
             item.setFormatter (LFormaterConsole)
+        #endif
+    #enfor
     return LResult
 #endfunction
 
@@ -1255,11 +1253,26 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     # logging.config.fileConfig (AFileNameINI)
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
+
     for item in LResult.handlers:
-        if type(item) is logging.StreamHandler:
-            LFormaterConsole = CustomFormatter ()
-            # item.formatter = LFormaterConsole
+        if type (item) is logging.StreamHandler:
+
+            # print(item.formatter.datefmt)
+            # item.formatter.datefmt = '%H:%M:%S'
+
+            # print(item.formatter.default_msec_format)
+            # print(item.formatter.default_time_format)
+
+            # print (item.formatter._fmt)
+            # LFormater = logging.Formatter(fmt = '%(message)s')
+            # item.setFormatter(LFormater)
+            # print (item.formatter._fmt)
+
+            print (item.formatter._fmt)
+            LFormaterConsole = TFormatter (item.formatter._fmt)
             item.setFormatter (LFormaterConsole)
+        #endif
+    #enfor
     return LResult
 #endfunction
 
@@ -1279,9 +1292,11 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
     LResult = logging.getLogger (ALogerName)
     for item in LResult.handlers:
         if type(item) is logging.StreamHandler:
-            LFormaterConsole = CustomFormatter ()
-            # item.formatter = LFormaterConsole
+            print (item.formatter._fmt)
+            LFormaterConsole = TFormatter (item.formatter._fmt)
             item.setFormatter (LFormaterConsole)
+        #endif
+    #enfor
     return LResult
 #endfunction
 
