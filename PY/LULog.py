@@ -245,21 +245,6 @@ class TFileMemoLog (object):
     #endfunction
 
     #--------------------------------------------------
-    # @property TruncateDays
-    #--------------------------------------------------
-    @property
-    # getter
-    def TruncateDays (self) -> int:
-    #beginfunction
-        return self.__FTruncateDays
-    #endfunction
-    @TruncateDays.setter
-    def TruncateDays (self, Value: int):
-    #beginfunction
-        self.__FTruncateDays = Value
-    #endfunction
-
-    #--------------------------------------------------
     # @property StandardOut
     #--------------------------------------------------
     # getter
@@ -311,86 +296,6 @@ class TFileMemoLog (object):
         #         end;
         #     end;
         ...
-    #endfunction
-
-    def _HandlerCONSOLE (self, T: TTypeLogString):
-        """_HandlerCONSOLE"""
-    #beginfunction
-        self.__FLogStrings.clear ()
-        self.__FLogStrings.append (self.__FLogStringAnsi)
-        for s in self.__FLogStrings:
-            _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
-            LCOLOR = self.__COLORS.get (T.value)
-            if LCOLOR is not None:
-                LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
-            else:
-                LFmt = _s
-            LUConsole.WriteLN (LFmt)
-            # LUConsole.WriteLN (_s, AStyles=(LUConsole.cS_BOLD, LUConsole.cS_ITALIC))
-            # LUConsole.WriteLN (_s)
-        #endfor
-    #endfunction
-
-    def _HandlerFILE (self, T: TTypeLogString):
-        """_HandlerFILE"""
-    #beginfunction
-        s = LUFile.ExpandFileName (self.__FFileName)
-        s = LUFile.ExtractFileDir (s)
-        if len (s) > 0:
-            if not LUFile.DirectoryExists (s):
-                LUFile.ForceDirectories (s)
-            #endif
-        #endif
-
-        self.__FLogStrings.clear ()
-        self.__FLogStrings.append (self.__FLogStringAnsi)
-
-        """
-        LEncoding = LUFile.GetFileEncoding (self.__FFileName)
-        if LEncoding == '':
-            LEncoding = LUFile.cDefaultEncoding
-            LEncoding = self.__FLogCODE
-        # LEncoding = LUStrDecode.cUTF_8
-        """
-        LEncoding = self.__FLogCODE
-
-        # Откроет для добавления нового содержимого.
-        LFile = open (self.__FFileName, 'a+', encoding = LEncoding)
-        for s in self.__FLogStrings:
-            _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
-            try:
-                # _s = str (s.encode ('utf-8'), 'cp1251')
-                # _s = str (s.encode ('cp1251'), 'cp1251')
-                _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
-                LFile.write (_s + '\n')
-            except:
-                print ('Неправильная кодировка журнала=', LEncoding, s)
-        #endfor
-        LFile.flush ()
-        LFile.close ()
-    #endfunction
-
-    def _Execute (self, T: TTypeLogString):
-        """_Execute"""
-    #beginfunction
-        # StandardOut
-        if self.__FStandardOut:                 # and isConsole:
-            self._HandlerCONSOLE (T)
-        #endif
-        # Filename
-        if self.__FFileName != '':
-            self._HandlerFILE (T)
-        #endif
-        # Memo
-        if self.__FMemoLog is not None:
-            self.__FLogStrings.clear()
-            self.__FLogStrings.append(self.__FLogStringAnsi)
-            """
-            for s in self.__FLogStrings:
-                self.__FMemoLog.add
-            #endfor
-            """
-        #endif
     #endfunction
 
     def _SetMemoLog (self, Value):                             #TMemo
@@ -458,180 +363,131 @@ class TFileMemoLog (object):
         del ts
     #endfunction
 
-    def AddFile (self, AFileName: str, ATabCount: int):
-        """AddFile"""
+    def _HandlerCONSOLE (self, T: TTypeLogString):
+        """_HandlerCONSOLE"""
+    #beginfunction
+        self.__FLogStrings.clear ()
+        self.__FLogStrings.append (self.__FLogStringAnsi)
+        for s in self.__FLogStrings:
+            if T == TTypeLogString.tlsTEXT:
+                _s = s
+            else:
+                _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+
+            LCOLOR = self.__COLORS.get (T.value)
+            if LCOLOR is not None:
+                LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
+            else:
+                LFmt = _s
+            LUConsole.WriteLN (LFmt)
+            # LUConsole.WriteLN (_s, AStyles=(LUConsole.cS_BOLD, LUConsole.cS_ITALIC))
+            # LUConsole.WriteLN (_s)
+        #endfor
+    #endfunction
+
+    def _HandlerFILE (self, T: TTypeLogString):
+        """_HandlerFILE"""
+    #beginfunction
+        s = LUFile.ExpandFileName (self.__FFileName)
+        s = LUFile.ExtractFileDir (s)
+        if len (s) > 0:
+            if not LUFile.DirectoryExists (s):
+                LUFile.ForceDirectories (s)
+            #endif
+        #endif
+
+        self.__FLogStrings.clear ()
+        self.__FLogStrings.append (self.__FLogStringAnsi)
+
+        """
+        LEncoding = LUFile.GetFileEncoding (self.__FFileName)
+        if LEncoding == '':
+            LEncoding = LUFile.cDefaultEncoding
+            LEncoding = self.__FLogCODE
+        # LEncoding = LUStrDecode.cUTF_8
+        """
+        LEncoding = self.__FLogCODE
+
+        # Откроет для добавления нового содержимого.
+        LFile = open (self.__FFileName, 'a+', encoding = LEncoding)
+        for s in self.__FLogStrings:
+            if T == TTypeLogString.tlsTEXT:
+                _s = s
+            else:
+                _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+            try:
+                # _s = str (s.encode ('utf-8'), 'cp1251')
+                # _s = str (s.encode ('cp1251'), 'cp1251')
+                _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
+                LFile.write (_s + '\n')
+            except:
+                print ('Неправильная кодировка журнала=', LEncoding, s)
+        #endfor
+        LFile.flush ()
+        LFile.close ()
+    #endfunction
+
+    def _Execute (self, T: TTypeLogString):
+        """_Execute"""
+    #beginfunction
+        # StandardOut
+        if self.__FStandardOut:                 # and isConsole:
+            self._HandlerCONSOLE (T)
+        #endif
+        # Filename
+        if self.__FFileName != '':
+            self._HandlerFILE (T)
+        #endif
+        # Memo
+        if self.__FMemoLog is not None:
+            self.__FLogStrings.clear()
+            self.__FLogStrings.append(self.__FLogStringAnsi)
+            """
+            for s in self.__FLogStrings:
+                self.__FMemoLog.add
+            #endfor
+            """
+        #endif
+    #endfunction
+
+    def AddLogFile (self, AFileName: str):
+        """AddLogFile"""
     #beginfunction
         if LUFile.FileExists (AFileName):
             # Открыть для чтения
-            LEncoding = LUFile.GetFileEncoding (self.__FFileName)
-            LFile = open (self.__FFileName, 'r', encoding = LEncoding)
+            LEncoding = LUFile.GetFileEncoding (AFileName)
+            LFile = open (AFileName, 'r', encoding = LEncoding)
             try:
                 # работа с файлом
                 for s in LFile:
-                    self.SetLogString(TTypeLogString.tlsINFO, ATabCount, s)
-
+                    self.AddLog (TTypeLogString.tlsTEXT, s.rstrip('\n'))
                     #file.next()    возвращает следующую строку файла
                 #endfor
             finally:
                 LFile.close ()
         #endif
-        ...
     #endfunction
 
     #--------------------------------------------------
     #
     #--------------------------------------------------
-    def SetLogString (self, T: TTypeLogString, TabCount: int, Value: str):
-        """SetLogString"""
+    def AddLog (self, T: TTypeLogString, Value: str):
+        """AddLog"""
     #beginfunction
-        if T != TTypeLogString.tlsTEXT:
-            s = ' '*TabCount*2 + Value
-        else:
-            s = Value
-        self.__FLogStringOEM = s
-        self.__FLogStringAnsi = s
+        self.__FLogStringOEM = Value
+        self.__FLogStringAnsi = Value
         if self.LogEnabled:
             self._Execute(T)
-        ...
     #endfunction
-
-"""
-procedure TFileMemoLog.TruncateMemo (ATS: TStrings);
-var
-    Today, LogDay: TDateTime;
-    { Delta: TDateTime; }
-    s: string;
-    Save: Char;
-    i: Longint;
-    x: Longint;
-    Stop: Boolean;
-    yy, mm, dd, hh, nn, ss, ms: word;
-begin
-    Save := FormatSettings.DateSeparator;
-    FormatSettings.DateSeparator := '/';
-    Today := Now;
-    s := DateTimeToStr (Today);
-    i := 0;
-    Stop := False;
-    while (i < ATS.Count) and (not Stop) do
-    begin
-        s := ExtractWordNew (1, ATS.Strings[i], [' ']) + ' ' +
-            ExtractWordNew (2, ATS.Strings[i], [' ']);
-        s := ReplaceStr (s, '.', FormatSettings.DateSeparator);
-        try
-            ms := StrToInt (ExtractWordNew(2, ATS.Strings[i], [' ']));
-        except
-            ms := 0;
-        end;
-        try
-            LogDay := StrToDateTime (s) + EncodeTime (0, 0, 0, ms);
-        except
-            LogDay := 0;
-        end;
-        if LogDay <> 0 then
-        begin
-            DecodeDate (Today - TruncateDays, yy, mm, dd);
-            DecodeTime (Today - TruncateDays, hh, nn, ss, ms);
-            { Delta := EncodeDate(yy,mm,dd)+EncodeTime(hh,nn,ss,ms); }
-            x := Trunc (Today) - Trunc (LogDay);
-            if x > TruncateDays - 1 then
-                { if LogDay < Delta then }
-                ATS.Delete (i)
-            else
-            begin
-                Stop := True;
-                i := ATS.Count;
-            end;
-        end else begin
-            ATS.Delete (i);
-        end;
-    end;
-    FormatSettings.DateSeparator := Save;
-end;
-"""
-
-"""
-function TFileMemoLog.GetLogSave (Filename: string): TStringList;
-var
-    TSIn: TStringList;
-    ProcessEnd: Boolean;
-    IB, IE, i, J, IP: Integer;
-    Ch: string;
-
-begin
-    FLogSave.Clear;
-    if FileExists (Filename) then
-    begin
-        TSIn := TStringList.Create;
-        TSIn.LoadFromFile (Filename);
-        if TSIn.Count > 0 then
-        begin
-            i := 0;
-            IB := 0;
-            IP := 0;
-            Ch := ExtractWordNew (4, TSIn.Strings[i], [' ']);
-            ProcessEnd := False;
-            while not ProcessEnd do
-            begin
-                if Ch = StlsBEGIN then
-                begin
-                    if IB < i then
-                    begin
-                        { нет символа конца }
-                        Ch := StlsEND;
-                        Dec (i);
-                    end else begin
-                        IB := i;
-                        IP := 0;
-                    end;
-                end;
-                if Ch = StlsEND then
-                begin
-                    if (i < TSIn.Count) then
-                        IE := i
-                    else
-                    begin
-                        IE := i - 1;
-                        ProcessEnd := True;
-                    end;
-                    { Copy strings }
-                    if IP > 0 then
-                        for J := IB to IE do
-                            FLogSave.Add (TSIn.Strings[J]);
-                    IB := IE + 1;
-                end;
-                if Ch = ctlsERROR then
-                    Inc (IP);
-                if Ch = ctlsWARNING then
-                    Inc (IP);
-                if Ch = ctlsPROCESS then
-                    Inc (IP);
-                { Next string }
-                Inc (i);
-                if (i < TSIn.Count) then
-                    Ch := ExtractWordNew (4, TSIn.Strings[i], [' '])
-                else
-                    Ch := ctlsEND;
-            end;
-        end;
-        TSIn.Free;
-    end;
-    Result := FLogSave;
-end;
-"""
 #endclass
 
 #----------------------------------------------
 # TLogging
 #----------------------------------------------
 # строка формата сообщения
-# Cstrfmt_01 = '[%(asctime)s: %(levelname)s] %(message)s'
-# Cstrfmt_02 = '[%(asctime)s] [%(name)s] [%(levelname)s] > %(message)s'
-# Cstrfmt_03 = '%(asctime)s %(msecs)d [%(name)s] %(levelname)s %(message)s %(ip)s'
 Cstrfmt_04 = '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s'
 
 # строка формата времени
-# Cdatefmt_01 = '%Y-%m-%d %H:%M:%S'
 Cdatefmt_02 = '%d/%m/%Y %H:%M:%S'
 # style
 Cstyle_01 = '%'
@@ -675,7 +531,7 @@ LOGGING_CONFIG = \
             'class': 'logging.handlers.RotatingFileHandler',
             'level': logging.DEBUG,
             'formatter': 'FORMAT_01',
-            'filename': 'LOGGING_CONFIG.log'
+            'filename': 'LOG\LOGGING_CONFIG.log'
         }
     },
 
@@ -807,8 +663,8 @@ class TLogger (logging.Logger):
     #beginfunction
         LHandlerConsole = logging.StreamHandler ()
         LHandlerConsole.setLevel (ALevel)
-        LHandlerConsole.setStream (sys.stdout)
         LHandlerConsole.set_name ('CONSOLE')
+        LHandlerConsole.setStream (sys.stdout)
 
         # Вариант 0
         # LFormaterConsole = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
@@ -816,7 +672,6 @@ class TLogger (logging.Logger):
 
         LFormaterConsole = TFormatter ('', True, fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
                                                  style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
-
         LHandlerConsole.setFormatter (LFormaterConsole)
         self.addHandler (LHandlerConsole)
     #endfunction
@@ -825,20 +680,20 @@ class TLogger (logging.Logger):
     #beginfunction
         LHandlerFile = logging.FileHandler (AFileName, mode='a+',
                                             encoding=None, delay=False, errors=None)
+        LHandlerFile.setLevel (ALevel)
+        LHandlerFile.set_name ('FILE')
+
         LFormaterFile = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
                                                style=self.__Fstyle, validate=True,
                                                defaults = self.__Fdefaults)
         LHandlerFile.setFormatter (LFormaterFile)
-        LHandlerFile.setLevel(ALevel)
-        LHandlerFile.set_name('FILE')
+        self.addHandler (LHandlerFile)
 
-        # logger = logging.getLogger ()
-        # logHandler = logging.StreamHandler ()
-        # formatter = jsonlogger.JsonFormatter ()
-        # logHandler.setFormatter (formatter)
+        # Json
+        # LJsonFormatter = jsonlogger.JsonFormatter ()
+        # logHandler.setFormatter (LJsonFormatter)
         # logger.addHandler (logHandler)
 
-        self.addHandler (LHandlerFile)
     #endfunction
 
 """
@@ -888,44 +743,41 @@ logger = logging.getLogger(__name__)
     Задача класса Handler и его потомков обрабатывать запись сообщений/логов. Т.е. Handler отвечает за то куда будут записаны сообщения. В базовом наборе logging предоставляет ряд готовых классов-обработчиков:
     SteamHandler - запись в поток, например, stdout или stderr.
         handler = StreamHandler(stream=sys.stdout)
-    FileHandler - запись в файл, класс имеет множество производных классов с различной функциональностью (ротация файлов логов по размеру, времени и т.д.)
-        handler = StreamHandler(stream=)
-    SocketHandler - запись сообщений в сокет по TCP
-        handler = StreamHandler(stream=)
-    DatagramHandler - запись сообщений в сокет по UDP
-        handler = StreamHandler(stream=)
-    SysLogHandler - запись в syslog
-        handler = StreamHandler(stream=)
-    HTTPHandler - запись по HTTP
-        handler = StreamHandler(stream=)
-    NullHandler
-        handler = StreamHandler(stream=)
-    WatchedFileHandler
+    FileHandler - запись в файл, класс имеет множество производных классов с различной функциональностью
+        ротация файлов логов по размеру, времени и т.д.)
         handler = StreamHandler(stream=)
     BaseRotatingHandler
-        handler = StreamHandler(stream=)
+        handler = BaseRotatingHandler(filename, mode, encoding=None, delay=False, errors=None
     RotatingFileHandler
-        handler = StreamHandler(stream=)
+        handler = RotatingFileHandler(filename, mode='a', maxBytes=0, backupCount=0, encoding=None,
+            delay=False, errors=None
     TimedRotatingFileHandler
+        handler = TimedRotatingFileHandler(filename, when='h', interval=1, backupCount=0, encoding=None,
+            delay=False, utc=False, atTime=None, errors=None) 
+        
+    SocketHandler - запись сообщений в сокет по TCP
+        handler = SocketHandler(host, port)
+    DatagramHandler - запись сообщений в сокет по UDP
+        handler = DatagramHandler(host, port)
+    SysLogHandler - запись в syslog
+        handler = SysLogHandler(address=('localhost', SYSLOG_UDP_PORT), facility=LOG_USER, socktype=socket.SOCK_DGRAM)
+    HTTPHandler - запись по HTTP
+        handler = HTTPHandler(host, url, method='GET', secure=False, credentials=None, context=None)
+    NullHandler = NullHandler
         handler = StreamHandler(stream=)
-    SocketHandler
-        handler = StreamHandler(stream=)
-    DatagramHandler
-        handler = StreamHandler(stream=)
-    SysLogHandler
-        handler = StreamHandler(stream=)
+    WatchedFileHandler
+        handler = WatchedFileHandler(filename, mode='a', encoding=None, delay=False, errors=None)
     NTEventLogHandler
-        handler = StreamHandler(stream=)
+        handler = NTEventLogHandler(appname, dllname=None, logtype='Application')
     SMTPHandler
-        handler = StreamHandler(stream=)
+        handler = SMTPHandler(mailhost, fromaddr, toaddrs, subject, credentials=None, secure=None, timeout=1.0)
     MemoryHandler
-        handler = StreamHandler(stream=)
-    HTTPHandler
-        handler = StreamHandler(stream=)
+        handler = BufferingHandler(capacity)¶
     QueueHandler
-        handler = StreamHandler(stream=)
+        handler = QueueHandler(queue)
     QueueListener
-        handler = StreamHandler(stream=)
+        handler = QueueListener(queue, *handlers, respect_handler_level=False)¶
+        
     # ДОБАВИТЬ handler
     logger.addHandler(handler)
 
@@ -1246,7 +1098,7 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger
 #endfunction
 
 def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
-    """CreateTLoggingCONFIG"""
+    """CreateLoggerFILEINI"""
 #beginfunction
     # читаем конфигурацию из файла
     logging.config.fileConfig(AFileNameINI,disable_existing_loggers = False)
@@ -1271,6 +1123,11 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
             print (item.formatter._fmt)
             LFormaterConsole = TFormatter (item.formatter._fmt)
             item.setFormatter (LFormaterConsole)
+
+            # LJsonFormatter = jsonlogger.JsonFormatter ()
+            # logHandler.setFormatter (LJsonFormatter)
+            # logger.addHandler (logHandler)
+
         #endif
     #enfor
     return LResult
