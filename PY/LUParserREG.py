@@ -27,7 +27,6 @@ import enum
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LUFile
 
 #----------------------------------------------------------
 # HKEY_* Constants
@@ -232,7 +231,7 @@ class TREGParser (object):
         except FileNotFoundError as ERROR:
             ...
         finally:
-            return self.hkey != None
+            return not self.hkey is None
     #endfunction
 
     @staticmethod
@@ -331,7 +330,7 @@ class TREGParser (object):
         # winreg.SaveKey (key, file_name)
         #   Сохраняет указанный ключ и все его подклавиши в указанный файл.
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             SaveKey (self.hkey, AFileName)
             self.CloseKeyReg(self.hkey)
     #endfunction
@@ -342,8 +341,8 @@ class TREGParser (object):
         # winreg.LoadKey(key, sub_key, file_name)
         #   Создает под-ключ под указанным ключом и сохраняет регистрационную информацию из указанного файла в этот под-ключ.
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
-            LoadKey (self.hkey, AFileName)
+        if not self.hkey is None:
+            LoadKey (self.hkey, ASection, AFileName)
             self.CloseKeyReg(self.hkey)
     #endfunction
 
@@ -358,7 +357,7 @@ class TREGParser (object):
         #   1 - Целое число, указывающее тип реестра для этого значения
         LResult = ''
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             if len(AOption) > 0:
                 LResult = QueryValueEx (self.hkey, AOption)
             else:
@@ -374,7 +373,7 @@ class TREGParser (object):
         #   Результат-кортеж из 3 пунктов:
         LResult = ()
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             LResult = QueryInfoKey (self.hkey)
             self.CloseKeyReg(self.hkey)
         return LResult
@@ -387,7 +386,7 @@ class TREGParser (object):
         #   Удаляет именованное значение из ключа реестра.
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             DeleteValue (self.hkey, AOption)
             self.CloseKeyReg(self.hkey)
             LResult = True
@@ -403,7 +402,7 @@ class TREGParser (object):
         #   Хранит данные в поле значений открытого ключа реестра.
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             SetValueEx (self.hkey, AOption, 0, AFormat.value, Value)
             self.CloseKeyReg(self.hkey)
             LResult = True
@@ -432,7 +431,7 @@ class TREGParser (object):
     #beginfunction
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             LResult =  True
         return LResult
     #endfunction
@@ -441,7 +440,7 @@ class TREGParser (object):
     #beginfunction
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
-        if self.hkey != None:
+        if not self.hkey is None:
             LList = self.GetOptionsReg (AHKEY, ASection)
             if len (LList) > 0 and AOption in LList:
                 LResult = True
@@ -475,6 +474,14 @@ def SaveRegToFile_regedit (AFileName: str, AHKEY: THKEYConst, ASection: str):
         # os.startfile ('regedit.exe')
     #endif
 #endfunction
+
+def CreateTREGParser () -> TREGParser:
+    """CreateTREGParser"""
+#beginfunction
+    return TREGParser ()
+#endfunction
+
+GREGParser = CreateTREGParser ()
 
 #------------------------------------------
 def main ():

@@ -20,23 +20,17 @@ __annotations__ ="""
 import os
 import sys
 import enum
-import codecs
 import datetime
-
+import copy
 import logging
-# from logging import StreamHandler, FileHandler
-# from logging import Formatter, LogRecord
 import logging.config
-
-import ast
 import json
-import pickle
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 from pythonjsonlogger import jsonlogger
-import coloredlogs
+import pythonjsonlogger
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
@@ -44,8 +38,7 @@ import coloredlogs
 import LUFile
 import LUConsole
 import LUDateTime
-import LULog
-import LUStrDecode
+import LUDict
 
 # ===========================================================================
 # CONST
@@ -73,10 +66,29 @@ BEGIN = 60
 END = 70
 PROCESS = 80
 TEXT = 90
-logging.addLevelName(BEGIN, 'BEGIN')
-logging.addLevelName(END, 'END')
-logging.addLevelName(PROCESS, 'PROCESS')
-logging.addLevelName(TEXT, 'TEXT')
+
+def AddLevelName():
+#beginfunction
+    logging.addLevelName(BEGIN, 'BEGIN')
+    logging.addLevelName(END, 'END')
+    logging.addLevelName(PROCESS, 'PROCESS')
+    logging.addLevelName(TEXT, 'TEXT')
+#endfunction
+
+CDefaultFileLogINI = 'logging.ini'
+CDefaultFileLogCONFIG = 'logging.CONFIG'
+
+CDefaultFileLog = 'LOGGING.log'
+CDefaultFileLogFILEINI = 'LOGGING_FILEINI.log'
+CDefaultFileLogFILEINI_json = 'LOGGING_FILEINI_json.log'
+
+CDefaultFileLogFILECONFIG = 'LOGGING_CONFIG.log'
+CDefaultFileLogFILECONFIG_json = 'LOGGING_FILECONFIG_json.log'
+
+CDefaultFileLogFILEBASIC = 'LOGGING_BASIC.log'
+
+Cformat = 'format=%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s'
+Cdatefmt = '%d/%m/%Y %H:%M:%S'
 
 # ===========================================================================
 # type
@@ -372,7 +384,7 @@ class TFileMemoLog (object):
             if T == TTypeLogString.tlsTEXT:
                 _s = s
             else:
-                _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+                _s = self._LogDateStr (False) + ' ' + str(T.value) + ' ' + s
 
             LCOLOR = self.__COLORS.get (T.value)
             if LCOLOR is not None:
@@ -414,7 +426,7 @@ class TFileMemoLog (object):
             if T == TTypeLogString.tlsTEXT:
                 _s = s
             else:
-                _s = self._LogDateStr (False) + ' ' + T.value + ' ' + s
+                _s = self._LogDateStr (False) + ' ' + str(T.value) + ' ' + s
             try:
                 # _s = str (s.encode ('utf-8'), 'cp1251')
                 # _s = str (s.encode ('cp1251'), 'cp1251')
@@ -495,54 +507,140 @@ Cstyle_02 = '{'
 Cstyle_03 = '$'
 # defaults
 Cdefaults = {"ip": '_ip_'}
+
 #-------------------------------------------------
-# LOGGING_CONFIG
+# TLogRecord(logging.LogRecord):
 #-------------------------------------------------
-LOGGING_CONFIG = \
-{
-    'version': 1,
-    'disable_existing_loggers': 0,
+class TLogRecord(logging.LogRecord):
+    """TLogRecord"""
+    luClassName = "TLogRecord"
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    #class logging.LogRecord(name, level, pathname, lineno, msg, args, exc_info, func=None, sinfo=None)
+    def __init__(self, **kwargs):
+        """Constructor"""
+    #beginfunction
+        # logging.LoggerAdapter.__init__(self, name = '')
+        logging.LogRecord.__init__(self, **kwargs)
+    #endfunction
+#endclass
 
-    'loggers': {
-        'root': {
-            'handlers': ['CONSOLE'],
-            'level': 'DEBUG',
-            # 'filters': ['special'],
-            'propagate': 1
-        },
+#-------------------------------------------------
+# THandler(logging.Handler):
+#-------------------------------------------------
+class THandler(logging.Handler):
+    """THandler"""
+    luClassName = "THandler"
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    #class logging.Handler
+    def __init__(self, **kwargs):
+        """Constructor"""
+    #beginfunction
+        # logging.LoggerAdapter.__init__(self, name = '')
+        logging.Handler.__init__(self, **kwargs)
+    #endfunction
+#endclass
 
-        'log02': {
-            'handlers': ['FILE_01'],
-            'level': 'DEBUG',
-            'qualname': 'log02',
-            'propagate': 0
-        }
-    },
+#-------------------------------------------------
+# TFilter(logging.Filter):
+#-------------------------------------------------
+class TFilter(logging.Filter):
+    """TFilter"""
+    luClassName = "TFilter"
+    COLOR = {
+        "DEBUG": "BLUE",
+        "INFO": "WHITE",
+        "WARNING": "YELLOW",
+        "ERROR": "RED",
+        "CRITICAL": "RED",
+        "BEGIN": "RED",
+        "END": "RED",
+        "PROCESS": "RED",
+        "TEXT": "RED"
+    }
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    #class logging.Filter(name='')
+    def __init__(self, **kwargs):
+        """Constructor"""
+    #beginfunction
+        # logging.LoggerAdapter.__init__(self, name = '')
+        logging.Filter.__init__(self, **kwargs)
+    #endfunction
 
-    'handlers': {
-        'CONSOLE': {
-            'class': 'logging.StreamHandler',
-            'level': logging.INFO,
-            'formatter': 'FORMAT_01',
-            'stream': 'ext://sys.stdout'
-        },
+    def filter(self, record):
+    #beginfunction
+        record.color = self.COLOR[record.levelname]
+        print(record.color)
+        return True
+    #endfunction
+#endclass
 
-        'FILE_01': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'level': logging.DEBUG,
-            'formatter': 'FORMAT_01',
-            'filename': 'LOG\LOGGING_CONFIG.log'
-        }
-    },
+# #-------------------------------------------------
+# # TFilter(logging.Filter):
+# #-------------------------------------------------
+# # Фильтр, который вводит контекстную информацию в журнал.
+# # Вместо того, чтобы использовать фактическую контекстуальную информацию, мы
+# # просто используем случайные данные в этой демонстрации.
+# from random import choice
+#
+# class TFilter (logging.Filter):
+#     """TFilter"""
+#     luClassName = "TFilter"
+#     USERS = ['jim', 'fred', 'sheila']
+#     IPS = ['123.231.231.123', '127.0.0.1', '192.168.0.1']
+#     def filter(self, record):
+#     #beginfunction
+#         record.ip = choice(TFilter.IPS)
+#         record.user = choice(TFilter.USERS)
+#         return True
+#     #endfunction
+# #endclass
+#
+# def Test ():
+# #beginfunction
+#     levels = (logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL)
+#     logging.basicConfig(level=logging.DEBUG,
+#                         format='%(asctime)-15s %(name)-5s %(levelname)-8s IP: %(ip)-15s User: %(user)-8s %(message)s')
+#     a1 = logging.getLogger('a.b.c')
+#     a2 = logging.getLogger('d.e.f')
+#     f = TFilter()
+#     a1.addFilter(f)
+#     a2.addFilter(f)
+#     a1.debug('A debug message')
+#     a1.info('An info message with %s', 'some parameters')
+#     for x in range(10):
+#         lvl = choice(levels)
+#         lvlname = logging.getLevelName(lvl)
+#         a2.log(lvl, 'A message at %s level with %d %s', lvlname, 2, 'parameters')
+# #endfunction
 
-    'formatters': {
-        'FORMAT_01': {
-            'format': '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s',
-            'datefmt': '%d/%m/%Y %H:%M:%S',
-            'style': '%'
-        },
-    },
-}
+#-------------------------------------------------
+# TAdapter(logging.LoggerAdapter):
+#-------------------------------------------------
+class TAdapter(logging.LoggerAdapter):
+    """TAdapter"""
+    luClassName = "TAdapter"
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    #class logging.LoggerAdapter(logger, extra)
+    def __init__(self, **kwargs):
+        """Constructor"""
+    #beginfunction
+        # logging.LoggerAdapter.__init__(self, logger = None, extra = None)
+        logging.LoggerAdapter.__init__(self, **kwargs)
+    #endfunction
+
+    def process(self, msg, kwargs):
+        my_context = kwargs.pop('id', self.extra['id'])
+        return '[%s] %s' % (my_context, msg), kwargs
+#endclass
+
 #-------------------------------------------------
 # TFormatter(logging.Formatter):
 #-------------------------------------------------
@@ -556,10 +654,10 @@ class TFormatter(logging.Formatter):
         logging.WARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
         logging.ERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
         logging.CRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
-        LULog.BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
-        LULog.END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
-        LULog.PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
-        LULog.TEXT: LUConsole.cS_BOLD + LUConsole.sEND
+        BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK + LUConsole.sEND,
+        TEXT: LUConsole.cS_BOLD + LUConsole.sEND
     }
 
     #--------------------------------------------------
@@ -568,31 +666,81 @@ class TFormatter(logging.Formatter):
     def __init__(self, AOldFmt, AUseColor = True, **kwargs):
         """Constructor"""
     #beginfunction
-        # logging.Formatter.__init__(self, fmt = None,datefmt = None,style = None,validate = False,defaults = None)
+        #class logging.Formatter(fmt=None, datefmt=None, style='%', validate=True, *, defaults=None)
         logging.Formatter.__init__(self, **kwargs)
         if len(AOldFmt) > 0:
             self.__FFORMAT = AOldFmt
         else:
             self.__FFORMAT = kwargs['fmt']
+        #endif
         self.__FUseColor = AUseColor
     #endfunction
 
-    def format(self, record):
-        """
-        levelname = record.levelname
-        if self.use_color and levelname in COLORS:
-            levelname_color = COLOR_SEQ % (30 + COLORS[levelname]) + levelname + RESET_SEQ
-            record.levelname = levelname_color
-        """
+    def _SetColor(self, AFmt: str, ALevelNo) -> str:
+        """_SetColor"""
+    #beginfunction
         if self.__FUseColor:
-            LCOLOR = self.__COLORS.get(record.levelno)
-            LFmt = LUConsole.sBEGIN_oct +  LCOLOR + self.__FFORMAT + LUConsole.sRESET
+            LCOLOR = self.__COLORS.get (ALevelNo)
+            LFmt = LUConsole.sBEGIN_oct + LCOLOR + AFmt + LUConsole.sRESET
+            return LFmt
+        else:
+            return AFmt
+        #endif
+    #endfunction
+
+    def format(self, record):
+        """format"""
+    #beginfunction
+
+        # отдельный атрибут
+        # LLevelname = record.levelname
+        # record.levelname = '_'+LLevelname+'_'
+
+        if record.levelno == TEXT:
+            # установить новый fmt
+            LFmt = self._SetColor ('%(message)s', record.levelno)
             # установить новый fmt
             Lformatter = logging.Formatter(LFmt)
             return Lformatter.format (record)
+        #endif
+        if self.__FUseColor:
+            LFmt = self._SetColor (self.__FFORMAT, record.levelno)
+            # установить новый fmt
+            Lformatter = logging.Formatter(LFmt)
+            return Lformatter.format (record)
+
         else:
             return logging.Formatter.format (self, record)
         #endif
+    #endfunction
+#endclass
+
+#-------------------------------------------------
+# TFormatterJSON(jsonlogger.JsonFormatter):
+#-------------------------------------------------
+class TFormatterJSON(pythonjsonlogger.jsonlogger.JsonFormatter):
+    """TFormatterJSON"""
+    luClassName = "TFormatterJSON"
+
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    #class jsonlogger.JsonFormatter(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        """Constructor"""
+    #beginfunction
+        super(TFormatterJSON, self).__init__(*args, **kwargs)
+        self.json_ensure_ascii = False
+        ...
+    #endfunction
+
+    def format(self, record):
+        """format"""
+    #beginfunction
+        return super().format(record)
+        # return super(TFormatterJSON, self).format (record)
+        # return logging.Formatter.format (self, record)
+        ...
     #endfunction
 #endclass
 
@@ -616,6 +764,7 @@ class TLogger (logging.Logger):
         """Constructor"""
     #beginfunction
         super().__init__(ALogerName)
+        self.__FFileName: str = ''
         # Formater
         self.__Fstrfmt = Cstrfmt_04
         self.__Fdatefmt = Cdatefmt_02
@@ -625,6 +774,15 @@ class TLogger (logging.Logger):
         self.LEVEL = logging.DEBUG
         # propagate
         self.propagate = True
+
+        AddLevelName ()
+        # logging.addLevelName (BEGIN, 'BEGIN')
+        # logging.addLevelName (END, 'END')
+        # logging.addLevelName (PROCESS, 'PROCESS')
+        # logging.addLevelName (TEXT, 'TEXT')
+
+        # self.AddHandlerCONSOLE (self.LEVEL)
+
         self.Clear ()
     #endfunction
 
@@ -645,6 +803,24 @@ class TLogger (logging.Logger):
     #endfunction
 
     #--------------------------------------------------
+    # @property FileName
+    #--------------------------------------------------
+    # getter
+    @property
+    def FileName (self) -> str:
+    #beginfunction
+        return self.__FFileName
+    #endfunction
+    @FileName.setter
+    def FileName (self, Value: str):
+    #beginfunction
+        self.__FFileName = Value
+        if len(self.__FFileName) > 0 and LUFile.FileExists (self.__FFileName):
+            ...
+        #endif
+    #endfunction
+
+    #--------------------------------------------------
     # @property LEVEL
     #--------------------------------------------------
     # getter
@@ -661,60 +837,52 @@ class TLogger (logging.Logger):
 
     def AddHandlerCONSOLE(self, ALevel):
     #beginfunction
-        LHandlerConsole = logging.StreamHandler ()
-        LHandlerConsole.setLevel (ALevel)
-        LHandlerConsole.set_name ('CONSOLE')
-        LHandlerConsole.setStream (sys.stdout)
-
-        # Вариант 0
-        # LFormaterConsole = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+        LHandler = logging.StreamHandler ()
+        LHandler.setLevel (ALevel)
+        LHandler.set_name ('CONSOLE')
+        LHandler.setStream (sys.stdout)
+        # LFormater = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
         #                                          style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
-
-        LFormaterConsole = TFormatter ('', True, fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
-                                                 style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
-        LHandlerConsole.setFormatter (LFormaterConsole)
-        self.addHandler (LHandlerConsole)
+        LFormater = TFormatter ('', True, fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+                                                style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
+        LHandler.setFormatter (LFormater)
+        self.addHandler (LHandler)
     #endfunction
 
     def AddHandlerFILE(self, AFileName: str, ALevel):
     #beginfunction
-        LHandlerFile = logging.FileHandler (AFileName, mode='a+',
-                                            encoding=None, delay=False, errors=None)
-        LHandlerFile.setLevel (ALevel)
-        LHandlerFile.set_name ('FILE')
-
-        LFormaterFile = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
-                                               style=self.__Fstyle, validate=True,
-                                               defaults = self.__Fdefaults)
-        LHandlerFile.setFormatter (LFormaterFile)
-        self.addHandler (LHandlerFile)
-
+        LHandler = logging.FileHandler (AFileName, mode='a+',
+                                        encoding=LUFile.cDefaultEncoding, delay=False, errors=None)
+        LHandler.setLevel (ALevel)
+        LHandler.set_name ('FILE')
+        # LFormater = logging.Formatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+        #                                        style=self.__Fstyle, validate=True, defaults = self.__Fdefaults)
+        LFormater = TFormatter ('', False, fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+                                                 style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
+        LHandler.setFormatter (LFormater)
+        self.addHandler (LHandler)
         # Json
         # LJsonFormatter = jsonlogger.JsonFormatter ()
         # logHandler.setFormatter (LJsonFormatter)
-        # logger.addHandler (logHandler)
-
+        # self.addHandler (logHandler)
     #endfunction
 
-"""
-    try:
-        1/0
-    except:
-        logger.exception('exception')
+    def AddHandlerFILE_JSON(self, AFileName: str, ALevel):
+    #beginfunction
+        LHandler = logging.FileHandler (AFileName, mode='a+',
+                                        encoding=LUFile.cDefaultEncoding, delay=False, errors=None)
+        LHandler.setLevel (ALevel)
+        LHandler.set_name ('FILE')
 
-    try:
-        1/0
-    except OSError as e:
-        logger.error(e, exc_info=True)
-    except:
-        logger.error("uncaught exception: %s", traceback.format_exc())
-        
-    try: 
-        c = a / b 
-    except Exception as e: 
-        logging.error("Exception occurred", exc_info=True) 
-        
-"""
+        # LFormater = jsonlogger.JsonFormatter (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+        #                                       style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
+        LFormater = TFormatterJSON (fmt=self.__Fstrfmt, datefmt=self.__Fdatefmt,
+                                                 style=self.__Fstyle, validate=True, defaults=self.__Fdefaults)
+
+        LFormater.json_ensure_ascii = False
+        LHandler.setFormatter (LFormater)
+        self.addHandler (LHandler)
+    #endfunction
 
 """
 # logger
@@ -737,6 +905,7 @@ logger = logging.getLogger(__name__)
     logger.info('info')
     logger.warning('warning')
     logger.error('error')
+    logger.exception('error')
     logger.critical('critical')
 
     # handler
@@ -783,12 +952,8 @@ logger = logging.getLogger(__name__)
 
     # Formatter
     #class logging.Formatter(fmt=None, datefmt=None, style='%', validate=True, *, defaults=None)
-    formster = logging.Formatter (fmt=self.strfmt_03,
-        datefmt=self.datefmt_02,
-        style = '%',
-        validate = True,
-        defaults = {"ip": None}
-        )
+    formster = logging.Formatter (fmt=self.strfmt_03, datefmt=self.datefmt_02, style = '%', validate = True,
+        defaults = {"ip": None} )
     handler.setFormatter(Formatter(fmt='[%(asctime)s: %(levelname)s] %(message)s'))
 
     Параметр defaults может быть словарем со значениями по умолчанию для использования в настраиваемых полях.
@@ -880,9 +1045,80 @@ LOGGING_CONFIG['loggers'].update (
     }
 )
 
+Available format attributes:
+args        You shouldn’t need to format this yourself.
+    The tuple of arguments merged into msg to produce message, or a dict whose values are used for the merge (when there is only one argument, and it is a dictionary).
+exc_info    You shouldn’t need to format this yourself.
+    Exception tuple (à la sys.exc_info) or, if no exception has occurred, None.
+msg         You shouldn’t need to format this yourself.
+    The format string passed in the original logging call. Merged with args to produce message, or an arbitrary object (see Using arbitrary objects as messages).
+stack_info  You shouldn’t need to format this yourself.
+    Stack frame information (where available) from the bottom of the stack in the current thread, up to and including the stack frame of the logging call which resulted in the creation of this record.
+
+%(msg)s         Message passed to logging call (same as %(message)s)
+%(hostname)s    System hostname
+%(username)s    System username
+%(programname)s System programname
+
+%(asctime)s     Time as human-readable string, when logging call was issued
+%(created)f     Time as float when logging call was issued
+%(filename)s    File name
+%(funcName)s    Name of function containing the logging call
+%(levelname)s   Text logging level
+%(levelno)s     Integer logging level
+%(lineno)d      Line number where the logging call was issued
+%(message)s     Message passed to logging call (same as %(msg)s)
+%(module)s      File name without extension where the logging call was issued
+%(msecs)d       Millisecond part of the time when logging call was issued
+%(name)s        Logger name
+%(pathname)s    Full pathname to file containing the logging call
+%(process)d     Process ID
+%(processName)s Process name
+%(relativeCreated)d - Time as integer in milliseconds when logging call was issued, relative to the time when logging module was loaded
+%(thread)d      Thread ID
+%(threadName)s  Thread name
+
+%(asctime)s     Human-readable time when the LogRecord was created. By default this is of the form ‘2003-07-08 16:49:45,896’ (the numbers after the comma are millisecond portion of the time).
+%(created)f     Time when the LogRecord was created (as returned by time.time()).
+%(filename)s    Filename portion of pathname.
+%(funcName)s    Name of function containing the logging call.
+%(levelname)s   Text logging level for the message ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL').
+%(levelno)s     Numeric logging level for the message (DEBUG, INFO, WARNING, ERROR, CRITICAL).
+%(lineno)d      Source line number where the logging call was issued (if available).
+%(message)s     The logged message, computed as msg % args. This is set when Formatter.format() is invoked.
+%(module)s      Module (name portion of filename).
+%(msecs)d       Millisecond portion of the time when the LogRecord was created.
+%(name)s        Name of the logger used to log the call.
+%(pathname)s    Full pathname of the source file where the logging call was issued (if available).
+%(process)d     Process ID (if available).
+%(processName)s Process name (if available).
+%(relativeCreated)d    Time in milliseconds when the LogRecord was created, relative to the time the logging module was loaded.
+%(thread)d      Thread ID (if available).
+%(threadName)s  Thread name (if available).
+
+Emoji
+You can use colors for text as others mentioned in their answers to have colorful text with a background or foreground color.
+But you can use emojis instead! for example, you can use ⚠️ for warning messages and 🛑 for error messages.
+Or simply use these notebooks as a color:
+
+print("📕: error message")
+print("📙: warning message")
+print("📗: ok status message")
+print("📘: action message")
+print("📓: canceled status message")
+print("📔: Or anything you like and want to recognize immediately by color")
+
+🎁 Bonus:
+This method also helps you to quickly scan and find logs directly in the source code.
+
+How to open emoji picker?
+mac os: control + command + space
+windows: win + .
+linux: control + . or control + ;
+
 # Отправляем логи в Telegram
     
-    """
+"""
 #endclass
 
 #-------------------------------------------------
@@ -931,7 +1167,7 @@ def LogFileName(ALog: int, ALogDir: str, ALogFile: str) -> str:
             #endif
             LLogFile = ALogFile
             if ALogFile == '':
-                s = LUDateTime.DateTimeStr (False, LToday, LUDateTime.cFormatDateYYMMDD_01)
+                s = LUDateTime.DateTimeStr (False, LToday, LUDateTime.cFormatDateYYMMDD_01, True)
                 LLogFile = s+'.log'
             #endif
             LLogFileName = os.sep.join([LLogDir,LLogFile])
@@ -966,7 +1202,7 @@ def LogAdd (ALog: int, ALogFile: str, AOpt: str, AMessage: str,
         case 'I':
             s = AMessage
         case _:
-            s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01)+' '+AOpt+' '+AMessage
+            s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+AOpt+' '+AMessage
     #endmatch
 
     # Откроет для добавления нового содержимого.
@@ -1003,8 +1239,6 @@ def LogAddFile (ALog: int, ALogFile: str, AOpt: str, AFileName: str,
         # Открыть для чтения
         # LFile = open (AFileName, 'r', encoding='utf-8')
         # LFile = open (AFileName, 'r', encoding='cp1251')
-        # LFile.encoding =
-
         LEncoding = LUFile.GetFileEncoding (AFileName)
         LFile = open (AFileName, 'r', encoding = LEncoding)
         try:
@@ -1023,111 +1257,144 @@ def LogAddFile (ALog: int, ALogFile: str, AOpt: str, AFileName: str,
 #-------------------------------------------------
 # GLOBAL
 #-------------------------------------------------
-def CreateTFileMemoLog (*args, **kwargs) -> TFileMemoLog:
+def CreateTFileMemoLog () -> TFileMemoLog:
     """CreateTFileMemoLog"""
 #beginfunction
     return TFileMemoLog ()
 #endfunction
 
-def CreateTLogger (AFileNameINI: str) -> TLogger:
+def CreateTLogger (ALogerName: str) -> TLogger:
     """CreateTLogging"""
 #beginfunction
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     logging.setLoggerClass (TLogger)
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    # читаем конфигурацию из FileNameINI
-    # logging.config.fileConfig (AFileNameINI)
-
-    # читаем конфигурацию из FileNameINI
-    # logging.basicConfig(filename = AFileNameINI)
-
-    # читаем конфигурацию из словаря
-    # logging.config.dictConfig (LOGGING_CONFIG)
-
     # создаем регистратор
-    LResult = TLogger('root')
+    LResult = TLogger(ALogerName)
     return LResult
 #endfunction
 
-def list_dict(dicts):
-    for k,v in dicts.items():
-        try:
-            print("key:\t" + k)
-            list_dict(v)
-        except AttributeError:
-            print("value:\t" + str(v))
+#-------------------------------------------------
+# LOGGING_CONFIG
+#-------------------------------------------------
+LOGGING_CONFIG = \
+{
+    'version': 1,
+    'disable_existing_loggers': 0,
+    'loggers': {
+        'root': {
+            'handlers': ['CONSOLE', 'FILE_01'],
+            'level': 'DEBUG',
+            'propagate': 1
+        },
+
+        'log02': {
+            'handlers': ['FILE_02'],
+            'level': 'DEBUG',
+            'qualname': 'log02',
+            'propagate': 0
+        }
+    },
+    'handlers': {
+        'CONSOLE': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'FORMAT_01',
+            'stream': 'ext://sys.stdout'
+        },
+        'FILE_01': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'formatter': 'FORMAT_01',
+            'maxBytes': 10000000,
+            'backupCount': 5,
+            'filename': 'LOG\LOGGING_CONFIG.log'
+        },
+        'FILE_02': {
+            # 'class': 'logging.handlers.TimedRotatingFileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'formatter': 'FORMAT_json',
+            # 'interval': 'M',
+            'maxBytes': 10000000,
+            'backupCount': 5,
+            'filename': 'LOG\LOGGING_CONFIG_json.log'
+        }
+    },
+    'formatters': {
+        'FORMAT_01': {
+            'format': '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s',
+            'datefmt': '%d/%m/%Y %H:%M:%S'
+        },
+        'FORMAT_json': {
+            'class': 'pythonjsonlogger.jsonlogger.JsonFormatter',
+            'format': '%(asctime)s %(name)s %(levelname)s %(message)s',
+            'datefmt': '%d/%m/%Y %H:%M:%S'
+        }
+    },
+}
 
 def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger:
     """CreateLoggerCONFIG"""
 #beginfunction
-    # if LUFile.FileExists(AFileNameCONFIG):
-    #     # читаем конфигурацию из файла
-    #     try:
-    #         CONFIG = {}
-    #         with open (AFileNameCONFIG, 'r') as FileCONFIG:
-    #             json_sample = {}
-    #             s = FileCONFIG.read ()
-    #             # итерация по строкам
-    #             for s in FileCONFIG:
-    #                 s = s.strip ()
-    #                 if len(s) > 0:
-    #                     ...
-    #         with open (AFileNameCONFIG, 'rb') as FileCONFIG:
-    #             s = FileCONFIG.read ()
-    #
-    #     except FileNotFoundError:
-    #         print ('Невозможно открыть файл')
-    # else:
-    #     # читаем конфигурацию из словаря
-    #     logging.config.dictConfig (LOGGING_CONFIG)
-    # #endif
-
-    # читаем конфигурацию из словаря
-    logging.config.dictConfig (LOGGING_CONFIG)
-    # создаем регистратор
-    LResult = logging.getLogger (ALogerName)
-    for item in LResult.handlers:
-        if type(item) is logging.StreamHandler:
-            print (item.formatter._fmt)
-            LFormaterConsole = TFormatter (item.formatter._fmt)
-            item.setFormatter (LFormaterConsole)
-        #endif
-    #enfor
-    return LResult
+    AddLevelName ()
+    LUDict.SaveDictSTR (LOGGING_CONFIG, AFileNameCONFIG)
+    CONFIG = {}
+    if LUFile.FileExists(AFileNameCONFIG):
+        # читаем конфигурацию из файла
+        try:
+            with open (AFileNameCONFIG, 'r') as FileCONFIG:
+                CONFIG = json.load(FileCONFIG)
+            #endwith
+        except FileNotFoundError:
+            print ('Невозможно открыть файл')
+        #endtry
+    else:
+        CONFIG = copy.deepcopy (LOGGING_CONFIG)
+    #endif
+    if len(CONFIG) > 0:
+        # читаем конфигурацию из словаря
+        logging.config.dictConfig (CONFIG)
+        # создаем регистратор
+        LResult = logging.getLogger (ALogerName)
+        for item in LResult.handlers:
+            if type (item.formatter) is pythonjsonlogger.jsonlogger.JsonFormatter:
+                item.formatter.json_ensure_ascii = False
+                # LFormater = pythonjsonlogger.jsonlogger.JsonFormatter ()
+                # LFormater.json_ensure_ascii = False
+                # item.setFormatter (LFormater)
+            #endif
+            if type(item) is logging.StreamHandler:
+                print (item.formatter._fmt)
+                LFormaterConsole = TFormatter (item.formatter._fmt)
+                item.setFormatter (LFormaterConsole)
+            #endif
+        #enfor
+        return LResult
+    else:
+        return None
 #endfunction
 
 def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     """CreateLoggerFILEINI"""
 #beginfunction
+    AddLevelName ()
     # читаем конфигурацию из файла
-    logging.config.fileConfig(AFileNameINI,disable_existing_loggers = False)
-    # logging.config.fileConfig (AFileNameINI)
+    logging.config.fileConfig(AFileNameINI,disable_existing_loggers=False,
+                              encoding = LUFile.cDefaultEncoding)
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
-
     for item in LResult.handlers:
+        if type (item.formatter) is pythonjsonlogger.jsonlogger.JsonFormatter:
+            item.formatter.json_ensure_ascii = False
+            # LFormater = pythonjsonlogger.jsonlogger.JsonFormatter ()
+            # LFormater.json_ensure_ascii = False
+            # item.setFormatter (LFormater)
+        #endif
         if type (item) is logging.StreamHandler:
-
-            # print(item.formatter.datefmt)
-            # item.formatter.datefmt = '%H:%M:%S'
-
-            # print(item.formatter.default_msec_format)
-            # print(item.formatter.default_time_format)
-
-            # print (item.formatter._fmt)
-            # LFormater = logging.Formatter(fmt = '%(message)s')
-            # item.setFormatter(LFormater)
-            # print (item.formatter._fmt)
-
             print (item.formatter._fmt)
-            LFormaterConsole = TFormatter (item.formatter._fmt)
+            LFormaterConsole = TFormatter (item.formatter._fmt, AUseColor = True)
             item.setFormatter (LFormaterConsole)
-
-            # LJsonFormatter = jsonlogger.JsonFormatter ()
-            # logHandler.setFormatter (LJsonFormatter)
-            # logger.addHandler (logHandler)
-
         #endif
     #enfor
     return LResult
@@ -1136,8 +1403,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
 def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Logger:
     """CreateTLoggingCONFIG"""
 #beginfunction
-    Cdatefmt = '%d/%m/%Y %H:%M:%S'
-    Cformat = '%(asctime)s %(msecs)d %(levelno)s %(module)s:%(message)s'
+    AddLevelName ()
     # читаем конфигурацию из
     if len(AFileNameLOG) > 0:
         logging.basicConfig (level = ALevel, filename = AFileNameLOG, style='%',
@@ -1158,7 +1424,7 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
 #endfunction
 
 GFileMemoLog = CreateTFileMemoLog ()
-GLogger = CreateTLogger ('logging.ini')
+GLogger = CreateTLogger ('root')
 
 #------------------------------------------
 def main ():

@@ -260,6 +260,7 @@ class TINIFile (configparser.ConfigParser):
             #endif
             self.set(ASectionName, AOptionName, AValue)
             self.ChangedFileINI = True
+            self.UpdateFileINI ()
         except:
             self.ChangedFileINI = False
     #endfunction
@@ -269,6 +270,7 @@ class TINIFile (configparser.ConfigParser):
     #beginfunction
         if self.IsSection (ASectionName):
             self.remove_section(ASectionName)
+            self.UpdateFileINI ()
         #endif
         self.ChangedFileINI = True
     #endfunction
@@ -278,11 +280,20 @@ class TINIFile (configparser.ConfigParser):
     #beginfunction
         if self.IsOption (ASectionName, AOptionName):
             self.remove_option(ASectionName, AOptionName)
+            self.UpdateFileINI ()
         #endif
         self.ChangedFileINI = True
     #endfunction
 
 #endclass
+
+def CreateTINIFile () -> TINIFile:
+    """CreateTINIFile"""
+#beginfunction
+    return TINIFile ()
+#endfunction
+
+GINIFile = CreateTINIFile ()
 
 #------------------------------------------
 def main ():

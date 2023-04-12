@@ -30,7 +30,6 @@ import re
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LUStrUtils
 
 #------------------------------------------
 # Разбор аргументов
@@ -48,6 +47,8 @@ class TArgParser (argparse.ArgumentParser):
         """ Constructor """
     #beginfunction
         super ().__init__ (**kwargs)
+        self.__FArgs = None
+        self.__FArgsDICT = {}
         ...
     #endfunction
 
@@ -70,6 +71,36 @@ class TArgParser (argparse.ArgumentParser):
     def ArgParser(self):
     #beginfunction
         return self
+    #endfunction
+
+    #--------------------------------------------------
+    # @property ArgsDICT
+    #--------------------------------------------------
+    @property
+    # getter
+    def ArgsDICT (self):
+    #beginfunction
+        return self.__FArgsDICT
+    #endfunction
+    @ArgsDICT.setter
+    def ArgsDICT (self, Value: int):
+    #beginfunction
+        self.__FArgsDICT = Value
+    #endfunction
+
+    #--------------------------------------------------
+    # @property Args
+    #--------------------------------------------------
+    @property
+    # getter
+    def Args (self):
+    #beginfunction
+        return self.__FArgs
+    #endfunction
+    @Args.setter
+    def Args (self, Value: int):
+    #beginfunction
+        self.__FArgs = Value
     #endfunction
 
     def Clear (self):
@@ -213,6 +244,14 @@ def GetParam (AParamName: str, ADefaultValue: str) -> str:
     #endif
     return LResult
 #endfunction
+
+def CreateTArgParser () -> TArgParser:
+    """CreateTArgParser"""
+#beginfunction
+    return TArgParser (description='Параметры', prefix_chars='-/')
+#endfunction
+
+GArgParser = CreateTArgParser ()
 
 #------------------------------------------
 def main ():
