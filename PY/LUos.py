@@ -22,6 +22,7 @@ import enum
 import platform
 import ctypes
 import datetime
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -33,6 +34,8 @@ import psutil
 #------------------------------------------
 import LUParserREG
 import LUDateTime
+
+LULogger = logging.getLogger(__name__)
 
 cHOME = 'HOME'
 cWINDIR = 'windir'

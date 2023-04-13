@@ -18,6 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import sys
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -46,6 +47,8 @@ import json
         'from': 'Alabama'
     })
 """
+
+LULogger = logging.getLogger(__name__)
 
 def PrintDict (ADict):
     """PrintDict"""

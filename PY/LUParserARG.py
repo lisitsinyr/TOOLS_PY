@@ -19,6 +19,7 @@ __annotations__ = """
 #------------------------------------------
 import sys
 import argparse
+import logging
 
 # re - Regular expression operations
 import re
@@ -30,6 +31,8 @@ import re
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+
+LULogger = logging.getLogger(__name__)
 
 #------------------------------------------
 # Разбор аргументов

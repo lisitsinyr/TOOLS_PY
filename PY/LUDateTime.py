@@ -20,6 +20,7 @@ __annotations__ = """
 import datetime
 import time
 from calendar import *
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -29,6 +30,8 @@ from calendar import *
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LUStrUtils
+
+LULogger = logging.getLogger(__name__)
 
 #------------------------------------------
 # CONST

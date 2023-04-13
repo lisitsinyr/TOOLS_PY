@@ -20,6 +20,7 @@ __annotations__ = """
 import datetime
 from calendar import monthrange
 import threading
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -30,6 +31,8 @@ import threading
 #------------------------------------------
 import LUStrUtils
 import LUDateTime
+
+LULogger = logging.getLogger(__name__)
 
 minNN = 0
 maxNN = 59
