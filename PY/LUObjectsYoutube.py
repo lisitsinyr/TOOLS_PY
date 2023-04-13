@@ -19,6 +19,7 @@ __annotations__ ="""
 #------------------------------------------
 import os
 import datetime
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -37,7 +38,11 @@ import LUFile
 import LUStrUtils
 import LUThread
 
-cYOUTUBE = 'WWW.YOUTUBE.COM'
+LULogger = logging.getLogger(__name__)
+
+cYOUTUBE_COM = 'WWW.YOUTUBE.COM'
+cYOUTUBE_BE = 'YOUTU.BE'
+CYOUTU = 'YOUTU'
 cYOUTUBE_PLAYLISTS = 'PLAYLISTS'
 cYOUTUBE_PLAYLIST = 'PLAYLIST'
 cMaxRes1080p = ('1080p','720p','480p','360p','240p','144p')
@@ -397,7 +402,12 @@ class TYouTubeObject (TObjects):
         #endif
 
         for res in AMaxRes:
-            LStreams = self.URLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
+            LStreams = ()
+            try:
+                LStreams = self.URLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
+            except BaseException as ERROR:
+                print ('filter=', ERROR)
+            #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
                     try:

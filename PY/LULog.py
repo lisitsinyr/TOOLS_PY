@@ -67,6 +67,8 @@ END = 70
 PROCESS = 80
 TEXT = 90
 
+LULogger = logging.getLogger(__name__)
+
 def AddLevelName():
 #beginfunction
     logging.addLevelName(BEGIN, 'BEGIN')
@@ -663,28 +665,23 @@ class TFormatter(logging.Formatter):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__(self, AOldFmt, AUseColor = True, **kwargs):
+    def __init__ (self, AUseColor = True, **kwargs):
         """Constructor"""
     #beginfunction
         #class logging.Formatter(fmt=None, datefmt=None, style='%', validate=True, *, defaults=None)
         logging.Formatter.__init__(self, **kwargs)
-        if len(AOldFmt) > 0:
-            self.__FFORMAT = AOldFmt
-        else:
-            self.__FFORMAT = kwargs['fmt']
-        #endif
         self.__FUseColor = AUseColor
     #endfunction
 
-    def _SetColor(self, AFmt: str, ALevelNo) -> str:
+    def _SetColor(self, Afmt: str, ALevelNo: int) -> str:
         """_SetColor"""
     #beginfunction
         if self.__FUseColor:
             LCOLOR = self.__COLORS.get (ALevelNo)
-            LFmt = LUConsole.sBEGIN_oct + LCOLOR + AFmt + LUConsole.sRESET
+            LFmt = LUConsole.sBEGIN_oct + LCOLOR + Afmt + LUConsole.sRESET
             return LFmt
         else:
-            return AFmt
+            return Afmt
         #endif
     #endfunction
 
@@ -698,15 +695,17 @@ class TFormatter(logging.Formatter):
 
         if record.levelno == TEXT:
             # установить новый fmt
-            LFmt = self._SetColor ('%(message)s', record.levelno)
+            Lfmt = self._SetColor ('%(message)s', record.levelno)
+            Ldatefmt = self.datefmt
             # установить новый fmt
-            Lformatter = logging.Formatter(LFmt)
+            Lformatter = logging.Formatter(Lfmt)
             return Lformatter.format (record)
         #endif
         if self.__FUseColor:
-            LFmt = self._SetColor (self.__FFORMAT, record.levelno)
+            Lfmt = self._SetColor (self._fmt, record.levelno)
+            Ldatefmt = self.datefmt
             # установить новый fmt
-            Lformatter = logging.Formatter(LFmt)
+            Lformatter = logging.Formatter(Lfmt, Ldatefmt)
             return Lformatter.format (record)
 
         else:
@@ -1343,11 +1342,12 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger
     if LUFile.FileExists(AFileNameCONFIG):
         # читаем конфигурацию из файла
         try:
-            with open (AFileNameCONFIG, 'r') as FileCONFIG:
+            with open (AFileNameCONFIG+'_', 'r') as FileCONFIG:
                 CONFIG = json.load(FileCONFIG)
             #endwith
-        except FileNotFoundError:
-            print ('Невозможно открыть файл')
+        except FileNotFoundError as ERROR:
+            print ('Невозможно открыть файл', ERROR)
+            LULogger.error('Невозможно открыть файл')
         #endtry
     else:
         CONFIG = copy.deepcopy (LOGGING_CONFIG)
@@ -1360,13 +1360,11 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger
         for item in LResult.handlers:
             if type (item.formatter) is pythonjsonlogger.jsonlogger.JsonFormatter:
                 item.formatter.json_ensure_ascii = False
-                # LFormater = pythonjsonlogger.jsonlogger.JsonFormatter ()
-                # LFormater.json_ensure_ascii = False
-                # item.setFormatter (LFormater)
             #endif
             if type(item) is logging.StreamHandler:
-                print (item.formatter._fmt)
-                LFormaterConsole = TFormatter (item.formatter._fmt)
+                Lfmt = item.formatter._fmt
+                Ldatefmt = item.formatter.datefmt
+                LFormaterConsole = TFormatter (AUseColor = True, fmt = Lfmt, datefmt = Ldatefmt)
                 item.setFormatter (LFormaterConsole)
             #endif
         #enfor
@@ -1380,20 +1378,18 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
 #beginfunction
     AddLevelName ()
     # читаем конфигурацию из файла
-    logging.config.fileConfig(AFileNameINI,disable_existing_loggers=False,
+    logging.config.fileConfig(AFileNameINI, disable_existing_loggers=False,
                               encoding = LUFile.cDefaultEncoding)
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
     for item in LResult.handlers:
         if type (item.formatter) is pythonjsonlogger.jsonlogger.JsonFormatter:
             item.formatter.json_ensure_ascii = False
-            # LFormater = pythonjsonlogger.jsonlogger.JsonFormatter ()
-            # LFormater.json_ensure_ascii = False
-            # item.setFormatter (LFormater)
         #endif
         if type (item) is logging.StreamHandler:
-            print (item.formatter._fmt)
-            LFormaterConsole = TFormatter (item.formatter._fmt, AUseColor = True)
+            Lfmt = item.formatter._fmt
+            Ldatefmt = item.formatter.datefmt
+            LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
             item.setFormatter (LFormaterConsole)
         #endif
     #enfor
@@ -1415,16 +1411,14 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
     LResult = logging.getLogger (ALogerName)
     for item in LResult.handlers:
         if type(item) is logging.StreamHandler:
-            print (item.formatter._fmt)
-            LFormaterConsole = TFormatter (item.formatter._fmt)
+            Lfmt = item.formatter._fmt
+            Ldatefmt = item.formatter.datefmt
+            LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
             item.setFormatter (LFormaterConsole)
         #endif
     #enfor
     return LResult
 #endfunction
-
-GFileMemoLog = CreateTFileMemoLog ()
-GLogger = CreateTLogger ('root')
 
 #------------------------------------------
 def main ():
@@ -1438,6 +1432,13 @@ def main ():
 #beginmodule
 if __name__ == "__main__":
     main()
+else:
+    GFileMemoLog = CreateTFileMemoLog ()
+    GLogger = CreateTLogger ('root')
+    CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
+
+    # GLoggerGONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
+    # GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\'+CDefaultFileLogFILEBASIC, 'root')
 #endif
 
 #endmodule

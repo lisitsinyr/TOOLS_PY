@@ -18,6 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import configparser
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -29,6 +30,8 @@ import configparser
 import LUFile
 import LUos
 import LUStrDecode
+
+LULogger = logging.getLogger(__name__)
 
 class TINIFile (configparser.ConfigParser):
     """TINIFile"""

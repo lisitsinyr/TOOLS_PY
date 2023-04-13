@@ -26,6 +26,8 @@ __annotations__ ="""
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
+LULogger = logging.getLogger(__name__)
+
 """
 -------------------------
 3.1.1 YouTube Object

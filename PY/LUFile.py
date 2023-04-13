@@ -21,6 +21,7 @@ import datetime
 import os
 import win32api
 import pathlib
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -34,6 +35,8 @@ import chardet
 import LUErrors
 import LUStrDecode
 import LUDateTime
+
+LULogger = logging.getLogger(__name__)
 
 """
 f = open(file_name, access_mode, encoding='')

@@ -24,6 +24,8 @@ import win32api
 #------------------------------------------
 import datetime
 
+LULogger = logging.getLogger(__name__)
+
 class TVersionInfo:
     """TVersionInfo"""
     luClassName = "TVersionInfo"
