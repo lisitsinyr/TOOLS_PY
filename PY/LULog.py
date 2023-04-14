@@ -1420,6 +1420,9 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
     return LResult
 #endfunction
 
+GFileMemoLog = CreateTFileMemoLog ()
+GLogger = CreateTLogger ('root')
+
 #------------------------------------------
 def main ():
 #beginfunction
@@ -1433,12 +1436,11 @@ def main ():
 if __name__ == "__main__":
     main()
 else:
-    GFileMemoLog = CreateTFileMemoLog ()
-    GLogger = CreateTLogger ('root')
     CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
 
     # GLoggerGONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
     # GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\'+CDefaultFileLogFILEBASIC, 'root')
+    ...
 #endif
 
 #endmodule
