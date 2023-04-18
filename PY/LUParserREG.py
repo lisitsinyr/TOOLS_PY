@@ -29,7 +29,7 @@ import logging
 # БИБЛИОТЕКА LU
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 #----------------------------------------------------------
 # HKEY_* Constants

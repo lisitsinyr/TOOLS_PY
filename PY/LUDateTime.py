@@ -31,7 +31,7 @@ import logging
 #------------------------------------------
 import LUStrUtils
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 #------------------------------------------
 # CONST

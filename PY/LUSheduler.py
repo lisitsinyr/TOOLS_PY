@@ -32,7 +32,7 @@ import logging
 import LUStrUtils
 import LUDateTime
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 minNN = 0
 maxNN = 59

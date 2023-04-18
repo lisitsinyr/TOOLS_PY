@@ -32,23 +32,23 @@ import logging
 #
 #---------------------------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 CRLFd = chr(13)+chr(10)
 CRLFx = '\x0d'+'\x0a'
 CRLF = '\r'+'\n'
 """
-\n	Newline
-\r	Carriage Return
-\r\n	Carriage Return + Line Feed
-\v or \x0b	Line Tabulation
-\f or \x0c	Form Feed
-\x1c	File Separator
-\x1d	Group Separator
-\x1e	Record Separator
-\x85	Next Line (C1 Control Code)
-\u2028	Unicode Line Separator
-\u2029	Unicode Paragraph Separator
+\n  Newline
+\r  Carriage Return
+\r\n    Carriage Return + Line Feed
+\v or \x0b  Line Tabulation
+\f or \x0c  Form Feed
+\x1c    File Separator
+\x1d    Group Separator
+\x1e    Record Separator
+\x85    Next Line (C1 Control Code)
+\u2028  Unicode Line Separator
+\u2029  Unicode Paragraph Separator
 """
 
 #---------------------------------------------------------------
@@ -77,10 +77,10 @@ String Operators
     * Operator
     in Operator
 Built-in String Functions    
-    chr()	Converts an integer to a character
-    ord()	Converts a character to an integer
-    len()	Returns the length of a string
-    str()	Returns a string representation of an object
+    chr()   Converts an integer to a character
+    ord()   Converts a character to an integer
+    len()   Returns the length of a string
+    str()   Returns a string representation of an object
 String Indexing
      0  1  2  3  4  5
     -6 -5 -4 -3 -2 -1

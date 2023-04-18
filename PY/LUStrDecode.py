@@ -27,7 +27,7 @@ import logging
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 cCP1251 = 'cp1251'
 cUTF_8 = 'UTF-8'

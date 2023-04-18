@@ -33,6 +33,7 @@ from pytube import exceptions
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LUConst
 import LUObjects
 import LUObjectsYouTube
 import LULog
@@ -40,7 +41,7 @@ import LUFile
 import LUos
 import LUDateTime
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 class TYouTube(object):
     """TYouTube"""
@@ -79,7 +80,6 @@ class TYouTube(object):
         #endif
         LLogDir = LUFile.GetDirNameYYMM (LLogDir, LUDateTime.Now())
         self.__FFileMemoLog.FileName = LUFile.IncludeTrailingBackslash (LLogDir)+'_'+LULog.GetLogFileName ()
-        ...
     #endfunction
 
     #--------------------------------------------------
@@ -111,6 +111,7 @@ class TYouTube(object):
         """
         # ЦИКЛ ОТ i=0 ДО AURLPlaylists.count-1
         """
+        ...
     #endfunction
 
     def _CreateYOUTUBEPlaylist (self, AURL: str):
@@ -132,25 +133,32 @@ class TYouTube(object):
 
     def _ONprogress(self, stream, chunk, bytes_remaining):
     #beginfunction
-        print ('_ONprogress')
+        s = '_ONprogress'
+        # print (s)
         # print (stream.filesize)
         # print (len(chunk))
         # print (bytes_remaining)
-        ...
+        LUConst.GLULogger.info (s)
     #endfunction
 
     def _ONcomplete(self, stream, file_path):
     #beginfunction
-        print ('_ONcomplete')
+        s = '_ONcomplete'
+        # print (s)
         # print (stream)
         # print (file_path)
+        LUConst.GLULogger.info (s)
     #endfunction
 
     def _CreateYOUTUBEObject_Coll (self, AURL: str, APlayList: str, ANumber: int, ACount: int):
     #beginfunction
         LURL = AURL
-        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, 'CreateObject...')
-        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, AURL + ' новый.')
+        s = 'CreateObject...'
+        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, s)
+        LUConst.GLULogger.info (s)
+        s = AURL + ' новый.'
+        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, s)
+        LUConst.GLULogger.info (s)
         LObjectID: datetime = LUDateTime.Now()
         LObjectIDStr: str = LUDateTime.GenerateObjectIDStr (LObjectID)
         self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, LObjectIDStr)
@@ -166,8 +174,12 @@ class TYouTube(object):
     def _CreateYOUTUBEObject (self, AURL: str, APlayList: str, ANumber: int, ACount: int) -> LUObjectsYouTube.TYouTubeObject:
     #beginfunction
         LURL = AURL
-        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, 'CreateObject...')
-        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, AURL + ' новый.')
+        s = 'CreateObject...'
+        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, s)
+        LUConst.GLULogger.info (s)
+        s = AURL + ' новый.'
+        self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, s)
+        LUConst.GLULogger.info (s)
         LObjectID: datetime = LUDateTime.Now()
         LObjectIDStr: str = LUDateTime.GenerateObjectIDStr (LObjectID)
         self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, LObjectIDStr)
@@ -187,7 +199,7 @@ class TYouTube(object):
     def CreateURLItems (self, AURL: str):
     #beginfunction
         LURI = urlparse (AURL)
-        if LURI.hostname.upper() == LUObjectsYouTube.CYOUTUBE_BE:
+        if LURI.hostname.upper () == LUObjectsYouTube.CYOUTUBE_COM or LURI.hostname.upper () == LUObjectsYouTube.CYOUTUBE_BE:
             if LUObjectsYouTube.CYOUTUBE_PLAYLISTS in LURI.path.upper():
                 self._CreateYOUTUBEPlaylists (AURL)
             else:
@@ -197,7 +209,7 @@ class TYouTube(object):
                     if self.__FYouTubeObjectsCollection.FindYouTubeObjectsItemURL (AURL) is not None:
                         self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, AURL + ' уже существует.')
                     else:
-                        self._CreateYOUTUBEObject (AURL, '', 0, 0)
+                        self._CreateYOUTUBEObject_Coll (AURL, '', 0, 0)
                     #endif
                 #endif
             #endif
@@ -230,7 +242,7 @@ class TYouTube(object):
     #endfunction
 
     #--------------------------------------------------
-    # DownloadURL (self, AURL: str):
+    # CreateURLs (self, AURL: str) -> list:
     #--------------------------------------------------
     def CreateURLs (self, AURL: str) -> list:
     #beginfunction
@@ -282,11 +294,19 @@ def DownloadURL (AURL:str, APATH:str, AMaxRes: (), type='video', file_extension 
 #beginfunction
     LURLYouTube: YouTube = YouTube (AURL, on_progress_callback=progress_func, on_complete_callback=complete_func)
     for res in AMaxRes:
-        LStreams = LURLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
+
+        try:
+            LStreams = LURLYouTube.streams.filter (type = type, file_extension = file_extension, res = res)
+        except BaseException as ERROR:
+            s = f'filter={ERROR}'
+            # print (s)
+            LUConst.GLULogger.error (s)
+        #endtry
+
         if len (LStreams) > 0:
             i = 0
             for LStream in LStreams:
-                # print (LStream)
+                print (LStream)
                 i = i + 1
                 Lfilename_prefix = filename_prefix+str (i) + '. '
                 try:

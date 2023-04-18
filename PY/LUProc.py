@@ -28,7 +28,7 @@ import logging
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 cProcessWork = 'Идет процесс обработки ...'
 cProcessStop = 'Процесс обработки остановлен.'

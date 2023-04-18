@@ -17,6 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
+import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -26,6 +27,13 @@ __annotations__ = """
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LUStrUtils
+import LULog
+
+# GLULogger = logging.getLogger(__name__)
+# GLULogger = LULog.CreateLoggerCONFIG (LULog.CDefaultFileLogCONFIG, __name__)
+# GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, __name__)
+GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, 'root')
+# GLULogger = LULog.CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + LULog.CDefaultFileLogFILEBASIC, __name__)
 
 #-------------------------------------------------------------------------------
 #

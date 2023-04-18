@@ -33,12 +33,11 @@ from urllib.parse import urlparse
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LUConst
 from LUObjects import TObjectTypeClass, TObjects
 import LUFile
 import LUStrUtils
 import LUThread
-
-LULogger = logging.getLogger(__name__)
 
 CYOUTUBE_COM = 'WWW.YOUTUBE.COM'
 CYOUTUBE_BE = 'YOUTU.BE'
@@ -108,11 +107,12 @@ class TYouTubeObject (TObjects):
     def ONprogress(self, stream, chunk: bytes, bytes_remaining: int):
 
     #beginfunction
-        print ('ONprogress...')
+        s = 'ONprogress...'
+        print (s)
         # print (stream.filesize)
         # print (len (chunk))
         # print (bytes_remaining)
-        ...
+        LUConst.GLULogger.info (s)
     #endfunction
 
     #--------------------------------------------------
@@ -124,9 +124,11 @@ class TYouTubeObject (TObjects):
     #     print ('[green] Downloaded ', file_path.split ('/') [-1], '\n')
     def ONcomplete(self, stream, file_path):
     #beginfunction
-        print ('ONcomplete...')
+        s = 'ONcomplete...'
+        # print (s)
         # print (stream)
         # print (file_path)
+        LUConst.GLULogger.info (s)
     #endfunction
 
     #--------------------------------------------------
@@ -146,6 +148,7 @@ class TYouTubeObject (TObjects):
         self.Number = ANumber
         self.Count = ACount
     #endfunction
+
     # getter
     @property
     def URL(self) -> str:
@@ -406,7 +409,9 @@ class TYouTubeObject (TObjects):
             try:
                 LStreams = self.URLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
             except BaseException as ERROR:
-                print ('filter=', ERROR)
+                s = f'filter={ERROR}'
+                # print (s)
+                LUConst.GLULogger.error(s)
             #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
@@ -414,7 +419,9 @@ class TYouTubeObject (TObjects):
                         # print (LStream.default_filename)
                         LFileName = LStream.download (LPATH, skip_existing=skip_existing, filename_prefix=Lfilename_prefix)
                     except BaseException as ERROR:
-                        print ('DownloadURL=', ERROR)
+                        s = f'DownloadURL={ERROR}'
+                        # print (s)
+                        LUConst.GLULogger.error (s)
                     #endtry
                     break
                 #endfor

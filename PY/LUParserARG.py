@@ -32,7 +32,7 @@ import re
 # БИБЛИОТЕКА LU
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 #------------------------------------------
 # Разбор аргументов
@@ -50,7 +50,8 @@ class TArgParser (argparse.ArgumentParser):
         """ Constructor """
     #beginfunction
         super ().__init__ (**kwargs)
-        self.__FArgs = None
+        self.__FArgs: argparse.Namespace = None
+        self.__FArgsUnknown: argparse.Namespace = None
         self.__FArgsDICT = {}
         ...
     #endfunction
@@ -86,7 +87,7 @@ class TArgParser (argparse.ArgumentParser):
         return self.__FArgsDICT
     #endfunction
     @ArgsDICT.setter
-    def ArgsDICT (self, Value: int):
+    def ArgsDICT (self, Value):
     #beginfunction
         self.__FArgsDICT = Value
     #endfunction
@@ -96,19 +97,77 @@ class TArgParser (argparse.ArgumentParser):
     #--------------------------------------------------
     @property
     # getter
-    def Args (self):
+    def Args (self) -> argparse.Namespace:
     #beginfunction
         return self.__FArgs
     #endfunction
     @Args.setter
-    def Args (self, Value: int):
+    def Args (self, Value: argparse.Namespace):
     #beginfunction
         self.__FArgs = Value
+    #endfunction
+
+    #--------------------------------------------------
+    # @property ArgsUnknown
+    #--------------------------------------------------
+    @property
+    # getter
+    def ArgsUnknown (self) -> argparse.Namespace:
+    #beginfunction
+        return self.__FArgsUnknown
+    #endfunction
+    @ArgsUnknown.setter
+    def ArgsUnknown (self, Value: argparse.Namespace):
+    #beginfunction
+        self.__FArgsUnknown = Value
     #endfunction
 
     def Clear (self):
     #beginfunction
         ...
+    #endfunction
+
+    def ReadARGS (self, AARGS: dict):
+        def GetARG (AARGName, AARGValue):
+        #beginfunction
+            LResult = AARGS.get (AARGName).get (AARGValue)
+            # try:
+            #     LResult = AARGS [AARGName] [AARGValue]
+            # except:
+            #     LResult = None
+            # #endtry
+            return LResult
+        #endfunction
+
+    #beginfunction
+        for name, value in AARGS.items ():
+            # print (f"{name}={value}")
+            LArg = self.add_argument (GetARG (name, 'name'),
+                                      dest = GetARG (name, 'dest'),
+                                      type = GetARG (name, 'type'),
+                                      default = GetARG (name, 'default'),
+                                      help = GetARG (name, 'help'),
+                                      action = GetARG (name, 'action'),
+                                      choices = GetARG (name, 'choices')
+                                      )
+            print (LArg)
+        #endfor
+
+        # GArgParser.Args = GArgParser.ArgParser.parse_args (['-ld', '1'], namespace = C)
+
+        # self.Args = self.ArgParser.parse_args ()
+        self.Args, self.ArgsUnknown = self.parse_known_args ()
+        print (self.Args)
+
+        self.ArgsDICT = vars (self.Args)
+        print (self.ArgsDICT)
+
+
+        # for item in self.Args:
+        #     ...
+        # GArgParser.ArgsDICT = {'-ld': GArgParser.Args.ld, '-lf': GArgParser.Args.lf,
+        #                    '-lfj': GArgParser.Args.lfj, '-ini': GArgParser.Args.ini}
+
     #endfunction
 #endclass
 
@@ -161,6 +220,23 @@ ArgumentParser.add_argument(name or flags...[, action][, nargs]
     help - Краткое описание того, что делает аргумент.
     metavar - имя аргумента в сообщениях об использовании.
     dest - имя атрибута, который будет добавлен к объекту, возвращаемому функцией parse_args().
+    
+    LArg = GArgParser.add_argument (
+        '-ld', dest='ld',
+        type=str, default='',
+        help = 'log dir',
+        
+        action='store', required=True,
+        # action='store_const', const=True
+        # action='store_true',
+        # action='store_false',
+
+        nargs = '+',
+        # nargs = '?', const='',
+
+        # choices=[],
+        metavar = 'LDM'
+    )
 """
 
 """
@@ -248,13 +324,17 @@ def GetParam (AParamName: str, ADefaultValue: str) -> str:
     return LResult
 #endfunction
 
-def CreateTArgParser () -> TArgParser:
+def CreateTArgParser (AProg: str, ADescrption: str) -> TArgParser:
     """CreateTArgParser"""
 #beginfunction
-    return TArgParser (description='Параметры', prefix_chars='-/')
+    LResult = TArgParser (prog = AProg, description=ADescrption, prefix_chars='-/',
+                          usage = None, epilog = None, parents = [], formatter_class = argparse.HelpFormatter,
+                          fromfile_prefix_chars = None, argument_default = None,
+                          conflict_handler = 'error', add_help = True, allow_abbrev = True, exit_on_error = True)
+    return LResult
 #endfunction
 
-GArgParser = CreateTArgParser ()
+GArgParser = CreateTArgParser ('LUArgParser', 'Параметры')
 
 #------------------------------------------
 def main ():

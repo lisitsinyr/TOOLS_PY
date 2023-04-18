@@ -26,7 +26,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 """
 function Dec2Hex (N: Longint; A: Byte): string;

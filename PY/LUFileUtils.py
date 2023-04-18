@@ -54,7 +54,7 @@ import chardet
 #------------------------------------------
 import LUDateTime
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 """
 { FileLink }

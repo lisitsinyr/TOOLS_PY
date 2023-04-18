@@ -31,7 +31,7 @@ import LUFile
 import LUos
 import LUStrDecode
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 class TINIFile (configparser.ConfigParser):
     """TINIFile"""

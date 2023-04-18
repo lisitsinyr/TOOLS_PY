@@ -35,7 +35,7 @@ import psutil
 import LUParserREG
 import LUDateTime
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 cHOME = 'HOME'
 cWINDIR = 'windir'

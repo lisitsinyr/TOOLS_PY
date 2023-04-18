@@ -35,6 +35,7 @@ import pythonjsonlogger
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
+import LUConst
 import LUFile
 import LUConsole
 import LUDateTime
@@ -67,7 +68,7 @@ END = 70
 PROCESS = 80
 TEXT = 90
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 def AddLevelName():
 #beginfunction
@@ -1279,7 +1280,7 @@ def CreateTLogger (ALogerName: str) -> TLogger:
 LOGGING_CONFIG = \
 {
     'version': 1,
-    'disable_existing_loggers': 0,
+    'disable_existing_loggers': 1,
     'loggers': {
         'root': {
             'handlers': ['CONSOLE', 'FILE_01'],
@@ -1342,7 +1343,7 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger
     if LUFile.FileExists(AFileNameCONFIG):
         # читаем конфигурацию из файла
         try:
-            with open (AFileNameCONFIG+'_', 'r') as FileCONFIG:
+            with open (AFileNameCONFIG, 'r') as FileCONFIG:
                 CONFIG = json.load(FileCONFIG)
             #endwith
         except FileNotFoundError as ERROR:
@@ -1378,7 +1379,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
 #beginfunction
     AddLevelName ()
     # читаем конфигурацию из файла
-    logging.config.fileConfig(AFileNameINI, disable_existing_loggers=False,
+    logging.config.fileConfig(AFileNameINI, disable_existing_loggers=True,
                               encoding = LUFile.cDefaultEncoding)
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)

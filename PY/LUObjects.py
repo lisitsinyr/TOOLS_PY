@@ -29,7 +29,7 @@ import enum
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 # ===========================================================================
 # type
