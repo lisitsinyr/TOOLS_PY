@@ -36,8 +36,6 @@ import LUErrors
 import LUStrDecode
 import LUDateTime
 
-# LULogger = logging.getLogger(__name__)
-
 """
 f = open(file_name, access_mode, encoding='')
     file_name = имя открываемого файла

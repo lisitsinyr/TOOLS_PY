@@ -23,8 +23,6 @@ import logging
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 
-# LULogger = logging.getLogger(__name__)
-
 class LUFileError_FileERROR(Exception):
     """Ошибки в модуле LUFile при обработке файла"""
     """

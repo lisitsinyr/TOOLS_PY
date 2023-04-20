@@ -26,8 +26,6 @@ __annotations__ = """
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-# LULogger = logging.getLogger(__name__)
-
 """
 function GetLocalIP: string;
 var

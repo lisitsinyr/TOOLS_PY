@@ -27,13 +27,12 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+from LULog import LULogger
 import LULog
 import LUConst
 import LUFile
 import LUos
 import LUStrDecode
-
-# LULogger = logging.getLogger(__name__)
 
 class TINIFile (configparser.ConfigParser):
     """TINIFile"""
@@ -98,7 +97,7 @@ class TINIFile (configparser.ConfigParser):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------

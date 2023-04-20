@@ -27,8 +27,6 @@ import logging
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 
-# LULogger = logging.getLogger(__name__)
-
 """
 function LoadDLL (NameDll: string; var HandleDLL: HModule): Boolean;
 { LoadDLL }

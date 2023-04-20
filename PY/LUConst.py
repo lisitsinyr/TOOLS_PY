@@ -28,7 +28,7 @@ import logging
 #------------------------------------------
 # import LULog
 
-LULogger = logging.getLogger(__name__)
+# LULogger = logging.getLogger(__name__)
 
 # GLULogger = LULog.CreateLoggerCONFIG (LULog.CDefaultFileLogCONFIG, 'root')
 # GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, 'root')

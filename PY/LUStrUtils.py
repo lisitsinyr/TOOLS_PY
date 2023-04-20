@@ -32,8 +32,6 @@ import logging
 #
 #---------------------------------------------------------------
 
-# LULogger = logging.getLogger(__name__)
-
 CRLFd = chr(13)+chr(10)
 CRLFx = '\x0d'+'\x0a'
 CRLF = '\r'+'\n'

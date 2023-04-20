@@ -30,8 +30,6 @@ import datetime
 import LULog
 import LUConst
 
-# LULogger = logging.getLogger(__name__)
-
 class TVersionInfo:
     """TVersionInfo"""
     luClassName = "TVersionInfo"

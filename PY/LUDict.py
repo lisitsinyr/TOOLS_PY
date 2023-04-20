@@ -48,8 +48,6 @@ import json
     })
 """
 
-# LULogger = logging.getLogger(__name__)
-
 def PrintDict (ADict):
     """PrintDict"""
 #beginfunction

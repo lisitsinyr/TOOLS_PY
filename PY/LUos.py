@@ -32,12 +32,11 @@ import psutil
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+from LULog import LULogger
 import LULog
 import LUConst
 import LUParserREG
 import LUDateTime
-
-# LULogger = logging.getLogger(__name__)
 
 cHOME = 'HOME'
 cWINDIR = 'windir'
@@ -108,7 +107,7 @@ class TFolders (object):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------

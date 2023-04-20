@@ -30,8 +30,6 @@ import logging
 
 # sys.getrefcount(IvanFranko)
 
-# LULogger = logging.getLogger(__name__)
-
 #------------------------------------------
 def main ():
 #beginfunction

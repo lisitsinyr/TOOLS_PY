@@ -29,9 +29,8 @@ import logging
 # БИБЛИОТЕКА LU
 #------------------------------------------
 import LULog
+from LULog import LULogger
 import LUConst
-
-# LULogger = logging.getLogger(__name__)
 
 #----------------------------------------------------------
 # HKEY_* Constants
@@ -204,7 +203,8 @@ class TREGParser (object):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------

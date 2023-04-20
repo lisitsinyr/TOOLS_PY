@@ -34,7 +34,7 @@ import pythonjsonlogger
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
-import LUConst
+# import LUConst
 import LUFile
 import LUConsole
 import LUDateTime
@@ -66,9 +66,6 @@ BEGIN = 21
 END = 22
 PROCESS = 23
 TEXT = 24
-
-# LULogger = logging.getLogger(__name__)
-# GLULogger = logging.getLogger(__name__)
 
 # строка формата сообщения
 # Cstrfmt_04 = '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s'
@@ -198,7 +195,7 @@ class TFileMemoLog (object):
         del self.__FLogSave
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LUConst.LULogger.log (DEBUGTEXT, s)
+        LULogger.log (DEBUGTEXT, s)
     #endfunction
 
     def Clear(self):
@@ -1412,6 +1409,7 @@ def PrintHandlers (ALogger: logging.Logger):
 AddLevelName ()
 
 GFileMemoLog = CreateTFileMemoLog ()
+
 GLogger = CreateTLogger ('root')
 
 GLULogger = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
@@ -1421,7 +1419,10 @@ GLULogger = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
 # GLULogger = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
 # GLULogger = CreateLoggerBASIC (logging.DEBUG, '', 'root')
 
-LUConst.LULogger.disabled = False
+LULogger = logging.getLogger(__name__)
+LULogger.disabled = False
+
+# LUConst.LULogger.disabled = False
 
 #------------------------------------------
 def main ():

@@ -27,8 +27,9 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+from LULog import LULogger
 import LULog
-import LUConst
+# import LUConst
 
 # class ScheduleThread (threading.Thread):
 #     @classmethod
@@ -92,7 +93,7 @@ class TThread (threading.Thread):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -111,7 +112,7 @@ class TThread (threading.Thread):
     def run(self):
         """Запуск потока"""
         s = 'Запуск потока...'
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        LULogger.log (LULog.DEBUGTEXT, s)
         super ().run()
 #endclass
 

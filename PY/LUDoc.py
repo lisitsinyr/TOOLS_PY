@@ -31,7 +31,8 @@ import LUConst
 def PrintInfoObject (AObject):
 #beginfunction
     s = f'{AObject}'
-    LUConst.LULogger.log(LULog.DEBUGTEXT, s)
+    # LUConst.LULogger.log(LULog.DEBUGTEXT, s)
+    LULog.LULogger.log(LULog.DEBUGTEXT, s)
 #endfunction
 
 #------------------------------------------
