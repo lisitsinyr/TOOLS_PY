@@ -32,6 +32,8 @@ import psutil
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LULog
+import LUConst
 import LUParserREG
 import LUDateTime
 
@@ -105,7 +107,8 @@ class TFolders (object):
         """ destructor """
     #beginfunction
         LClassName = self.__class__.__name__
-        #print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format(LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -346,7 +349,8 @@ class TOSInfo (object):
         """ destructor """
     #beginfunction
         LClassName = self.__class__.__name__
-        #print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format(LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     # Return the number of CPUs in the system. Returns None if undetermined.

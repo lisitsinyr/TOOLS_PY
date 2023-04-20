@@ -24,6 +24,12 @@ import win32api
 #------------------------------------------
 import datetime
 
+#------------------------------------------
+# БИБЛИОТЕКА LU
+#------------------------------------------
+import LULog
+import LUConst
+
 # LULogger = logging.getLogger(__name__)
 
 class TVersionInfo:
@@ -62,9 +68,11 @@ class TVersionInfo:
     # destructor
     #--------------------------------------------------
     def __del__(self):
+    #beginfunction
         LClassName = self.__class__.__name__
-        #print('{} уничтожен'.format(LClassName))
-        pass
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+    #endfunction
 
     #--------------------------------------------------
     # @property FileName

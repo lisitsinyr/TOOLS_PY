@@ -1,4 +1,4 @@
-"""LUDocumentation.py"""
+"""LUDoc.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
 ------------------------------------------------------
@@ -9,7 +9,7 @@ __annotations__ = """
      LU_PY
      Python (LU)
  Module:
-     LUDocumentation.py
+     LUDoc.py
 
 ------------------------------------------------------
 """
@@ -25,17 +25,13 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-from LUDateTime import *
+import LULog
+import LUConst
 
 def PrintInfoObject (AObject):
 #beginfunction
-    print (f'{DateTimeStr(True,Now(),cFormatDateTimeLog01, True)} {AObject}')
-
-    # print (f'Class={AObject.__class__}')
-    # print (f'Name={AObject.__name__}')
-
-    # print (f'Doc={AObject.__doc__}')
-    # print (f'Annotations=({AObject.__annotations__})')
+    s = f'{AObject}'
+    LUConst.LULogger.log(LULog.DEBUGTEXT, s)
 #endfunction
 
 #------------------------------------------

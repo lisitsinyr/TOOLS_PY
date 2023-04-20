@@ -27,6 +27,8 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+import LULog
+import LUConst
 import LUFile
 import LUos
 import LUStrDecode
@@ -95,7 +97,8 @@ class TINIFile (configparser.ConfigParser):
         """destructor"""
     #beginfunction
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------

@@ -53,12 +53,13 @@ import json
 def PrintDict (ADict):
     """PrintDict"""
 #beginfunction
-    for k,v in ADict.items():
+    # LResult = AARGS.get (AARGName).get (AARGValue)
+    for key, value in ADict.items():
         try:
-            print("key:\t" + k)
-            ADict (v)
+            print("key:\t" + key)
+            ADict (value)
         except AttributeError:
-            print("value:\t" + str(v))
+            print("value:\t" + str(value))
         #endtry
     #endfor
 #endfunction

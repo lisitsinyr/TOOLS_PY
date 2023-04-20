@@ -33,6 +33,7 @@ from urllib.parse import urlparse
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LULog
 import LUConst
 from LUObjects import TObjectTypeClass, TObjects
 import LUFile
@@ -94,8 +95,9 @@ class TYouTubeObject (TObjects):
         """destructor"""
     #beginfunction
         super ().__del__()
-        LclassName = self.__class__.__name__
-        print('{} уничтожен'.format(LclassName))
+        LClassName = self.__class__.__name__
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -108,11 +110,10 @@ class TYouTubeObject (TObjects):
 
     #beginfunction
         s = 'ONprogress...'
-        print (s)
+        LUConst.LULogger.info (s)
         # print (stream.filesize)
         # print (len (chunk))
         # print (bytes_remaining)
-        LUConst.GLULogger.info (s)
     #endfunction
 
     #--------------------------------------------------
@@ -125,10 +126,10 @@ class TYouTubeObject (TObjects):
     def ONcomplete(self, stream, file_path):
     #beginfunction
         s = 'ONcomplete...'
+        LUConst.LULogger.info (s)
         # print (s)
         # print (stream)
         # print (file_path)
-        LUConst.GLULogger.info (s)
     #endfunction
 
     #--------------------------------------------------
@@ -410,8 +411,7 @@ class TYouTubeObject (TObjects):
                 LStreams = self.URLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
             except BaseException as ERROR:
                 s = f'filter={ERROR}'
-                # print (s)
-                LUConst.GLULogger.error(s)
+                LUConst.LULogger.error(s)
             #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
@@ -420,8 +420,7 @@ class TYouTubeObject (TObjects):
                         LFileName = LStream.download (LPATH, skip_existing=skip_existing, filename_prefix=Lfilename_prefix)
                     except BaseException as ERROR:
                         s = f'DownloadURL={ERROR}'
-                        # print (s)
-                        LUConst.GLULogger.error (s)
+                        LUConst.LULogger.error (s)
                     #endtry
                     break
                 #endfor
@@ -515,7 +514,6 @@ class TYouTubeObject (TObjects):
         # FRxProgress.Position := 0
         self.__FYouTubeThread = None
     #endfunction
-
 #endclass
 
 # --------------------------------------------
@@ -542,7 +540,8 @@ class TYouTubeObjectsItem (object):
         # удалить объект
         del self.__FYouTubeObject
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -573,6 +572,7 @@ class TYouTubeObjectsCollection (list):
     #--------------------------------------------------
     def __init__ (self):
         """Constructor"""
+    #beginfunction
         super ().__init__ ()
     #endfunction
 
@@ -580,11 +580,12 @@ class TYouTubeObjectsCollection (list):
     # destructor
     #--------------------------------------------------
     def __del__ (self):
-    #beginfunction
         """destructor"""
+    #beginfunction
         self.clear()            # удалить все items
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     def AddItem (self) -> TYouTubeObjectsItem:

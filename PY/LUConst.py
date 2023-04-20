@@ -26,14 +26,18 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LUStrUtils
-import LULog
+# import LULog
 
-# GLULogger = logging.getLogger(__name__)
-# GLULogger = LULog.CreateLoggerCONFIG (LULog.CDefaultFileLogCONFIG, __name__)
-# GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, __name__)
-GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, 'root')
-# GLULogger = LULog.CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + LULog.CDefaultFileLogFILEBASIC, __name__)
+LULogger = logging.getLogger(__name__)
+
+# GLULogger = LULog.CreateLoggerCONFIG (LULog.CDefaultFileLogCONFIG, 'root')
+# GLULogger = LULog.CreateLoggerFILEINI (LULog.CDefaultFileLogINI, 'root')
+# GLULogger = LULog.CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + LULog.CDefaultFileLogFILEBASIC, 'root')
+
+# CPath = ('D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TESTS_PY\TEST_LU\LOG\
+# LOGGING_FILEINI.log',)
+# args = ('D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TESTS_PY\TEST_LU\LOG\
+# LOGGING_FILEINI_json.log',)
 
 #-------------------------------------------------------------------------------
 #

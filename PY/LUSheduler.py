@@ -29,6 +29,8 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LULog
+import LUConst
 import LUStrUtils
 import LUDateTime
 
@@ -113,10 +115,13 @@ class TShedulerEventItem (object):
     #--------------------------------------------------
     def __del__(self):
         """ destructor """
+    #beginfunction
         # удалить объект
         del self.__FList
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+    #endfunction
 
     def Clear(self):
     #beginfunction
@@ -439,7 +444,8 @@ class TSheduler (threading.Timer):
         del self.__FShedulerEvents
         del self.__FNameEvents
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format(LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
 
     # property OnSheduler: TNotifyFileEvent read FOnSheduler write FOnSheduler;
     #--------------------------------------------------

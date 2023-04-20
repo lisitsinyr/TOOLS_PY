@@ -28,6 +28,8 @@ import enum
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LULog
+import LUConst
 
 # LULogger = logging.getLogger(__name__)
 
@@ -69,7 +71,8 @@ class TObjects (object):
         """ destructor """
     #beginfunction
         LClassName = self.__class__.__name__  
-        #print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     def Clear(self):
@@ -107,9 +110,6 @@ class TObjects (object):
     #beginfunction
         self.__FObjectType = Value
     #endfunction
-"""
-    КОЛЛЕКЦИИ
-"""
 
 # --------------------------------------------
 # TObjectsItem
@@ -134,7 +134,8 @@ class TObjectsItem (object):
         # удалить объект
         del self.__FObjects
         LClassName = self.__class__.__name__
-        #print('{} уничтожен'.format(LClassName))
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.GLULogger.log (LULog.DEBUGTEXT, s)
 
     #--------------------------------------------------
     # @property Objects
@@ -172,8 +173,9 @@ class TObjectsCollection (list):
     def __del__(self):
         """ destructor """
         self.clear()            # удалить все items
-        LClassname = self.__class__.__name__
-        #print('{} уничтожен'.format(LClassname))
+        LClassName = self.__class__.__name__
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
 
     def AddItem(self) -> TObjectsItem:
         LObjectsItem: TObjectsItem = TObjectsItem()

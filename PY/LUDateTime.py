@@ -41,7 +41,6 @@ import LUStrUtils
 # cFormatDateTimeLog03 = ('', '%Y%m%d')
 # cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
 # cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S %f', '%H:%M:%S %f')
-
 cFormatDateTimeLog01 = ('%H:%M:%S', '%d/%m/%Y %H:%M:%S')
 cFormatDateTimeLog02 = ('%H%M%S', '%Y%m%d %H%M%S')
 cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')

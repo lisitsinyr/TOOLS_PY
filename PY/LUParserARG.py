@@ -31,6 +31,8 @@ import re
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+import LULog
+import LUConst
 
 # LULogger = logging.getLogger(__name__)
 
@@ -63,8 +65,8 @@ class TArgParser (argparse.ArgumentParser):
         """ destructor """
     #beginfunction
         LClassName = self.__class__.__name__
-        print('{} уничтожен'.format(LClassName))
-
+        s = '{} уничтожен'.format (LClassName)
+        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -161,7 +163,6 @@ class TArgParser (argparse.ArgumentParser):
 
         self.ArgsDICT = vars (self.Args)
         print (self.ArgsDICT)
-
 
         # for item in self.Args:
         #     ...

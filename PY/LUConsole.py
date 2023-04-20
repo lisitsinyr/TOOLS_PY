@@ -357,7 +357,7 @@ def Pause (Aprompt: str = ''):
     """Pause"""
 #beginfunction
     if Aprompt == '':
-        Aprompt="Press any key to continue "
+        Aprompt = "Press any key to continue"
     #endif
     if Aprompt != '':
         WriteLN (Aprompt, AStyles=cS_ITALIC, AFG8=cFG8_RED, ABG8=cBG8_WHITE)
