@@ -33,7 +33,6 @@ from urllib.parse import urlparse
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-from LULog import LULogger
 import LULog
 # import LUConst
 from LUObjects import TObjectTypeClass, TObjects
@@ -98,7 +97,7 @@ class TYouTubeObject (TObjects):
         super ().__del__()
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LULogger.log (LULog.DEBUGTEXT, s)
+        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -111,7 +110,7 @@ class TYouTubeObject (TObjects):
 
     #beginfunction
         s = 'ONprogress...'
-        LULogger.info (s)
+        LULog.LoggerTOOLS.info (s)
         # print (stream.filesize)
         # print (len (chunk))
         # print (bytes_remaining)
@@ -127,7 +126,7 @@ class TYouTubeObject (TObjects):
     def ONcomplete(self, stream, file_path):
     #beginfunction
         s = 'ONcomplete...'
-        LULogger.info (s)
+        LULog.LoggerTOOLS.info (s)
         # print (s)
         # print (stream)
         # print (file_path)
@@ -412,7 +411,7 @@ class TYouTubeObject (TObjects):
                 LStreams = self.URLYouTube.streams.filter (type=type, file_extension=file_extension, res=res)
             except BaseException as ERROR:
                 s = f'filter={ERROR}'
-                LULogger.error(s)
+                LULog.LoggerTOOLS.error(s)
             #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
@@ -421,7 +420,7 @@ class TYouTubeObject (TObjects):
                         LFileName = LStream.download (LPATH, skip_existing=skip_existing, filename_prefix=Lfilename_prefix)
                     except BaseException as ERROR:
                         s = f'DownloadURL={ERROR}'
-                        LULogger.error (s)
+                        LULog.LoggerTOOLS.error (s)
                     #endtry
                     break
                 #endfor
@@ -542,7 +541,7 @@ class TYouTubeObjectsItem (object):
         del self.__FYouTubeObject
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LULogger.log (LULog.DEBUGTEXT, s)
+        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     #--------------------------------------------------
@@ -586,7 +585,7 @@ class TYouTubeObjectsCollection (list):
         self.clear()            # удалить все items
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LULogger.log (LULog.DEBUGTEXT, s)
+        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     def AddItem (self) -> TYouTubeObjectsItem:
