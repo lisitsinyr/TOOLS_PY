@@ -28,8 +28,11 @@ import logging.config
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-from pythonjsonlogger import jsonlogger
 import pythonjsonlogger
+import pythonjsonlogger.jsonlogger
+
+import rich
+import rich.console
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
@@ -43,6 +46,8 @@ import LUStrDecode
 # ===========================================================================
 # CONST
 # ===========================================================================
+GConsoleRich = rich.console.Console ()
+
 """CONST"""
 ctlsNOTSET = ' '
 ctlsDEBUG = 'D'
@@ -53,6 +58,7 @@ ctlsCRITICAL = 'C'
 ctlsBEGIN = '>'
 ctlsEND = '<'
 ctlsPROCESS = 'P'
+ctlsDEBUGTEXT = 'T'
 ctlsTEXT = ''
 
 TruncLog = 1
@@ -117,6 +123,7 @@ class TTypeLogString(enum.Enum):
     tlsBEGIN = ctlsBEGIN
     tlsEND = ctlsEND
     tlsPROCESS = ctlsPROCESS
+    tlsDEBUGTEXT = ctlsDEBUGTEXT
     tlsTEXT = ctlsTEXT
     @classmethod
     def Empty(cls):
@@ -142,24 +149,84 @@ class TLogOutput (enum.Enum):
         ...
 #endclass
 
+Cbold = 'bold '
+Cbold = ''
+Cblue = 'blue'
+Cwhite = 'white'
+Cyellow = 'yellow'
+Cred = 'red'
+Cgreen = 'green'
+Con = 'on'
+
+Cbold_blue = Cbold+Cblue
+Cbold_white = Cbold+Cwhite
+Cbold_yellow = Cbold+Cyellow
+Cbold_red = Cbold+Cred
+Cbold_red_blue = Cbold+Cred+' on '+Cblue
+Cbold_green = Cbold+Cred
+
+
+COLORS_tls = {
+    TTypeLogString.tlsNOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
+    TTypeLogString.tlsDEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
+    TTypeLogString.tlsINFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
+    TTypeLogString.tlsWARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
+    TTypeLogString.tlsERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
+    TTypeLogString.tlsCRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
+    TTypeLogString.tlsBEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN  + LUConsole.sEND,
+    TTypeLogString.tlsEND: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
+    TTypeLogString.tlsPROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
+    TTypeLogString.tlsDEBUGTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLUE+LUConsole.sEND,
+    TTypeLogString.tlsTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND
+}
+
+COLORS_tls_rich = {
+    TTypeLogString.tlsNOTSET: Cbold_blue,
+    TTypeLogString.tlsDEBUG: Cbold_blue,
+    TTypeLogString.tlsINFO: Cbold_white,
+    TTypeLogString.tlsWARNING: Cbold_yellow,
+    TTypeLogString.tlsERROR: Cbold_red,
+    TTypeLogString.tlsCRITICAL: Cbold_red_blue,
+    TTypeLogString.tlsBEGIN: Cbold_green,
+    TTypeLogString.tlsEND: Cbold_green,
+    TTypeLogString.tlsPROCESS: Cbold_green,
+    TTypeLogString.tlsDEBUGTEXT: Cbold_blue,
+    TTypeLogString.tlsTEXT: Cbold_yellow
+}
+
+COLORS = {
+    logging.NOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
+    logging.DEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
+    logging.INFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
+    logging.WARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
+    logging.ERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
+    logging.CRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
+    BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN  + LUConsole.sEND,
+    END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
+    PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
+    DEBUGTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLUE+LUConsole.sEND,
+    TEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND
+}
+
+COLORS_rich = {
+    logging.NOTSET: Cbold_blue,
+    logging.DEBUG: Cbold_blue,
+    logging.INFO: Cbold_white,
+    logging.WARNING: Cbold_yellow,
+    logging.ERROR: Cbold_red,
+    logging.CRITICAL: Cbold_red_blue,
+    BEGIN: Cbold_green,
+    END: Cbold_green,
+    PROCESS: Cbold_green,
+    DEBUGTEXT: Cbold_blue,
+    TEXT: Cbold_yellow
+}
+
 #TLogOutputs = set of TLogOutput;
 
 class TFileMemoLog (object):
     """TFileMemoLog"""
     luClassName = "TFileMemoLog"
-    __COLORS = {
-        ctlsNOTSET: LUConsole.cS_BOLD + LUConsole.sEND,
-        ctlsDEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
-        ctlsINFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
-        ctlsWARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
-        ctlsERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
-        ctlsCRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
-
-        ctlsBEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
-        ctlsEND: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
-        ctlsPROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + ';' + LUConsole.cBG8_BLACK+LUConsole.sEND,
-        ctlsTEXT: LUConsole.cS_BOLD + LUConsole.sEND,
-    }
 
     #--------------------------------------------------
     # constructor
@@ -180,6 +247,7 @@ class TFileMemoLog (object):
         self.__FLogStrings: list = list()             #TStringList;
         self.__FLogSave: list = list()                #TStringList;
         self.__FLogCODE = LUFile.cDefaultEncoding
+        self.__FConsoleRich = rich.console.Console()
 
         # self.__FLogger: logging.Logger = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
 
@@ -344,12 +412,16 @@ class TFileMemoLog (object):
 
     def _GetLogSave (self, Filename: str) -> list:  #TStringList
         """_GetLogSave"""
+    #beginfunction
         ...
+    #endfunction
 
     def _GetLogSaveCurrent (self) -> list:         #TStringList;
+    #beginfunction
         """_GetLogSaveCurrent"""
         LResult = self._GetLogSave (self.__FFileName)
         return LResult
+    #endfunction
 
     def TruncateLog (self):
         """TruncateLog"""
@@ -391,6 +463,9 @@ class TFileMemoLog (object):
     def _HandlerCONSOLE (self, T: TTypeLogString):
         """_HandlerCONSOLE"""
     #beginfunction
+
+        # if self.FUseColor:
+
         self.__FLogStrings.clear ()
         self.__FLogStrings.append (self.__FLogStringAnsi)
         for s in self.__FLogStrings:
@@ -398,12 +473,22 @@ class TFileMemoLog (object):
                 _s = s
             else:
                 _s = self._LogDateStr (False) + ' ' + str(T.value) + ' ' + s
-            LCOLOR = self.__COLORS.get (T.value)
-            if LCOLOR is not None:
-                LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
+            if not LUConsole.ISTerminal ():
+                LCOLOR = COLORS_tls.get (T)
+                if LCOLOR is not None:
+                    LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
+                else:
+                    LFmt = _s
+                LUConsole.WriteLN (LFmt)
             else:
+                LCOLOR = COLORS_tls_rich.get (T)
                 LFmt = _s
-            LUConsole.WriteLN (LFmt)
+                if len(LCOLOR) > 0:
+                    LFmt = '[' + LCOLOR + ']' + _s
+                else:
+                    LFmt = s
+                self.__FConsoleRich.print (LFmt)
+            #endif
         #endfor
     #endfunction
 
@@ -420,25 +505,36 @@ class TFileMemoLog (object):
 
         self.__FLogStrings.clear ()
         self.__FLogStrings.append (self.__FLogStringAnsi)
-        LEncoding = self.__FLogCODE
-        # Откроет для добавления нового содержимого.
-        LFile = open (self.__FFileName, 'a+', encoding = LEncoding)
+
         for s in self.__FLogStrings:
             if T == TTypeLogString.tlsTEXT:
                 _s = s
             else:
                 _s = self._LogDateStr (False) + ' ' + str(T.value) + ' ' + s
+            #endif
             try:
-                # _s = str (s.encode ('utf-8'), 'cp1251')
-                # _s = str (s.encode ('cp1251'), 'cp1251')
-                _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
-                LFile.write (_s + '\n')
+                LEncoding = self.__FLogCODE
+
+                LEncoding = LUFile.GetFileEncoding (self.__FFileName)
+                if LEncoding == '':
+                    LEncoding = LUFile.cDefaultEncoding
+
+                # LFile =  open (self.__FFileName, 'a+', encoding = LEncoding)
+
+                with open (self.__FFileName, 'a+', encoding = LEncoding) as LFile:
+                    # _s = str (s.encode ('utf-8'), 'cp1251')
+                    # _s = str (s.encode ('cp1251'), 'cp1251')
+                    _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
+                    LFile.write (_s + '\n')
+                #endwith
+
+                # LFile.flush ()
+                # LFile.close ()
             except:
                 s = f'Неправильная кодировка журнала={s}'
                 LoggerTOOLS.log (DEBUGTEXT, s)
+            #endtry
         #endfor
-        LFile.flush ()
-        LFile.close ()
     #endfunction
 
     def _Execute (self, T: TTypeLogString):
@@ -531,6 +627,58 @@ class THandler(logging.Handler):
     #beginfunction
         logging.Handler.__init__(self, **kwargs)
     #endfunction
+#endclass
+
+#-------------------------------------------------
+# class TStreamHandler(logging.StreamHandler):
+#-------------------------------------------------
+class TStreamHandler(logging.StreamHandler):
+    """TStreamHandler"""
+    luClassName = "TStreamHandler"
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    def __init__(self, *args, **kwargs):
+        """Constructor"""
+    #beginfunction
+        logging.StreamHandler.__init__(self, *args, **kwargs)
+        self.name = 'CONSOLE'
+        self.__FConsoleRich = rich.console.Console()
+    #endfunction
+
+    #--------------------------------------------------
+    # emit
+    #--------------------------------------------------
+    def emit(self, record):
+        """emit"""
+    #beginfunction
+        b1 = type(self.formatter) is TFormatter
+        if type(self.formatter) is TFormatter:
+            LFormatter: TFormatter = self.formatter
+            if LFormatter.FUseColor:
+                # self.emit(record)
+                try:
+                    msg = self.format(record)
+                    stream = self.stream
+                    # issue 35046: merged two stream.writes into one.
+                    if not LUConsole.ISTerminal ():
+                        stream.write(msg + self.terminator)
+                        self.flush()
+                    else:
+                        msg = self.format (record)
+                        # print (msg)
+                        # rich.print (msg)
+                        self.__FConsoleRich.print(msg)
+
+                except RecursionError:  # See issue 36272
+                    raise
+                except Exception:
+                    self.handleError(record)
+        else:
+            super(TStreamHandler, self).emit(record)
+        #endif
+    #endfunction
+
 #endclass
 
 #-------------------------------------------------
@@ -636,19 +784,6 @@ class TAdapter(logging.LoggerAdapter):
 class TFormatter(logging.Formatter):
     """TFormatter"""
     luClassName = "TFormatter"
-    __COLORS = {
-        logging.NOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
-        logging.DEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
-        logging.INFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
-        logging.WARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
-        logging.ERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
-        logging.CRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
-        BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN  + LUConsole.sEND,
-        END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-        PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-        DEBUGTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLUE+LUConsole.sEND,
-        TEXT: LUConsole.cS_BOLD + LUConsole.sEND
-    }
 
     #--------------------------------------------------
     # constructor
@@ -658,18 +793,29 @@ class TFormatter(logging.Formatter):
     #beginfunction
         #class logging.Formatter(fmt=None, datefmt=None, style='%', validate=True, *, defaults=None)
         logging.Formatter.__init__(self, **kwargs)
-        self.__FUseColor = AUseColor
+        self.FUseColor = AUseColor
     #endfunction
 
-    def _SetColor(self, Afmt: str, ALevelNo: int) -> str:
+    def _SetColor(self, AFmt: str, ALevelNo: int) -> str:
         """_SetColor"""
     #beginfunction
-        if self.__FUseColor:
-            LCOLOR = self.__COLORS.get (ALevelNo)
-            LFmt = LUConsole.sBEGIN_oct + LCOLOR + Afmt + LUConsole.sRESET
-            return LFmt
+        if self.FUseColor:
+            if not LUConsole.ISTerminal ():
+                LCOLOR = COLORS.get (ALevelNo)
+                LFmt = LUConsole.sBEGIN_oct + LCOLOR + AFmt + LUConsole.sRESET
+                return LFmt
+            else:
+                LCOLOR = COLORS_rich.get (ALevelNo)
+                _s = AFmt
+                LFmt = _s
+                LFmt = '[' + LCOLOR + ']' + _s
+                if len(LCOLOR) > 0:
+                    LFmt = '[' + LCOLOR + ']' + _s
+                else:
+                    LFmt = _s
+                return LFmt
         else:
-            return Afmt
+            return AFmt
         #endif
     #endfunction
 
@@ -689,17 +835,15 @@ class TFormatter(logging.Formatter):
             Lformatter = logging.Formatter(Lfmt)
             return Lformatter.format (record)
         #endif
-        if self.__FUseColor:
+        if self.FUseColor:
             Lfmt = self._SetColor (self._fmt, record.levelno)
             Ldatefmt = self.datefmt
             # установить новый fmt
             Lformatter = logging.Formatter(Lfmt, Ldatefmt)
             s = Lformatter.format (record)
-            # print (s)
             return s
         else:
             s = logging.Formatter.format (self, record)
-            # print (s)
             return s
         #endif
     #endfunction
@@ -732,11 +876,11 @@ class TFormatterJSON(pythonjsonlogger.jsonlogger.JsonFormatter):
 #endclass
 
 def AddHandlerCONSOLE (ALogger: logging.Logger, ALevel: int, Astrfmt: str, Adatefmt: str,
-                    Astyle: str, Adefaults: str):
+                    Astyle: str, Adefaults):
     """AddFileHandler"""
 
 #beginfunction
-    LHandler = logging.StreamHandler ()
+    LHandler = TStreamHandler ()
     LHandler.setLevel (ALevel)
     LHandler.set_name ('CONSOLE')
     LHandler.setStream (sys.stdout)
@@ -747,7 +891,7 @@ def AddHandlerCONSOLE (ALogger: logging.Logger, ALevel: int, Astrfmt: str, Adate
 #endfunction
 
 def AddHandlerFILE (ALogger: logging.Logger, AFileName: str, ALevel: int, Astrfmt: str, Adatefmt: str,
-                    Astyle: str, Adefaults: str):
+                    Astyle: str, Adefaults):
     """AddFileHandler"""
 #beginfunction
     LHandler = logging.FileHandler (AFileName, mode='a+',
@@ -1195,52 +1339,82 @@ def LogFileName(ALog: int, ALogDir: str, ALogFile: str) -> str:
 # LogAdd (ALog: int, ALogFile: str, AOpt: str, AMessage: str,
 #           AStyles = '', AFG8 = '', ABG8 = '', AFG256 = '', ABG256 = '', AESC = ''):
 #--------------------------------------------------------------------------------
-def LogAdd (ALog: int, ALogFile: str, AOpt: str, AMessage: str,
-            AStyles='', AFG8='', ABG8='', AFG256='', ABG256='', AESC=''):
+def LogAdd (ALog: int, ALogFile: str, AOpt: TTypeLogString, AMessage: str):
     """LogAdd"""
+
+    def _WriteConsole(_s, T):
+    #beginfunction
+        if not LUConsole.ISTerminal ():
+            LCOLOR = COLORS_tls.get (T)
+            if LCOLOR is not None:
+                LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
+            else:
+                LFmt = _s
+            LUConsole.WriteLN (LFmt)
+        else:
+            LCOLOR = COLORS_tls_rich.get (T)
+            LFmt_default = _s
+            LFmt = '[' + LCOLOR + ']' + _s
+            GConsoleRich.print (LFmt)
+        #endif
+    #endfunction
+
+    def _WriteFile(_s):
+    #beginfunction
+        # Откроет для добавления нового содержимого.
+        # LFile = open(ALogFile, 'a+', encoding = 'cp1251')
+        LEncoding = LUFile.GetFileEncoding (ALogFile)
+        if LEncoding == '':
+            LEncoding = LUFile.cDefaultEncoding
+        # LFile = open (ALogFile, 'a+', encoding = LEncoding)
+        # LFile.seek (0, os.SEEK_END)
+        # sWIN = s.encode (encoding = 'UTF-8').decode(encoding = 'ANSI')
+        # sWIN = s.encode (encoding = 'WINDOWS-1251').decode(encoding = 'UTF-8')
+        # Это работает !!!!!!!!!!!!!!!!!
+        try:
+            with open (ALogFile, 'a+', encoding = LEncoding) as LFile:
+                LFile.write (_s+'\n')
+        except:
+            print (_s)
+            ...
+        #endtry
+        # LFile.flush ()
+        # LFile.close ()
+        ...
+    #endfunction
+
 #beginfunction
-    LToday: datetime = LUDateTime.Now ()
-    o = AOpt.upper()
-    match o:
-        case 'I':
-            s = AMessage
-        case _:
-            s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+AOpt+' '+AMessage
-    #endmatch
-
-    # Откроет для добавления нового содержимого.
-    # LFile = open(ALogFile, 'a+', encoding = 'cp1251')
-
-    LEncoding = LUFile.GetFileEncoding (ALogFile)
-    if LEncoding == '':
-        LEncoding = LUFile.cDefaultEncoding
-    LFile = open (ALogFile, 'a+', encoding = LEncoding)
+    LToday = LUDateTime.Now ()
+    # o = AOpt.upper()
+    # match o:
+    #     case 'I':
+    #         s = AMessage
+    #     case _:
+    #         s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+AOpt+' '+AMessage
+    # #endmatch
+    if AOpt == TTypeLogString.tlsTEXT:
+        s = AMessage
+    else:
+        s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+\
+            AOpt.value+' '+AMessage
 
     match ALog:
         case 1|10:
-            LUConsole.WriteLN (s, AStyles=AStyles, AFG8=AFG8, ABG8=ABG8, AFG256=AFG256, ABG256=ABG256, AESC=AESC)
-            LFile.write (s+'\n')
+            _WriteConsole (s, AOpt)
+            _WriteFile (s)
         case 2:
-            LUConsole.WriteLN (s, AStyles=AStyles, AFG8=AFG8, ABG8=ABG8, AFG256=AFG256, ABG256=ABG256, AESC=AESC)
+            _WriteConsole (s, AOpt)
         case 3|30:
-            LUConsole.WriteLN (s, AStyles=AStyles, AFG8=AFG8, ABG8=ABG8, AFG256=AFG256, ABG256=ABG256, AESC=AESC)
-            # sWIN = s.encode (encoding = 'UTF-8').decode(encoding = 'ANSI')
-            # sWIN = s.encode (encoding = 'WINDOWS-1251').decode(encoding = 'UTF-8')
-
-            # Это работает !!!!!!!!!!!!!!!!!
-            sWIN = s
-            LFile.write (sWIN+'\n')
+            _WriteConsole (s, AOpt)
+            _WriteFile (s)
     #endmatch
-    LFile.flush ()
-    LFile.close ()
 #endfunction
 
 #--------------------------------------------------------------------------------
 # LogAddFile (ALog: int, ALogFile: str, AOpt: str, AFileName: str,
 #            AStyles='', AFG8='', ABG8='', AFG256='', ABG256='', AESC=''):
 #--------------------------------------------------------------------------------
-def LogAddFile (ALog: int, ALogFile: str, AOpt: str, AFileName: str,
-            AStyles='', AFG8='', ABG8='', AFG256='', ABG256='', AESC=''):
+def LogAddFile (ALog: int, ALogFile: str, AOpt: TTypeLogString, AFileName: str):
     """LogAddFile"""
 #beginfunction
     if LUFile.FileExists (AFileName):
@@ -1248,13 +1422,15 @@ def LogAddFile (ALog: int, ALogFile: str, AOpt: str, AFileName: str,
         # LFile = open (AFileName, 'r', encoding='utf-8')
         # LFile = open (AFileName, 'r', encoding='cp1251')
         LEncoding = LUFile.GetFileEncoding (AFileName)
+        if LEncoding == '':
+            LEncoding = LUFile.cDefaultEncoding
         LFile = open (AFileName, 'r', encoding = LEncoding)
         try:
             # работа с файлом
             for s in LFile:
                 Ls = s.split ('\n')[0]
                 # Ls = s
-                LogAdd (ALog, ALogFile, AOpt, Ls, AStyles, AFG8, ABG8, AFG256, ABG256, AESC)
+                LogAdd (ALog, ALogFile, AOpt, Ls)
                 #LFile.next()   возвращает следующую строку файла
             #endfor
         finally:
@@ -1272,7 +1448,7 @@ def SetFormatterForLogger (ALogger: logging.Logger):
         if type (item.formatter) is pythonjsonlogger.jsonlogger.JsonFormatter:
             item.formatter.json_ensure_ascii = False
         #endif
-        if type (item) is logging.StreamHandler:
+        if type (item) is logging.StreamHandler or type (item) is TStreamHandler:
             Lfmt = item.formatter._fmt
             Ldatefmt = item.formatter.datefmt
             LFormaterConsole = TFormatter (fmt = Lfmt, datefmt = Ldatefmt)
@@ -1304,7 +1480,8 @@ LOGGING_CONFIG = \
     },
     'handlers': {
         'CONSOLE': {
-            'class': 'logging.StreamHandler',
+            # 'class': 'logging.StreamHandler',
+            'class': 'LULog.TStreamHandler',
             'level': 'DEBUG',
             'formatter': 'FORMAT_01',
             'stream': 'ext://sys.stdout'
@@ -1443,7 +1620,7 @@ CLoggerTOOLS = 'TOOLS__'
 LoggerTOOLS = logging.getLogger(CLoggerTOOLS)
 # LoggerTOOLS = logging.getLogger('log02')
 # CLoggerTOOLS.name = CLoggerTOOLS
-print (f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}')
+# print (f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}')
 
 #-------------------------------------------------
 # LoggerAPPS
@@ -1452,7 +1629,7 @@ CLoggerAPPS = 'APPS___'
 LoggerAPPS = logging.getLogger(CLoggerAPPS)
 # LoggerAPPS = logging.getLogger('log02')
 # LoggerAPPS.name = CLoggerAPPS
-print (f'LoggerAPPS={sys.getrefcount(LoggerAPPS)}')
+# print (f'LoggerAPPS={sys.getrefcount(LoggerAPPS)}')
 
 #-------------------------------------------------
 # LoggerTLogger
@@ -1472,7 +1649,7 @@ def CreateTLogger (ALogerName: str) -> TLogger:
 CTLogger = 'TLOGGER'
 LoggerTLogger = CreateTLogger (CTLogger)
 # LoggerTLogger.name = CTLogger
-print (f'LoggerTLogger={sys.getrefcount(LoggerTLogger)}')
+# print (f'LoggerTLogger={sys.getrefcount(LoggerTLogger)}')
 
 #-------------------------------------------------
 # FileMemoLog
@@ -1485,7 +1662,13 @@ def CreateTFileMemoLog () -> TFileMemoLog:
 #endfunction
 
 FileMemoLog = CreateTFileMemoLog ()
-print (f'FileMemoLog={sys.getrefcount(FileMemoLog)}')
+# print (f'FileMemoLog={sys.getrefcount(FileMemoLog)}')
+
+#-------------------------------------------------
+# Отключить журнал 'chardet.charsetprober'
+#-------------------------------------------------
+logger = logging.getLogger('chardet.charsetprober')
+logger.setLevel(logging.INFO)
 
 #-------------------------------------------------
 #

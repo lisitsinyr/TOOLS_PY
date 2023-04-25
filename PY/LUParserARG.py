@@ -64,7 +64,8 @@ class TArgParser (argparse.ArgumentParser):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -262,7 +263,6 @@ def __GetCmdLineArg (ASwitch: str, ASwitchChars: (), AIgnoreCase: bool) -> str:
                 if s.upper() == ASwitch.upper():
                     if i < len(sys.argv):
                         s = sys.argv[i]
-                        print (f's = {s}')
                         if s[0] in ASwitchChars:
                             return ''
                         else:

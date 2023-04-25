@@ -29,7 +29,6 @@ __version__ = '1.6'
 HIDE_CURSOR = '\x1b[?25l'
 SHOW_CURSOR = '\x1b[?25h'
 
-
 class Infinite(object):
     file = stderr
     sma_window = 10         # Simple Moving Average window
@@ -59,6 +58,7 @@ class Infinite(object):
     def __del__(self):
         if self._hidden_cursor:
             print(SHOW_CURSOR, end='', file=self.file)
+            # print ('', end = '', file = self.file)
 
     def __getitem__(self, key):
         if key.startswith('_'):

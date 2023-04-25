@@ -92,7 +92,8 @@ class TThread (threading.Thread):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        print (s)
     #endfunction
 
     #--------------------------------------------------

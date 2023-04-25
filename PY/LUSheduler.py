@@ -118,7 +118,8 @@ class TShedulerEventItem (object):
         del self.__FList
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        print (s)
     #endfunction
 
     def Clear(self):
