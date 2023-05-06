@@ -204,7 +204,7 @@ class TREGParser (object):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -325,7 +325,6 @@ class TREGParser (object):
             for i in range (LInfo[0],LInfo[1]):
                 LList.append(EnumValue (self.hkey, i))
                 # LKeyName, LValue, LFormat = EnumValue (self.hkey, i)
-                # print (LKeyName, LValue, LFormat)
             self.CloseKeyReg (self.hkey)
         return LList
     #endfunction
@@ -470,14 +469,15 @@ def SaveRegToFile_regedit (AFileName: str, AHKEY: THKEYConst, ASection: str):
             s = 'HKEY_CURRENT_USER'
             LParamStr = '/ea'+' '+AFileName+' "'+s+'\\'+ASection+'"'
     #endmatch
-    if LParamStr != '':
-        print (LParamStr)
+    if len (LParamStr) > 0:
+        #print (LParamStr)
         # Lregedit = subprocess.Popen ('C:\\Windows\\System32\\regedit.exe', LParamStr)
         # Lregedit = subprocess.Popen ('regedit.exe', LParamStr)
         # Lregedit = subprocess.Popen ('regedit.exe')
         # os.system (command)
         # os.startfile ('regedit.exe', LParamStr)
         # os.startfile ('regedit.exe')
+        ...
     #endif
 #endfunction
 

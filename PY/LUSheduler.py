@@ -119,7 +119,7 @@ class TShedulerEventItem (object):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     def Clear(self):
@@ -444,7 +444,7 @@ class TSheduler (threading.Timer):
         del self.__FNameEvents
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
 
     # property OnSheduler: TNotifyFileEvent read FOnSheduler write FOnSheduler;
     #--------------------------------------------------

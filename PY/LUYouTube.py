@@ -26,6 +26,7 @@ from urllib.parse import urlparse
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
+import pytube.exceptions
 from pytube import YouTube
 from pytube import Playlist
 from pytube import exceptions
@@ -87,7 +88,7 @@ class TYouTube(object):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -129,19 +130,23 @@ class TYouTube(object):
     #beginfunction
         s = '_ONprogress'
         LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        # print (s)
-        # print (stream.filesize)
-        # print (len(chunk))
-        # print (bytes_remaining)
+        if not stream is None:
+            print (stream.filesize)
+        #endif
+        if not chunk is None:
+            print (len(chunk))
+        #endif
+        print (bytes_remaining)
+        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, bytes_remaining)
     #endfunction
 
     def _ONcomplete(self, stream, file_path):
     #beginfunction
         s = '_ONcomplete'
         LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        # print (s)
-        # print (stream)
-        # print (file_path)
+        #print (s)
+        #print (stream)
+        #print (file_path)
     #endfunction
 
     def _CreateYOUTUBEObject_Coll (self, AURL: str, APlayList: str, ANumber: int, ACount: int):
@@ -167,31 +172,6 @@ class TYouTube(object):
         LYouTubeObjectsItem.YouTubeObject.FONprogress = self._ONprogress
     #endfunction
 
-    def _CreateYOUTUBEObject (self, AURL: str, APlayList: str, ANumber: int, ACount: int) -> LUObjectsYT.TYouTubeObject:
-    #beginfunction
-        LURL = AURL
-        s = 'CreateObject...'
-        # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, s)
-        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-
-        s = AURL + ' новый.'
-        # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, s)
-        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-
-        LObjectID: datetime = LUDateTime.Now()
-        s = LUDateTime.GenerateObjectIDStr (LObjectID)
-        # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, LObjectIDStr)
-        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-
-        # LYouTubeObjectItem
-        LYouTubeObject = LUObjectsYT.TYouTubeObject()
-        LYouTubeObject.ID = LObjectID
-        LYouTubeObject.SetURL(LURL, APlayList, ANumber, ACount)
-        LYouTubeObject.FONcomplete = self._ONcomplete
-        LYouTubeObject.FONprogress = self._ONprogress
-        return LYouTubeObject
-    #endfunction
-
     #--------------------------------------------------
     # CreateURLItems (self, AURL: str):
     #--------------------------------------------------
@@ -213,6 +193,26 @@ class TYouTube(object):
                 #endif
             #endif
         #endif
+    #endfunction
+
+    def _CreateYOUTUBEObject (self, AURL: str, APlayList: str, ANumber: int, ACount: int, ADownload: bool) -> LUObjectsYT.TYouTubeObject:
+    #beginfunction
+        LURL = AURL
+        s = 'CreateObject...'
+        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
+        s = AURL + ' новый.'
+        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
+        LObjectID: datetime = LUDateTime.Now()
+        s = LUDateTime.GenerateObjectIDStr (LObjectID)
+        LULog.LoggerTOOLS.log(LULog.PROCESS, s)
+        # LYouTubeObjectItem
+        LYouTubeObject = LUObjectsYT.TYouTubeObject()
+        LYouTubeObject.ID = LObjectID
+        LYouTubeObject.SetURL(LURL, APlayList, ANumber, ACount)
+        LYouTubeObject.FONcomplete = self._ONcomplete
+        LYouTubeObject.FONprogress = self._ONprogress
+        LYouTubeObject.Download = ADownload
+        return LYouTubeObject
     #endfunction
 
     def _CheckPlaylists (self, AURL: str) -> list:
@@ -243,7 +243,7 @@ class TYouTube(object):
     #--------------------------------------------------
     # CreateURLs (self, AURL: str) -> list:
     #--------------------------------------------------
-    def CreateURLs (self, AURL: str) -> list:
+    def CreateURLs (self, AURL: str, ADownload=False) -> list:
     #beginfunction
         LURI = urlparse (AURL)
         if LURI.hostname.upper() == LUObjectsYT.CYOUTUBE_COM or LURI.hostname.upper() == LUObjectsYT.CYOUTUBE_BE:
@@ -257,7 +257,7 @@ class TYouTube(object):
                 else:
                     LURLs: list = list ()
                     LURLs.clear ()
-                    LURLs.append (self._CreateYOUTUBEObject (AURL, '', 0, 0))
+                    LURLs.append (self._CreateYOUTUBEObject (AURL, '', 0, 0, ADownload))
                     return LURLs
                 #endif
             #endif
@@ -270,10 +270,11 @@ def progress_func (stream, chunk: bytes, bytes_remaining: int):
 #beginfunction
     s = 'progress_func...'
     LULog.LoggerTOOLS.info (s)
-    # print (stream)
-    # print (stream.filesize)
-    # print (len(chunk))
-    # print (bytes_remaining)
+    #print (s)
+    #print (stream)
+    #print (stream.filesize)
+    #print (len(chunk))
+    #print (bytes_remaining)
     ...
 #endfunction
 
@@ -281,8 +282,9 @@ def complete_func (stream, Afile_path: str):
 #beginfunction
     s = 'complete_func...'
     LULog.LoggerTOOLS.info (s)
-    # print (stream)
-    # print (Afile_path)
+    #print (s)
+    #print (stream)
+    #print (Afile_path)
     ...
 #endfunction
 
@@ -333,7 +335,9 @@ def LoadYouTubeVideo (AURL:str, ASAVE_PATH:str):
     """LoadYouTubeVideo1"""
 #beginfunction
     try:
-        LURLYouTube: YouTube = YouTube(AURL, on_progress_callback=progress_func, on_complete_callback=complete_func)
+        LURLYouTube: YouTube = YouTube(AURL,
+                                       # use_oauth = True, allow_oauth_cache = True,
+                                       on_progress_callback=progress_func, on_complete_callback=complete_func)
         # все потоки
         LStreams = LURLYouTube.streams
         # все потоки progressive
@@ -341,16 +345,18 @@ def LoadYouTubeVideo (AURL:str, ASAVE_PATH:str):
         # все потоки video, mp4, 480p
         LStreams = LURLYouTube.streams.filter (type='video', file_extension = 'mp4', res = '480p')
         for LStream in LStreams:
-            # print (LStream)
+            #print (LStream)
             LFileName  = LStream.download (ASAVE_PATH, skip_existing = False, filename_prefix=LStream.itag)
             s = f'Видео успешно загружено: {LFileName}'
             LULog.LoggerTOOLS.info (s)
         #endfor
     except BaseException as ERROR:
+    # except pytube.exceptions.PytubeError. as ERROR:
+        s = pytube.exceptions.PytubeError
+        print (s)
         s = f'LoadYouTubeVideo={ERROR}'
         LULog.LoggerTOOLS.error (s)
     #endtry
-    del LURLYouTube
 #endfunction
 
 #------------------------------------------

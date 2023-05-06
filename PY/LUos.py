@@ -108,7 +108,7 @@ class TFolders (object):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -350,7 +350,7 @@ class TOSInfo (object):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
-        LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+        #LUConst.LULogger.log (LULog.DEBUGTEXT, s)
     #endfunction
 
     # Return the number of CPUs in the system. Returns None if undetermined.
@@ -618,7 +618,6 @@ def GetEnvVar (AEnvVar: str) -> str:
     try:
         s = os.environ [AEnvVar]
     # except KeyError as Key:
-    # print (Key)
     except:
         ...
     finally:

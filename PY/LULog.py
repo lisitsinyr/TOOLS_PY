@@ -34,6 +34,9 @@ import pythonjsonlogger.jsonlogger
 import rich
 import rich.console
 
+# from PyQt6 import QtWidgets
+import PySide6.QtWidgets
+
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
@@ -165,7 +168,6 @@ Cbold_red = Cbold+Cred
 Cbold_red_blue = Cbold+Cred+' on '+Cblue
 Cbold_green = Cbold+Cred
 
-
 COLORS_tls = {
     TTypeLogString.tlsNOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
     TTypeLogString.tlsDEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
@@ -264,7 +266,7 @@ class TFileMemoLog (object):
         del self.__FLogSave
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        print (s)
+        #print (s)
     #endfunction
 
     def Clear(self):
@@ -438,6 +440,9 @@ class TFileMemoLog (object):
                     ts.append (s)
                     #file.next()    возвращает следующую строку файла
                 #endfor
+            except:
+                s = f'TruncateLog: Неправильная кодировка журнала!'
+                LoggerTOOLS.error (s)
             finally:
                 LFile.close ()
             # TruncateMemo (ts)
@@ -515,24 +520,24 @@ class TFileMemoLog (object):
             try:
                 LEncoding = self.__FLogCODE
 
-                LEncoding = LUFile.GetFileEncoding (self.__FFileName)
-                if LEncoding == '':
-                    LEncoding = LUFile.cDefaultEncoding
+                # LEncoding = LUFile.GetFileEncoding (self.__FFileName)
+                # if LEncoding == '':
+                #     LEncoding = LUFile.cDefaultEncoding
 
-                # LFile =  open (self.__FFileName, 'a+', encoding = LEncoding)
-
+                LEncoding = LUFile.cDefaultEncoding
                 with open (self.__FFileName, 'a+', encoding = LEncoding) as LFile:
+
                     # _s = str (s.encode ('utf-8'), 'cp1251')
                     # _s = str (s.encode ('cp1251'), 'cp1251')
-                    _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
-                    LFile.write (_s + '\n')
-                #endwith
 
-                # LFile.flush ()
-                # LFile.close ()
+                    # _s = str (_s.encode (self.__FLogCODE), self.__FLogCODE)
+
+                    LFile.write (_s + '\n')
+
+                #endwith
             except:
-                s = f'Неправильная кодировка журнала={s}'
-                LoggerTOOLS.log (DEBUGTEXT, s)
+                s = f'_HandlerFILE: Неправильная кодировка журнала!'
+                LoggerTOOLS.error (s)
             #endtry
         #endfor
     #endfunction
@@ -560,24 +565,6 @@ class TFileMemoLog (object):
         #endif
     #endfunction
 
-    def AddLogFile (self, AFileName: str):
-        """AddLogFile"""
-    #beginfunction
-        if LUFile.FileExists (AFileName):
-            # Открыть для чтения
-            LEncoding = LUFile.GetFileEncoding (AFileName)
-            LFile = open (AFileName, 'r', encoding = LEncoding)
-            try:
-                # работа с файлом
-                for s in LFile:
-                    self.AddLog (TTypeLogString.tlsTEXT, s.rstrip('\n'))
-                    #file.next()    возвращает следующую строку файла
-                #endfor
-            finally:
-                LFile.close ()
-        #endif
-    #endfunction
-
     #--------------------------------------------------
     #
     #--------------------------------------------------
@@ -588,6 +575,28 @@ class TFileMemoLog (object):
         self.__FLogStringAnsi = Value
         if self.LogEnabled:
             self._Execute(T)
+    #endfunction
+
+    def AddLogFile (self, AFileName: str):
+        """AddLogFile"""
+    #beginfunction
+        if LUFile.FileExists (AFileName):
+            LEncoding = LUFile.GetFileEncoding (AFileName)
+            if LEncoding == '':
+                LEncoding = LUFile.cDefaultEncoding
+            try:
+                # работа с файлом
+                with open (AFileName, 'r', encoding = LEncoding) as LFile:
+                    for s in LFile:
+                        self.AddLog (TTypeLogString.tlsTEXT, s.rstrip('\n'))
+                    #endfor
+                #endwith
+            except:
+                self.AddLog (TTypeLogString.tlsERROR, AFileName)
+                s = f'AddLogFile: Неправильная кодировка журнала!'
+                LoggerTOOLS.error (s)
+
+        #endif
     #endfunction
 #endclass
 
@@ -622,11 +631,41 @@ class THandler(logging.Handler):
     # constructor
     #--------------------------------------------------
     #class logging.Handler
-    def __init__(self, **kwargs):
+    def __init__(self, parent, **kwargs):
+    # def __init__ (self, parent):
         """Constructor"""
     #beginfunction
         logging.Handler.__init__(self, **kwargs)
+        # super ().__init__ ()
+
+        self.__Fwidget = None
+        # self.__Fwidget = PySide6.QtWidgets.QPlainTextEdit (parent)
+        # self.__Fwidget.setReadOnly (True)
     #endfunction
+
+    #--------------------------------------------------
+    # @property widget
+    #--------------------------------------------------
+    # getter
+    @property
+    def widget (self):
+    #beginfunction
+        return self.__Fwidget
+    #endfunction
+    @widget.setter
+    def widget (self, Value):
+    #beginfunction
+        self.__Fwidget = Value
+    #endfunction
+
+
+    def emit(self, record):
+        if self.widget is None:
+            super (THandler, self).emit (record)
+        else:
+            msg = self.format (record)
+            self.widget.appendPlainText (msg)
+        #endif
 #endclass
 
 #-------------------------------------------------
@@ -644,6 +683,27 @@ class TStreamHandler(logging.StreamHandler):
         logging.StreamHandler.__init__(self, *args, **kwargs)
         self.name = 'CONSOLE'
         self.__FConsoleRich = rich.console.Console()
+
+        self.__Fwidget:PySide6.QtWidgets.QPlainTextEdit = None
+        # self.__Fwidget = PySide6.QtWidgets.QPlainTextEdit (parent)
+        # self.__Fwidget = PySide6.QtWidgets.QPlainTextEdit ()
+        # self.__Fwidget.setReadOnly (True)
+
+    #endfunction
+
+    #--------------------------------------------------
+    # @property widget
+    #--------------------------------------------------
+    # getter
+    @property
+    def widget (self):
+    #beginfunction
+        return self.__Fwidget
+    #endfunction
+    @widget.setter
+    def widget (self, Value):
+    #beginfunction
+        self.__Fwidget = Value
     #endfunction
 
     #--------------------------------------------------
@@ -652,9 +712,20 @@ class TStreamHandler(logging.StreamHandler):
     def emit(self, record):
         """emit"""
     #beginfunction
-        b1 = type(self.formatter) is TFormatter
+        # !!!!!!!!!!!!!!!!!!!!!!
         if type(self.formatter) is TFormatter:
             LFormatter: TFormatter = self.formatter
+            # widget
+            if not self.widget is None:
+                b = LFormatter.FUseColor
+                LFormatter.FUseColor = False
+                msg = LFormatter.format (record)
+                self.widget.appendPlainText (msg)
+                # self.widget.document().end()
+                self.widget.verticalScrollBar().setValue (self.widget.verticalScrollBar().maximum ())
+                LFormatter.FUseColor = b
+            #endif
+
             if LFormatter.FUseColor:
                 # self.emit(record)
                 try:
@@ -666,19 +737,20 @@ class TStreamHandler(logging.StreamHandler):
                         self.flush()
                     else:
                         msg = self.format (record)
-                        # print (msg)
+                        #print (msg)
                         # rich.print (msg)
                         self.__FConsoleRich.print(msg)
-
+                    #endif
                 except RecursionError:  # See issue 36272
                     raise
                 except Exception:
                     self.handleError(record)
+                #endtry
+            #endif
         else:
             super(TStreamHandler, self).emit(record)
         #endif
     #endfunction
-
 #endclass
 
 #-------------------------------------------------
@@ -712,7 +784,7 @@ class TFilter(logging.Filter):
     def filter(self, record):
     #beginfunction
         record.color = self.COLOR[record.levelname]
-        # print(record.color)
+        #print(record.color)
         return True
     #endfunction
 #endclass
@@ -822,30 +894,30 @@ class TFormatter(logging.Formatter):
     def format(self, record):
         """format"""
     #beginfunction
-
         # отдельный атрибут
         # LLevelname = record.levelname
         # record.levelname = '_'+LLevelname+'_'
 
-        if record.levelno == TEXT:
-            # установить новый fmt
-            Lfmt = self._SetColor ('%(message)s', record.levelno)
-            Ldatefmt = self.datefmt
-            # установить новый fmt
-            Lformatter = logging.Formatter(Lfmt)
-            return Lformatter.format (record)
-        #endif
+        Ldatefmt = self.datefmt
         if self.FUseColor:
-            Lfmt = self._SetColor (self._fmt, record.levelno)
-            Ldatefmt = self.datefmt
-            # установить новый fmt
-            Lformatter = logging.Formatter(Lfmt, Ldatefmt)
-            s = Lformatter.format (record)
-            return s
+            if record.levelno == TEXT:
+                # установить новый fmt
+                Lfmt = self._SetColor ('%(message)s', record.levelno)
+            else:
+                Lfmt = self._SetColor (self._fmt, record.levelno)
+            #endif
         else:
-            s = logging.Formatter.format (self, record)
-            return s
+            if record.levelno == TEXT:
+                # установить новый fmt
+                Lfmt = '%(message)s'
+            else:
+                Lfmt = self._fmt
+            #endif
         #endif
+        # установить новый fmt
+        Lformatter = logging.Formatter (Lfmt, Ldatefmt)
+        s = Lformatter.format (record)
+        return s
     #endfunction
 #endclass
 
@@ -947,7 +1019,7 @@ class TLogger (logging.Logger):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
-        print (s)
+        #print (s)
     #endfunction
 
     def Clear(self):
@@ -1324,7 +1396,8 @@ def LogFileName(ALog: int, ALogDir: str, ALogFile: str) -> str:
                         os.remove (LLogFileName)
                     except:
                     # except LUErrors.LUFileError_FileERROR as ERROR:
-                        print (f'Ошибка при удалении файла {LLogFileName}')
+                        s = f'Ошибка при удалении файла {LLogFileName}'
+                        LoggerTOOLS.error (s)
                     else:
                         ...
                 #endif
@@ -1361,13 +1434,12 @@ def LogAdd (ALog: int, ALogFile: str, AOpt: TTypeLogString, AMessage: str):
 
     def _WriteFile(_s):
     #beginfunction
-        # Откроет для добавления нового содержимого.
-        # LFile = open(ALogFile, 'a+', encoding = 'cp1251')
+
         LEncoding = LUFile.GetFileEncoding (ALogFile)
         if LEncoding == '':
             LEncoding = LUFile.cDefaultEncoding
-        # LFile = open (ALogFile, 'a+', encoding = LEncoding)
-        # LFile.seek (0, os.SEEK_END)
+
+        LEncoding = LUFile.cDefaultEncoding
         # sWIN = s.encode (encoding = 'UTF-8').decode(encoding = 'ANSI')
         # sWIN = s.encode (encoding = 'WINDOWS-1251').decode(encoding = 'UTF-8')
         # Это работает !!!!!!!!!!!!!!!!!
@@ -1375,29 +1447,18 @@ def LogAdd (ALog: int, ALogFile: str, AOpt: TTypeLogString, AMessage: str):
             with open (ALogFile, 'a+', encoding = LEncoding) as LFile:
                 LFile.write (_s+'\n')
         except:
-            print (_s)
-            ...
+            _s = f'_WriteFile: Неправильная кодировка журнала!'
+            LoggerTOOLS.error (_s)
         #endtry
-        # LFile.flush ()
-        # LFile.close ()
-        ...
     #endfunction
 
 #beginfunction
     LToday = LUDateTime.Now ()
-    # o = AOpt.upper()
-    # match o:
-    #     case 'I':
-    #         s = AMessage
-    #     case _:
-    #         s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+AOpt+' '+AMessage
-    # #endmatch
     if AOpt == TTypeLogString.tlsTEXT:
         s = AMessage
     else:
         s = LUDateTime.DateTimeStr(False, LToday, LUDateTime.cFormatDateTimeLog01, True)+' '+\
             AOpt.value+' '+AMessage
-
     match ALog:
         case 1|10:
             _WriteConsole (s, AOpt)
@@ -1418,23 +1479,20 @@ def LogAddFile (ALog: int, ALogFile: str, AOpt: TTypeLogString, AFileName: str):
     """LogAddFile"""
 #beginfunction
     if LUFile.FileExists (AFileName):
-        # Открыть для чтения
-        # LFile = open (AFileName, 'r', encoding='utf-8')
-        # LFile = open (AFileName, 'r', encoding='cp1251')
-        LEncoding = LUFile.GetFileEncoding (AFileName)
-        if LEncoding == '':
-            LEncoding = LUFile.cDefaultEncoding
-        LFile = open (AFileName, 'r', encoding = LEncoding)
         try:
-            # работа с файлом
-            for s in LFile:
-                Ls = s.split ('\n')[0]
-                # Ls = s
-                LogAdd (ALog, ALogFile, AOpt, Ls)
-                #LFile.next()   возвращает следующую строку файла
-            #endfor
-        finally:
-            LFile.close ()
+            LEncoding = LUFile.GetFileEncoding (AFileName)
+            if LEncoding == '':
+                LEncoding = LUFile.cDefaultEncoding
+            with open (AFileName, 'r', encoding = LEncoding) as LFile:
+                for s in LFile:
+                    Ls = s.split ('\n')[0]
+                    LogAdd (ALog, ALogFile, AOpt, Ls)
+                #endfor
+            #endwith
+        except:
+            s = f'LogAddFile: Неправильная кодировка журнала!'+AFileName
+            LoggerTOOLS.error (s)
+        #endtry
     #endif
 #endfunction
 
@@ -1557,7 +1615,6 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     # читаем конфигурацию из файла
     LPath = LUFile.ExtractFileDir(__file__)
     LFileName = os.path.join(LPath, AFileNameINI)
-    # print (LFileName)
     logging.config.fileConfig(LFileName, disable_existing_loggers=True,
                               encoding = LUFile.cDefaultEncoding)
     # создаем регистратор
@@ -1584,19 +1641,6 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
     return LResult
 #endfunction
 
-def PrintHandlers (ALogger: logging.Logger):
-    """Printhandlers"""
-#beginfunction
-    for item in ALogger.root.handlers:
-        print (f'{item.name}={item}')
-        # if type(item) is logging.StreamHandler:
-        #     Lfmt = item.formatter._fmt
-        #     Ldatefmt = item.formatter.datefmt
-        #     LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
-        # #endif
-    #enfor
-#endfunction
-
 #-------------------------------------------------
 # Настройка системы logging
 #-------------------------------------------------
@@ -1620,7 +1664,7 @@ CLoggerTOOLS = 'TOOLS__'
 LoggerTOOLS = logging.getLogger(CLoggerTOOLS)
 # LoggerTOOLS = logging.getLogger('log02')
 # CLoggerTOOLS.name = CLoggerTOOLS
-# print (f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}')
+# s = f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}'
 
 #-------------------------------------------------
 # LoggerAPPS
@@ -1629,7 +1673,7 @@ CLoggerAPPS = 'APPS___'
 LoggerAPPS = logging.getLogger(CLoggerAPPS)
 # LoggerAPPS = logging.getLogger('log02')
 # LoggerAPPS.name = CLoggerAPPS
-# print (f'LoggerAPPS={sys.getrefcount(LoggerAPPS)}')
+# s = f'LoggerAPPS={sys.getrefcount(LoggerAPPS)}'
 
 #-------------------------------------------------
 # LoggerTLogger
@@ -1649,7 +1693,7 @@ def CreateTLogger (ALogerName: str) -> TLogger:
 CTLogger = 'TLOGGER'
 LoggerTLogger = CreateTLogger (CTLogger)
 # LoggerTLogger.name = CTLogger
-# print (f'LoggerTLogger={sys.getrefcount(LoggerTLogger)}')
+# s = f'LoggerTLogger={sys.getrefcount(LoggerTLogger)}'
 
 #-------------------------------------------------
 # FileMemoLog
@@ -1662,13 +1706,48 @@ def CreateTFileMemoLog () -> TFileMemoLog:
 #endfunction
 
 FileMemoLog = CreateTFileMemoLog ()
-# print (f'FileMemoLog={sys.getrefcount(FileMemoLog)}')
+# s = f'FileMemoLog={sys.getrefcount(FileMemoLog)}'
 
 #-------------------------------------------------
 # Отключить журнал 'chardet.charsetprober'
 #-------------------------------------------------
 logger = logging.getLogger('chardet.charsetprober')
 logger.setLevel(logging.INFO)
+
+def PrintHandlers (ALogger: logging.Logger):
+    """Printhandlers"""
+#beginfunction
+    for item in ALogger.root.handlers:
+        s = f'{item.name}={item}'
+        # LoggerTOOLS.info(s)
+        if type(item) is logging.StreamHandler:
+            # LoggerTOOLS.info ('logging.StreamHandler='+s)
+            # Lfmt = item.formatter._fmt
+            # Ldatefmt = item.formatter.datefmt
+            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
+            ...
+        #endif
+        if type (item) is TStreamHandler:
+            # LoggerTOOLS.info ('TStreamHandler='+s)
+            # Lfmt = item.formatter._fmt
+            # Ldatefmt = item.formatter.datefmt
+            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
+            ...
+        #endif
+    #enfor
+#endfunction
+
+def GetHandler (ALogger: logging.Logger, ANameHandler: str):
+    """Printhandlers"""
+#beginfunction
+    for item in ALogger.root.handlers:
+        s = f'{item.name}={item}'
+        # LoggerTOOLS.info(s)
+        if item.name == ANameHandler:
+            return item
+        #endif
+    #enfor
+#endfunction
 
 #-------------------------------------------------
 #

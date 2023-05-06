@@ -98,7 +98,7 @@ class TINIFile (configparser.ConfigParser):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------

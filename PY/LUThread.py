@@ -17,6 +17,8 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
+import psutil
+
 import threading
 import logging
 
@@ -28,7 +30,6 @@ import logging
 # БИБЛИОТЕКА LU
 #------------------------------------------
 import LULog
-# import LUConst
 
 # class ScheduleThread (threading.Thread):
 #     @classmethod
@@ -69,10 +70,8 @@ class TThread (threading.Thread):
         """Инициализация потока"""
     #beginfunction
         super ().__init__ (*args, **kwargs)
-        # super ().__init__ ()
+        self.args = args
         self.kwargs = kwargs
-        # print (self.args)
-        # print (self.kwargs)
 
         # def __init__ (self, group = None, target = None, name = None,
         #               args = (), kwargs = None, verbose = None):
@@ -93,7 +92,7 @@ class TThread (threading.Thread):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------

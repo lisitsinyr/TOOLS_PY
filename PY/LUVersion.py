@@ -70,7 +70,7 @@ class TVersionInfo:
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -132,7 +132,7 @@ class TVersionInfo:
         strInfo = {}
         for propName in propNames:
             strInfoPath = u'\\StringFileInfo\\%04X%04X\\%s' % (self.__lang, self.__codepage, propName)
-            ## print str_info
+            #print str_info
             strInfo [propName] = win32api.GetFileVersionInfo (self.__FFileName, strInfoPath)
         props ['StringFileInfo'] = strInfo
         self.__FCompanyName = strInfo ['CompanyName']

@@ -65,7 +65,7 @@ class TArgParser (argparse.ArgumentParser):
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
         # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
-        print (s)
+        #print (s)
     #endfunction
 
     #--------------------------------------------------
@@ -142,7 +142,8 @@ class TArgParser (argparse.ArgumentParser):
 
     #beginfunction
         for name, value in AARGS.items ():
-            # print (f"{name}={value}")
+            # s = f"{name}={value}"
+            #print (s)
             LArg = self.add_argument (GetARG (name, 'name'),
                                       dest = GetARG (name, 'dest'),
                                       type = GetARG (name, 'type'),
@@ -151,17 +152,16 @@ class TArgParser (argparse.ArgumentParser):
                                       action = GetARG (name, 'action'),
                                       choices = GetARG (name, 'choices')
                                       )
-            print (LArg)
         #endfor
 
         # GArgParser.Args = GArgParser.ArgParser.parse_args (['-ld', '1'], namespace = C)
 
         # self.Args = self.ArgParser.parse_args ()
         self.Args, self.ArgsUnknown = self.parse_known_args ()
-        print (self.Args)
+        #print (self.Args)
 
         self.ArgsDICT = vars (self.Args)
-        print (self.ArgsDICT)
+        #print (self.ArgsDICT)
 
         # for item in self.Args:
         #     ...
