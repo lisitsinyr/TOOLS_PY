@@ -222,6 +222,15 @@ cWordDelimiters = ('|', ';')
 cWordDelimiter = '|'
 
 #---------------------------------------------------------------
+#
+#---------------------------------------------------------------
+def PrintableStr(s: str) -> str:
+    return ''.join(c for c in s if c.isalpha()
+                   or c.isnumeric() or c.isspace()
+                   or c in string.printable
+                   )
+
+#---------------------------------------------------------------
 # MakeStr return a string of length N filled with character C. }
 #---------------------------------------------------------------
 def MakeStr (C: str, N: int) -> str:

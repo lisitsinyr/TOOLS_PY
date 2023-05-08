@@ -67,11 +67,12 @@ class TThread (threading.Thread):
     #--------------------------------------------------
     def __init__ (self, *args, **kwargs):
         """Constructor"""
-        """Инициализация потока"""
     #beginfunction
         super ().__init__ (*args, **kwargs)
         self.args = args
         self.kwargs = kwargs
+        # print ('args=',args)
+        # print ('kwargs=',kwargs)
 
         # def __init__ (self, group = None, target = None, name = None,
         #               args = (), kwargs = None, verbose = None):
@@ -80,7 +81,6 @@ class TThread (threading.Thread):
         #     self.args = args
         #     self.kwargs = kwargs
         #     return
-        ...
     #endfunction
 
     #--------------------------------------------------
