@@ -218,8 +218,8 @@ class TYouTube(object):
             LYouTubeObjectsItem = self.__FYouTubeObjectsCollection.AddItem()
             LYouTubeObjectsItem.YouTubeObject.ID = LObjectID
             LYouTubeObjectsItem.YouTubeObject.SetURL(LURL, AMaxRes, APlayList, ANumber, ACount)
-            LYouTubeObjectsItem.YouTubeObject.FONcomplete = LUObjectsYT.ONcomplete
-            LYouTubeObjectsItem.YouTubeObject.FONprogress = LUObjectsYT.ONprogress
+            # LYouTubeObjectsItem.YouTubeObject.FONcomplete = LYouTubeObjectsItem.ONcomplete
+            # LYouTubeObjectsItem.YouTubeObject.FONprogress = LYouTubeObjectsItem.ONprogress
         #endfunction
 
         def _CreateYOUTUBEPlaylists (AURL: str):
