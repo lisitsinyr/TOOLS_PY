@@ -18,28 +18,16 @@ __annotations__ ="""
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import sys
-import logging
-import datetime
-from typing import BinaryIO
-from urllib.parse import urlparse
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-import pytube.exceptions
-from pytube import YouTube
-from pytube import Playlist
-from pytube import exceptions
 
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LULog
-# import LUConst
-import LUObjects
 import LUObjectsYT
 import LUFile
-import LUDateTime
 
 # --------------------------------------------
 # TYouTubeObjectsItem
@@ -53,7 +41,6 @@ class TYouTubeObjectsItem (object):
     #--------------------------------------------------
     def __init__(self):
         """Constructor"""
-        super().__init__()
         self.__FYouTubeObject: LUObjectsYT.TYouTubeObject = LUObjectsYT.TYouTubeObject()
     #endfunction
 
@@ -152,17 +139,17 @@ class TYouTube(object):
     """TYouTube"""
     __annotations__ = \
         """
-        TPParams - Параметры проекта
+        TYouTube - 
         """
     luClassName = 'TYouTube'
 
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__ (self, **kwargs):
+    def __init__ (self):
         """ Constructor """
     #beginfunction
-        super ().__init__ (**kwargs)
+        super ().__init__ ()
         # YouTubeObjectsCollection
         self.__FYouTubeObjectsCollection = TYouTubeObjectsCollection ()
 
@@ -192,81 +179,6 @@ class TYouTube(object):
     def YouTubeObjectsCollection (self):
     #beginfunction
         return self.__FYouTubeObjectsCollection
-    #endfunction
-
-    #--------------------------------------------------
-    # CreateURLItems (self, AURL: str):
-    #--------------------------------------------------
-    def CreateURLItems (self, AURL: str, AMaxRes: ()):
-
-        def _CreateYOUTUBEObject_Coll (AURL: str, APlayList: str, ANumber: int, ACount: int):
-        #beginfunction
-            LURL = AURL
-            s = 'CreateObject...'
-            # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, s)
-            LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-            s = AURL + ' новый.'
-            # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, s)
-            LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-
-            LObjectID: datetime = LUDateTime.Now()
-            s = LUDateTime.GenerateObjectIDStr (LObjectID)
-            # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsPROCESS, LObjectIDStr)
-            LULog.LoggerTOOLS.log(LULog.PROCESS, s)
-
-            # LYouTubeObjectItem
-            LYouTubeObjectsItem = self.__FYouTubeObjectsCollection.AddItem()
-            LYouTubeObjectsItem.YouTubeObject.ID = LObjectID
-            LYouTubeObjectsItem.YouTubeObject.SetURL(LURL, AMaxRes, APlayList, ANumber, ACount)
-            # LYouTubeObjectsItem.YouTubeObject.FONcomplete = LYouTubeObjectsItem.ONcomplete
-            # LYouTubeObjectsItem.YouTubeObject.FONprogress = LYouTubeObjectsItem.ONprogress
-        #endfunction
-
-        def _CreateYOUTUBEPlaylists (AURL: str):
-        #beginfunction
-            """
-            # ЦИКЛ ОТ i=0 ДО AURLPlaylists.count-1
-            """
-            ...
-        #endfunction
-
-        def _CreateYOUTUBEPlaylist (AURL: str):
-        #beginfunction
-            LPlaylist = Playlist (AURL)
-            Lvideo_urls = LPlaylist.video_urls
-            j = len(LPlaylist.video_urls)
-            i = 0
-            for url in Lvideo_urls:
-                i = i + 1
-                # CreateObject
-                if self.__FYouTubeObjectsCollection.FindYouTubeObjectsItemURL (url) is not None:
-                    s = url + ' уже существует.'
-                    # self.__FFileMemoLog.AddLog (LULog.TTypeLogString.tlsINFO, s)
-                    LULog.LoggerTOOLS.info (s)
-                else:
-                    _CreateYOUTUBEObject_Coll (url, LPlaylist.title, i, j)
-                #endif
-            #endfor
-        #endfunction
-
-    #beginfunction
-        LURI = urlparse (AURL)
-        if LURI.hostname.upper () == LUObjectsYT.CYOUTUBE_COM or LURI.hostname.upper () == LUObjectsYT.CYOUTUBE_BE:
-            if LUObjectsYT.CYOUTUBE_PLAYLISTS in LURI.path.upper ():
-                _CreateYOUTUBEPlaylists (AURL)
-            else:
-                if LUObjectsYT.CYOUTUBE_PLAYLIST in LURI.path.upper ():
-                    _CreateYOUTUBEPlaylist (AURL)
-                else:
-                    if self.__FYouTubeObjectsCollection.FindYouTubeObjectsItemURL (AURL) is not None:
-                        s = AURL + ' уже существует.'
-                        LULog.LoggerTOOLS.info (s)
-                    else:
-                        _CreateYOUTUBEObject_Coll (AURL, '', 0, 0)
-                    #endif
-                #endif
-            #endif
-        #endif
     #endfunction
 #endclass
 

@@ -129,6 +129,7 @@ class TArgParser (argparse.ArgumentParser):
     #endfunction
 
     def ReadARGS (self, AARGS: dict):
+
         def GetARG (AARGName, AARGValue):
         #beginfunction
             LResult = AARGS.get (AARGName).get (AARGValue)

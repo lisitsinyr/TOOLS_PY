@@ -48,14 +48,15 @@ import json
     })
 """
 
-def PrintDict (ADict):
+def PrintDict (ADict: dict):
     """PrintDict"""
 #beginfunction
     # LResult = AARGS.get (AARGName).get (AARGValue)
     for key, value in ADict.items():
+        # print(key, value)
         try:
             print("key:\t" + key)
-            ADict (value)
+            # ADict (value)
         except AttributeError:
             print("value:\t" + str(value))
         #endtry

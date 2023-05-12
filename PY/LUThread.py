@@ -73,7 +73,6 @@ class TThread (threading.Thread):
         self.kwargs = kwargs
         # print ('args=',args)
         # print ('kwargs=',kwargs)
-
         # def __init__ (self, group = None, target = None, name = None,
         #               args = (), kwargs = None, verbose = None):
         #     threading.Thread.__init__ (self, group = group, target = target, name = name,
@@ -81,6 +80,7 @@ class TThread (threading.Thread):
         #     self.args = args
         #     self.kwargs = kwargs
         #     return
+        self.FStopThread = False
     #endfunction
 
     #--------------------------------------------------
@@ -113,6 +113,11 @@ class TThread (threading.Thread):
         s = 'Запуск потока...'
         LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
         super ().run()
+        while not self.FStopThread:
+            s = 'Выполнение потока...'
+            LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+            continue
+        #endwhile
 #endclass
 
 #------------------------------------------
