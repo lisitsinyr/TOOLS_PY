@@ -1646,6 +1646,10 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
 #-------------------------------------------------
 AddLevelName ()
 
+if not LUFile.DirectoryExists('LOG'):
+    os.mkdir('LOG')
+#endif
+
 # CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
 CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
 
@@ -1712,6 +1716,27 @@ FileMemoLog = CreateTFileMemoLog ()
 # Отключить журнал 'chardet.charsetprober'
 #-------------------------------------------------
 logger = logging.getLogger('chardet.charsetprober')
+logger.setLevel(logging.INFO)
+
+#-------------------------------------------------
+# Отключить журнал 'pytube.extract'
+#-------------------------------------------------
+logger = logging.getLogger('pytube.extract')
+logger.setLevel(logging.INFO)
+#-------------------------------------------------
+# Отключить журнал 'pytube.streams'
+#-------------------------------------------------
+logger = logging.getLogger('pytube.streams')
+logger.setLevel(logging.INFO)
+#-------------------------------------------------
+# Отключить журнал 'pytube.cipher'
+#-------------------------------------------------
+logger = logging.getLogger('pytube.cipher')
+logger.setLevel(logging.INFO)
+#-------------------------------------------------
+# Отключить журнал 'pytube.helpers'
+#-------------------------------------------------
+logger = logging.getLogger('pytube.helpers')
 logger.setLevel(logging.INFO)
 
 def PrintHandlers (ALogger: logging.Logger):

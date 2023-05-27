@@ -38,7 +38,6 @@ import pytube.exceptions
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LULog
-# import LUConst
 from LUObjects import TObjectTypeClass, TObjects
 import LUFile
 import LUStrUtils
@@ -67,22 +66,22 @@ TONfunction = ONfunction
 def progress_func (AStream, AChunk: bytes, Abytes_remaining: int):
 #beginfunction
     s = 'progress_func...'
-    # LULog.LoggerTOOLS.info (s)
-    if not AStream is None:
-        LProgressMax = AStream.filesize
-        LProgressLeft = Abytes_remaining
-        LProgressValue = LProgressMax - LProgressLeft
-        # LULog.LoggerTOOLS.info (f'{LProgressMax}-{LProgressLeft}-{LProgressValue}')
-        if not AChunk is None:
-            ...
-        #endif
-    #endif
+    LULog.LoggerTOOLS.info (s)
+    # if not AStream is None:
+    #     LProgressMax = AStream.filesize
+    #     LProgressLeft = Abytes_remaining
+    #     LProgressValue = LProgressMax - LProgressLeft
+    #     if not AChunk is None:
+    #         ...
+    #     #endif
+    #     ...
+    # #endif
 #endfunction
 
 def complete_func (AStream, AFilePath: str):
 #beginfunction
     s = 'complete_func...'
-    # LULog.LoggerTOOLS.info (s)
+    LULog.LoggerTOOLS.info (s)
     if not AStream is None:
         LProgressMax = AStream.filesize
         LProgressLeft = 0
@@ -119,11 +118,11 @@ class TYouTubeObject (TObjects):
         self.__FNumber: int = 0
         self.__FCount: int = 0
 
-        self.__FRxProgress = None
-        self.FONprogress = ONfunction
-        self.FONcomplete = ONfunction
-        self.FONprogress = progress_func
-        self.FONcomplete = complete_func
+        # self.__FRxProgress = None
+        # self.FONprogress = ONfunction
+        # self.FONcomplete = ONfunction
+        # self.FONprogress = progress_func
+        # self.FONcomplete = complete_func
         self.FONprogress = self.ONprogress
         self.FONcomplete = self.ONcomplete
 
@@ -135,6 +134,7 @@ class TYouTubeObject (TObjects):
         self.FYouTubeThread: LUThread.TThread = None
         self.__FStopYouTubeBoolean: bool = False
         self.__FStopYouTubeBooleanThread: bool = False
+
         self.Fis_paused = False
         self.Fis_cancelled = False
         self.__Filechunk: io.BufferedWriter = None
@@ -164,15 +164,9 @@ class TYouTubeObject (TObjects):
     #--------------------------------------------------
     def ONprogress (self, AStream: pytube.Stream, AChunk: bytes, Abytes_remaining: int):
     #beginfunction
-        s = 'ONprogress...'
-        # LULog.LoggerTOOLS.info (s)
-        LProgressValue = 0
+        s = 'TYouTubeObject.ONprogress...'
+        LULog.LoggerTOOLS.info (s)
         if not AStream is None:
-            # LProgressMax = AStream.filesize
-            # LProgressLeft = Abytes_remaining
-            # LProgressValue = LProgressMax - LProgressLeft
-            # LULog.LoggerTOOLS.info (f'{LProgressMax}-{LProgressLeft}-{LProgressValue}')
-
             self.FProgressMax = AStream.filesize
             self.FProgressLeft = Abytes_remaining
             self.FProgressValue = self.FProgressMax - self.FProgressLeft
@@ -196,19 +190,12 @@ class TYouTubeObject (TObjects):
     #--------------------------------------------------
     def ONcomplete (self, AStream: pytube.Stream, AFilePath: str):
     #beginfunction
-        s = 'ONcomplete...'
-        # LULog.LoggerTOOLS.info (s)
+        s = 'TYouTubeObject.ONcomplete...'
+        LULog.LoggerTOOLS.info (s)
         if not AStream is None:
-
-            # LProgressMax = AStream.filesize
-            # LProgressLeft = 0
-            # LProgressValue = LProgressMax - LProgressLeft
-            # LULog.LoggerTOOLS.info (f'{LProgressMax}-{LProgressLeft}-{LProgressValue}')
-
             self.FProgressMax = AStream.filesize
             self.FProgressLeft = 0
             self.FProgressValue = self.FProgressMax - self.FProgressLeft
-            # LULog.LoggerTOOLS.info (f'{self.FProgressMax}-{self.FProgressLeft}-{self.FProgressValue}')
 
             if not AFilePath is None:
                 LFileName = LUStrUtils.PrintableStr (AFilePath)
@@ -280,38 +267,42 @@ class TYouTubeObject (TObjects):
         LStreamInfo = dict ()
         s = AStream.default_filename
         LStreamInfo['default_filename'] = LUStrUtils.PrintableStr(s)
-        LStreamInfo['title'] = AStream.title
-        #Get the video/audio codecs from list of codecs.
-        LStreamInfo['parse_codecs'] = AStream.parse_codecs ()
-        LStreamInfo['filesize'] = AStream.filesize
-        # приблизительно
-        LStreamInfo['filesize_approx'] = AStream.filesize_approx
-        LStreamInfo['filesize_gb'] = AStream.filesize_gb
-        LStreamInfo['filesize_kb'] = AStream.filesize_kb
-        LStreamInfo['filesize_mb'] = AStream.filesize_mb
-        LStreamInfo['itag'] = AStream.itag
-        # video/mp4
-        LStreamInfo['mime_type'] = AStream.mime_type
-        # 'video'|'audio'
-        LStreamInfo['type'] = AStream.type
+        # LStreamInfo['title'] = AStream.title
+        i = AStream.filesize
+        LStreamInfo['filesize'] = i
         # ('1080p', '720p', '480p', '360p', '240p', '144p')
-        LStreamInfo['resolution'] = AStream.resolution
-        LStreamInfo['url'] = AStream.url
-        LStreamInfo['subtype'] = AStream.subtype
+        # LStreamInfo['resolution'] = AStream.resolution
+        # 'video'|'audio'
+        # LStreamInfo['type'] = AStream.type
+        # video/mp4
+        # LStreamInfo['mime_type'] = AStream.mime_type
+        # itag
+        # LStreamInfo['itag'] = AStream.itag
+        LStreamInfo['itag'] = 'itag'
+        # subtype
+        # LStreamInfo['subtype'] = AStream.subtype
 
-        # # True/False - Whether the stream only contains audio.
+        # размер приблизительно
+        # LStreamInfo['filesize_approx'] = AStream.filesize_approx
+        # размер в Гб
+        # LStreamInfo['filesize_gb'] = AStream.filesize_gb
+        # размер в Кб
+        # LStreamInfo['filesize_kb'] = AStream.filesize_kb
+        # размер в Мб
+        # LStreamInfo['filesize_mb'] = AStream.filesize_mb
+        # url видео плейера
+        # LStreamInfo['url'] = AStream.url
+        # Get the video/audio codecs from list of codecs.
+        # LStreamInfo['parse_codecs'] = AStream.parse_codecs ()
+        # True/False - Whether the stream only contains audio.
         # LStreamInfo['includes_audio_track'] = AStream.includes_audio_track
-        # # True/False - Whether the stream only contains video.
+        # True/False - Whether the stream only contains video.
         # LStreamInfo['includes_video_track'] = AStream.includes_video_track
-
         # #Whether the stream is DASH.
         # LStreamInfo['is_adaptive'] = AStream.is_adaptive
         # #Whether the stream is progressive.
         # LStreamInfo['is_progressive'] = AStream.is_progressive
-
         # AStream.exists_at_path()
-
-
         return LStreamInfo
     #endfunction
 
@@ -324,21 +315,27 @@ class TYouTubeObject (TObjects):
     #--------------------------------------------------
     #
     #--------------------------------------------------
-    def __SetStream(self, AMaxRes: ()):
+    def SetStream(self, AMaxRes: ()):
     #beginfunction
+        self.__FStream = None
         for res in AMaxRes:
             LStreams = list ()
             try:
                 LStreams = self.__FYouTube.streams.filter (res=res, type='video', file_extension='mp4')
             except BaseException as ERROR:
-                s = f'filter={ERROR}'
+                s = f'__FYouTube.streams.filter={ERROR} res={res} URL={self.URL}'
                 LULog.LoggerTOOLS.error(s)
             #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
-                    self.__FStream = LStream
-                    self.__SetStreamInfo (self.__FStream)
-                    break
+                    try:
+                        self.__SetStreamInfo (LStream)
+                        self.__FStream = LStream
+                        break
+                    except BaseException as ERROR:
+                        s = f'__SetStreamInfo={ERROR} res={res} URL={self.URL}'
+                        LULog.LoggerTOOLS.error (s)
+                    #endtry
                 #endfor
                 break
             #endif
@@ -352,7 +349,7 @@ class TYouTubeObject (TObjects):
     #beginfunction
         self.__FURL = AURL
         self.__FYouTube: YouTube = YouTube(AURL)
-        self.__SetStream(AMaxRes)
+        # self.SetStream(AMaxRes)
         self.__SetURLInfo()
         self.PlayList = APlayList
         self.Number = ANumber
@@ -399,6 +396,16 @@ class TYouTubeObject (TObjects):
     def StreamInfo(self) -> dict:
     #beginfunction
         return self.__FStreamInfo
+    #endfunction
+
+    #--------------------------------------------------
+    # @property YOUTUBE
+    #--------------------------------------------------
+    # getter
+    @property
+    def YOUTUBE(self) -> YouTube:
+    #beginfunction
+        return self.__FYouTube
     #endfunction
 
     #--------------------------------------------------
@@ -477,21 +484,6 @@ class TYouTubeObject (TObjects):
     #endfunction
 
     #--------------------------------------------------
-    # @property RxProgress
-    #--------------------------------------------------
-    # getter
-    @property
-    def RxProgress(self):
-    #beginfunction
-        return self.__FRxProgress
-    #endfunction
-    @RxProgress.setter
-    def RxProgress(self, Value):
-    #beginfunction
-        self.__FRxProgress = Value
-    #endfunction
-
-    #--------------------------------------------------
     # @property YouTubeThread
     #--------------------------------------------------
     # getter
@@ -522,7 +514,6 @@ class TYouTubeObject (TObjects):
     def DownloadURL_chunk (self, APATH: str, Afilename_prefix: str):
         """DownloadURL_chunk"""
     #beginfunction
-        # progress['text'] = 'Connecting ...'
         try:
             s = self.__FStreamInfo ['default_filename']
             self.__FileNamechunk = os.path.join (APATH, Afilename_prefix+s)
@@ -534,7 +525,6 @@ class TYouTubeObject (TObjects):
                     Ldownloaded = 0
                     while True:
                         if self.Fis_cancelled:
-                            # progress['text'] = 'Download cancelled'
                             break
                         #endif
                         if self.Fis_paused:
@@ -542,22 +532,19 @@ class TYouTubeObject (TObjects):
                         #endif
                         Lchunk = next(stream, None) # get next chunk of video
                         if Lchunk:
-                            # progress['text'] = f'Downloaded {downloaded} / {filesize}'
                             self.FONprogress (self.__FStream, Lchunk, LFileSize-Ldownloaded)
                             # self.__Filechunk.write(Lchunk)
                             Ldownloaded += len(Lchunk)
                         else:
                             # no more data
-                            # progress['text'] = 'Download completed'
                             self.FONcomplete (self.__FStream, self.__FileNamechunk)
                             break
                         #endif
                     #endwhile
                 #endwith
             else:
-                # self.FONcomplete (self.__FStream, self.__FileNamechunk)
+                self.FONcomplete (self.__FStream, self.__FileNamechunk)
                 # LULog.LoggerTOOLS.info ('Файл ' + self.__FileNamechunk + ' существует...')
-                ...
             #endif
         except Exception as ERROR:
             LULog.LoggerTOOLS.error(ERROR)
@@ -570,9 +557,10 @@ class TYouTubeObject (TObjects):
         s = self.URLInfo ['thumbnail_url']
         s = self.URLInfo ['author']
         s = self.URLInfo ['title']
-
-        self.__FYouTube.register_on_progress_callback(self.FONprogress)
-        self.__FYouTube.register_on_complete_callback(self.FONcomplete)
+        if not self.FONprogress is None:
+            self.__FYouTube.register_on_progress_callback(self.FONprogress)
+        if not self.FONcomplete is None:
+            self.__FYouTube.register_on_complete_callback(self.FONcomplete)
 
         if len(self.PlayList) > 0:
             LPATH = os.path.join (APATH, self.PlayList)
@@ -583,15 +571,25 @@ class TYouTubeObject (TObjects):
             LPATH = APATH
             Lfilename_prefix = filename_prefix
         #endif
-        LFilesize = self.__FStreamInfo ['filesize']
-        LPATH = os.path.join (APATH, self.PlayList)
-        LFileName = os.path.join (LPATH, Lfilename_prefix+self.__FStreamInfo ['default_filename'])
 
-        if ADownload:
-            if not self.__FStream.exists_at_path (LFileName):
+        #ПРОВЕРИТЬ
+        try:
+            LFilesize = self.__FStreamInfo ['filesize']
+        except:
+            LFilesize = 0
+        #endtry
+        #ПРОВЕРИТЬ
+        try:
+            LFileName = os.path.join (LPATH, Lfilename_prefix+self.__FStreamInfo ['default_filename'])
+        except:
+            LFileName = ''
+        #endtry
+
+        if ADownload and len (LFileName) > 0:
+            LPATH = os.path.join (APATH, self.PlayList)
+            # if not self.__FStream.exists_at_path (LFileName):
+            if True:
                 if not Achunk:
-                    # self.__Filechunk = None
-
                     try:
                         LFileName = self.__FStream.download (LPATH,
                                                              skip_existing=skip_existing,
@@ -612,7 +610,7 @@ class TYouTubeObject (TObjects):
             N = LFilesize // 4
             i = N
             while i < LFilesize:
-                self.FONprogress(self.__FStream, None, i)
+                self.FONprogress(self.__FStream, None, N-i)
                 i = i + N
             #endwhile
             self.FONcomplete (self.__FStream, None)
@@ -645,7 +643,8 @@ def CheckURLs (AURL: str, AURLs: dict):
         i = 0
         for url in Lvideo_urls:
             i = i + 1
-            AURLs[url] = {'PlayListName': LPlaylist.title, 'N': j, 'NN': i}
+            LPlaylistTitle = LUStrUtils.DelChars(LPlaylist.title, '/')
+            AURLs[url] = {'PlayListName': LPlaylistTitle, 'N': j, 'NN': i}
         #endfor
     #endfunction
 
@@ -677,6 +676,8 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
                                     on_complete_callback=complete_func)
     LURLInfo = TYouTubeObject.GetURLInfo(LYouTube)
 
+    LPATH = APATH
+
     # все потоки
     LStreams = LYouTube.streams
     # все потоки progressive
@@ -696,17 +697,23 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
         #endtry
 
         if not LStreams is None:
-            i = 0
             for LStream in LStreams:
                 LStreamInfo = TYouTubeObject.GetStreamInfo (LStream)
                 LTag = LStreamInfo ['itag']
                 Lresolution = LStreamInfo ['resolution']
-                LULog.LoggerTOOLS.info (Lresolution)
-                i = i + 1
-                # Lfilename_prefix = filename_prefix+str (i) + '. '
+                # LULog.LoggerTOOLS.info (Lresolution)
+
+                Lfilename_prefix = filename_prefix
+                LFileName = os.path.join (LPATH, Lfilename_prefix + LStreamInfo ['default_filename'])
+
                 try:
                     if ADownload:
-                        s  = LStream.download (APATH, skip_existing=skip_existing, filename_prefix=filename_prefix)
+                        if not LStream.exists_at_path (LFileName):
+                            s  = LStream.download (APATH, skip_existing=skip_existing, filename_prefix=filename_prefix)
+                        else:
+                            LULog.LoggerTOOLS.info ('Файл ' + LFileName + ' существует...')
+                            complete_func (LStream, None)
+                        #endif
                     else:
                         LFileName = LStreamInfo ['default_filename']
                         AFileSize = int (LStreamInfo ['filesize'])
@@ -716,13 +723,14 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
                             progress_func (LStream, None, i)
                             i = i + N
                         #endwhile
-                        complete_func (LStream, None)
                         s = f'Видео не загружалось: {res}/{LTag}={LFileName}'
                         LULog.LoggerTOOLS.info (s)
+                        complete_func (LStream, None)
                     #endif
                 except BaseException as ERROR:
                     s = f'DownloadURL={ERROR}'
-                    LULog.LoggerTOOLS.error(s)
+                    LULog.LoggerTOOLS.error (s)
+                    LULog.LoggerTOOLS.error (LFileName)
                 #endtry
             #endfor
             # если по фильтру есть хотя бы один поток

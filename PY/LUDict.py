@@ -51,7 +51,9 @@ import json
 def PrintDict (ADict: dict):
     """PrintDict"""
 #beginfunction
+
     # LResult = AARGS.get (AARGName).get (AARGValue)
+
     for key, value in ADict.items():
         # print(key, value)
         try:
@@ -68,6 +70,7 @@ def SaveDictJSON (ADict, AFileName):
 #beginfunction
     with open (AFileName, 'w') as LFileDictJSON:
         json.dump (ADict, LFileDictJSON)
+    #endwith
 #endfunction
 
 def SaveDictSTR (ADict, AFileName):
@@ -80,6 +83,7 @@ def SaveDictSTR (ADict, AFileName):
         # Change the standard output to the file we created.
         sys.stdout = LFileDictSTR
         print (LDict)
+    #endwith
     # Reset the standard output to its original value
     sys.stdout = original_stdout
 #endfunction

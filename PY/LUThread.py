@@ -110,14 +110,16 @@ class TThread (threading.Thread):
     #--------------------------------------------------
     def run(self):
         """Запуск потока"""
+    #beginfunction
         s = 'Запуск потока...'
-        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        LULog.LoggerTOOLS.debug (s)
         super ().run()
         while not self.FStopThread:
             s = 'Выполнение потока...'
-            LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+            # LULog.LoggerTOOLS.debug (s)
             continue
         #endwhile
+    #endfunction
 #endclass
 
 #------------------------------------------
