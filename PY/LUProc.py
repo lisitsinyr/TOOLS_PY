@@ -41,8 +41,8 @@ cProcessEnd = '********* Конец ***********************************'
 class TStatApplication(enum.Enum):
     """TStatApplication"""
     saRunning    = enum.auto ()
-    saBreak    = enum.auto ()
-    # saMain     = enum.auto ()
+    saBreak      = enum.auto ()
+    saMain       = enum.auto ()
     # saTest     = enum.auto ()
     # saSheduler = enum.auto ()
     # saSetup    = enum.auto ()
@@ -59,8 +59,8 @@ class TStatApplication(enum.Enum):
 #endclass
 CStatApplication = {
     TStatApplication.saRunning:  'saRunning',
-    TStatApplication.saBreak:    'saBreak'
-    # TStatApplication.saMain: 'saMain',
+    TStatApplication.saBreak:    'saBreak',
+    TStatApplication.saMain:     'saMain'
     # TStatApplication.saTest: 'saTest',
     # TStatApplication.saSheduler: 'saSheduler',
     # TStatApplication.saSetup: 'saSetup',

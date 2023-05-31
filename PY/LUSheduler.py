@@ -22,6 +22,7 @@ from calendar import monthrange
 import threading
 import logging
 import time
+
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -212,7 +213,8 @@ class TShedulerEventItem (object):
     #beginfunction
         LResult = False
         if (Index >= minDD-1) and (Index <= maxDD-1):
-            LResult = self.IsBitOn (self.__FDD, Index)
+        # if (Index >= minDD - 1) and (Index <= maxDD):
+           LResult = self.IsBitOn (self.__FDD, Index)
         return LResult
     #endfunction
     def SetDD (self, Index: int, Value: bool):
@@ -413,8 +415,7 @@ class TShedulerEventItem (object):
 # --------------------------------------------
 # TSheduler
 # --------------------------------------------
-# TSheduler = class (TTimer)
-class TSheduler (threading.Thread):
+class TSheduler (object):
     """TSheduler"""
     luClassName = 'TSheduler'
 
@@ -428,7 +429,7 @@ class TSheduler (threading.Thread):
         self.args = args
         self.kwargs = kwargs
         #
-        self.FStopThread = False
+        self.__FStopThread = False
         #
         self.__FShedulerEvents = list ()
         #
@@ -436,11 +437,12 @@ class TSheduler (threading.Thread):
         # 'Следующий сеанс: ', self.DTEvents
         self.__FDTEvents: datetime = 0
         #
-        self.__FEnable: bool = True
+        self.__FEnable: bool = False
         #
         self.__FOnSheduler: TNotifyFileEvent = None
         #
         self.__FOnShedulerEvent:TShedulerEventItem = None
+
     #endfunction
 
     #--------------------------------------------------
@@ -467,9 +469,10 @@ class TSheduler (threading.Thread):
         return self.__FOnSheduler
     #endfunction
     @OnSheduler.setter
-    def OnSheduler(self, Value: str):
+    def OnSheduler(self, Value):
     #beginfunction
-        self.__FOnSheduler: TNotifyFileEvent = Value
+        self.__FOnSheduler = Value
+        self.__FFunction = Value
     #endfunction
 
     #--------------------------------------------------
@@ -486,7 +489,7 @@ class TSheduler (threading.Thread):
     #beginfunction
         self.__FEnable: bool = Value
         if Value:
-            self.__CreateNextEvent ()
+            self.CreateNextEvent ()
         #endif
     #endfunction
 
@@ -555,37 +558,28 @@ class TSheduler (threading.Thread):
     #endfunction
 
     #--------------------------------------------------
-    # run
+    # __run_Function
     #--------------------------------------------------
-    def run(self):
-        """Запуск потока"""
+    def run_Function(self):
+        """__run_Function"""
     #beginfunction
-        s = 'Запуск потока TSheduler...'
-        LULog.LoggerTOOLS.debug (s)
-        super ().run()
-        if self.__FDTEvents == 0:
-            self.__CreateNextEvent ()
-        #endif
-        while not self.FStopThread:
-            s = 'Выполнение потока TSheduler...'
-            # LULog.LoggerTOOLS.debug (s)
-            if self.Enable:
-                LPresent1 = LUDateTime.Now ()
-                LYear, LMonth, LDay = LUDateTime.DecodeDate (LPresent1)
-                LHour, LMin, LSec, LMSec = LUDateTime.DecodeTime (LPresent1)
-                LDTEvents1 = LUDateTime.EncodeDateTime (LYear, LMonth, LDay, LHour, LMin, 0, 0)
-                LDTEvents2 = self.DTEvents
-                if LDTEvents1 == LDTEvents2:
-                    self.__Second ()
-                    # 'Следующий сеанс: ', self.DTEvents
-                    self.__CreateNextEvent ()
-                #endif
+        s = '__run_Function...'
+        # LULog.LoggerTOOLS.debug (s)
+        if self.__FEnable:
+            LPresentNow = LUDateTime.Now ()
+            LYear, LMonth, LDay = LUDateTime.DecodeDate (LPresentNow)
+            LHour, LMin, LSec, LMSec = LUDateTime.DecodeTime (LPresentNow)
+            LDTEventsNow = LUDateTime.EncodeDateTime (LYear, LMonth, LDay, LHour, LMin, 0, 0)
+            # print (LDTEventsNow, self.DTEvents)
+            if LDTEventsNow == self.DTEvents:
+                self.__Second ()
+                # 'Следующий сеанс: ', self.DTEvents
+                self.CreateNextEvent ()
             #endif
-            continue
-        #endwhile
+        #endif
     #endfunction
 
-    def __CreateNextEvent (self):
+    def CreateNextEvent (self):
         """__CreateNextEvent"""
     #beginfunction
         LPresent: datetime = LUDateTime.Now ()
@@ -600,24 +594,26 @@ class TSheduler (threading.Thread):
                 # MaxDDWork = DateUtils.DaysInMonth (Present)
                 MaxDDWork = monthrange (LYear, LMonth)[1]
                 # Day of Month
-                for LDay in range (LDay, MaxDDWork):
+                for LDay in range (LDay, MaxDDWork+1):
                     LDayWeek = LUDateTime.DayOfWeek (LUDateTime.EncodeDate(LYear,LMonth,LDay))
                     LDayWeek = LDayWeek + 1
                     if LDayWeek == 0:
                         LDayWeek = 7
                     #endif
                     # Hour
-                    for LHour in range (LHour, maxHH):
+                    for LHour in range (LHour, maxHH+1):
                         # Min
-                        for LMin in range (LMin, maxNN):
+                        for LMin in range (LMin, maxNN+1):
                             # Check List Sheduler
                             for item in  self.__FShedulerEvents:
                                 self.OnShedulerEvent:TShedulerEventItem = item
-                                if self.OnShedulerEvent.GetDD (LDay) and\
-                                     self.OnShedulerEvent.GetDW (LDayWeek) and\
-                                     self.OnShedulerEvent.GetMM (LMonth) and\
-                                     self.OnShedulerEvent.GetHH (LHour) and\
-                                     self.OnShedulerEvent.GetNN (LMin):
+                                bDay = self.OnShedulerEvent.GetDD (LDay-1)
+                                bDayWeek = self.OnShedulerEvent.GetDW (LDayWeek-1)
+                                bMonth = self.OnShedulerEvent.GetMM (LMonth-1)
+                                bHour = self.OnShedulerEvent.GetHH (LHour-1)
+                                bMin = self.OnShedulerEvent.GetNN (LMin-1)
+                                # print (bDay, bDayWeek, bMonth, bHour, bMin)
+                                if bDay and bDayWeek and bMonth and bHour and bMin:
                                      self.__FNameEvents.append (self.OnShedulerEvent.NameEvent)
                                 #endif
                             #endfor
@@ -658,15 +654,15 @@ class TSheduler (threading.Thread):
             self.__FDTEvents = LPresent
         #endif
         s = 'Следующий сеанс: ' + str (self.__FDTEvents)
-        # LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLS.debug (s)
     #endfunction
     
     def __Second (self):
         """Second"""
     #beginfunction
         s = 'Second...'
-        # LULog.LoggerTOOLS.debug (s)
-        if self.Enable:
+        LULog.LoggerTOOLS.debug (s)
+        if self.__FEnable:
             LPresent: datetime = LUDateTime.Now()
             LHour, LMin, LSec, LMSec = LUDateTime.DecodeTime (LPresent)
             # Check List Sheduler
@@ -677,11 +673,11 @@ class TSheduler (threading.Thread):
                 LDayWeek = 7
             for item in self.__FShedulerEvents:
                 LEvent: TShedulerEventItem = item
-                bDay = LEvent.GetDD (LDay)
-                bDayWeek = LEvent.GetDW (LDayWeek)
-                bMonth = LEvent.GetMM (LMonth)
-                bHour = LEvent.GetHH (LHour)
-                bMin = LEvent.GetNN (LMin)
+                bDay = LEvent.GetDD (LDay-1)
+                bDayWeek = LEvent.GetDW (LDayWeek-1)
+                bMonth = LEvent.GetMM (LMonth-1)
+                bHour = LEvent.GetHH (LHour-1)
+                bMin = LEvent.GetNN (LMin-1)
                 if bDay and bDayWeek and bMonth and bHour and bMin:
                     self.OnShedulerEvent = item
                     if self.OnSheduler is not None:
@@ -745,6 +741,162 @@ class TSheduler (threading.Thread):
         LULog.LoggerTOOLS.debug (s)
         s = f'DW={AEvent.GetXXString ("DW")}'
         LULog.LoggerTOOLS.debug (s)
+    #endfunction
+#endclass
+
+# --------------------------------------------
+# TShedulerThread
+# --------------------------------------------
+class TShedulerThread (threading.Thread):
+    """TShedulerThread"""
+    luClassName = 'TShedulerThread'
+
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    def __init__ (self, *args, **kwargs):
+        """Constructor"""
+    #beginfunction
+        super ().__init__ (*args, **kwargs)
+        self.args = args
+        self.kwargs = kwargs
+        #
+        self.__FStopThread = False
+        self.__FSheduler = TSheduler()
+    #endfunction
+
+    #--------------------------------------------------
+    # destructor
+    #--------------------------------------------------
+    def __del__(self):
+        """destructor"""
+    #beginfunction
+        LClassName = self.__class__.__name__
+        s = '{} уничтожен'.format(LClassName)
+        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+    #endfunction
+
+    #--------------------------------------------------
+    # run
+    #--------------------------------------------------
+    def run(self):
+        """run - Запуск потока TSheduler"""
+    #beginfunction
+        s = 'run - Запуск потока TSheduler...'
+        LULog.LoggerTOOLS.debug (s)
+        super ().run()
+
+        if self.__FSheduler.DTEvents == 0:
+            self.__FSheduler.CreateNextEvent ()
+        #endif
+        while not self.__FStopThread:
+            self.__FSheduler.run_Function ()
+            continue
+        #endwhile
+    #endfunction
+
+    #--------------------------------------------------
+    # StartSheduler
+    #--------------------------------------------------
+    def StartSheduler(self):
+        """StartSheduler"""
+    #beginfunction
+        s = 'StartSheduler...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = False
+        self.__FSheduler.Enable = True
+        # self.__CreateNextEvent ()
+        self.start ()
+    #endfunction
+    #--------------------------------------------------
+    # StopSheduler
+    #--------------------------------------------------
+    def StopSheduler(self):
+        """StopSheduler"""
+    #beginfunction
+        s = 'StopSheduler...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = True
+        self.__FSheduler.Enable = False
+    #endfunction
+#endclass
+
+# --------------------------------------------
+# TShedulerTimer
+# --------------------------------------------
+class TShedulerTimer (threading.Timer):
+    """TSheduler"""
+    luClassName = 'TShedulerTimer'
+
+    #--------------------------------------------------
+    # constructor
+    #--------------------------------------------------
+    def __init__ (self, AInterval, AFunction, *args, **kwargs):
+        """Constructor"""
+        #beginfunction
+        super ().__init__ (AInterval, AFunction, *args, **kwargs)
+        self.args = args
+        self.kwargs = kwargs
+        #
+        self.__FSheduler = TSheduler()
+        #
+        self.__FStopThread = False
+        self.__FInterval = AInterval
+        self.__FFunction = AFunction
+    #endfunction
+
+    #--------------------------------------------------
+    # destructor
+    #--------------------------------------------------
+    def __del__ (self):
+        """destructor"""
+    #beginfunction
+        LClassName = self.__class__.__name__
+        s = '{} уничтожен'.format (LClassName)
+        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
+    #endfunction
+
+    #--------------------------------------------------
+    # run
+    #--------------------------------------------------
+    def run (self):
+        """run - Запуск таймера TShedulerTimer"""
+        #beginfunction
+        s = 'run - Запуск таймера TShedulerTimer...'
+        LULog.LoggerTOOLS.debug (s)
+
+        if self.__FSheduler.DTEvents == 0:
+            self.__FSheduler.CreateNextEvent ()
+        #endif
+        while not self.__FStopThread:
+            self.__FSheduler.run_Function ()
+            continue
+        #endwhile
+    #endfunction
+
+    #--------------------------------------------------
+    # StartSheduler
+    #--------------------------------------------------
+    def StartSheduler (self):
+        """StartSheduler"""
+    #beginfunction
+        s = 'StartSheduler...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = False
+        self.__FSheduler.Enable = True
+        # self.__CreateNextEvent ()
+        self.start ()
+    #endfunction
+    #--------------------------------------------------
+    # StopSheduler
+    #--------------------------------------------------
+    def StopSheduler (self):
+        """StopSheduler"""
+    #beginfunction
+        s = 'StopSheduler...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = True
+        self.__FSheduler.Enable = False
     #endfunction
 #endclass
 

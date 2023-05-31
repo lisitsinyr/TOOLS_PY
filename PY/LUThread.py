@@ -65,22 +65,23 @@ class TThread (threading.Thread):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__ (self, *args, **kwargs):
+    # def __init__ (self, *args, **kwargs):
+    def __init__ (self, group = None, target = None,
+                               name = None, args = (),
+                               kwargs = {}, *, daemon = None):
+
         """Constructor"""
     #beginfunction
-        super ().__init__ (*args, **kwargs)
+        # super ().__init__ (*args, **kwargs)
+        super ().__init__ (group = group, target = target,
+                               name = name, *args,
+                               **kwargs, daemon = daemon)
+
         self.args = args
         self.kwargs = kwargs
         # print ('args=',args)
         # print ('kwargs=',kwargs)
-        # def __init__ (self, group = None, target = None, name = None,
-        #               args = (), kwargs = None, verbose = None):
-        #     threading.Thread.__init__ (self, group = group, target = target, name = name,
-        #                                verbose = verbose)
-        #     self.args = args
-        #     self.kwargs = kwargs
-        #     return
-        self.FStopThread = False
+        self.__FStopThread = False
     #endfunction
 
     #--------------------------------------------------
@@ -105,21 +106,56 @@ class TThread (threading.Thread):
         return self
     #endfunction
 
+    # #--------------------------------------------------
+    # # start
+    # #--------------------------------------------------
+    # def start(self):
+    #     """start - Запуск потока"""
+    # #beginfunction
+    #     s = 'start - Запуск потока...'
+    #     LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+    #     # self.Function ()
+    #     super ().start ()
+    # #endfunction
+
     #--------------------------------------------------
     # run
     #--------------------------------------------------
     def run(self):
-        """Запуск потока"""
+        """run - Запуск потока"""
     #beginfunction
-        s = 'Запуск потока...'
+        s = 'run - Запуск потока...'
         LULog.LoggerTOOLS.debug (s)
         super ().run()
-        while not self.FStopThread:
+        while not self.__FStopThread:
             s = 'Выполнение потока...'
             # LULog.LoggerTOOLS.debug (s)
             continue
         #endwhile
     #endfunction
+
+    #--------------------------------------------------
+    # StartThread
+    #--------------------------------------------------
+    def StartThread(self):
+        """StartThread"""
+    #beginfunction
+        s = 'StartThread...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = False
+        self.run()
+    #endfunction
+    #--------------------------------------------------
+    # StopThread
+    #--------------------------------------------------
+    def StopThread(self):
+        """StopThread"""
+    #beginfunction
+        s = 'StopThread...'
+        LULog.LoggerTOOLS.debug (s)
+        self.__FStopThread = True
+    #endfunction
+
 #endclass
 
 #------------------------------------------

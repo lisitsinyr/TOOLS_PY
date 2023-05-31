@@ -118,25 +118,24 @@ class TYouTubeObject (TObjects):
         self.__FNumber: int = 0
         self.__FCount: int = 0
 
-        # self.__FRxProgress = None
-        # self.FONprogress = ONfunction
-        # self.FONcomplete = ONfunction
-        # self.FONprogress = progress_func
-        # self.FONcomplete = complete_func
-        self.FONprogress = self.ONprogress
-        self.FONcomplete = self.ONcomplete
+        # self.__FONprogress = ONfunction
+        # self.__FONcomplete = ONfunction
+        # self.__FONprogress = progress_func
+        # self.__FONcomplete = complete_func
+        self.__FONprogress = self.ONprogress
+        self.__FONcomplete = self.ONcomplete
 
-        self.FProgressMax: int = 0
-        self.FProgressMin: int = 0
-        self.FProgressValue: int = 0
-        self.FProgressLeft: int = 0
+        self.__FProgressMax: int = 0
+        self.__FProgressMin: int = 0
+        self.__FProgressValue: int = 0
+        self.__FProgressLeft: int = 0
 
-        self.FYouTubeThread: LUThread.TThread = None
+        self.__FYouTubeThread: LUThread.TThread = None
         self.__FStopYouTubeBoolean: bool = False
         self.__FStopYouTubeBooleanThread: bool = False
 
-        self.Fis_paused = False
-        self.Fis_cancelled = False
+        self.__Fis_paused = False
+        self.__Fis_cancelled = False
         self.__Filechunk: io.BufferedWriter = None
         self.__FileNamechunk = ''
         self.Clear()
@@ -167,10 +166,10 @@ class TYouTubeObject (TObjects):
         s = 'TYouTubeObject.ONprogress...'
         LULog.LoggerTOOLS.info (s)
         if not AStream is None:
-            self.FProgressMax = AStream.filesize
-            self.FProgressLeft = Abytes_remaining
-            self.FProgressValue = self.FProgressMax - self.FProgressLeft
-            # LULog.LoggerTOOLS.info (f'{self.FProgressMax}-{self.FProgressLeft}-{self.FProgressValue}')
+            self.__FProgressMax = AStream.filesize
+            self.__FProgressLeft = Abytes_remaining
+            self.__FProgressValue = self.__FProgressMax - self.__FProgressLeft
+            # LULog.LoggerTOOLS.info (f'{self.__FProgressMax}-{self.__FProgressLeft}-{self.__FProgressValue}')
 
             if not AChunk is None:
                 if not self.__Filechunk is None:
@@ -193,17 +192,18 @@ class TYouTubeObject (TObjects):
         s = 'TYouTubeObject.ONcomplete...'
         LULog.LoggerTOOLS.info (s)
         if not AStream is None:
-            self.FProgressMax = AStream.filesize
-            self.FProgressLeft = 0
-            self.FProgressValue = self.FProgressMax - self.FProgressLeft
+            self.__FProgressMax = AStream.filesize
+            self.__FProgressLeft = 0
+            self.__FProgressValue = self.__FProgressMax - self.__FProgressLeft
 
             if not AFilePath is None:
                 LFileName = LUStrUtils.PrintableStr (AFilePath)
                 LULog.LoggerTOOLS.info ('Файл ' + LFileName + ' загружен')
             #endif
 
-            if not self.FYouTubeThread is None:
-                self.FYouTubeThread.FStopThread = True
+            if not self.__FYouTubeThread is None:
+                self.__FYouTubeThread.StopThread()
+                # self.__FYouTubeThread.FStopThread = True
             #endif
         #endif
     #endfunction
@@ -505,7 +505,6 @@ class TYouTubeObject (TObjects):
         self.ID = 0
         self.StopYouTubeBoolean = False
         self.ProgressMax = 0
-        self.RxProgress = None
         self.YouTubeThread = None
         self.PlayList = ''
         self.Number = 0
@@ -524,26 +523,26 @@ class TYouTubeObject (TObjects):
                     stream = request.stream(self.__FStream.url) # get an iterable stream
                     Ldownloaded = 0
                     while True:
-                        if self.Fis_cancelled:
+                        if self.__Fis_cancelled:
                             break
                         #endif
-                        if self.Fis_paused:
+                        if self.__Fis_paused:
                             continue
                         #endif
                         Lchunk = next(stream, None) # get next chunk of video
                         if Lchunk:
-                            self.FONprogress (self.__FStream, Lchunk, LFileSize-Ldownloaded)
+                            self.__FONprogress (self.__FStream, Lchunk, LFileSize-Ldownloaded)
                             # self.__Filechunk.write(Lchunk)
                             Ldownloaded += len(Lchunk)
                         else:
                             # no more data
-                            self.FONcomplete (self.__FStream, self.__FileNamechunk)
+                            self.__FONcomplete (self.__FStream, self.__FileNamechunk)
                             break
                         #endif
                     #endwhile
                 #endwith
             else:
-                self.FONcomplete (self.__FStream, self.__FileNamechunk)
+                self.__FONcomplete (self.__FStream, self.__FileNamechunk)
                 # LULog.LoggerTOOLS.info ('Файл ' + self.__FileNamechunk + ' существует...')
             #endif
         except Exception as ERROR:
@@ -557,10 +556,10 @@ class TYouTubeObject (TObjects):
         s = self.URLInfo ['thumbnail_url']
         s = self.URLInfo ['author']
         s = self.URLInfo ['title']
-        if not self.FONprogress is None:
-            self.__FYouTube.register_on_progress_callback(self.FONprogress)
-        if not self.FONcomplete is None:
-            self.__FYouTube.register_on_complete_callback(self.FONcomplete)
+        if not self.__FONprogress is None:
+            self.__FYouTube.register_on_progress_callback(self.__FONprogress)
+        if not self.__FONcomplete is None:
+            self.__FYouTube.register_on_complete_callback(self.__FONcomplete)
 
         if len(self.PlayList) > 0:
             LPATH = os.path.join (APATH, self.PlayList)
@@ -610,18 +609,21 @@ class TYouTubeObject (TObjects):
             N = LFilesize // 4
             i = N
             while i < LFilesize:
-                self.FONprogress(self.__FStream, None, N-i)
+                self.__FONprogress(self.__FStream, None, N-i)
                 i = i + N
             #endwhile
-            self.FONcomplete (self.__FStream, None)
+            self.__FONcomplete (self.__FStream, None)
         #endif
     #endfunction
 
     def StartYouTubeThread (self, *args, **kwargs):
         """StartYouTubeThread"""
     #beginfunction
-        self.FYouTubeThread = LUThread.TThread(target = self.DownloadURL, args=args, kwargs=kwargs)
-        self.FYouTubeThread.start ()
+        self.__FYouTubeThread = LUThread.TThread(target = self.DownloadURL, args=args, kwargs=kwargs)
+
+        self.__FYouTubeThread.StartThread()
+        # self.FYouTubeThread.start ()
+
     #endfunction
 #endclass
 

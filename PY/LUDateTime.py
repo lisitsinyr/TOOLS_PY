@@ -135,7 +135,7 @@ def EncodeDateTime (AYear: int, AMonth: int, ADay: int, AHour: int, AMin: int, A
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
-def DayOfWeek (ADateTime: datetime.datetime):
+def DayOfWeek (ADateTime: datetime.date):
     """DayOfWeek"""
 #beginfunction
     return ADateTime.weekday()

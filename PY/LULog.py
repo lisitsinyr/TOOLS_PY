@@ -79,8 +79,8 @@ TEXT = 24
 
 # строка формата сообщения
 # Cstrfmt_04 = '%(asctime)s %(msecs)03d [%(name)s] %(levelno)02d %(levelname)-8s %(module)s %(message)s'
-Cstrfmt_01 = '%(asctime)s [%(name)s] [%(module)-15s] %(levelno)02d %(levelname)-10s %(lineno)03d %(message)s'
-Cstrfmt_02 = '%(asctime)s %(name)s %(levelname)s %(message)s'
+Cstrfmt_01 = '%(asctime)s [%(name)s] [%(module)-15s] %(levelno)02d %(levelname)-10s %(lineno)04d %(message)s'
+Cstrfmt_02 = '%(asctime)s %(name)s %(levelname)-10s %(message)s'
 # строка формата времени
 Cdatefmt_01 = '%d/%m/%Y %H:%M:%S'
 # style
@@ -153,7 +153,6 @@ class TLogOutput (enum.Enum):
 #endclass
 
 Cbold = 'bold '
-Cbold = ''
 Cblue = 'blue'
 Cwhite = 'white'
 Cyellow = 'yellow'
@@ -682,9 +681,11 @@ class TStreamHandler(logging.StreamHandler):
     #beginfunction
         logging.StreamHandler.__init__(self, *args, **kwargs)
         self.name = 'CONSOLE'
+        self.FAPPGUI = False
+
         self.__FConsoleRich = rich.console.Console()
 
-        self.__Fwidget:PySide6.QtWidgets.QPlainTextEdit = None
+        self.__FWidget:PySide6.QtWidgets.QPlainTextEdit = None
         # self.__Fwidget = PySide6.QtWidgets.QPlainTextEdit (parent)
         # self.__Fwidget = PySide6.QtWidgets.QPlainTextEdit ()
         # self.__Fwidget.setReadOnly (True)
@@ -696,14 +697,14 @@ class TStreamHandler(logging.StreamHandler):
     #--------------------------------------------------
     # getter
     @property
-    def widget (self):
+    def Widget (self):
     #beginfunction
-        return self.__Fwidget
+        return self.__FWidget
     #endfunction
-    @widget.setter
-    def widget (self, Value):
+    @Widget.setter
+    def Widget (self, Value):
     #beginfunction
-        self.__Fwidget = Value
+        self.__FWidget = Value
     #endfunction
 
     #--------------------------------------------------
@@ -712,17 +713,16 @@ class TStreamHandler(logging.StreamHandler):
     def emit(self, record):
         """emit"""
     #beginfunction
-        # !!!!!!!!!!!!!!!!!!!!!!
         if type(self.formatter) is TFormatter:
             LFormatter: TFormatter = self.formatter
             # widget
-            if not self.widget is None:
+            if not self.Widget is None:
                 b = LFormatter.FUseColor
                 LFormatter.FUseColor = False
                 msg = LFormatter.format (record)
-                self.widget.appendPlainText (msg)
+                self.Widget.appendPlainText (msg)
                 # self.widget.document().end()
-                self.widget.verticalScrollBar().setValue (self.widget.verticalScrollBar().maximum ())
+                self.Widget.verticalScrollBar().setValue (self.Widget.verticalScrollBar().maximum ())
                 LFormatter.FUseColor = b
             #endif
 
@@ -737,9 +737,10 @@ class TStreamHandler(logging.StreamHandler):
                         self.flush()
                     else:
                         msg = self.format (record)
-                        #print (msg)
-                        # rich.print (msg)
-                        self.__FConsoleRich.print(msg)
+                        if not self.FAPPGUI:
+                            #rich.print (msg)
+                            self.__FConsoleRich.print(msg)
+                        #endif
                     #endif
                 except RecursionError:  # See issue 36272
                     raise
@@ -1507,6 +1508,11 @@ def SetFormatterForLogger (ALogger: logging.Logger):
             item.formatter.json_ensure_ascii = False
         #endif
         if type (item) is logging.StreamHandler or type (item) is TStreamHandler:
+            # if LUConsole.ISTerminal ():
+            #     TStreamHandler(item).setLevel(logging.CRITICAL)
+            #     # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            #     ...
+            # #endif
             Lfmt = item.formatter._fmt
             Ldatefmt = item.formatter.datefmt
             LFormaterConsole = TFormatter (fmt = Lfmt, datefmt = Ldatefmt)
@@ -1669,6 +1675,7 @@ LoggerTOOLS = logging.getLogger(CLoggerTOOLS)
 # LoggerTOOLS = logging.getLogger('log02')
 # CLoggerTOOLS.name = CLoggerTOOLS
 # s = f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}'
+#endif
 
 #-------------------------------------------------
 # LoggerAPPS
@@ -1685,9 +1692,7 @@ LoggerAPPS = logging.getLogger(CLoggerAPPS)
 def CreateTLogger (ALogerName: str) -> TLogger:
     """CreateTLogging"""
 #beginfunction
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     logging.setLoggerClass (TLogger)
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # создаем регистратор
     LResult = TLogger(ALogerName)
     SetFormatterForLogger (LResult)
@@ -1746,14 +1751,14 @@ def PrintHandlers (ALogger: logging.Logger):
         s = f'{item.name}={item}'
         # LoggerTOOLS.info(s)
         if type(item) is logging.StreamHandler:
-            # LoggerTOOLS.info ('logging.StreamHandler='+s)
+            LoggerTOOLS.info ('logging.StreamHandler='+s)
             # Lfmt = item.formatter._fmt
             # Ldatefmt = item.formatter.datefmt
             # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
             ...
         #endif
         if type (item) is TStreamHandler:
-            # LoggerTOOLS.info ('TStreamHandler='+s)
+            LoggerTOOLS.info ('TStreamHandler='+s)
             # Lfmt = item.formatter._fmt
             # Ldatefmt = item.formatter.datefmt
             # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
