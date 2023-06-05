@@ -1,4 +1,4 @@
-"""LUThread.py"""
+"""LUQThread.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
@@ -22,6 +22,7 @@ import psutil
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
+import PySide6.QtCore as QtCore
 from PySide6.QtCore import QObject, QThread, Signal, Slot
 from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
@@ -34,6 +35,7 @@ import LULog
 class MySignals(QObject):
     signal_str = Signal(str)
     signal_int = Signal(int)
+#endclass
 
 # Create the Worker Thread
 class TQThread (QThread):
@@ -43,22 +45,20 @@ class TQThread (QThread):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    # def __init__ (self, AFuction, parent = None):
-    def __init__ (self, *args, **kwargs):
+    def __init__ (self, parent = None):
     #beginfunction
-        # QThread.__init__ (self, parent)
-        super ().__init__ (*args, **kwargs)
-        self.args = args
-        self.kwargs = kwargs
-
-        # self.Function = AFuction
-
-        # # Instantiate signals and connect signals to the slots
-        # self.signals = MySignals ()
-        # self.signals.signal_str.connect (parent.update_str_field)
-        # self.signals.signal_int.connect (parent.update_int_field)
+        QThread.__init__ (self, parent = parent)
+        # super ().__init__ (*args, **kwargs)
+        # self.args = args
+        # self.kwargs = kwargs
 
         self.__FStopThread = False
+
+        # Instantiate signals and connect signals to the slots
+        self.signals = MySignals ()
+        self.signals.signal_str.connect (parent.update_str_field)
+        self.signals.signal_int.connect (parent.update_int_field)
+
     #endfunction
 
     #--------------------------------------------------
@@ -89,13 +89,21 @@ class TQThread (QThread):
     def run(self):
         """Запуск потока"""
     #beginfunction
+        super ().run()
         s = 'run - Запуск потока...'
         LULog.LoggerTOOLS.debug (s)
-        # self.Function()
-        super ().run()
+
+        # Do something on the worker thread
+        a = 1 + 1
+        # Emit signals whenever you want
+        self.signals.signal_int.emit (a)
+        self.signals.signal_str.emit ("This text comes to Main thread from our Worker thread.")
+
         while not self.__FStopThread:
             s = 'Выполнение потока...'
             # LULog.LoggerTOOLS.debug (s)
+            Lval = psutil.cpu_percent ()
+            self.emit(QtCore.SIGNAL('CPU_VALUE'), Lval)
             continue
         #endwhile
 
@@ -104,7 +112,6 @@ class TQThread (QThread):
         # # Emit signals whenever you want
         # self.signals.signal_int.emit (a)
         # self.signals.signal_str.emit ("This text comes to Main thread from our Worker thread.")
-
         # while 1:
         #     Lval = psutil.cpu_percent ()
         #     # self.emit(QtCore.SIGNAL('CPU_VALUE'), Lval)

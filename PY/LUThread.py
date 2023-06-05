@@ -65,18 +65,20 @@ class TThread (threading.Thread):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    # def __init__ (self, *args, **kwargs):
-    def __init__ (self, group = None, target = None,
-                               name = None, args = (),
-                               kwargs = {}, *, daemon = None):
+    def __init__ (self, *args, **kwargs):
+    # def __init__ (self, group = None, target = None,
+    #                            name = None, args = (),
+    #                            kwargs = {}, *, daemon = None):
 
         """Constructor"""
     #beginfunction
-        # super ().__init__ (*args, **kwargs)
-        super ().__init__ (group = group, target = target,
-                               name = name, *args,
-                               **kwargs, daemon = daemon)
-
+        super ().__init__ (*args, **kwargs)
+        # super ().__init__ (group = group, target = target,
+        #                        name = name,
+        #                         *args,
+        #                        **kwargs,
+        #                         daemon = daemon)
+        #
         self.args = args
         self.kwargs = kwargs
         # print ('args=',args)

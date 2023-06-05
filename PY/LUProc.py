@@ -75,6 +75,16 @@ CStatApplication = {
     # TStatApplication.saStop: 'saStop',
     # TStatApplication.saAddWidget: 'saAddWidget'
     }
+@enum.unique
+class TStatWidget(enum.Enum):
+    """TStatApplication"""
+    swRunning    = enum.auto ()
+    swBreak      = enum.auto ()
+#endclass
+CStatWidget = {
+    TStatWidget.swRunning:  'swRunning',
+    TStatWidget.swBreak:    'swBreak'
+    }
 
 #------------------------------------------
 def main ():
