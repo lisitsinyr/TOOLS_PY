@@ -108,44 +108,43 @@ class TYouTubeObject (TObjects):
     #beginfunction
         super ().__init__ ()
         self.__FObjectType: TObjectTypeClass = TObjectTypeClass.otYouTubeObject
-
+        #----------------------------------------------
         self.__FYouTube: YouTube = None
         self.__FStream: pytube.Stream = None
         self.__FURL: str = ''
         self.__FID: datetime = 0
+        #----------------------------------------------
         self.__FURLInfo = dict ()
         self.__FStreamInfo = dict ()
         self.__FPlayList: str = ''
         self.__FNumber: int = 0
         self.__FCount: int = 0
-
-        # self.__FONprogress = ONfunction
-        # self.__FONcomplete = ONfunction
-        # self.__FONprogress = progress_func
-        # self.__FONcomplete = complete_func
+        #----------------------------------------------
         self.__FONprogress: TONfunction = self.ONprogressObject
         self.__FONcomplete: TONfunction = self.ONcompleteObject
-
+        #----------------------------------------------
         self.__FYouTubeThread: LUThread.TThread = None
-        self.__FStopYouTubeBoolean: bool = False
-        self.__FStopYouTubeBooleanThread: bool = False
-
+        # self.__FStopYouTubeBoolean: bool = False
+        # self.__FStopYouTubeBooleanThread: bool = False
+        #----------------------------------------------
         self.FProgressMax: int = 0
         self.FProgressMin: int = 0
         self.FProgressValue: int = 0
         self.FProgressLeft: int = 0
+        #----------------------------------------------
+        self.FFilechunk: io.BufferedWriter = None
+        self.FFileNamechunk = ''
         self.FChunk: bool = True
         self.Fis_paused = False
         self.Fis_cancelled = False
-        self.FFilechunk: io.BufferedWriter = None
-        self.FFileNamechunk = ''
-
+        self.Fskip_existing = False
+        #----------------------------------------------
         self.__FPathDownload = APathDownload
         self.__FFilePathDownload = APathDownload
         self.__FFileNamePrefixDownload = ''
         self.__FFileNameDownload = ''
         self.__FFileSizeDownload = 0
-
+        #----------------------------------------------
         self.Clear()
     #endfunction
 
@@ -566,20 +565,20 @@ class TYouTubeObject (TObjects):
         self._FProgressMax = Value
     #endfunction
 
-    #--------------------------------------------------
-    # @property StopYouTubeBoolean
-    #--------------------------------------------------
-    # getter
-    @property
-    def StopYouTubeBoolean(self) -> bool:
-    #beginfunction
-        return self.__FStopYouTubeBoolean
-    #endfunction
-    @StopYouTubeBoolean.setter
-    def StopYouTubeBoolean(self, Value: bool):
-    #beginfunction
-        self.__FStopYouTubeBoolean = Value
-    #endfunction
+    # #--------------------------------------------------
+    # # @property StopYouTubeBoolean
+    # #--------------------------------------------------
+    # # getter
+    # @property
+    # def StopYouTubeBoolean(self) -> bool:
+    # #beginfunction
+    #     return self.__FStopYouTubeBoolean
+    # #endfunction
+    # @StopYouTubeBoolean.setter
+    # def StopYouTubeBoolean(self, Value: bool):
+    # #beginfunction
+    #     self.__FStopYouTubeBoolean = Value
+    # #endfunction
 
     #--------------------------------------------------
     # @property YouTubeThread
@@ -619,14 +618,17 @@ class TYouTubeObject (TObjects):
             Ldownloaded = 0
             while True:
                 if self.Fis_cancelled:
+                    # print('Fis_cancelled...')
                     break
                 #endif
                 if self.Fis_paused:
+                    # print('Fis_paused...')
                     continue
                 #endif
                 Lchunk = next(stream, None) # get next chunk of video
                 if Lchunk:
                     self.__FONprogress (self.__FStream, Lchunk, LFileSize-Ldownloaded)
+                    # print(len(Lchunk))
                     Ldownloaded += len(Lchunk)
                 else:
                     # no more data
@@ -637,8 +639,7 @@ class TYouTubeObject (TObjects):
         #endwith
     #endfunction
 
-    def DownloadURL (self, APATH: str, ADownload=False,
-                     skip_existing = True, filename_prefix = ''):
+    def DownloadURL (self, ADownload=False, skip_existing = False):
         """DownloadURL"""
     #beginfunction
         if not self.__FONprogress is None:
@@ -652,6 +653,9 @@ class TYouTubeObject (TObjects):
         #endif
         LFileName = self.FileNameDownload
         LFileSize = self.FileSizeDownload
+        if not LUFile.FileExists (LFileName):
+            LUFile.FileDelete (LFileName)
+        #endif
 
         if ADownload and len (LFileName) > 0:
             if not self.FChunk:
@@ -666,6 +670,11 @@ class TYouTubeObject (TObjects):
                 #endtry
             else:
                 self.__DownloadURL_chunk (LPATH, LFileName, LFileSize)
+                if self.Fis_cancelled:
+                    if LUFile.FileExists (LFileName):
+                        LUFile.FileDelete (LFileName)
+                    #endif
+                #endif
             #endif
         else:
             N = LFileSize // 4
@@ -682,10 +691,7 @@ class TYouTubeObject (TObjects):
         """StartYouTubeThread"""
     #beginfunction
         self.__FYouTubeThread = LUThread.TThread(target = self.DownloadURL, args=args, kwargs=kwargs)
-
         self.__FYouTubeThread.StartThread()
-        # self.FYouTubeThread.start ()
-
     #endfunction
 #endclass
 
@@ -721,7 +727,10 @@ def CheckURLs (AURL: str, AURLs: dict):
             if CYOUTUBE_PLAYLIST in LURI.path.upper():
                 _CheckYOUTUBEPlaylist ()
             else:
-                AURLs [AURL] = {'PlayListName': '', 'N': 1, 'NN': 1}
+                if len(LURI.query) > 0:
+                    # https: // www.youtube.com / @ nativecode / videos
+                    AURLs [AURL] = {'PlayListName': '', 'N': 1, 'NN': 1}
+                #endif
             #endif
         #endif
     #endif

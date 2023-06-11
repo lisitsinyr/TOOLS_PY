@@ -18,18 +18,37 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import psutil
+import timer
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-import PySide6.QtCore as QtCore
-from PySide6.QtCore import QObject, QThread, Signal, Slot, QTimer, QCoreApplication
-from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+# import PySide6.QtCore as QtCore
+
+from PySide6.QtCore import (
+    QObject, QThread, Signal, Slot, QTimer, QCoreApplication,
+    QEventLoop, QTime, QTimer, Slot
+    )
+from PySide6.QtWidgets import (
+    QApplication, QPushButton, QVBoxLayout, QWidget,
+    QLCDNumber
+    )
 
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
 import LULog
+
+# blocking.py
+def wait(milliseconds, /):
+    timer = QTimer()
+    timer.start(milliseconds)
+    wait_for_event(timer.timeout)
+def wait_for_event(event, /):
+    loop = QEventLoop()
+    event.connect(loop.quit)
+    loop.exec()
+
 
 # Signals must inherit QObject
 class MySignals(QObject):
@@ -134,7 +153,33 @@ class TQTimer (QTimer):
         #     QCoreApplication.processEvents ()
         # #endwhile
     #endfunction
+#endclass
 
+class DigitalClock(QLCDNumber):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setSegmentStyle(QLCDNumber.Filled)
+        self.setDigitCount(8)
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.show_time)
+        self.timer.start(1000)
+
+        self.show_time()
+
+        self.setWindowTitle("Digital Clock")
+        self.resize(250, 60)
+
+    @Slot (str, name = 'show_time')
+    def show_time(self):
+        time = QTime.currentTime()
+        text = time.toString("hh:mm:ss")
+
+        # Blinking effect
+        if (time.second() % 2) == 0:
+            text = text.replace(":", " ")
+
+        self.display(text)
 #endclass
 
 #------------------------------------------

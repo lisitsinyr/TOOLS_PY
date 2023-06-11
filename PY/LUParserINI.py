@@ -248,6 +248,12 @@ class TINIFile (configparser.ConfigParser):
         #endif
     #endfunction
 
+    def RefreashOption (self):
+        """RefreashOption"""
+    #beginfunction
+        self.__OpenFileINI ()
+    #endfunction
+
     def GetOption (self, ASectionName: str, AOptionName: str, AValueDefault: str) -> str:
         """GetOption"""
     #beginfunction
