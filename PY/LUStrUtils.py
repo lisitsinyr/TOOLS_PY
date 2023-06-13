@@ -18,7 +18,6 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import string
-import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -479,6 +478,17 @@ def strtobool (val: str):
         return 0
     else:
         raise ValueError("invalid truth value %r" % (val,))
+    #endif
+#endfunction
+
+def booltostr (val: bool) -> str:
+    """booltostr"""
+#beginfunction
+    if val:
+        return '1'
+    else:
+        return '0'
+    #endif
 #endfunction
 
 """

@@ -20,8 +20,6 @@ __annotations__ = """
 import datetime
 from calendar import monthrange
 import threading
-import logging
-import time
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -31,7 +29,6 @@ import time
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LULog
-import LUConst
 import LUStrUtils
 import LUDateTime
 

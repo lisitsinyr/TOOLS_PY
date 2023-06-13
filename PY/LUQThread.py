@@ -24,7 +24,6 @@ import psutil
 #------------------------------------------
 import PySide6.QtCore as QtCore
 from PySide6.QtCore import QObject, QThread, Signal, Slot
-from PySide6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
 #------------------------------------------
 # БИБЛИОТЕКА LU

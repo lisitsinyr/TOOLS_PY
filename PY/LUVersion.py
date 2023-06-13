@@ -27,8 +27,6 @@ import datetime
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LULog
-import LUConst
 
 class TVersionInfo:
     """TVersionInfo"""

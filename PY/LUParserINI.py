@@ -33,6 +33,7 @@ import LUConst
 import LUFile
 import LUos
 import LUStrDecode
+import LUStrUtils
 
 class TINIFile (configparser.ConfigParser):
     """TINIFile"""
@@ -58,6 +59,7 @@ class TINIFile (configparser.ConfigParser):
     """
     @staticmethod
     def __GetINIFileName (AFileName: str) -> str:
+        """__GetINIFileName"""
     #beginfunction
         P = LUFile.ExtractFileDir (AFileName)
         F = LUFile.ExtractFileName (AFileName)
@@ -78,10 +80,10 @@ class TINIFile (configparser.ConfigParser):
         return LResult
     #endfunction
 
-    def __init__ (self, **kwargs):      # allow_no_value=True
+    def __init__ (self, empty_lines_in_values=True, **kwargs):      # allow_no_value=True
         """Constructor"""
     #beginfunction
-        super ().__init__ (**kwargs)
+        super ().__init__ (empty_lines_in_values=True, **kwargs)
         self.__FSectionName: str = ''
         self.__FOptionName: str = ''
         self.__FOptionValue: str = ''
@@ -254,27 +256,68 @@ class TINIFile (configparser.ConfigParser):
         self.__OpenFileINI ()
     #endfunction
 
-    def GetOption (self, ASectionName: str, AOptionName: str, AValueDefault: str) -> str:
+    def GetOption (self, ASectionName: str, AOptionName: str, AValueDefault):
         """GetOption"""
     #beginfunction
-        try:
-            return self.get(ASectionName, AOptionName)
-        except configparser.NoSectionError as ERROR:
+        if self.has_section(ASectionName):
+            if type(AValueDefault) == int:
+                try:
+                    i = self.getint (ASectionName, AOptionName)
+                except:
+                    i = AValueDefault
+                #endtry
+                return i
+            elif type(AValueDefault) == bool:
+                s = self.get(ASectionName, AOptionName)
+                return LUStrUtils.strtobool(s)
+            elif type(AValueDefault) == float:
+                try:
+                    f = self.getfloat (ASectionName, AOptionName)
+                except:
+                    f = AValueDefault
+                #endtry
+                return f
+            else:
+                s = self.get(ASectionName, AOptionName)
+                return s
+            #endif
+        else:
             return AValueDefault
+        #endif
     #endfunction
 
-    def SetOption (self, ASectionName: str, AOptionName: str, AValue: str):
+    def SetOption (self, ASectionName: str, AOptionName: str, AValue):
         """SetOption"""
     #beginfunction
-        try:
-            if not self.has_section(ASectionName):
-                self.add_section (ASectionName)
-            #endif
-            self.set(ASectionName, AOptionName, AValue)
+        if not self.has_section(ASectionName):
+            self.add_section (ASectionName)
+        #endif
+        s = ''
+        if type(AValue) == int:
+            try:
+                s = str (AValue)
+                self.ChangedFileINI = True
+            except:
+                self.ChangedFileINI = False
+            #endtry
+        elif type(AValue) == bool:
+            s = LUStrUtils.booltostr (AValue)
             self.ChangedFileINI = True
+        elif type(AValue) == float:
+            try:
+                s = str (AValue)
+                self.ChangedFileINI = True
+            except:
+                self.ChangedFileINI = False
+            #endtry
+        else:
+            s = AValue
+            self.ChangedFileINI = True
+        #endif
+        if self.ChangedFileINI:
+            self.set (ASectionName, AOptionName, s)
             self.UpdateFileINI ()
-        except:
-            self.ChangedFileINI = False
+        #endif
     #endfunction
 
     def DeleteSection (self, ASectionName: str):
