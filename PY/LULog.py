@@ -45,6 +45,7 @@ import LUFile
 import LUConsole
 import LUDateTime
 import LUStrDecode
+import LUos
 
 # ===========================================================================
 # CONST
@@ -1521,6 +1522,41 @@ def SetFormatterForLogger (ALogger: logging.Logger):
     #enfor
 #endfunction
 
+def PrintHandlers (ALogger: logging.Logger):
+    """Printhandlers"""
+#beginfunction
+    for item in ALogger.root.handlers:
+        s = f'{item.name}={item}'
+        # LoggerTOOLS.info(s)
+        if type(item) is logging.StreamHandler:
+            LoggerTOOLS.info ('logging.StreamHandler='+s)
+            # Lfmt = item.formatter._fmt
+            # Ldatefmt = item.formatter.datefmt
+            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
+            ...
+        #endif
+        if type (item) is TStreamHandler:
+            LoggerTOOLS.info ('TStreamHandler='+s)
+            # Lfmt = item.formatter._fmt
+            # Ldatefmt = item.formatter.datefmt
+            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
+            ...
+        #endif
+    #enfor
+#endfunction
+
+def GetHandler (ALogger: logging.Logger, ANameHandler: str):
+    """Printhandlers"""
+#beginfunction
+    for item in ALogger.root.handlers:
+        s = f'{item.name}={item}'
+        # LoggerTOOLS.info(s)
+        if item.name == ANameHandler:
+            return item
+        #endif
+    #enfor
+#endfunction
+
 #-------------------------------------------------
 # LOGGING_CONFIG
 #-------------------------------------------------
@@ -1530,16 +1566,20 @@ LOGGING_CONFIG = \
     'disable_existing_loggers': 1,
     'loggers': {
         'root': {
-            'handlers': ['CONSOLE', 'FILE_01'],
+            'handlers': [
+                'CONSOLE',
+                'FILE_01'
+            ],
             'level': 'DEBUG',
             'propagate': 1
         },
-
         'log02': {
-            'handlers': ['FILE_02'],
+            'handlers': [
+                'FILE_02'
+            ],
             'level': 'DEBUG',
-            'qualname': 'log02',
-            'propagate': 0
+            'propagate': 0,
+            'qualname': 'log02'
         }
     },
     'handlers': {
@@ -1620,14 +1660,21 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
 #beginfunction
     # читаем конфигурацию из файла
     LPath = LUFile.ExtractFileDir(__file__)
-    LFileName = os.path.join(LPath, AFileNameINI)
-    logging.config.fileConfig(LFileName, disable_existing_loggers=True,
-                              encoding = LUFile.cDefaultEncoding)
-    # создаем регистратор
-    LResult = logging.getLogger (ALogerName)
-    # установить форматер
-    SetFormatterForLogger (LResult)
-    return LResult
+    LFileName = os.path.join (LPath, AFileNameINI)
+    if not LUFile.FileExists(LFileName):
+        LPath = LUos.GetCurrentDir ()
+        LFileName = os.path.join(LPath, AFileNameINI)
+    #endif
+    if LUFile.FileExists (LFileName):
+        logging.config.fileConfig (LFileName, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
+        # создаем регистратор
+        LResult = logging.getLogger (ALogerName)
+        # установить форматер
+        SetFormatterForLogger (LResult)
+        return LResult
+    else:
+        return None
+    #endif
 #endfunction
 
 def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Logger:
@@ -1651,20 +1698,18 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
 # Настройка системы logging
 #-------------------------------------------------
 AddLevelName ()
-
 if not LUFile.DirectoryExists('LOG'):
     os.mkdir('LOG')
 #endif
 
-# CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
-CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
-
 #-------------------------------------------------
-# LoggerAPPS = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
-# GLULogger = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
+GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
+if GLoggerFILEINI is None:
+    GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
+#endif
 #-------------------------------------------------
-# GLULogger = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
-# GLULogger = CreateLoggerBASIC (logging.DEBUG, '', 'root')
+# GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
+# GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, '', 'root')
 #-------------------------------------------------
 
 #-------------------------------------------------
@@ -1672,19 +1717,12 @@ CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
 #-------------------------------------------------
 CLoggerTOOLS = 'TOOLS__'
 LoggerTOOLS = logging.getLogger(CLoggerTOOLS)
-# LoggerTOOLS = logging.getLogger('log02')
-# CLoggerTOOLS.name = CLoggerTOOLS
-# s = f'LoggerTOOLS={sys.getrefcount(LoggerTOOLS)}'
-#endif
 
 #-------------------------------------------------
 # LoggerAPPS
 #-------------------------------------------------
 CLoggerAPPS = 'APPS___'
 LoggerAPPS = logging.getLogger(CLoggerAPPS)
-# LoggerAPPS = logging.getLogger('log02')
-# LoggerAPPS.name = CLoggerAPPS
-# s = f'LoggerAPPS={sys.getrefcount(LoggerAPPS)}'
 
 #-------------------------------------------------
 # LoggerTLogger
@@ -1698,11 +1736,8 @@ def CreateTLogger (ALogerName: str) -> TLogger:
     SetFormatterForLogger (LResult)
     return LResult
 #endfunction
-
 CTLogger = 'TLOGGER'
 LoggerTLogger = CreateTLogger (CTLogger)
-# LoggerTLogger.name = CTLogger
-# s = f'LoggerTLogger={sys.getrefcount(LoggerTLogger)}'
 
 #-------------------------------------------------
 # FileMemoLog
@@ -1713,16 +1748,13 @@ def CreateTFileMemoLog () -> TFileMemoLog:
     LFileMemoLog = TFileMemoLog ()
     return LFileMemoLog
 #endfunction
-
 FileMemoLog = CreateTFileMemoLog ()
-# s = f'FileMemoLog={sys.getrefcount(FileMemoLog)}'
 
 #-------------------------------------------------
 # Отключить журнал 'chardet.charsetprober'
 #-------------------------------------------------
 logger = logging.getLogger('chardet.charsetprober')
 logger.setLevel(logging.INFO)
-
 #-------------------------------------------------
 # Отключить журнал 'pytube.extract'
 #-------------------------------------------------
@@ -1743,41 +1775,6 @@ logger.setLevel(logging.INFO)
 #-------------------------------------------------
 logger = logging.getLogger('pytube.helpers')
 logger.setLevel(logging.INFO)
-
-def PrintHandlers (ALogger: logging.Logger):
-    """Printhandlers"""
-#beginfunction
-    for item in ALogger.root.handlers:
-        s = f'{item.name}={item}'
-        # LoggerTOOLS.info(s)
-        if type(item) is logging.StreamHandler:
-            LoggerTOOLS.info ('logging.StreamHandler='+s)
-            # Lfmt = item.formatter._fmt
-            # Ldatefmt = item.formatter.datefmt
-            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
-            ...
-        #endif
-        if type (item) is TStreamHandler:
-            LoggerTOOLS.info ('TStreamHandler='+s)
-            # Lfmt = item.formatter._fmt
-            # Ldatefmt = item.formatter.datefmt
-            # LFormaterConsole = TFormatter (AUseColor=True, fmt=Lfmt, datefmt=Ldatefmt)
-            ...
-        #endif
-    #enfor
-#endfunction
-
-def GetHandler (ALogger: logging.Logger, ANameHandler: str):
-    """Printhandlers"""
-#beginfunction
-    for item in ALogger.root.handlers:
-        s = f'{item.name}={item}'
-        # LoggerTOOLS.info(s)
-        if item.name == ANameHandler:
-            return item
-        #endif
-    #enfor
-#endfunction
 
 #-------------------------------------------------
 #
