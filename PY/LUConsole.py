@@ -304,9 +304,11 @@ def Write (s, **kwargs):
         sys.stdout.write (_s)
     else:
         if len(kwargs):
-            _s = FormatColorStr(_s, **kwargs)
+            __s = FormatColorStr(_s, **kwargs)
+            sys.stdout.write (__s)
+        else:
+            sys.stdout.write (_s)
         #endif
-        sys.stdout.write (_s)
     #endif
     sys.stdout.flush ()
 #endfunction
@@ -328,8 +330,13 @@ def WriteLN (s, **kwargs):
 def ClearLine():
     """ClearLine"""
 #beginfunction
-    sys.stdout.write(sCURSOR_UP_ONE)
-    sys.stdout.write(sERASE_LINE+'\r')
+    # if ISTerminal():
+    #     sys.stdout.write ('\r')
+    # else:
+    #     sys.stdout.write(sCURSOR_UP_ONE)
+    #     sys.stdout.write(sERASE_LINE+'\r')
+    # #endif
+    sys.stdout.write ('\r')
 #endfunction
 
 #-------------------------------------------------

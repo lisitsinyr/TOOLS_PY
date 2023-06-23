@@ -51,14 +51,15 @@ class Infinite(object):
 
         if self.file and self.is_tty():
             if self.hide_cursor:
-                print(HIDE_CURSOR, end='', file=self.file)
+                #print(HIDE_CURSOR, end='', file=self.file)
                 self._hidden_cursor = True
         self.writeln('')
 
     def __del__(self):
         if self._hidden_cursor:
-            print(SHOW_CURSOR, end='', file=self.file)
+            #print(SHOW_CURSOR, end='', file=self.file)
             # print ('', end = '', file = self.file)
+            ...
 
     def __getitem__(self, key):
         if key.startswith('_'):
@@ -105,7 +106,7 @@ class Infinite(object):
         if self.file and self.is_tty():
             print(file=self.file)
             if self._hidden_cursor:
-                print(SHOW_CURSOR, end='', file=self.file)
+                #print(SHOW_CURSOR, end='', file=self.file)
                 self._hidden_cursor = False
 
     def is_tty(self):

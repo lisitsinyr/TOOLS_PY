@@ -33,8 +33,8 @@ import psutil
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 # from LULog import LoggerTOOLS
-import LULog
-import LUConst
+# import LULog
+# import LUConst
 import LUParserREG
 import LUDateTime
 

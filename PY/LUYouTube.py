@@ -39,9 +39,9 @@ class TYouTubeObjectsItem (object):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__(self):
+    def __init__(self, APathDownload):
         """Constructor"""
-        self.__FYouTubeObject: LUObjectsYT.TYouTubeObject = LUObjectsYT.TYouTubeObject()
+        self.__FYouTubeObject: LUObjectsYT.TYouTubeObject = LUObjectsYT.TYouTubeObject(APathDownload)
     #endfunction
 
     #--------------------------------------------------
@@ -82,10 +82,11 @@ class TYouTubeObjectsCollection (list):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__ (self):
+    def __init__ (self, APathDownload: str):
         """Constructor"""
     #beginfunction
         super ().__init__ ()
+        self.__FPathDownload = APathDownload
     #endfunction
 
     #--------------------------------------------------
@@ -103,7 +104,7 @@ class TYouTubeObjectsCollection (list):
     def AddItem (self) -> TYouTubeObjectsItem:
         """AddItem"""
     #beginfunction
-        LYouTubeObjectsItem: TYouTubeObjectsItem = TYouTubeObjectsItem ()
+        LYouTubeObjectsItem: TYouTubeObjectsItem = TYouTubeObjectsItem (APathDownload = self.__FPathDownload)
         self.append (LYouTubeObjectsItem)
         return self [self.__len__()-1]
     #endfunction
@@ -146,16 +147,17 @@ class TYouTube(object):
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    def __init__ (self):
+    def __init__ (self, APathDownload: str):
         """ Constructor """
     #beginfunction
         super ().__init__ ()
         # YouTubeObjectsCollection
-        self.__FYouTubeObjectsCollection = TYouTubeObjectsCollection ()
+        self.__FYouTubeObjectsCollection = TYouTubeObjectsCollection (APathDownload = APathDownload)
 
         # self.__FAPPWorkDir = LUos.APPWorkDir ()
         # self.__FAPPWorkDir = LUos.GetCurrentDir ()
         self.__FAPPWorkDir = LUFile.ExtractFileDir(sys.argv[0])
+        self.__FPathDownload = APathDownload
     #endfunction
 
     #--------------------------------------------------

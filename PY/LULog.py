@@ -40,11 +40,11 @@ import PySide6.QtWidgets
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
-import LUConst
+# import LUConst
 import LUFile
 import LUConsole
 import LUDateTime
-import LUStrDecode
+# import LUStrDecode
 import LUos
 
 # ===========================================================================

@@ -690,7 +690,7 @@ class TYouTubeObject (TObjects):
     def StartYouTubeThread (self, *args, **kwargs):
         """StartYouTubeThread"""
     #beginfunction
-        self.__FYouTubeThread = LUThread.TThread(target = self.DownloadURL, args=args, kwargs=kwargs)
+        self.__FYouTubeThread = LUThread.TThread(kwargs=kwargs)
         self.__FYouTubeThread.StartThread()
     #endfunction
 #endclass
@@ -773,7 +773,7 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
             for LStream in LStreams:
                 LStreamInfo = TYouTubeObject.GetStreamInfo (LStream)
                 LTag = LStreamInfo ['itag']
-                Lresolution = LStreamInfo ['resolution']
+                # Lresolution = LStreamInfo ['resolution']
                 # LULog.LoggerTOOLS.debug (Lresolution)
 
                 Lfilename_prefix = filename_prefix

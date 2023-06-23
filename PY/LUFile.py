@@ -20,8 +20,8 @@ __annotations__ = """
 import datetime
 import os
 import win32api
-import pathlib
-import logging
+# import pathlib
+# import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
