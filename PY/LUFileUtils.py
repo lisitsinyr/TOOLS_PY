@@ -18,7 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-import win32api
+#import win32api
 import platform
 import sys
 import time

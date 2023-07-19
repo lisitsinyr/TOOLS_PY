@@ -19,7 +19,9 @@ __annotations__ = """
 #------------------------------------------
 import datetime
 import os
-import win32api
+import tempfile
+
+# import win32api
 # import pathlib
 # import logging
 
@@ -288,7 +290,8 @@ def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
 def GetTempDir () -> str:
     """GetTempDir"""
 #beginfunction
-    LResult = win32api.GetTempPath()
+    # LResult = win32api.GetTempPath()
+    LResult = tempfile.gettempdir ()
     return LResult
 #endfunction
 
@@ -303,12 +306,16 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
         # int = SearchPath(path, fileName , fileExt )
         #   The return value is a tuple of (string, int).
         #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-        L = win32api.SearchPath (None, LResult, None)
-        if L[0] != '':
-            LResult = L[0]
-        else:
-            LResult = ''
-        #endif
+
+        # L = win32api.SearchPath (None, LResult, None)
+        print('L = win32api.SearchPath (None, LResult, None)')
+        LResult = ''
+        #L = ''
+        #if L[0] != '':
+        #    LResult = L[0]
+        #else:
+        #    LResult = ''
+        ##endif
     else:
         if ExtractFileExt (LResult) == '':
             LResult = LResult + ADefaultExt
@@ -339,7 +346,9 @@ def FileSearch (AFileName: str, APath: str) -> str:
     """FileSearch"""
 #beginfunction
     try:
-        L = win32api.SearchPath (APath, AFileName, None)
+        # L = win32api.SearchPath (APath, AFileName, None)
+        print('L = win32api.SearchPath (APath, AFileName, None)')
+        L = ''
         if L [0] != '':
             LResult = L [0]
         else:

@@ -32,10 +32,9 @@ import psutil
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# from LULog import LoggerTOOLS
-# import LULog
-# import LUConst
-import LUParserREG
+if sys.platform == "win32":
+    import LUParserREG
+#endif
 import LUDateTime
 
 cHOME = 'HOME'
