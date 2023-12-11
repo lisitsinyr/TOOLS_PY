@@ -1,47 +1,36 @@
 # ----------------------------------------------------------------
-# Byte-compiled / optimized / DLL files
-
-# GIT
-.gitignore
-.gitmodules
-CreateGIT.bat
-
+# GENERAL
+# ----------------------------------------------------------------
 # Environments
 .env/*
 .venv/*
+.vscode/*
+# VS Code
+*.code-workspace
+# PyCharm
+.idea/*
 
 # Каталоги
-EXE
 EXE/*
-LOG
 LOG/*
-WORK
 WORK/*
-out
 out/*
+
 # Файлы
 *.exe
 *.spec
 *.log
 GIT_CONFIG
-
-# VS Code
-.vscode/*
-*.code-workspace
-.venv/
-
-# PyCharm
-.idea
-.idea/*
+CreateGIT.bat
 
 __pycache__/
 
 # ----------------------------------------------------------------
-
+# APP
+# ----------------------------------------------------------------
 PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_batch
 PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_gui
 
-PY/LOG
 PY/LOG/
 
 # ----------------------------------------------------------------
