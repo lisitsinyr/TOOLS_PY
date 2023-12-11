@@ -7,25 +7,18 @@
 CreateGIT.bat
 
 # Environments
-.env
-.env/
-.env.bak/
-
-.venv
-.venv/
-.venv.bak/
+.env/*
+.venv/*
 
 # Каталоги
 EXE
-EXE/
+EXE/*
 LOG
-LOG/
+LOG/*
 WORK
-WORK/
+WORK/*
 out
-out/
-!DOC
-!DOC/
+out/*
 # Файлы
 *.exe
 *.spec
@@ -33,13 +26,13 @@ out/
 GIT_CONFIG
 
 # VS Code
+.vscode/*
 *.code-workspace
-.vscode
-.vscode/
+.venv/
 
 # PyCharm
 .idea
-.idea/
+.idea/*
 
 __pycache__/
 
