@@ -30,26 +30,22 @@ import logging.config
 #------------------------------------------
 import pythonjsonlogger
 import pythonjsonlogger.jsonlogger
-
-import rich
-import rich.console
-
-# from PyQt6 import QtWidgets
+#------------------------------------------
 import PySide6.QtWidgets
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
-# import LUConst
 import LUFile
 import LUConsole
 import LUDateTime
-# import LUStrDecode
 import LUos
 
 # ===========================================================================
 # CONST
 # ===========================================================================
+import rich
+import rich.console
 GConsoleRich = rich.console.Console ()
 
 """CONST"""
@@ -1596,7 +1592,7 @@ LOGGING_CONFIG = \
             'formatter': 'FORMAT_01',
             'maxBytes': 10000000,
             'backupCount': 5,
-            'filename': 'LOG\LOGGING_CONFIG.log'
+            'filename': 'LOGGING_CONFIG.log'
         },
         'FILE_02': {
             # 'class': 'logging.handlers.TimedRotatingFileHandler',
@@ -1606,7 +1602,7 @@ LOGGING_CONFIG = \
             # 'interval': 'M',
             'maxBytes': 10000000,
             'backupCount': 5,
-            'filename': 'LOG\LOGGING_CONFIG_json.log'
+            'filename': 'LOGGING_CONFIG_json.log'
         }
     },
     'formatters': {
@@ -1661,6 +1657,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     # читаем конфигурацию из файла
     LPath = LUFile.ExtractFileDir(__file__)
     LFileName = os.path.join (LPath, AFileNameINI)
+    print (LFileName)
     if not LUFile.FileExists(LFileName):
         LPath = LUos.GetCurrentDir ()
         LFileName = os.path.join(LPath, AFileNameINI)
