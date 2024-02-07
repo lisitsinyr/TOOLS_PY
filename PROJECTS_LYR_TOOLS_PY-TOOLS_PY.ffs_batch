@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FreeFileSync XmlType="BATCH" XmlFormat="18">
+    <Notes/>
+    <Compare>
+        <Variant>TimeAndSize</Variant>
+        <Symlinks>Exclude</Symlinks>
+        <IgnoreTimeShift/>
+    </Compare>
+    <Synchronize>
+        <Variant>Mirror</Variant>
+        <DetectMovedFiles>false</DetectMovedFiles>
+        <DeletionPolicy>RecycleBin</DeletionPolicy>
+        <VersioningFolder Style="Replace"/>
+    </Synchronize>
+    <Filter>
+        <Include>
+            <Item>*</Item>
+        </Include>
+        <Exclude>
+            <Item>\System Volume Information\</Item>
+            <Item>\$Recycle.Bin\</Item>
+            <Item>\RECYCLE?\</Item>
+            <Item>*\thumbs.db</Item>
+            <Item>.git</Item>
+            <Item>.gitignore</Item>
+            <Item>.gitmodules</Item>
+            <Item>.README.md</Item>
+            <Item>GIT</Item>
+            <Item>KIX</Item>
+            <Item>UDF</Item>
+            <Item>BAT</Item>
+            <Item>PROJECTS_LYR_TOOLS-TOOLS.ffs_batch</Item>
+            <Item>PROJECTS_LYR_TOOLS-TOOLS.ffs_gui</Item>
+        </Exclude>
+        <SizeMin Unit="None">0</SizeMin>
+        <SizeMax Unit="None">0</SizeMax>
+        <TimeSpan Type="None">0</TimeSpan>
+    </Filter>
+    <FolderPairs>
+        <Pair>
+            <Left>D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_PY\PY</Left>
+            <Right>D:\TOOLS\TOOLS_PY\PY</Right>
+        </Pair>
+    </FolderPairs>
+    <Errors Ignore="false" Retry="0" Delay="5"/>
+    <PostSyncCommand Condition="Completion"/>
+    <LogFolder>D:\PROJECTS_LYR\!LOGS</LogFolder>
+    <EmailNotification Condition="Always"/>
+    <Batch>
+        <ProgressDialog Minimized="false" AutoClose="true"/>
+        <ErrorDialog>Show</ErrorDialog>
+        <PostSyncAction>None</PostSyncAction>
+    </Batch>
+</FreeFileSync>

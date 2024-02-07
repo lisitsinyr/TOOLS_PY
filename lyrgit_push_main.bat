@@ -46,12 +46,29 @@ rem PROJECTS
 rem -------------------------------------------------------------------
 rem set PROJECTS="D:\PROJECTS_LYR\CHECK_LIST\01_OS\03_UNIX\PROJECTS_UNIX"
 set PROJECTS=%~p0
-set LOG_BATFileName=%~f0
-set BASENAME=%~n0%~x0
-rem set LOG_File=%~d0%PROJECTS%LOGS\%BASENAME%.log
-set LOG_File=%~d0%~p0LOGS\%~n0%~x0.log
-echo %LOG_File%
-echo "***" > %LOG_File%
+echo %PROJECTS%
+
+rem  Каталог журналов
+set LOG_DIR=%~d0%~p0LOGS
+echo %LOG_DIR%
+rem  Файл журнала: каталог+имя+расширение
+set LOG_FILE=%~d0%~p0LOGS\%~n0%~x0.log
+echo %LOG_FILE%
+rem  Параметры журнала
+set LOG_OPT="1 1"
+echo %LOG_OPT%
+rem  Файл скрипта: каталог+имя+расширение
+set LOG_BATFULLNAME=%~f0
+echo %LOG_BATFULLNAME%
+rem  Файл скрипта: имя+расширение
+set LOG_BATBASENAME=%~n0%~x0
+echo %LOG_BATBASENAME%
+rem  Файл скрипта: имя
+set LOG_BATFILENAME=%~n0
+echo %LOG_BATFILENAME%
+
+rem set LOG_FILE=%~d0%PROJECTS%LOGS\%LOG_BATBASENAME%.log
+echo "***" > %LOG_FILE%
 
 :begin
 echo ---------------------------------------------------------------
@@ -72,18 +89,18 @@ set Comment=Git Bash commit update
 :begin_git
 echo ---------------------------------------------------------------
 echo ...git add --all
-git add --all >> %LOG_File% 
+git add --all >> %LOG_FILE% 
 
 echo ---------------------------------------------------------------
 echo ...git commit -m "%Comment%"
-git commit -m "%Comment%" >> %LOG_File% 
+git commit -m "%Comment%" >> %LOG_FILE% 
 
 echo ---------------------------------------------------------------
 echo ...git push -u origin main
-git push -u origin main >> %LOG_File% 
+git push -u origin main >> %LOG_FILE% 
 echo ---------------------------------------------------------------
 
-rem type %LOG_File%
+rem type %LOG_FILE%
 
 pause
 

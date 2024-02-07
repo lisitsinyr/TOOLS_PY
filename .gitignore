@@ -1,36 +1,22 @@
-# ----------------------------------------------------------------
-# GENERAL
-# ----------------------------------------------------------------
-# Environments
-.env/*
-.venv/*
-.vscode/*
-# VS Code
-*.code-workspace
-# PyCharm
-.idea/*
+### VS Code ###
+.vscode/
+.vs/
 
-# Каталоги
-EXE/*
-LOG/*
-WORK/*
-out/*
-
-# Файлы
-*.exe
-*.spec
-*.log
-GIT_CONFIG
-CreateGIT.bat
-
+### PyCharm ###
+.idea/
 __pycache__/
 
-# ----------------------------------------------------------------
-# APP
-# ----------------------------------------------------------------
-PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_batch
-PROJECTS_LYR_TOOLS_PY-TOOLS_PY.ffs_gui
+### ФАЙЛЫ ###
+GIT_CONFIG*
+config*
+*.log
 
-PY/LOG/
-
-# ----------------------------------------------------------------
+### КАТАЛОГИ ###
+clickers/
+LOGS/
+LOG/
+RE/
+Replace if-else Statements/
+out/
+EXE/
+WORK/
