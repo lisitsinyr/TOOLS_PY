@@ -26,12 +26,12 @@ __annotations__ = """
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LULog
-import LUConst
 
 def PrintInfoObject (AObject):
 #beginfunction
     s = f'{AObject}'
-    LULog.LoggerTOOLS.log(LULog.DEBUGTEXT, s)
+    #LULog_LoggerTOOLS_log(LULog.DEBUGTEXT, s)
+    LULog.LoggerTOOLSAdd(LULog.DEBUGTEXT, s)
 #endfunction
 
 #------------------------------------------

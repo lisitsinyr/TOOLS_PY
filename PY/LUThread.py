@@ -91,7 +91,7 @@ class TThread (threading.Thread):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 
@@ -112,7 +112,7 @@ class TThread (threading.Thread):
     #     """start - Запуск потока"""
     # #beginfunction
     #     s = 'start - Запуск потока...'
-    #     LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+    #     LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
     #     # self.Function ()
     #     super ().start ()
     # #endfunction
@@ -124,11 +124,11 @@ class TThread (threading.Thread):
         """run - Запуск потока"""
     #beginfunction
         s = 'run - Запуск потока...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         super ().run()
         while not self.__FStopThread:
             s = 'Выполнение потока...'
-            # LULog.LoggerTOOLS.debug (s)
+            # LULog.LoggerTOOLSAdd_debug (s)
             continue
         #endwhile
     #endfunction
@@ -140,7 +140,7 @@ class TThread (threading.Thread):
         """StartThread"""
     #beginfunction
         s = 'StartThread...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = False
         self.run()
     #endfunction
@@ -151,7 +151,7 @@ class TThread (threading.Thread):
         """StopThread"""
     #beginfunction
         s = 'StopThread...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = True
     #endfunction
 

@@ -44,7 +44,7 @@ def TIMING(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         s = f"Функция {func.__name__} работала {end_time - start_time} секунд..."
-        LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
         return result
     return wrapper
     #endfunction

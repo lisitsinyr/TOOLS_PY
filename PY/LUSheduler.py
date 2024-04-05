@@ -561,7 +561,7 @@ class TSheduler (object):
         """__run_Function"""
     #beginfunction
         s = '__run_Function...'
-        # LULog.LoggerTOOLS.debug (s)
+        # LULog.LoggerTOOLSAdd_debug (s)
         if self.__FEnable:
             LPresentNow = LUDateTime.Now ()
             LYear, LMonth, LDay = LUDateTime.DecodeDate (LPresentNow)
@@ -652,7 +652,7 @@ class TSheduler (object):
         #endif
         s = 'Следующий сеанс: ' + str (self.__FDTEvents)
         if APrint:
-            LULog.LoggerTOOLS.debug (s)
+            LULog.LoggerTOOLSAdd_debug (s)
         #endif
     #endfunction
     
@@ -660,7 +660,7 @@ class TSheduler (object):
         """Second"""
     #beginfunction
         s = 'Second...'
-        # LULog.LoggerTOOLS.debug (s)
+        # LULog.LoggerTOOLSAdd_debug (s)
         if self.__FEnable:
             LPresent: datetime = LUDateTime.Now()
             LHour, LMin, LSec, LMSec = LUDateTime.DecodeTime (LPresent)
@@ -729,17 +729,17 @@ class TSheduler (object):
     def PrintEvent (AEvent: TShedulerEventItem):
         """PrintEvent"""
     #beginfunction
-        LULog.LoggerTOOLS.debug (AEvent.NameEvent)
+        LULog.LoggerTOOLSAdd_debug (AEvent.NameEvent)
         s = f'NN={AEvent.GetXXString ("NN")}'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         s = f'HH={AEvent.GetXXString ("HH")}'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         s = f'DD={AEvent.GetXXString ("DD")}'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         s = f'MM={AEvent.GetXXString ("MM")}'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         s = f'DW={AEvent.GetXXString ("DW")}'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
     #endfunction
 #endclass
 
@@ -793,7 +793,7 @@ class TShedulerThread (threading.Thread):
         """run - Запуск потока TSheduler"""
     #beginfunction
         s = 'run - Запуск потока TSheduler...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         super ().run()
 
         if self.__FSheduler.DTEvents == 0:
@@ -812,7 +812,7 @@ class TShedulerThread (threading.Thread):
         """StartSheduler"""
     #beginfunction
         s = 'StartSheduler...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = False
         self.__FSheduler.Enable = True
         # self.__CreateNextEvent ()
@@ -825,7 +825,7 @@ class TShedulerThread (threading.Thread):
         """StopSheduler"""
     #beginfunction
         s = 'StopSheduler...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = True
         self.__FSheduler.Enable = False
     #endfunction
@@ -883,7 +883,7 @@ class TShedulerTimer (threading.Timer):
         """run - Запуск таймера TShedulerTimer"""
         #beginfunction
         s = 'run - Запуск таймера TShedulerTimer...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
 
         if self.__FSheduler.DTEvents == 0:
             self.__FSheduler.CreateNextEvent (True)
@@ -901,7 +901,7 @@ class TShedulerTimer (threading.Timer):
         """StartSheduler"""
     #beginfunction
         s = 'StartSheduler...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = False
         self.__FSheduler.Enable = True
         # self.__CreateNextEvent (True)
@@ -914,7 +914,7 @@ class TShedulerTimer (threading.Timer):
         """StopSheduler"""
     #beginfunction
         s = 'StopSheduler...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         self.__FStopThread = True
         self.__FSheduler.Enable = False
     #endfunction

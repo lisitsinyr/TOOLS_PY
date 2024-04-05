@@ -62,7 +62,7 @@ class TTimer (threading.Timer):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 
@@ -83,7 +83,7 @@ class TTimer (threading.Timer):
     #     """start - Запуск таймера"""
     # #beginfunction
     #     s = 'Запуск таймера...'
-    #     LULog.LoggerTOOLS.log (LULog.DEBUGTEXT, s)
+    #     LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
     #     # self.Function ()
     #     super ().start ()
     # #endfunction
@@ -95,14 +95,14 @@ class TTimer (threading.Timer):
         """run - Запуск таймера"""
     #beginfunction
         s = 'run - Запуск таймера...'
-        LULog.LoggerTOOLS.debug (s)
+        LULog.LoggerTOOLSAdd_debug (s)
         # super ().run()
 
         # self.Function()
 
         while not self.__FStopTimer:
             s = 'Выполнение таймера...'
-            # LULog.LoggerTOOLS.debug (s)
+            # LULog.LoggerTOOLSAdd_debug (s)
             continue
         #endwhile
 

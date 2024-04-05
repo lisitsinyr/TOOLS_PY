@@ -67,7 +67,6 @@ class TVersionInfo:
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LUConst.LULogger.log (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 

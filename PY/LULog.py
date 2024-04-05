@@ -36,6 +36,7 @@ import PySide6.QtWidgets
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
+import LUConst
 import LUFile
 import LUConsole
 import LUDateTime
@@ -47,6 +48,8 @@ import LUos
 import rich
 import rich.console
 GConsoleRich = rich.console.Console ()
+
+STATLogging = True
 
 """CONST"""
 ctlsNOTSET = ' '
@@ -1618,6 +1621,9 @@ LOGGING_CONFIG = \
     },
 }
 
+#-------------------------------------------------
+# CreateLoggerCONFIG
+#-------------------------------------------------
 def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger:
     """CreateLoggerCONFIG"""
 #beginfunction
@@ -1651,19 +1657,26 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str) -> logging.Logger
         return None
 #endfunction
 
+#-------------------------------------------------
+# CreateLoggerFILEINI
+#-------------------------------------------------
 def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     """CreateLoggerFILEINI"""
 #beginfunction
     # читаем конфигурацию из файла
     LPath = LUFile.ExtractFileDir(__file__)
     LFileName = os.path.join (LPath, AFileNameINI)
-    print (LFileName)
+
     if not LUFile.FileExists(LFileName):
         LPath = LUos.GetCurrentDir ()
         LFileName = os.path.join(LPath, AFileNameINI)
     #endif
+
     if LUFile.FileExists (LFileName):
         logging.config.fileConfig (LFileName, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
+
+        # print('logging.FileHandler:',logging.FileHandler)
+
         # создаем регистратор
         LResult = logging.getLogger (ALogerName)
         # установить форматер
@@ -1674,6 +1687,9 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str) -> logging.Logger:
     #endif
 #endfunction
 
+#-------------------------------------------------
+# CreateLoggerBASIC
+#-------------------------------------------------
 def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Logger:
     """CreateTLoggingCONFIG"""
 #beginfunction
@@ -1692,36 +1708,6 @@ def CreateLoggerBASIC (ALevel, AFileNameLOG: str, ALogerName: str) -> logging.Lo
 #endfunction
 
 #-------------------------------------------------
-# Настройка системы logging
-#-------------------------------------------------
-AddLevelName ()
-if not LUFile.DirectoryExists('LOG'):
-    os.mkdir('LOG')
-#endif
-
-#-------------------------------------------------
-GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
-if GLoggerFILEINI is None:
-    GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
-#endif
-#-------------------------------------------------
-# GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
-# GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, '', 'root')
-#-------------------------------------------------
-
-#-------------------------------------------------
-# LoggerTOOLS
-#-------------------------------------------------
-CLoggerTOOLS = 'TOOLS__'
-LoggerTOOLS = logging.getLogger(CLoggerTOOLS)
-
-#-------------------------------------------------
-# LoggerAPPS
-#-------------------------------------------------
-CLoggerAPPS = 'APPS___'
-LoggerAPPS = logging.getLogger(CLoggerAPPS)
-
-#-------------------------------------------------
 # LoggerTLogger
 #-------------------------------------------------
 def CreateTLogger (ALogerName: str) -> TLogger:
@@ -1733,8 +1719,6 @@ def CreateTLogger (ALogerName: str) -> TLogger:
     SetFormatterForLogger (LResult)
     return LResult
 #endfunction
-CTLogger = 'TLOGGER'
-LoggerTLogger = CreateTLogger (CTLogger)
 
 #-------------------------------------------------
 # FileMemoLog
@@ -1745,36 +1729,234 @@ def CreateTFileMemoLog () -> TFileMemoLog:
     LFileMemoLog = TFileMemoLog ()
     return LFileMemoLog
 #endfunction
-FileMemoLog = CreateTFileMemoLog ()
 
 #-------------------------------------------------
-# Отключить журнал 'chardet.charsetprober'
+# Инициализация системы logging
 #-------------------------------------------------
-logger = logging.getLogger('chardet.charsetprober')
-logger.setLevel(logging.INFO)
-#-------------------------------------------------
-# Отключить журнал 'pytube.extract'
-#-------------------------------------------------
-logger = logging.getLogger('pytube.extract')
-logger.setLevel(logging.INFO)
-#-------------------------------------------------
-# Отключить журнал 'pytube.streams'
-#-------------------------------------------------
-logger = logging.getLogger('pytube.streams')
-logger.setLevel(logging.INFO)
-#-------------------------------------------------
-# Отключить журнал 'pytube.cipher'
-#-------------------------------------------------
-logger = logging.getLogger('pytube.cipher')
-logger.setLevel(logging.INFO)
-#-------------------------------------------------
-# Отключить журнал 'pytube.helpers'
-#-------------------------------------------------
-logger = logging.getLogger('pytube.helpers')
-logger.setLevel(logging.INFO)
+def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> None:
+    """STARTLogging"""
+#beginfunction
+    global STATLogging
+    # print ('STARTLogging ...')
+
+    AddLevelName ()
+
+    if not LUFile.DirectoryExists (ADirectoryLOG):
+        os.mkdir (ADirectoryLOG)
+    #endif
+
+    New = "D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\TESTS_PY\\TEST_LU\\LOG\\LOGGING_FILEINI_new.log"
+
+    global GLoggerFILEINI
+    global GLoggerCONFIG
+    GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
+    print('GLoggerFILEINI.handlers:',GLoggerFILEINI.handlers[1].baseFilename)
+    # GLoggerFILEINI.handlers [1].baseFilename = New
+    # print('GLoggerFILEINI.handlers:',GLoggerFILEINI.handlers[1].baseFilename)
+
+    if GLoggerFILEINI is None:
+        GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root')
+        # print('GLoggerCONFIG.handlers:',GLoggerCONFIG.handlers[1].baseFilename)
+    #endif
+
+    #-------------------------------------------------
+    # GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
+    # GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, '', 'root')
+    #-------------------------------------------------
+
+    #-------------------------------------------------
+    # LoggerTOOLS
+    #-------------------------------------------------
+    global LoggerTOOLS
+    if not ('LoggerTOOLS' in vars () or 'LoggerTOOLS' in globals ()):
+        CLoggerTOOLS = 'TOOLS__'
+        LoggerTOOLS = logging.getLogger (CLoggerTOOLS)
+    #endif
+
+    #-------------------------------------------------
+    # LoggerAPPS
+    #-------------------------------------------------
+    global LoggerAPPS
+    if not ('LoggerAPPS' in vars () or 'LoggerAPPS' in globals ()):
+        CLoggerAPPS = 'APPS___'
+        LoggerAPPS = logging.getLogger(CLoggerAPPS)
+    #endif
+
+    #-------------------------------------------------
+    # LoggerTLogger
+    #-------------------------------------------------
+    global LoggerTLogger
+    if not ('LoggerTLogger' in vars () or 'LoggerTLogger' in globals ()):
+        CTLogger = 'TLOGGER'
+        LoggerTLogger = CreateTLogger (CTLogger)
+    #endif
+
+    #-------------------------------------------------
+    # FileMemoLog
+    #-------------------------------------------------
+    global FileMemoLog
+    if not ('FileMemoLog' in vars () or 'FileMemoLog' in globals ()):
+        FileMemoLog = CreateTFileMemoLog ()
+    #endif
+
+    #-------------------------------------------------
+    # Отключить журнал 'chardet.charsetprober'
+    #-------------------------------------------------
+    logger = logging.getLogger('chardet.charsetprober')
+    logger.setLevel(logging.INFO)
+    #-------------------------------------------------
+    # Отключить журнал 'pytube.extract'
+    #-------------------------------------------------
+    logger = logging.getLogger('pytube.extract')
+    logger.setLevel(logging.INFO)
+    #-------------------------------------------------
+    # Отключить журнал 'pytube.streams'
+    #-------------------------------------------------
+    logger = logging.getLogger('pytube.streams')
+    logger.setLevel(logging.INFO)
+    #-------------------------------------------------
+    # Отключить журнал 'pytube.cipher'
+    #-------------------------------------------------
+    logger = logging.getLogger('pytube.cipher')
+    logger.setLevel(logging.INFO)
+    #-------------------------------------------------
+    # Отключить журнал 'pytube.helpers'
+    #-------------------------------------------------
+    logger = logging.getLogger('pytube.helpers')
+    logger.setLevel(logging.INFO)
+
+    STATLogging = True
+
+#endfunction
 
 #-------------------------------------------------
-#
+# Выключить систему logging
+#-------------------------------------------------
+def STOPLogging () -> None:
+    """STOPLogging"""
+#beginfunction
+    global STATLogging
+    STATLogging = False
+#endfunction
+
+#-------------------------------------------------
+# LoggerTOOLSAdd
+#-------------------------------------------------
+def LoggerTOOLSAdd (ALevel, Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerTOOLS.log(ALevel, Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerTOOLSAdd_debug
+#-------------------------------------------------
+def LoggerTOOLSAdd_debug (Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerTOOLS.debug(Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerTOOLSAdd_error
+#-------------------------------------------------
+def LoggerTOOLSAdd_error (Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerTOOLS.error(Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerAPPSAdd
+#-------------------------------------------------
+#LULog.LoggerAPPS.log
+def LoggerAPPSAdd (ALevel, Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerAPPS.log(ALevel, Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerAPPSAdd_info
+#-------------------------------------------------
+#LULog.LoggerAPPS.info
+def LoggerAPPSAdd_info (Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerAPPS.info(Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerAPPSAdd_error
+#-------------------------------------------------
+#LULog.LoggerAPPS.error
+def LoggerAPPSAdd_error (Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerAPPS.error(Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# LoggerAPPSAdd_debug
+#-------------------------------------------------
+#LULog.LoggerAPPS.debug
+def LoggerAPPSAdd_debug (Astr):
+#beginfunction
+    if STATLogging:
+        try:
+            LoggerAPPS.debug(Astr)
+        except:
+            ...
+        #endtry
+    else:
+        print("INFO: система не включена для записи логов")
+    #endif
+#endfunction
+
+#-------------------------------------------------
+# main
 #-------------------------------------------------
 def main ():
 #beginfunction
@@ -1785,10 +1967,11 @@ def main ():
 #
 #------------------------------------------
 #beginmodule
+
 if __name__ == "__main__":
     main()
 else:
-    ...
+    STOPLogging ()
 #endif
 
 #endmodule
