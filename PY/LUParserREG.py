@@ -17,7 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-from winreg import *
+import winreg
 import enum
 
 #------------------------------------------
@@ -57,13 +57,13 @@ This key is not used in versions of Windows after 98.
 @enum.unique
 class THKEYConst(enum.Enum):
     """THKEYConst"""
-    cHKCR = HKEY_CLASSES_ROOT
-    cHKCU = HKEY_CURRENT_USER
-    cHKLM = HKEY_LOCAL_MACHINE
-    cHKU = HKEY_USERS
-    cHKPD = HKEY_PERFORMANCE_DATA
-    cHKCC = HKEY_CURRENT_CONFIG
-    cHKDD = HKEY_DYN_DATA
+    cHKCR = winreg.HKEY_CLASSES_ROOT
+    cHKCU = winreg.HKEY_CURRENT_USER
+    cHKLM = winreg.HKEY_LOCAL_MACHINE
+    cHKU = winreg.HKEY_USERS
+    cHKPD = winreg.HKEY_PERFORMANCE_DATA
+    cHKCC = winreg.HKEY_CURRENT_CONFIG
+    cHKDD = winreg.HKEY_DYN_DATA
 #endclass
 
 #---------------------------------------------------------
@@ -104,16 +104,16 @@ Reserved for system use.
 # @enum.unique
 class TKEYAccess(enum.Enum):
     """TKEYAccess"""
-    kaALL_ACCESS = KEY_ALL_ACCESS
-    kaWRITE = KEY_WRITE
-    kaREAD = KEY_READ
-    kaEXECUTE = KEY_EXECUTE
-    kaQUERY_VALUE = KEY_QUERY_VALUE
-    kaSET_VALUE = KEY_SET_VALUE
-    kaCREATE_SUB_KEY = KEY_CREATE_SUB_KEY
-    kaENUMERATE_SUB_KEYS = KEY_ENUMERATE_SUB_KEYS
-    kaKEY_NOTIFY = KEY_NOTIFY
-    kaKEY_CREATE_LINK = KEY_CREATE_LINK
+    kaALL_ACCESS = winreg.KEY_ALL_ACCESS
+    kaWRITE = winreg.KEY_WRITE
+    kaREAD = winreg.KEY_READ
+    kaEXECUTE = winreg.KEY_EXECUTE
+    kaQUERY_VALUE = winreg.KEY_QUERY_VALUE
+    kaSET_VALUE = winreg.KEY_SET_VALUE
+    kaCREATE_SUB_KEY = winreg.KEY_CREATE_SUB_KEY
+    kaENUMERATE_SUB_KEYS = winreg.KEY_ENUMERATE_SUB_KEYS
+    kaKEY_NOTIFY = winreg.KEY_NOTIFY
+    kaKEY_CREATE_LINK = winreg.KEY_CREATE_LINK
 #endclass
 
 #---------------------------------------------------------
@@ -148,21 +148,21 @@ No defined value type.
 # @enum.unique
 class TValueTypes(enum.Enum):
     """TValueTypes"""
-    vtBINARY = REG_BINARY
-    vtDWORD = REG_DWORD
-    vtDWORD_LITTLE_ENDIAN = REG_DWORD_LITTLE_ENDIAN
-    vtDWORD_BIG_ENDIAN = REG_DWORD_BIG_ENDIAN
-    vtEXPAND_SZ = REG_EXPAND_SZ
-    vtLINK = REG_LINK
-    vtMULTI_SZ = REG_MULTI_SZ
-    vtNONE = REG_NONE
+    vtBINARY = winreg.REG_BINARY
+    vtDWORD = winreg.REG_DWORD
+    vtDWORD_LITTLE_ENDIAN = winreg.REG_DWORD_LITTLE_ENDIAN
+    vtDWORD_BIG_ENDIAN = winreg.REG_DWORD_BIG_ENDIAN
+    vtEXPAND_SZ = winreg.REG_EXPAND_SZ
+    vtLINK = winreg.REG_LINK
+    vtMULTI_SZ = winreg.REG_MULTI_SZ
+    vtNONE = winreg.REG_NONE
 #endclass
 
 #-------------------------------------------------------------------------------
 # General Reestr Keys
 #-------------------------------------------------------------------------------
-RootKeyHKLM = HKEY_LOCAL_MACHINE
-RootKeyHKCU = HKEY_CURRENT_USER
+RootKeyHKLM = winreg.HKEY_LOCAL_MACHINE
+RootKeyHKCU = winreg.HKEY_CURRENT_USER
 
 cHKLMSCCS    = r'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet'
 cHKLMSMWCV   = r'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion'
@@ -228,7 +228,7 @@ class TREGParser (object):
         #   Создает или открывает указанный ключ, возвращая объект дескриптора
         self.hkey = None
         try:
-            self.hkey = CreateKeyEx (AHKEY.value, ASection, 0, TKEYAccess.kaALL_ACCESS.value)
+            self.hkey = winreg.CreateKeyEx (AHKEY.value, ASection, 0, TKEYAccess.kaALL_ACCESS.value)
             self.CloseKeyReg (self.hkey)
         except FileNotFoundError as ERROR:
             ...
@@ -246,7 +246,7 @@ class TREGParser (object):
         #   Удаляет указанный ключ.
         LResult = False
         try:
-            DeleteKey (AHKEY.value, ASection)
+            winreg.DeleteKey (AHKEY.value, ASection)
             LResult = True
         except FileNotFoundError as ERROR:
             ...
@@ -263,7 +263,7 @@ class TREGParser (object):
         #   Открывает указанный ключ, возвращая объект дескриптора .
         self.hkey = None
         try:
-            self.hkey = OpenKeyEx (AHKEY.value, ASection, 0, TKEYAccess.kaALL_ACCESS.value)
+            self.hkey = winreg.OpenKeyEx (AHKEY.value, ASection, 0, TKEYAccess.kaALL_ACCESS.value)
         except FileNotFoundError as ERROR:
             ...
         finally:
@@ -280,7 +280,7 @@ class TREGParser (object):
         # когда объект hkey уничтожается Python.
         LResult = False
         if Ahkey:
-            CloseKey (Ahkey)
+            winreg.CloseKey (Ahkey)
             LResult = True
         return LResult
     #endfunction
@@ -297,7 +297,7 @@ class TREGParser (object):
             # LWork = EnumKey (self.hkey, 0)
             for i in range (LInfo[0],LInfo[1]):
                 try:
-                    LWork = EnumKey (self.hkey, i)
+                    LWork = winreg.EnumKey (self.hkey, i)
                 except OSError as ERROR:
                     LWork = ERROR.strerror
                     #LUErrors.LUFileError_FileNotExist as ERROR
@@ -319,7 +319,7 @@ class TREGParser (object):
         if len(LInfo) > 0:
             self.hkey = self.OpenKeyReg (AHKEY, ASection)
             for i in range (LInfo[0],LInfo[1]):
-                LList.append(EnumValue (self.hkey, i))
+                LList.append(winreg.EnumValue (self.hkey, i))
                 # LKeyName, LValue, LFormat = EnumValue (self.hkey, i)
             self.CloseKeyReg (self.hkey)
         return LList
@@ -332,7 +332,7 @@ class TREGParser (object):
         #   Сохраняет указанный ключ и все его подклавиши в указанный файл.
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
-            SaveKey (self.hkey, AFileName)
+            winreg.SaveKey (self.hkey, AFileName)
             self.CloseKeyReg(self.hkey)
     #endfunction
 
@@ -343,7 +343,7 @@ class TREGParser (object):
         #   Создает под-ключ под указанным ключом и сохраняет регистрационную информацию из указанного файла в этот под-ключ.
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
-            LoadKey (self.hkey, ASection, AFileName)
+            winreg.LoadKey (self.hkey, ASection, AFileName)
             self.CloseKeyReg(self.hkey)
     #endfunction
 
@@ -360,9 +360,9 @@ class TREGParser (object):
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
             if len(AOption) > 0:
-                LResult = QueryValueEx (self.hkey, AOption)
+                LResult = winreg.QueryValueEx (self.hkey, AOption)
             else:
-                LResult = QueryValue (self.hkey, None)
+                LResult = winreg.QueryValue (self.hkey, None)
             self.CloseKeyReg(self.hkey)
         return LResult
     #endfunction
@@ -375,7 +375,7 @@ class TREGParser (object):
         LResult = ()
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
-            LResult = QueryInfoKey (self.hkey)
+            LResult = winreg.QueryInfoKey (self.hkey)
             self.CloseKeyReg(self.hkey)
         return LResult
     #endfunction
@@ -388,7 +388,7 @@ class TREGParser (object):
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
-            DeleteValue (self.hkey, AOption)
+            winreg.DeleteValue (self.hkey, AOption)
             self.CloseKeyReg(self.hkey)
             LResult = True
         return LResult
@@ -404,7 +404,7 @@ class TREGParser (object):
         LResult = False
         self.hkey = self.OpenKeyReg (AHKEY, ASection)
         if not self.hkey is None:
-            SetValueEx (self.hkey, AOption, 0, AFormat.value, Value)
+            winreg.SetValueEx (self.hkey, AOption, 0, AFormat.value, Value)
             self.CloseKeyReg(self.hkey)
             LResult = True
         return LResult

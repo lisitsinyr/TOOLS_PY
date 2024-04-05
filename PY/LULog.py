@@ -1722,9 +1722,11 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str, ADirectoryLOG: str,
     # читаем конфигурацию из файла
     LPath = LUos.GetCurrentDir ()
     LFileName = os.path.join (LPath, AFileNameINI)
+    print (LFileName)
     if not LUFile.FileExists(LFileName):
         LPath = LUFile.ExtractFileDir(__file__)
         LFileName = os.path.join (LPath, AFileNameINI)
+        print(LFileName)
     #endif
     if LUFile.FileExists (LFileName):
         LINIFile = LUParserINI.TINIFile ()
