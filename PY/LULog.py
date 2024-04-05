@@ -26,6 +26,9 @@ import logging
 import logging.config
 import yaml
 
+import inspect
+import traceback
+
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
@@ -1787,18 +1790,62 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     """STARTLogging"""
 #beginfunction
     global STATLogging
-    # print ('STARTLogging ...')
+    STATLogging = False
+    print (sys._getframe (0).f_code.co_name, '...')
+    # print (inspect.currentframe().f_code.co_name, '...')
+    # print (inspect.stack () [0] [3], '...')
+    # print (traceback.extract_stack () [-1].name, '...')
+
+    global GLoggerFILEINI
+    GLoggerFILEINI = None
+    global GLoggerCONFIG
+    GLoggerCONFIG = None
+    global LoggerTOOLS
+    LoggerTOOLS = None
+    global LoggerAPPS
+    LoggerAPPS = None
+    global LoggerTLogger
+    LoggerTLogger = None
+    global FileMemoLog
+    FileMemoLog = None
+
+    LOSInfo = LUos.TOSInfo()
+    print ('HostName      = ' + LOSInfo.node)
+    print ('OS            = ' + LOSInfo.system)
+    # print ('OS            = ' + LOSInfo.uname.system)
+
+    LPathLOG = ADirectoryLOG
+    if ADirectoryLOG == '':
+        LPathLOG = LUos.GetCurrentDir ()
+    #endif
+
+    LFileNameLOG = ''
+    if AFileNameLOG !=  '':
+        LFileNameLOG = LUFile.ExtractFileName(AFileNameLOG)
+        LPathLOG = os.path.join (LPathLOG, LUFile.ExtractFileDir (AFileNameLOG))
+    #endif
+    LPathLOG = LUFile.ExpandFileName(LPathLOG)
+
+    print (LPathLOG)
+    print (LFileNameLOG)
+
+    if not LUFile.DirectoryExists (LPathLOG):
+        os.mkdir (LPathLOG)
+    #endif
+
+    match LOSInfo.system.upper():
+        case 'LINUX':
+            ...
+        case 'WINDOWS':
+            ...
+        case _:  # Pattern not attempted
+            print ('INFO: Only LINUX or WINDOWS')
+            return 1
+    #endmatch
 
     AddLevelName ()
 
-    if not LUFile.DirectoryExists (ADirectoryLOG):
-        os.mkdir (ADirectoryLOG)
-    #endif
-
-    global GLoggerFILEINI
     GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root', ADirectoryLOG, AFileNameLOG, AFileNameLOGjson)
-
-    global GLoggerCONFIG
     if GLoggerFILEINI is None:
         GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root', ADirectoryLOG, AFileNameLOG, AFileNameLOGjson)
     #endif
@@ -1811,7 +1858,6 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     #-------------------------------------------------
     # LoggerTOOLS
     #-------------------------------------------------
-    global LoggerTOOLS
     if not ('LoggerTOOLS' in vars () or 'LoggerTOOLS' in globals ()):
         CLoggerTOOLS = 'TOOLS__'
         LoggerTOOLS = logging.getLogger (CLoggerTOOLS)
@@ -1820,7 +1866,6 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     #-------------------------------------------------
     # LoggerAPPS
     #-------------------------------------------------
-    global LoggerAPPS
     if not ('LoggerAPPS' in vars () or 'LoggerAPPS' in globals ()):
         CLoggerAPPS = 'APPS___'
         LoggerAPPS = logging.getLogger(CLoggerAPPS)
@@ -1829,7 +1874,6 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     #-------------------------------------------------
     # LoggerTLogger
     #-------------------------------------------------
-    global LoggerTLogger
     if not ('LoggerTLogger' in vars () or 'LoggerTLogger' in globals ()):
         CTLogger = 'TLOGGER'
         LoggerTLogger = CreateTLogger (CTLogger)
@@ -1838,7 +1882,6 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     #-------------------------------------------------
     # FileMemoLog
     #-------------------------------------------------
-    global FileMemoLog
     if not ('FileMemoLog' in vars () or 'FileMemoLog' in globals ()):
         FileMemoLog = CreateTFileMemoLog ()
     #endif
@@ -1870,7 +1913,6 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     logger.setLevel(logging.INFO)
 
     STATLogging = True
-
 #endfunction
 
 #-------------------------------------------------
