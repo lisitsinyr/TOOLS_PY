@@ -26,14 +26,14 @@ handlers:
     FILE_01:
         class: logging.handlers.RotatingFileHandler
         formatter: FORMAT_01
-        filename: 'LOG\\LOGGING_CONFIG.log'
+        filename: 'LOGGING_CONFIG.log'
         level: INFO
         maxBytes: 10000000
         backupCount: 5
     FILE_02:
         class: logging.handlers.RotatingFileHandler
         formatter: FORMAT_json
-        filename: 'LOG\\LOGGING_CONFIG_json.log'
+        filename: 'LOGGING_CONFIG_json.log'
         level: INFO
         maxBytes: 10000000
         backupCount: 5

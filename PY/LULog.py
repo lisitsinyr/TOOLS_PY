@@ -120,6 +120,17 @@ CDefaultFileLogFILEBASIC = 'LOGGING_BASIC.log'
 # type
 # ===========================================================================
 @enum.unique
+class TTypeSETUPLOG (enum.Enum):
+    """TTypeSETUPLOG"""
+    tslCONFIG = 0
+    tslYAML = 1
+    tslINI = 2
+    @classmethod
+    def Empty (cls):
+        ...
+#endclass
+
+@enum.unique
 class TTypeLogString(enum.Enum):
     """TTypeLogString"""
     tlsNOTSET = ctlsNOTSET
@@ -1561,6 +1572,24 @@ def GetHandler (ALogger: logging.Logger, ANameHandler: str):
     #enfor
 #endfunction
 
+def WinToUnix (Astr: str) -> str:
+    """WinToUnix"""
+#beginfunction
+    LOSInfo = LUos.TOSInfo ()
+    print ('HostName      = ' + LOSInfo.node)
+    print ('OS            = ' + LOSInfo.system)
+    # print ('OS            = ' + LOSInfo.uname.system)
+    match LOSInfo.system.upper ():
+        case 'LINUX':
+            Lstr = os.path.abspath (Astr).replace ("\\", "/")
+        case 'WINDOWS':
+            Lstr = Astr
+        case _:
+            # print ('INFO: Only LINUX or WINDOWS')
+            Lstr = Astr
+    #endmatch
+#endfunction
+
 #-------------------------------------------------
 # LOGGING_CONFIG
 #-------------------------------------------------
@@ -1660,8 +1689,12 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str, ADirectoryLOG: st
 
     CONFIG = copy.deepcopy (LOGGING_CONFIG)
 
+    # взять имя файла из config
+
     New = "D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\PATTERNS_PY\\PROGRAM\\LOG\\LOGGING_FILEINI_new.log"
     # New = "LOG\\LOGGING_FILEINI_new.log"
+
+    # записать имя файла в config
 
     print ('DEFAULT:', CONFIG['handlers']['FILE_01']['filename'])
     CONFIG ['handlers'] ['FILE_01'] ['filename'] = New
@@ -1716,30 +1749,95 @@ def CreateLoggerFILEYAML (AFileNameYAML: str, ALogerName: str, ADirectoryLOG: st
 #-------------------------------------------------
 # CreateLoggerFILEINI
 #-------------------------------------------------
-def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
+def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
+                         ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
     """CreateLoggerFILEINI"""
 #beginfunction
-    # читаем конфигурацию из файла
-    LPath = LUos.GetCurrentDir ()
-    LFileName = os.path.join (LPath, AFileNameINI)
-    print (LFileName)
-    if not LUFile.FileExists(LFileName):
-        LPath = LUFile.ExtractFileDir(__file__)
-        LFileName = os.path.join (LPath, AFileNameINI)
-        print(LFileName)
-    #endif
-    if LUFile.FileExists (LFileName):
-        LINIFile = LUParserINI.TINIFile ()
-        LINIFile.FileNameINI = LFileName
-        logging.config.fileConfig (LFileName, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
-        # создаем регистратор
-        LResult = logging.getLogger (ALogerName)
-        # установить форматер
-        SetFormatterForLogger (LResult)
-        return LResult
+    # читаем конфигурацию из файла INI
+    LFileNameINI = LUFile.ExpandFileName (AFileNameINI)
+    if LUFile.FileExists (LFileNameINI):
+        # существует файл, который можно редактировать
+        SetEditINI = True
+        LPathINI = LUFile.ExtractFileDir (LFileNameINI)
+        LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
     else:
-        return None
+        LPathINI = LUos.GetCurrentDir ()
+        LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
+        if LUFile.FileExists (LFileNameINI):
+            # существует файл в текущем каталоге, который можно редактировать
+            SetEditINI = True
+        else:
+            # берем имя файла из проекта, если оно есть
+            LPattINI = LUFile.ExtractFileDir (__file__)
+            LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
+            SetEditINI = False
+        #endif
     #endif
+    print (LPathINI)
+    print (LFileNameINI)
+
+    if not SetEditINI:
+        # log будет создан в текущем каталоге (по умолчанию)
+        LDirectoryLOG = LUos.GetCurrentDir ()
+        ...
+    else:
+        LINIFile = LUParserINI.TINIFile ()
+        LINIFile.FileNameINI = LFileNameINI
+
+        LOptionName = 'args'
+        if AFileNameLOG == '':
+            LSectionName_01 = 'handler_FILE_01'
+            LOptionValue_01 = LINIFile.GetOption(LSectionName_01, LOptionName)
+            print ('LOptionValue_01:',LOptionValue_01)
+            LFileNameLOG = LUFile.ExtractFileName (LOptionValue_01.split([',', '('])[0])
+        else:
+            LFileNameLOG = LUFile.ExtractFileName (AFileNameLOG)
+        #endif
+        print('LFileNameLOG:',LFileNameLOG)
+        if AFileNameLOGjson == '':
+            LSectionName_02 = 'handler_FILE_02'
+            LOptionValue_02 = LINIFile.GetOption(LSectionName_02, LOptionName)
+            print ('LOptionValue_02:',LOptionValue_02)
+            LFileNameLOGjson = LUFile.ExtractFileName (LOptionValue_02.split([',', '('])[0])
+        else:
+            LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
+        #endif
+        print('LFileNameLOGjson:',LFileNameLOGjson)
+
+        if ADirectoryLOG == '':
+            # log будет создан в текущем каталоге (по умолчанию)
+            LDirectoryLOG = LUos.GetCurrentDir ()
+        else:
+            # log будет создан в ADirectoryLOG
+            LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
+        #endif
+        print('LDirectoryLOG:',LDirectoryLOG)
+
+        if not LUFile.DirectoryExists (LDirectoryLOG):
+            os.mkdir (LDirectoryLOG)
+        #endif
+        # установить имена log файлов в ini
+        LOptionValue_01 = "('" + os.path.join (LDirectoryLOG, LFileNameLOG) + "',)"
+        # LOptionValue_01 = "('" + os.path.join (ADirectoryLOG, LFileNameLOG) + "',)"
+        LOptionValue_01 = LOptionValue_01.replace ('\\', "\\\\")
+        print(LOptionValue_01)
+
+        LINIFile.SetOption ('handler_FILE_01', LOptionName, LOptionValue_01)
+        LOptionValue_02 = "('" + os.path.join (LDirectoryLOG, LFileNameLOGjson) + "',)"
+        # LOptionValue_02 = "('" + os.path.join (ADirectoryLOG, LFileNameLOGjson) + "',)"
+        LOptionValue_02 = LOptionValue_02.replace ("\\", "\\\\")
+
+        print(LOptionValue_02)
+        LINIFile.SetOption ('handler_FILE_02', LOptionName, LOptionValue_02)
+        LINIFile.UpdateFileINI ()
+    #endif
+
+    logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
+    # создаем регистратор
+    LResult = logging.getLogger (ALogerName)
+    # установить форматер
+    SetFormatterForLogger (LResult)
+    return LResult
 #endfunction
 
 #-------------------------------------------------
@@ -1788,7 +1886,7 @@ def CreateTFileMemoLog () -> TFileMemoLog:
 #-------------------------------------------------
 # Инициализация системы logging
 #-------------------------------------------------
-def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> None:
+def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> None:
     """STARTLogging"""
 #beginfunction
     global STATLogging
@@ -1811,46 +1909,20 @@ def STARTLogging (ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) 
     global FileMemoLog
     FileMemoLog = None
 
-    LOSInfo = LUos.TOSInfo()
-    print ('HostName      = ' + LOSInfo.node)
-    print ('OS            = ' + LOSInfo.system)
-    # print ('OS            = ' + LOSInfo.uname.system)
-
-    LPathLOG = ADirectoryLOG
-    if ADirectoryLOG == '':
-        LPathLOG = LUos.GetCurrentDir ()
-    #endif
-
-    LFileNameLOG = ''
-    if AFileNameLOG !=  '':
-        LFileNameLOG = LUFile.ExtractFileName(AFileNameLOG)
-        LPathLOG = os.path.join (LPathLOG, LUFile.ExtractFileDir (AFileNameLOG))
-    #endif
-    LPathLOG = LUFile.ExpandFileName(LPathLOG)
-
-    print (LPathLOG)
-    print (LFileNameLOG)
-
-    if not LUFile.DirectoryExists (LPathLOG):
-        os.mkdir (LPathLOG)
-    #endif
-
-    match LOSInfo.system.upper():
-        case 'LINUX':
-            ...
-        case 'WINDOWS':
-            ...
-        case _:  # Pattern not attempted
-            print ('INFO: Only LINUX or WINDOWS')
-            return 1
-    #endmatch
-
     AddLevelName ()
 
-    GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root', ADirectoryLOG, AFileNameLOG, AFileNameLOGjson)
-    if GLoggerFILEINI is None:
-        GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root', ADirectoryLOG, AFileNameLOG, AFileNameLOGjson)
-    #endif
+    match T:
+        case TTypeSETUPLOG.tslCONFIG:
+            GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root', ADirectoryLOG, AFileNameLOG,
+                                                AFileNameLOGjson)
+        case TTypeSETUPLOG.tslYAML:
+            ...
+        case TTypeSETUPLOG.tslINI:
+            GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root', ADirectoryLOG, AFileNameLOG,
+                                                  AFileNameLOGjson)
+        case _:
+            ...
+    #endmatch
 
     #-------------------------------------------------
     # GLoggerBASIC = CreateLoggerBASIC (logging.DEBUG, 'LOG\\' + CDefaultFileLogFILEBASIC, 'root')
