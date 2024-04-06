@@ -1812,22 +1812,28 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
             LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
         #endif
         print('LDirectoryLOG:',LDirectoryLOG)
-
         if not LUFile.DirectoryExists (LDirectoryLOG):
             os.mkdir (LDirectoryLOG)
         #endif
+
+        print(LUos.GOSInfo.system)
+
         # установить имена log файлов в ini
         LOptionValue_01 = "('" + os.path.join (LDirectoryLOG, LFileNameLOG) + "',)"
         # LOptionValue_01 = "('" + os.path.join (ADirectoryLOG, LFileNameLOG) + "',)"
-        LOptionValue_01 = LOptionValue_01.replace ('\\', "\\\\")
+        if LUos.GOSInfo.system == 'Windows':
+            LOptionValue_01 = LOptionValue_01.replace ('\\', "\\\\")
+        #endif
         print(LOptionValue_01)
 
         LINIFile.SetOption ('handler_FILE_01', LOptionName, LOptionValue_01)
         LOptionValue_02 = "('" + os.path.join (LDirectoryLOG, LFileNameLOGjson) + "',)"
         # LOptionValue_02 = "('" + os.path.join (ADirectoryLOG, LFileNameLOGjson) + "',)"
-        LOptionValue_02 = LOptionValue_02.replace ("\\", "\\\\")
-
+        if LUos.GOSInfo.system == 'Windows':
+            LOptionValue_02 = LOptionValue_02.replace ("\\", "\\\\")
+        #endif
         print(LOptionValue_02)
+
         LINIFile.SetOption ('handler_FILE_02', LOptionName, LOptionValue_02)
         LINIFile.UpdateFileINI ()
     #endif

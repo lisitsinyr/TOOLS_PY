@@ -64,7 +64,7 @@ class TProductType(enum.Enum):
     WXXXX = 'W2000 or WXP or W2003'
 #endclass
 
-cSection = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+cSection = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders'
 
 class TFoldersConst(enum.Enum):
     """TFoldersConst"""
@@ -701,6 +701,8 @@ def main ():
     # get_display_name ()
     ...
 #endfunction
+
+GOSInfo = TOSInfo ()
 
 #------------------------------------------
 #
