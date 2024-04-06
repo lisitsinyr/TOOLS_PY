@@ -25,6 +25,7 @@ import copy
 import logging
 import logging.config
 import yaml
+import json
 
 import inspect
 import traceback
@@ -46,6 +47,7 @@ import LUConsole
 import LUDateTime
 import LUos
 import LUParserINI
+import LUDict
 
 # ===========================================================================
 # CONST
@@ -106,6 +108,7 @@ def AddLevelName():
 
 CDefaultFileLogINI = 'logging.ini'
 CDefaultFileLogCONFIG = 'logging.CONFIG'
+CDefaultFileLogYAML = 'logging.YAML'
 
 CDefaultFileLog = 'LOGGING.log'
 CDefaultFileLogFILEINI = 'LOGGING_FILEINI.log'
@@ -1637,7 +1640,7 @@ LOGGING_CONFIG = \
             'formatter': 'FORMAT_01',
             'maxBytes': 10000000,
             'backupCount': 5,
-            'filename': 'LOG\\LOGGING_CONFIG.log'
+            'filename': 'LOGGING_CONFIG.log'
         },
         'FILE_02': {
             # 'class': 'logging.handlers.TimedRotatingFileHandler',
@@ -1647,7 +1650,7 @@ LOGGING_CONFIG = \
             # 'interval': 'M',
             'maxBytes': 1024,
             'backupCount': 5,
-            'filename': 'LOG\\LOGGING_CONFIG_json.log'
+            'filename': 'LOGGING_CONFIG_json.log'
         }
     },
     'formatters': {
@@ -1666,44 +1669,76 @@ LOGGING_CONFIG = \
 #-------------------------------------------------
 # CreateLoggerCONFIG
 #-------------------------------------------------
-def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
+def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str,
+                        ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
     """CreateLoggerCONFIG"""
 #beginfunction
     global CONFIG
     CONFIG = {}
 
-    # LUDict.SaveDictSTR (LOGGING_CONFIG, AFileNameCONFIG)
-    # if LUFile.FileExists(AFileNameCONFIG):
-    #     # читаем конфигурацию из файла
-    #     try:
-    #         with open (AFileNameCONFIG, 'r') as FileCONFIG:
-    #             CONFIG = json.load(FileCONFIG)
-    #         #endwith
-    #     except FileNotFoundError as ERROR:
-    #         print ('Невозможно открыть файл', ERROR)
-    #         GLULogger.error('Невозможно открыть файл')
-    #     #endtry
-    # else:
-    #     CONFIG = copy.deepcopy (LOGGING_CONFIG)
-    # #endif
+    LPath = LUFile.ExtractFileDir(__file__)
+    LFileNameCONFIG = os.path.join (LPath, AFileNameCONFIG)
+    if LUFile.FileExists(LFileNameCONFIG):
+        # читаем конфигурацию из файла
+        try:
+            with open (LFileNameCONFIG, 'r') as FileCONFIG:
+                CONFIG = json.load(FileCONFIG)
+            #endwith
+        except FileNotFoundError as ERROR:
+            print ('Невозможно открыть файл', ERROR)
+            GLULogger.error('Невозможно открыть файл')
+        #endtry
+    else:
+        CONFIG = copy.deepcopy (LOGGING_CONFIG)
+    #endif
+    #-------------------------------------------------------------------
+    # CONFIG = copy.deepcopy (LOGGING_CONFIG)
+    #-------------------------------------------------------------------
 
-    CONFIG = copy.deepcopy (LOGGING_CONFIG)
+    if AFileNameLOG == '':
+        LOptionValue_01 = CONFIG['handlers']['FILE_01']['filename']
+        print ('LOptionValue_01:',LOptionValue_01)
+        LFileNameLOG = LUFile.ExtractFileName (LOptionValue_01)
+    else:
+        LFileNameLOG = LUFile.ExtractFileName (AFileNameLOG)
+    #endif
+    print('LFileNameLOG:',LFileNameLOG)
 
-    # взять имя файла из config
+    if AFileNameLOGjson == '':
+        LOptionValue_02 = CONFIG['handlers']['FILE_02']['filename']
+        print ('LOptionValue_02:',LOptionValue_02)
+        LFileNameLOGjson = LUFile.ExtractFileName (LOptionValue_02)
+    else:
+        LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
+    #endif
+    print('LFileNameLOGjson:',LFileNameLOGjson)
 
-    New = "D:\\PROJECTS_LYR\\CHECK_LIST\\05_DESKTOP\\02_Python\\PROJECTS_PY\\PATTERNS_PY\\PROGRAM\\LOG\\LOGGING_FILEINI_new.log"
-    # New = "LOG\\LOGGING_FILEINI_new.log"
+    if ADirectoryLOG == '':
+        # log будет создан в текущем каталоге (по умолчанию)
+        LDirectoryLOG = LUos.GetCurrentDir ()
+    else:
+        # log будет создан в ADirectoryLOG
+        LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
+    #endif
+    print('LDirectoryLOG:',LDirectoryLOG)
+    if not LUFile.DirectoryExists (LDirectoryLOG):
+        os.mkdir (LDirectoryLOG)
+    #endif
 
-    # записать имя файла в config
+    # установить имена log файлов в CONFIG
+    LOptionValue_01 = os.path.join (LDirectoryLOG, LFileNameLOG)
+    print('LOptionValue_01:', LOptionValue_01)
+    CONFIG ['handlers'] ['FILE_01'] ['filename'] = LOptionValue_01
 
-    print ('DEFAULT:', CONFIG['handlers']['FILE_01']['filename'])
-    CONFIG ['handlers'] ['FILE_01'] ['filename'] = New
-    print ('NEW:', CONFIG['handlers']['FILE_01']['filename'])
-    # print ('DEFAULT:', CONFIG['handlers']['FILE_02']['filename'])
-    # CONFIG ['handlers'] ['FILE_02'] ['filename'] = New
-    # print ('NEW:', CONFIG['handlers']['FILE_02']['filename'])
+    LOptionValue_02 = os.path.join (LDirectoryLOG, LFileNameLOGjson)
+    print('LOptionValue_02:', LOptionValue_02)
+    CONFIG ['handlers'] ['FILE_02'] ['filename'] = LOptionValue_02
 
     if len(CONFIG) > 0:
+        #-------------------------------------------------------------------
+        LFileNameCONFIG = os.path.join (LUos.GetCurrentDir (), CDefaultFileLogCONFIG)
+        LUDict.SaveDictSTR (CONFIG, LFileNameCONFIG)
+        #-------------------------------------------------------------------
         # читаем конфигурацию из словаря
         logging.config.dictConfig (CONFIG)
         # создаем регистратор
@@ -1716,32 +1751,86 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str, ADirectoryLOG: st
 #endfunction
 
 #-------------------------------------------------
-# CreateLoggerFILEYAML
+# CreateLoggerYAML
 #-------------------------------------------------
-def CreateLoggerFILEYAML (AFileNameYAML: str, ALogerName: str, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
+def CreateLoggerYAML (AFileNameYAML: str, ALogerName: str, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
     """CreateLoggerFILEYAML"""
 #beginfunction
-    global config_YAML
-    # читаем конфигурацию из файла
+    global CONFIG_YAML
+    CONFIG_YAML = {}
+
     LPath = LUFile.ExtractFileDir(__file__)
-    LFileName = os.path.join (LPath, AFileNameYAML)
+    LFileNameYAML = os.path.join (LPath, AFileNameYAML)
+    if LUFile.FileExists (LFileNameYAML):
+        # читаем конфигурацию из файла
+        try:
+            with (open (LFileNameYAML, 'r') as FileCONFIG_YAML):
+                CONFIG_YAML = yaml.load(FileCONFIG_YAML, Loader=yaml.FullLoader)
+            #endwith
+        except FileNotFoundError as ERROR:
+            print ('Невозможно открыть файл', ERROR)
+            GLULogger.error ('Невозможно открыть файл')
+        #endtry
+    else:
+        CONFIG_YAML = copy.deepcopy (LOGGING_CONFIG)
+    #endif
+    #-------------------------------------------------------------------
+    # CONFIG_YAML = copy.deepcopy (LOGGING_CONFIG)
+    #-------------------------------------------------------------------
 
-    if LUFile.FileExists (LFileName):
-        with open (LFileName) as f:
-            config_dict = yaml.load (f)
-        #endwith
-        # Append the date stamp to the file name
-        log_filename = config_dict['handlers']['fileHandler']['filename']
-        base, extension = os.path.splitext(log_filename)
-        today = datetime.datetime.today()
-        log_filename = '{}{}{}'.format(
-            base,
-            today.strftime('_%Y%m%d'),
-            extension)
-        config_dict['handlers']['fileHandler']['filename'] = log_filename
+    if AFileNameLOG == '':
+        LOptionValue_01 = CONFIG_YAML ['handlers'] ['FILE_01'] ['filename']
+        print ('LOptionValue_01:', LOptionValue_01)
+        LFileNameLOG = LUFile.ExtractFileName (LOptionValue_01)
+    else:
+        LFileNameLOG = LUFile.ExtractFileName (AFileNameLOG)
+    #endif
+    print ('LFileNameLOG:', LFileNameLOG)
 
-        # Apply the configuration
-        logging.config.dictConfig(config_dict)
+    if AFileNameLOGjson == '':
+        LOptionValue_02 = CONFIG_YAML ['handlers'] ['FILE_02'] ['filename']
+        print ('LOptionValue_02:', LOptionValue_02)
+        LFileNameLOGjson = LUFile.ExtractFileName (LOptionValue_02)
+    else:
+        LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
+    #endif
+    print ('LFileNameLOGjson:', LFileNameLOGjson)
+
+    if ADirectoryLOG == '':
+        # log будет создан в текущем каталоге (по умолчанию)
+        LDirectoryLOG = LUos.GetCurrentDir ()
+    else:
+        # log будет создан в ADirectoryLOG
+        LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
+    #endif
+    print('LDirectoryLOG:',LDirectoryLOG)
+    if not LUFile.DirectoryExists (LDirectoryLOG):
+        os.mkdir (LDirectoryLOG)
+    #endif
+
+    # установить имена log файлов в CONFIG
+    LOptionValue_01 = os.path.join (LDirectoryLOG, LFileNameLOG)
+    print('LOptionValue_01:', LOptionValue_01)
+    CONFIG_YAML ['handlers'] ['FILE_01'] ['filename'] = LOptionValue_01
+
+    LOptionValue_02 = os.path.join (LDirectoryLOG, LFileNameLOGjson)
+    print('LOptionValue_02:', LOptionValue_02)
+    CONFIG_YAML ['handlers'] ['FILE_02'] ['filename'] = LOptionValue_02
+
+    if len (CONFIG_YAML) > 0:
+        #-------------------------------------------------------------------
+        LFileNameYAML = os.path.join (LUos.GetCurrentDir (), CDefaultFileLogYAML)
+        LUDict.SaveDictSTR (CONFIG_YAML, LFileNameYAML)
+        #-------------------------------------------------------------------
+        # читаем конфигурацию из словаря
+        logging.config.dictConfig (CONFIG_YAML)
+        # создаем регистратор
+        LResult = logging.getLogger (ALogerName)
+        # установить форматер
+        SetFormatterForLogger (LResult)
+        return LResult
+    else:
+        return None
     #endif
 
 #endfunction
@@ -1843,6 +1932,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
     LResult = logging.getLogger (ALogerName)
     # установить форматер
     SetFormatterForLogger (LResult)
+
     return LResult
 #endfunction
 
@@ -1922,7 +2012,8 @@ def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFile
             GLoggerCONFIG = CreateLoggerCONFIG (CDefaultFileLogCONFIG, 'root', ADirectoryLOG, AFileNameLOG,
                                                 AFileNameLOGjson)
         case TTypeSETUPLOG.tslYAML:
-            ...
+            GLoggerYAML = CreateLoggerYAML (CDefaultFileLogYAML, 'root', ADirectoryLOG, AFileNameLOG,
+                                                AFileNameLOGjson)
         case TTypeSETUPLOG.tslINI:
             GLoggerFILEINI = CreateLoggerFILEINI (CDefaultFileLogINI, 'root', ADirectoryLOG, AFileNameLOG,
                                                   AFileNameLOGjson)
@@ -1938,33 +2029,33 @@ def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFile
     #-------------------------------------------------
     # LoggerTOOLS
     #-------------------------------------------------
-    if not ('LoggerTOOLS' in vars () or 'LoggerTOOLS' in globals ()):
-        CLoggerTOOLS = 'TOOLS__'
-        LoggerTOOLS = logging.getLogger (CLoggerTOOLS)
-    #endif
+    CLoggerTOOLS = 'TOOLS__'
+    LoggerTOOLS = logging.getLogger (CLoggerTOOLS)
+    LoggerTOOLS.disabled = False
+    # print('LoggerTOOLS' in vars () or 'LoggerTOOLS' in globals ())
+    # print('LoggerTOOLS' in vars ())
+    # print('LoggerTOOLS' in globals ())
+    # if not ('LoggerTOOLS' in vars () or 'LoggerTOOLS' in globals ()):
+    #     CLoggerTOOLS = 'TOOLS__'
+    #     LoggerTOOLS = logging.getLogger (CLoggerTOOLS)
+    # #endif
 
     #-------------------------------------------------
     # LoggerAPPS
     #-------------------------------------------------
-    if not ('LoggerAPPS' in vars () or 'LoggerAPPS' in globals ()):
-        CLoggerAPPS = 'APPS___'
-        LoggerAPPS = logging.getLogger(CLoggerAPPS)
-    #endif
+    CLoggerAPPS = 'APPS___'
+    LoggerAPPS = logging.getLogger(CLoggerAPPS)
 
     #-------------------------------------------------
     # LoggerTLogger
     #-------------------------------------------------
-    if not ('LoggerTLogger' in vars () or 'LoggerTLogger' in globals ()):
-        CTLogger = 'TLOGGER'
-        LoggerTLogger = CreateTLogger (CTLogger)
-    #endif
+    CTLogger = 'TLOGGER'
+    LoggerTLogger = CreateTLogger (CTLogger)
 
     #-------------------------------------------------
     # FileMemoLog
     #-------------------------------------------------
-    if not ('FileMemoLog' in vars () or 'FileMemoLog' in globals ()):
-        FileMemoLog = CreateTFileMemoLog ()
-    #endif
+    FileMemoLog = CreateTFileMemoLog ()
 
     #-------------------------------------------------
     # Отключить журнал 'chardet.charsetprober'
@@ -2002,7 +2093,9 @@ def STOPLogging () -> None:
     """STOPLogging"""
 #beginfunction
     global STATLogging
+    global LoggerTOOLS
     STATLogging = False
+    # LoggerTOOLS.disabled = True# Выключить систему logging для логгирования
 #endfunction
 
 #-------------------------------------------------
