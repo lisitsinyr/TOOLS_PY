@@ -67,7 +67,7 @@ TONfunction = ONfunction
 def progress_func (AStream, AChunk: bytes, Abytes_remaining: int):
 #beginfunction
     s = 'progress_func...'
-    LULog.LoggerTOOLSAdd_debug (s)
+    LULog.LoggerTOOLS_AddDebug (s)
     # if not AStream is None:
     #     LProgressMax = AStream.filesize
     #     LProgressLeft = Abytes_remaining
@@ -82,16 +82,16 @@ def progress_func (AStream, AChunk: bytes, Abytes_remaining: int):
 def complete_func (AStream, AFilePath: str):
 #beginfunction
     s = 'complete_func...'
-    LULog.LoggerTOOLSAdd_debug (s)
+    LULog.LoggerTOOLS_AddDebug (s)
     if not AStream is None:
         LProgressMax = AStream.filesize
         LProgressLeft = 0
         LProgressValue = LProgressMax - LProgressLeft
-        # LULog.LoggerTOOLSAdd_debug (f'{LProgressMax}-{LProgressLeft}-{LProgressValue}')
+        # LULog.LoggerTOOLS_AddDebug (f'{LProgressMax}-{LProgressLeft}-{LProgressValue}')
 
         if not AFilePath is None:
             LFileName = LUStrUtils.PrintableStr (AFilePath)
-            LULog.LoggerTOOLSAdd_debug ('Файл ' + LFileName + ' загружен')
+            LULog.LoggerTOOLS_AddDebug ('Файл ' + LFileName + ' загружен')
         #endif
     #endif
 #endfunction
@@ -157,7 +157,7 @@ class TYouTubeObject (TObjects):
         super ().__del__()
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 
@@ -201,7 +201,7 @@ class TYouTubeObject (TObjects):
     def ONprogressObject (self, AStream: pytube.Stream, AChunk: bytes, Abytes_remaining: int):
     #beginfunction
         s = 'TYouTubeObject.ONprogressObject...'
-        LULog.LoggerTOOLSAdd_debug (s)
+        LULog.LoggerTOOLS_AddDebug (s)
         if not AStream is None:
             self.FProgressMax = AStream.filesize
             self.FProgressLeft = Abytes_remaining
@@ -225,7 +225,7 @@ class TYouTubeObject (TObjects):
     def ONcompleteObject (self, AStream: pytube.Stream, AFilePath: str):
     #beginfunction
         s = 'TYouTubeObject.ONcompleteObject...'
-        LULog.LoggerTOOLSAdd_debug (s)
+        LULog.LoggerTOOLS_AddDebug (s)
 
         if not AStream is None:
             self.FProgressMax = AStream.filesize
@@ -233,7 +233,7 @@ class TYouTubeObject (TObjects):
             self.FProgressValue = self.FProgressMax - self.FProgressLeft
             if not AFilePath is None:
                 LFileName = LUStrUtils.PrintableStr (AFilePath)
-                LULog.LoggerTOOLSAdd_debug ('Файл ' + LFileName + ' загружен')
+                LULog.LoggerTOOLS_AddDebug ('Файл ' + LFileName + ' загружен')
             #endif
             if not self.__FYouTubeThread is None:
                 self.__FYouTubeThread.StopThread()
@@ -370,7 +370,7 @@ class TYouTubeObject (TObjects):
                 LStreams = self.__FYouTube.streams.filter (res=res, type='video', file_extension='mp4')
             except BaseException as ERROR:
                 s = f'__FYouTube.streams.filter={ERROR} res={res} URL={self.URL}'
-                LULog.LoggerTOOLSAdd_error(s)
+                LULog.LoggerTOOLS_AddError(s)
             #endtry
             if len (LStreams) > 0:
                 for LStream in LStreams:
@@ -380,7 +380,7 @@ class TYouTubeObject (TObjects):
                         break
                     except BaseException as ERROR:
                         s = f'__SetStreamInfo={ERROR} res={res} URL={self.URL}'
-                        LULog.LoggerTOOLSAdd_error (s)
+                        LULog.LoggerTOOLS_AddError (s)
                     #endtry
                 #endfor
                 break
@@ -666,7 +666,7 @@ class TYouTubeObject (TObjects):
                 # except BaseException as ERROR:
                 except Exception as ERROR:
                     s = f'DownloadURL={ERROR}'
-                    LULog.LoggerTOOLSAdd_error (s)
+                    LULog.LoggerTOOLS_AddError (s)
                 #endtry
             else:
                 self.__DownloadURL_chunk (LPATH, LFileName, LFileSize)
@@ -766,7 +766,7 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
         except BaseException as ERROR:
             LStreams = None
             s = f'filter={ERROR}'
-            LULog.LoggerTOOLSAdd_error (s)
+            LULog.LoggerTOOLS_AddError (s)
         #endtry
 
         if not LStreams is None:
@@ -774,7 +774,7 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
                 LStreamInfo = TYouTubeObject.GetStreamInfo (LStream)
                 LTag = LStreamInfo ['itag']
                 # Lresolution = LStreamInfo ['resolution']
-                # LULog.LoggerTOOLSAdd_debug (Lresolution)
+                # LULog.LoggerTOOLS_AddDebug (Lresolution)
 
                 Lfilename_prefix = filename_prefix
                 LFileName = os.path.join (LPATH, Lfilename_prefix + LStreamInfo ['default_filename'])
@@ -784,7 +784,7 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
                         if not LStream.exists_at_path (LFileName):
                             s  = LStream.download (APATH, skip_existing=skip_existing, filename_prefix=filename_prefix)
                         else:
-                            LULog.LoggerTOOLSAdd_debug ('Файл ' + LFileName + ' существует...')
+                            LULog.LoggerTOOLS_AddDebug ('Файл ' + LFileName + ' существует...')
                             complete_func (LStream, None)
                         #endif
                     else:
@@ -797,13 +797,13 @@ def DownloadURL (AURL: str, APATH: str, AMaxRes: (), ADownload=False,
                             i = i + N
                         #endwhile
                         s = f'Видео не загружалось: {res}/{LTag}={LFileName}'
-                        LULog.LoggerTOOLSAdd_debug (s)
+                        LULog.LoggerTOOLS_AddDebug (s)
                         complete_func (LStream, None)
                     #endif
                 except BaseException as ERROR:
                     s = f'DownloadURL={ERROR}'
-                    LULog.LoggerTOOLSAdd_error (s)
-                    LULog.LoggerTOOLSAdd_error (LFileName)
+                    LULog.LoggerTOOLS_AddError (s)
+                    LULog.LoggerTOOLS_AddError (LFileName)
                 #endtry
             #endfor
             # если по фильтру есть хотя бы один поток

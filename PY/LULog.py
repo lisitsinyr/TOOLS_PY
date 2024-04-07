@@ -2099,9 +2099,9 @@ def STOPLogging () -> None:
 #endfunction
 
 #-------------------------------------------------
-# LoggerTOOLSAdd
+# LoggerTOOLS_AddLevel
 #-------------------------------------------------
-def LoggerTOOLSAdd (ALevel, Astr):
+def LoggerTOOLS_AddLevel (ALevel, Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2115,9 +2115,9 @@ def LoggerTOOLSAdd (ALevel, Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerTOOLSAdd_debug
+# LoggerTOOLS_AddDebug
 #-------------------------------------------------
-def LoggerTOOLSAdd_debug (Astr):
+def LoggerTOOLS_AddDebug (Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2131,9 +2131,9 @@ def LoggerTOOLSAdd_debug (Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerTOOLSAdd_error
+# LoggerTOOLS_AddError
 #-------------------------------------------------
-def LoggerTOOLSAdd_error (Astr):
+def LoggerTOOLS_AddError (Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2147,10 +2147,10 @@ def LoggerTOOLSAdd_error (Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerAPPSAdd
+# LoggerAPPS_AddLevel
 #-------------------------------------------------
 #LULog.LoggerAPPS.log
-def LoggerAPPSAdd (ALevel, Astr):
+def LoggerAPPS_AddLevel (ALevel, Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2164,10 +2164,10 @@ def LoggerAPPSAdd (ALevel, Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerAPPSAdd_info
+# LoggerAPPS_AddInfo
 #-------------------------------------------------
 #LULog.LoggerAPPS.info
-def LoggerAPPSAdd_info (Astr):
+def LoggerAPPS_AddInfo (Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2181,10 +2181,10 @@ def LoggerAPPSAdd_info (Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerAPPSAdd_error
+# LoggerAPPS_AddError
 #-------------------------------------------------
 #LULog.LoggerAPPS.error
-def LoggerAPPSAdd_error (Astr):
+def LoggerAPPS_AddError (Astr):
 #beginfunction
     if STATLogging:
         try:
@@ -2198,10 +2198,10 @@ def LoggerAPPSAdd_error (Astr):
 #endfunction
 
 #-------------------------------------------------
-# LoggerAPPSAdd_debug
+# LoggerAPPS_AddDebug
 #-------------------------------------------------
 #LULog.LoggerAPPS.debug
-def LoggerAPPSAdd_debug (Astr):
+def LoggerAPPS_AddDebug (Astr):
 #beginfunction
     if STATLogging:
         try:

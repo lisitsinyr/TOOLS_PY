@@ -106,7 +106,7 @@ class TFolders (object):
     #beginfunction
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format(LClassName)
-        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 

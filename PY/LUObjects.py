@@ -68,7 +68,7 @@ class TObjects (object):
     #beginfunction
         LClassName = self.__class__.__name__  
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
         #print (s)
     #endfunction
 
@@ -132,7 +132,7 @@ class TObjectsItem (object):
         del self.__FObjects
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
 
     #--------------------------------------------------
     # @property Objects
@@ -172,7 +172,7 @@ class TObjectsCollection (list):
         self.clear()            # удалить все items
         LClassName = self.__class__.__name__
         s = '{} уничтожен'.format (LClassName)
-        # LULog.LoggerTOOLSAdd (LULog.DEBUGTEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
 
     def AddItem(self) -> TObjectsItem:
         LObjectsItem: TObjectsItem = TObjectsItem()
