@@ -30,7 +30,7 @@ import LULog
 
 def PrintInfoObject (AObject):
 #beginfunction
-    print (sys._getframe (0).f_code.co_name, '...')
+    # print (sys._getframe (0).f_code.co_name, '...')
     # print (inspect.currentframe().f_code.co_name, '...')
     # print (inspect.stack () [0] [3], '...')
     # print (traceback.extract_stack () [-1].name, '...')
