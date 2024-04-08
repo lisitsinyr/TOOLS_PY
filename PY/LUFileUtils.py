@@ -18,16 +18,17 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-#import win32api
-import platform
 import sys
 import time
+import chardet
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import datetime
 import shutil
+import win32api
+import platform
 
 #------------------------------------------
 # БИБЛИОТЕКА LU
@@ -37,22 +38,550 @@ import LUFile
 import LUStrDecode
 
 #------------------------------------------
-# БИБЛИОТЕКИ python
-#------------------------------------------
-import os
-import win32api
-import platform
-
-#------------------------------------------
-# БИБЛИОТЕКИ сторонние
-#------------------------------------------
-import datetime
-import chardet
-
-#------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LUDateTime
+
+#-------------------------------------------------------------------------------
+# ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
+#-------------------------------------------------------------------------------
+def ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+   Dim LResult
+#beginfunction
+"""
+   LFile = Dir (ASourcePath+"\\"+AMask)
+
+   if EXIST(ADestPath)=0
+      MD ADestPath
+   #endif
+
+   if ADestPathDelta
+      if EXIST(ADestPathDelta)=0
+         MD ADestPathDelta
+      #endif
+   #endif
+
+   WHILE (@ERROR = 0) AND LFile
+
+      if LFile <> "." AND LFile <> ".."
+
+         LAttr = GetFileAttr (ASourcePath + "\\" + LFile)
+
+         if $Debug
+            LogAdd ("3", LogFile, "F", ASourcePath+"\\"+LFile+"_"+LAttr, "w+/n")
+         #endif
+
+         if (LAttr & 16)=0
+            LFileNameSource = ASourcePath + "\\" + LFile
+            LFileSizeSource = GetFileSize (LFileNameSource)
+            LFileTimeSource = GetFileTime (LFileNameSource)
+            LFileNameDest   = ADestPath + "\\" + LFile
+            if ADestPathDelta
+               LFileNameDestDelta = ADestPathDelta + "\\" + LFile
+            #endif
+
+            #--------------------------------------------------------------------
+            LResult = CompareFileTimes(LFileNameSource, LFileNameDest)
+            if $Debug
+               LogAdd ("3", LogFile, "F", "LResult="+LResult, "w+/n")
+            #endif
+
+            #--------------------------------------------------------------------
+            # Check Result
+            #--------------------------------------------------------------------
+            LCopy = False
+            LDelete = False
+            if $Delete 
+               if LResult = -3
+                  LDelete = True
+               #endif
+            else
+               if LResult = -3
+                  LFileSizeDest = "new"
+                  LFileTimeDest = "new"
+                  LCopy = True
+               else
+                  LFileSizeDest = GetFileSize (LFileNameDest)
+                  LFileTimeDest = GetFileTime (LFileNameDest)
+                  if LResult = 1 
+                     LCopy = True
+                  else
+                     if (LResult = -1) and ($OverwriteNewer=1) 
+                        $warnOWN = "More recent dest file " + LFileNameDest + " is to be overwritten"
+                        LogAdd ("3", LogFile, "F", $warnOWN, "w+/n")
+                        LCopy = True
+                     #endif
+                     if (ACheckSize=True) and (LFileSizeSource<>LFileSizeDest)
+                        LCopy = True
+                     #endif
+                  #endif
+               #endif
+            #endif
+
+            #--------------------------------------------------------------------
+            # Copy
+            #--------------------------------------------------------------------
+            if LCopy = True
+               $s = LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")" + " => " +
+                    LFileNameDest   + " ("+LFileSizeDest+"|"+LFileTimeDest+")"
+               LogAdd ("3", LogFile, "F", $s, "w+/n")
+
+               Copy LFileNameSource LFileNameDest /r /h
+
+               if $ExecFunc
+
+                  if $ExecFuncPAR1
+                     $s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest, $$ExecFuncPAR1)'
+                  else
+                     $s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest)'
+                  #endif
+
+                  if $Debug
+                     LogAdd (Log, LogFile, "I", $s1)
+                  #endif
+                  $ResExe = execute ($s1)
+               #endif
+
+               if ADestPathDelta
+                  $s = $s + " => " + LFileNameDestDelta
+                  if $Debug
+                     LogAdd ("3", LogFile, "F", $s)
+                  #endif
+                  Copy LFileNameSource LFileNameDestDelta /r
+               #endif
+            #endif
+
+            #--------------------------------------------------------------------
+            # Delete
+            #--------------------------------------------------------------------
+            if LDelete = True
+               $s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
+               LogAdd ("3", LogFile, "F", $s, "w+/n")
+               Del LFileNameSource
+            #endif
+
+         #endif
+
+      #endif
+
+      if @ERROR = 0
+
+         LFile = Dir("")
+
+         #if $Debug
+         #   LogAdd ("3", LogFile, "F", @SERROR+"_"+@ERROR+"_"+LFile+"!", "w+/n")
+         ##endif
+
+      #endif
+
+   loop
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
+#-------------------------------------------------------------------------------
+def ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+#beginfunction
+"""
+   LFile = Dir (ASourcePath+"\*.*")
+   WHILE @ERROR = 0 AND LFile
+      if LFile <> "." AND LFile <> ".."
+         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
+
+            LSourcePath = ASourcePath + "\\" + LFile
+            LDestPath = ADestPath + "\\" + LFile
+            if ADestPathDelta
+               LDestPathDelta = ADestPathDelta + "\\" + LFile
+               if $Debug
+                  LogAdd ("3", LogFile, "D", LSourcePath+" => "+LDestPath+" "+LDestPathDelta)
+               #endif
+            else
+               LDestPathDelta = ""
+            #endif
+
+            ScanFile(LSourcePath, LDestPath, AMask, ACheckSize, LDestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
+            ScanDir(LSourcePath, LDestPath, AMask, ACheckSize, LDestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
+         #endif
+      #endif
+      if @ERROR = 0
+         LFile = Dir("")
+      #endif
+   loop
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  BacDirs (ASourcePath, ADestPath, ACheckSize)
+#-------------------------------------------------------------------------------
+def BacDirs (ASourcePath, ADestPath, ACheckSize) -> int:
+#beginfunction
+"""
+   if LSourcePath = 0
+      if IsDeclared (ASourcePath)
+         LSourcePath = ASourcePath
+      else
+         return 1
+      #endif
+   #endif
+   if LDestPath = 0
+      if IsDeclared (ADestPath)
+         LDestPath = ADestPath
+      else
+         return 1
+      #endif
+   #endif
+   LMask = "*.*"
+   if IsDeclared (ACheckSize)
+      LCheckSize = ACheckSize
+   else
+      LCheckSize = False
+   #endif
+
+   LFile = Dir (ASourcePath+"\\"+LMask)
+   WHILE @ERROR = 0 AND LFile
+      if LFile <> "." AND LFile <> ".."
+         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
+            LSourcePath = ASourcePath
+            LDestPath = ADestPath
+
+            LSourcePath = ASourcePath + "\\" + LFile
+            LDestPath = ADestPath + "\\" + LFile
+
+            BacDirs(LSourcePath, LDestPath, ACheckSize)
+
+            ASourcePath = LSaveLSourcePath
+            ADestPath = LSaveLDestPath
+         else
+            LFileNameSource = ASourcePath + "\\" + LFile
+            LFileNameDest = ADestPath + "\\" + LFile
+            if 0=EXIST(ADestPath)
+               MD ADestPath
+            #endif
+            LCopy = False
+            LResult = CompareFileTimes(LFileNameSource, LFileNameDest)
+            if $Result = 1 Or LResult = -3
+               LCopy = True
+            else
+               LFileSizeSource = GetFileSize (LFileNameSource)
+               LFileSizeDest = GetFileSize (LFileNameDest)
+               if (LCheckSize=True) and (LFileSizeSource<>LFileSizeDest)
+                  LCopy = True
+               #endif
+            #endif
+            if LCopy = True
+               ? LFileNameSource+" => "+LFileNameDest+" ..."
+               Copy LFileNameSource LFileNameDest /r
+            #endif
+         #endif
+      #endif
+      if @ERROR = 0
+         LFile = Dir("")
+      #endif
+   loop
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
+#-------------------------------------------------------------------------------
+def BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+#beginfunction
+"""
+   if (ASourcePath <> "") and (ADestPath <> "")
+      if $Debug
+         LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+      #endif
+      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
+      ScanDir (ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
+   #endif
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
+#-------------------------------------------------------------------------------
+def BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+#beginfunction
+"""
+   if (ASourcePath <> "") and (ADestPath <> "")
+      if $Debug
+         LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+      #endif
+      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
+   #endif
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+# SyncFile(Array, optional $Delete, optional $OverwriteNewer)
+#-------------------------------------------------------------------------------
+def SyncFile(Array, optional $Delete, optional $OverwriteNewer)
+#beginfunction
+"""
+   #LogAdd(Log, LogFile, "I", "Array="+UBound(Array))
+   for Each $Item in Array
+      #LogAdd(Log, LogFile, "I", "Item="+UBound($Item))
+      if UBound($Item) > 0
+         if ($Item[0] <> "") and ($Item[1] <> "")
+            LogAdd(Log, LogFile, "I", $Item[0]+"\\"+$Item[2]+" => "+$Item[1])
+            #---------------------------------------
+            #
+            #---------------------------------------
+            if UBound($Item) > 3
+               if UCase($Item[3]) = "S"
+                  #---------------------------------------
+                  # with subdir
+                  #---------------------------------------
+                  if UBound($Item) > 4
+                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
+                  else
+                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
+                  #endif
+               else                                                             
+                  if UBound($Item) > 4
+                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
+                  else
+                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
+                  #endif
+               #endif
+            else
+               if UCase($Item[3]) = "S"
+                  #---------------------------------------
+                  # with subdir
+                  #---------------------------------------
+                  BacFiles ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
+               else
+                  BacFile  ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
+               #endif
+            #endif
+      
+            #---------------------------------------
+            #
+            #---------------------------------------
+            if $Delete
+               LogAdd(Log, LogFile, "I", "Delete ..."+$Item[1]+"\\"+$Item[2]+" "+$Item[0])
+               if UCase($Item[3]) = "S"
+                  #---------------------------------------
+                  # with subdir
+                  #---------------------------------------
+                  BacFiles ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
+               else
+                  BacFile ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
+               #endif
+            #endif
+
+         #endif   
+      else
+         #---------------------------------------------------
+         LogAdd(Log, LogFile, "I", $Item)
+         #---------------------------------------------------
+      #endif
+   next
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  DelFile (ASourcePath, AMask, $Day)
+#-------------------------------------------------------------------------------
+def DelFile (ASourcePath, AMask, $Day)
+   Dim LResult
+#beginfunction
+"""
+   LFile = Dir (ASourcePath+"\\"+AMask)
+   L_Day = EncodeDate(@Year,@MonthNo,@MDayNo)
+   WHILE @ERROR = 0 AND LFile
+      if LFile <> "." AND LFile <> ".."
+         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
+            LFileNameSource = ASourcePath + "\\" + LFile
+            LFileSizeSource = GetFileSize (LFileNameSource)
+            LFileTimeSource = GetFileTime (LFileNameSource)
+            $Y = Val(SUBSTR(LFileTimeSource,1,4))
+            $M = Val(SUBSTR(LFileTimeSource,6,2))
+            $D = Val(SUBSTR(LFileTimeSource,9,2))
+            LFileDaySource = EncodeDate($Y,$M,$D)
+            LDel = 0
+            if ((L_Day-LFileDaySource) => $Day) LDel = 1 #endif
+            if LDel
+               Del LFileNameSource
+               LogAdd ("3", LogFile, "I", "Delete "+LFileNameSource+" "+LFileTimeSource+" Error="+@ERROR+" "+@SError)
+            #endif
+         #endif
+      #endif
+      if (@ERROR = 0) or (@ERROR = 5)
+         LFile = Dir("")
+      #endif
+   loop
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  ListFile (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncFile)
+#-------------------------------------------------------------------------------
+def ListFile (ASourcePath, AMask, _OutFile, _Option, _FuncFile)
+#beginfunction
+
+"""
+   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
+      $HandleFile = FreeFileHandle
+      $Res = Open ($HandleFile, $OutFile, 1+4)
+   #endif
+"""
+
+   #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
+
+   LFile = Dir (ASourcePath+"\\"+AMask)
+
+"""
+   WHILE @ERROR = 0 AND LFile
+      if LFile <> "." AND LFile <> ".."
+         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
+            ListFile = ListFile + 1
+            LFileNameSource = ASourcePath + "\\" + LFile
+            LFileSizeSource = GetFileSize (LFileNameSource)
+            LFileTimeSource = GetFileTime (LFileNameSource)
+
+            if $OutFile
+               if UCase($OutFile) = "CONSOLE"
+                  select
+                     case $Option = 1 or $Option = 11
+                        ? LFile
+                     case $Option = 2 or $Option = 12
+                        ? LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource
+                  endselect
+               else
+                  select
+                     case $Option = 1 or $Option = 11
+                        $Res = WriteLine ($HandleFile, LFile+@CRLF)
+                     case $Option = 2 or $Option = 12
+                        $Res = WriteLine ($HandleFile, LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource+" "+ListFile+@CRLF)
+                  endselect
+               #endif
+            #endif
+
+            if FuncFile
+               $s = '$$Res = FuncFile ($ListFile, $LFileNameSource, $LFileTimeSource, $LFileSizeSource)'
+               $ResExe = execute ($s)
+            #endif
+
+            #--------------------------------------------------------------------------------
+            #$Y = Val(SUBSTR(LFileTimeSource,1,4))
+            #$M = Val(SUBSTR(LFileTimeSource,6,2))
+            #$D = Val(SUBSTR(LFileTimeSource,9,2))
+            #LFileDaySource = EncodeDate($Y,$M,$D)
+            #--------------------------------------------------------------------------------
+
+         #endif
+      #endif
+
+      if (@ERROR = 0) or (@ERROR = 5)
+         LFile = Dir("")
+      #endif
+   loop
+"""
+
+"""
+   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
+      $Res = Close ($HandleFile)
+   #endif
+"""
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  ListDir (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncDir, optional FuncFile)
+#-------------------------------------------------------------------------------
+def ListDir (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
+#beginfunction
+    global GLevel
+    global GDirCount
+    GLevel = GLevel + 1
+    #------------------------------------------------------------
+    # Dir
+    #------------------------------------------------------------
+    GDirCount = GDirCount + 1
+    LDirName = os.path.basename (ASourcePath)
+    LFullDirName = ASourcePath
+
+"""
+   # FileCount = ListFile(ASourcePath, AMask, $OutFile, $Option, FuncFile)
+   if $Option = 10 or $Option = 11 or $Option = 12
+      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
+         $HandleDir = FreeFileHandle
+         $Res = Open ($HandleDir, $OutFile, 1+4)
+      #endif
+      if $OutFile
+         if UCase($OutFile) = "CONSOLE"
+            ? ASourcePath
+         else
+            $Res = WriteLine ($HandleDir, ASourcePath+" "+$DirCount+@CRLF)
+         #endif
+      #endif
+      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
+         $Res = Close ($HandleDir)
+      #endif
+   #endif
+"""
+
+"""
+   LFiles = Dir (ASourcePath+"\*.*")
+   WHILE @ERROR = 0 AND LFiles
+      if LFiles <> "." AND LFiles <> ".."
+         if GetFileAttr (ASourcePath + "\\" + LFiles) & 16    # Это каталог....
+            LSourcePath = ASourcePath + "\\" + LFiles
+            FileCount = ListFile(LSourcePath, AMask, _OutFile, _Option, _FuncFile)
+            #if FuncDir
+            #   $s = '$$Res = FuncDir ($$DirCount, $LSourcePath, $FileCount)'
+            #   $ResExe = execute ($s)
+            ##endif
+
+            ListDir (LSourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
+
+            GLevel = GLevel - 1
+         #endif
+      #endif
+      if (@ERROR = 0) 
+         LFiles = Dir("")
+      #endif
+   loop
+"""
+
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  DirFile (ASourcePath, AMask, optional $OutFile)
+#-------------------------------------------------------------------------------
+def DirFile (ASourcePath, AMask, optional $OutFile)
+   Dim LResult
+#beginfunction
+"""
+   if $OutFile
+      del $OutFile
+      $Handle = FreeFileHandle
+      Open ($Handle, $OutFile, 1+4)
+   #endif
+   LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
+   LFile = Dir (ASourcePath+"\\"+AMask)
+   WHILE @ERROR = 0 AND LFile
+      if LFile <> "." AND LFile <> ".."
+         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
+            LFileNameSource = ASourcePath + "\\" + LFile
+            LFileSizeSource = GetFileSize (LFileNameSource)
+            LFileTimeSource = GetFileTime (LFileNameSource)
+            if $OutFile
+               WriteLine ($Handle, LFile+@CRLF)
+            #endif
+            # LogAdd ("3", LogFile, "I", LFile)
+         #endif
+      #endif
+      if (@ERROR = 0) or (@ERROR = 5)
+         LFile = Dir("")
+      #endif
+   loop
+   if $OutFile
+      Close ($Handle)
+   #endif
+"""
+#endfunction
 
 """
 { FileLink }
@@ -910,517 +1439,6 @@ end;
 """
 
 """
-#-------------------------------------------------------------------------------
-#  BacDirs (ASourcePath, ADestPath, ACheckSize)
-#-------------------------------------------------------------------------------
-def BacDirs (ASourcePath, ADestPath, ACheckSize) -> int:
-#beginfunction
-   if LSourcePath = 0
-      if IsDeclared (ASourcePath)
-         LSourcePath = ASourcePath
-      else
-         return 1
-      #endif
-   #endif
-   if LDestPath = 0
-      if IsDeclared (ADestPath)
-         LDestPath = ADestPath
-      else
-         return 1
-      #endif
-   #endif
-   LMask = "*.*"
-   if IsDeclared (ACheckSize)
-      LCheckSize = ACheckSize
-   else
-      LCheckSize = False
-   #endif
-
-   LFile = Dir (ASourcePath+"\\"+LMask)
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
-            LSourcePath = ASourcePath
-            LDestPath = ADestPath
-
-            LSourcePath = ASourcePath + "\\" + LFile
-            LDestPath = ADestPath + "\\" + LFile
-
-            BacDirs(LSourcePath, LDestPath, ACheckSize)
-
-            ASourcePath = LSaveLSourcePath
-            ADestPath = LSaveLDestPath
-         else
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileNameDest = ADestPath + "\\" + LFile
-            if 0=EXIST(ADestPath)
-               MD ADestPath
-            #endif
-            LCopy = False
-            LResult = CompareFileTimes(LFileNameSource, LFileNameDest)
-            if $Result = 1 Or LResult = -3
-               LCopy = True
-            else
-               LFileSizeSource = GetFileSize (LFileNameSource)
-               LFileSizeDest = GetFileSize (LFileNameDest)
-               if (LCheckSize=True) and (LFileSizeSource<>LFileSizeDest)
-                  LCopy = True
-               #endif
-            #endif
-            if LCopy = True
-               ? LFileNameSource+" => "+LFileNameDest+" ..."
-               Copy LFileNameSource LFileNameDest /r
-            #endif
-         #endif
-      #endif
-      if @ERROR = 0
-         LFile = Dir("")
-      #endif
-   loop
-#endfunction
-"""
-
-"""
-#-------------------------------------------------------------------------------
-# ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
-   Dim LResult
-#beginfunction
-   LFile = Dir (ASourcePath+"\\"+AMask)
-
-   if EXIST(ADestPath)=0
-      MD ADestPath
-   #endif
-
-   if ADestPathDelta
-      if EXIST(ADestPathDelta)=0
-         MD ADestPathDelta
-      #endif
-   #endif
-
-   WHILE (@ERROR = 0) AND LFile
-
-      if LFile <> "." AND LFile <> ".."
-
-         LAttr = GetFileAttr (ASourcePath + "\\" + LFile)
-
-         if $Debug
-            LogAdd ("3", LogFile, "F", ASourcePath+"\\"+LFile+"_"+LAttr, "w+/n")
-         #endif
-
-         if (LAttr & 16)=0
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-            LFileNameDest   = ADestPath + "\\" + LFile
-            if ADestPathDelta
-               LFileNameDestDelta = ADestPathDelta + "\\" + LFile
-            #endif
-
-            #--------------------------------------------------------------------
-            LResult = CompareFileTimes(LFileNameSource, LFileNameDest)
-            if $Debug
-               LogAdd ("3", LogFile, "F", "LResult="+LResult, "w+/n")
-            #endif
-
-            #--------------------------------------------------------------------
-            # Check Result
-            #--------------------------------------------------------------------
-            LCopy = False
-            LDelete = False
-            if $Delete 
-               if LResult = -3
-                  LDelete = True
-               #endif
-            else
-               if LResult = -3
-                  LFileSizeDest = "new"
-                  LFileTimeDest = "new"
-                  LCopy = True
-               else
-                  LFileSizeDest = GetFileSize (LFileNameDest)
-                  LFileTimeDest = GetFileTime (LFileNameDest)
-                  if LResult = 1 
-                     LCopy = True
-                  else
-                     if (LResult = -1) and ($OverwriteNewer=1) 
-                        $warnOWN = "More recent dest file " + LFileNameDest + " is to be overwritten"
-                        LogAdd ("3", LogFile, "F", $warnOWN, "w+/n")
-                        LCopy = True
-                     #endif
-                     if (ACheckSize=True) and (LFileSizeSource<>LFileSizeDest)
-                        LCopy = True
-                     #endif
-                  #endif
-               #endif
-            #endif
-
-            #--------------------------------------------------------------------
-            # Copy
-            #--------------------------------------------------------------------
-            if LCopy = True
-               $s = LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")" + " => " +
-                    LFileNameDest   + " ("+LFileSizeDest+"|"+LFileTimeDest+")"
-               LogAdd ("3", LogFile, "F", $s, "w+/n")
-
-               Copy LFileNameSource LFileNameDest /r /h
-
-               if $ExecFunc
-
-                  if $ExecFuncPAR1
-                     $s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest, $$ExecFuncPAR1)'
-                  else
-                     $s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest)'
-                  #endif
-
-                  if $Debug
-                     LogAdd (Log, LogFile, "I", $s1)
-                  #endif
-                  $ResExe = execute ($s1)
-               #endif
-
-               if ADestPathDelta
-                  $s = $s + " => " + LFileNameDestDelta
-                  if $Debug
-                     LogAdd ("3", LogFile, "F", $s)
-                  #endif
-                  Copy LFileNameSource LFileNameDestDelta /r
-               #endif
-            #endif
-
-            #--------------------------------------------------------------------
-            # Delete
-            #--------------------------------------------------------------------
-            if LDelete = True
-               $s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
-               LogAdd ("3", LogFile, "F", $s, "w+/n")
-               Del LFileNameSource
-            #endif
-
-         #endif
-
-      #endif
-
-      if @ERROR = 0
-
-         LFile = Dir("")
-
-         #if $Debug
-         #   LogAdd ("3", LogFile, "F", @SERROR+"_"+@ERROR+"_"+LFile+"!", "w+/n")
-         ##endif
-
-      #endif
-
-   loop
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
-#-------------------------------------------------------------------------------
-def ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
-#beginfunction
-   LFile = Dir (ASourcePath+"\*.*")
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
-
-            LSourcePath = ASourcePath + "\\" + LFile
-            LDestPath = ADestPath + "\\" + LFile
-            if ADestPathDelta
-               LDestPathDelta = ADestPathDelta + "\\" + LFile
-               if $Debug
-                  LogAdd ("3", LogFile, "D", LSourcePath+" => "+LDestPath+" "+LDestPathDelta)
-               #endif
-            else
-               LDestPathDelta = ""
-            #endif
-
-            ScanFile(LSourcePath, LDestPath, AMask, ACheckSize, LDestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-            ScanDir(LSourcePath, LDestPath, AMask, ACheckSize, LDestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-         #endif
-      #endif
-      if @ERROR = 0
-         LFile = Dir("")
-      #endif
-   loop
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
-#beginfunction
-   if (ASourcePath <> "") and (ADestPath <> "")
-      if $Debug
-         LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      #endif
-      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-      ScanDir (ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-   #endif
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
-#beginfunction
-   if (ASourcePath <> "") and (ADestPath <> "")
-      if $Debug
-         LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      #endif
-      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-   #endif
-#endfunction
-
-#-------------------------------------------------------------------------------
-# SyncFile(Array, optional $Delete, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def SyncFile(Array, optional $Delete, optional $OverwriteNewer)
-#beginfunction
-   #LogAdd(Log, LogFile, "I", "Array="+UBound(Array))
-   for Each $Item in Array
-      #LogAdd(Log, LogFile, "I", "Item="+UBound($Item))
-      if UBound($Item) > 0
-         if ($Item[0] <> "") and ($Item[1] <> "")
-            LogAdd(Log, LogFile, "I", $Item[0]+"\\"+$Item[2]+" => "+$Item[1])
-            #---------------------------------------
-            #
-            #---------------------------------------
-            if UBound($Item) > 3
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  if UBound($Item) > 4
-                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
-                  else
-                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
-                  #endif
-               else                                                             
-                  if UBound($Item) > 4
-                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
-                  else
-                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
-                  #endif
-               #endif
-            else
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  BacFiles ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
-               else
-                  BacFile  ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
-               #endif
-            #endif
-      
-            #---------------------------------------
-            #
-            #---------------------------------------
-            if $Delete
-               LogAdd(Log, LogFile, "I", "Delete ..."+$Item[1]+"\\"+$Item[2]+" "+$Item[0])
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  BacFiles ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
-               else
-                  BacFile ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
-               #endif
-            #endif
-
-         #endif   
-      else
-         #---------------------------------------------------
-         LogAdd(Log, LogFile, "I", $Item)
-         #---------------------------------------------------
-      #endif
-   next
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  DelFile (ASourcePath, AMask, $Day)
-#-------------------------------------------------------------------------------
-def DelFile (ASourcePath, AMask, $Day)
-   Dim LResult
-#beginfunction
-   LFile = Dir (ASourcePath+"\\"+AMask)
-   L_Day = EncodeDate(@Year,@MonthNo,@MDayNo)
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-            $Y = Val(SUBSTR(LFileTimeSource,1,4))
-            $M = Val(SUBSTR(LFileTimeSource,6,2))
-            $D = Val(SUBSTR(LFileTimeSource,9,2))
-            LFileDaySource = EncodeDate($Y,$M,$D)
-            LDel = 0
-            if ((L_Day-LFileDaySource) => $Day) LDel = 1 #endif
-            if LDel
-               Del LFileNameSource
-               LogAdd ("3", LogFile, "I", "Delete "+LFileNameSource+" "+LFileTimeSource+" Error="+@ERROR+" "+@SError)
-            #endif
-         #endif
-      #endif
-      if (@ERROR = 0) or (@ERROR = 5)
-         LFile = Dir("")
-      #endif
-   loop
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  ListFile (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncFile)
-#-------------------------------------------------------------------------------
-def ListFile (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncFile)
-   Dim LResult
-#beginfunction
-   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-      $HandleFile = FreeFileHandle
-      $Res = Open ($HandleFile, $OutFile, 1+4)
-   #endif
-
-   LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-   LFile = Dir (ASourcePath+"\\"+AMask)
-
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
-            ListFile = ListFile + 1
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-
-            if $OutFile
-               if UCase($OutFile) = "CONSOLE"
-                  select
-                     case $Option = 1 or $Option = 11
-                        ? LFile
-                     case $Option = 2 or $Option = 12
-                        ? LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource
-                  endselect
-               else
-                  select
-                     case $Option = 1 or $Option = 11
-                        $Res = WriteLine ($HandleFile, LFile+@CRLF)
-                     case $Option = 2 or $Option = 12
-                        $Res = WriteLine ($HandleFile, LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource+" "+ListFile+@CRLF)
-                  endselect
-               #endif
-            #endif
-
-            if FuncFile
-               $s = '$$Res = FuncFile ($ListFile, $LFileNameSource, $LFileTimeSource, $LFileSizeSource)'
-               $ResExe = execute ($s)
-            #endif
-
-            #--------------------------------------------------------------------------------
-            #$Y = Val(SUBSTR(LFileTimeSource,1,4))
-            #$M = Val(SUBSTR(LFileTimeSource,6,2))
-            #$D = Val(SUBSTR(LFileTimeSource,9,2))
-            #LFileDaySource = EncodeDate($Y,$M,$D)
-            #--------------------------------------------------------------------------------
-
-         #endif
-      #endif
-
-      if (@ERROR = 0) or (@ERROR = 5)
-         LFile = Dir("")
-      #endif
-   loop
-
-   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-      $Res = Close ($HandleFile)
-   #endif
-
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  ListDir (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncDir, optional FuncFile)
-#-------------------------------------------------------------------------------
-def ListDir (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncDir, optional FuncFile)
-#beginfunction
-   Level = Level + 1
-   $DirCount = $DirCount + 1
-
-   # FileCount = ListFile(ASourcePath, AMask, $OutFile, $Option, FuncFile)
-
-   if $Option = 10 or $Option = 11 or $Option = 12
-      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-         $HandleDir = FreeFileHandle
-         $Res = Open ($HandleDir, $OutFile, 1+4)
-      #endif
-      if $OutFile
-         if UCase($OutFile) = "CONSOLE"
-            ? ASourcePath
-         else
-            $Res = WriteLine ($HandleDir, ASourcePath+" "+$DirCount+@CRLF)
-         #endif
-      #endif
-      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-         $Res = Close ($HandleDir)
-      #endif
-   #endif
-
-   LFile = Dir (ASourcePath+"\*.*")
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # Это каталог....
-            LSourcePath = ASourcePath + "\\" + LFile
-
-            FileCount = ListFile(LSourcePath, AMask, $OutFile, $Option, FuncFile)
-            if FuncDir
-               $s = '$$Res = FuncDir ($$DirCount, $LSourcePath, $FileCount)'
-               $ResExe = execute ($s)
-            #endif
-
-            ListDir (LSourcePath, AMask, $OutFile, $Option, FuncDir, FuncFile)
-
-            Level = Level - 1
-         #endif
-      #endif
-      if (@ERROR = 0) 
-         LFile = Dir("")
-      #endif
-   loop
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  DirFile (ASourcePath, AMask, optional $OutFile)
-#-------------------------------------------------------------------------------
-def DirFile (ASourcePath, AMask, optional $OutFile)
-   Dim LResult
-#beginfunction
-   if $OutFile
-      del $OutFile
-      $Handle = FreeFileHandle
-      Open ($Handle, $OutFile, 1+4)
-   #endif
-   LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-   LFile = Dir (ASourcePath+"\\"+AMask)
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-            if $OutFile
-               WriteLine ($Handle, LFile+@CRLF)
-            #endif
-            # LogAdd ("3", LogFile, "I", LFile)
-         #endif
-      #endif
-      if (@ERROR = 0) or (@ERROR = 5)
-         LFile = Dir("")
-      #endif
-   loop
-   if $OutFile
-      Close ($Handle)
-   #endif
-#endfunction
-
 #-------------------------------------------------------------------------------
 # Associate($Extension, $Type, $Description, $OCmd, OPTIONAL $ECmd, OPTIONAL AddFlag, OPTIONAL $System)
 #-------------------------------------------------------------------------------
