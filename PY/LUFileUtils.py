@@ -36,18 +36,28 @@ import platform
 import LUErrors
 import LUFile
 import LUStrDecode
+import LULog
 
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import LUDateTime
 
+
+#------------------------------------------
+#CONST
+#------------------------------------------
+GLevel = 0
+GDir = ''
+GMask = '*.*'
+GDirCount = 0
+
 #-------------------------------------------------------------------------------
 # ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
-   Dim LResult
+def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
+    ...
 """
    LFile = Dir (ASourcePath+"\\"+AMask)
 
@@ -181,18 +191,19 @@ def ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADest
 #-------------------------------------------------------------------------------
 #  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
 #-------------------------------------------------------------------------------
-def ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+def ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
-"""
-   LFile = Dir (ASourcePath+"\*.*")
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
+    ...
+    """
+    LFile = Dir (ASourcePath+"\*.*")
+    WHILE @ERROR = 0 AND LFile
+        if LFile <> "." AND LFile <> ".."
+            if GetFileAttr (os.path.join (ASourcePath, + LFile) & 16    # is it a directory ?
 
-            LSourcePath = ASourcePath + "\\" + LFile
-            LDestPath = ADestPath + "\\" + LFile
+            LSourcePath = os.path.join (ASourcePath, LFile)
+            LDestPath = os.path.join (ADestPath, LFile)
             if ADestPathDelta
-               LDestPathDelta = ADestPathDelta + "\\" + LFile
+               LDestPathDelta = os.path.join (ADestPathDelta, LFile)
                if $Debug
                   LogAdd ("3", LogFile, "D", LSourcePath+" => "+LDestPath+" "+LDestPathDelta)
                #endif
@@ -208,7 +219,7 @@ def ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestP
          LFile = Dir("")
       #endif
    loop
-"""
+    """
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -216,6 +227,7 @@ def ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestP
 #-------------------------------------------------------------------------------
 def BacDirs (ASourcePath, ADestPath, ACheckSize) -> int:
 #beginfunction
+    ...
 """
    if LSourcePath = 0
       if IsDeclared (ASourcePath)
@@ -285,8 +297,9 @@ def BacDirs (ASourcePath, ADestPath, ACheckSize) -> int:
 #-------------------------------------------------------------------------------
 #  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+def BacFiles (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
+    ...
 """
    if (ASourcePath <> "") and (ADestPath <> "")
       if $Debug
@@ -301,8 +314,9 @@ def BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADest
 #-------------------------------------------------------------------------------
 #  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer, optional $ExecFuncPAR1)
+def BacFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
+    ...
 """
    if (ASourcePath <> "") and (ADestPath <> "")
       if $Debug
@@ -316,8 +330,9 @@ def BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestP
 #-------------------------------------------------------------------------------
 # SyncFile(Array, optional $Delete, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def SyncFile(Array, optional $Delete, optional $OverwriteNewer)
+def SyncFile(Array, _Delete, _OverwriteNewer):
 #beginfunction
+    ...
 """
    #LogAdd(Log, LogFile, "I", "Array="+UBound(Array))
    for Each $Item in Array
@@ -381,12 +396,217 @@ def SyncFile(Array, optional $Delete, optional $OverwriteNewer)
 """
 #endfunction
 
-#-------------------------------------------------------------------------------
-#  DelFile (ASourcePath, AMask, $Day)
-#-------------------------------------------------------------------------------
-def DelFile (ASourcePath, AMask, $Day)
-   Dim LResult
+# -------------------------------------------------------------------------------
+# WorkFile (AFile_path)
+# -------------------------------------------------------------------------------
+def WorkFile (AFullFileName):
+    # global Shablon
 #beginfunction
+    LFileNameSource: str = AFullFileName
+    LFullFileName: str = LFileNameSource
+    LFileName: str = os.path.basename(LFullFileName)
+    LFileSize: int = os.path.getsize(LFullFileName)
+    LFileDir: str = os.path.dirname(LFullFileName)
+
+    #-------------------------------------------------------------------------
+    #LFileTimeSource = GetFileTime(LFileNameSource)
+    #-------------------------------------------------------------------------
+    #file modification
+    LFileTimeSource = os.path.getmtime(LFileNameSource)
+    #convert timestamp into DateTime object
+    LFileTimeSource = datetime.datetime.fromtimestamp(LFileTimeSource)
+    #file creation
+    LFileTimeSource = os.path.getctime(LFileNameSource)
+    #convert creation timestamp into DateTime object
+    LFileTimeSource = datetime.datetime.fromtimestamp(LFileTimeSource)
+
+    # if Shablon == Shablon1:
+    #     #Shablon1: str = '{FullFileDir} {FileName} {FileTime} {FileSize}'
+    #     message = Shablon.format(FullFileDir=LFullFileName,FileName=LFileName,FileTime=LFileTimeSource,FileSize=LFileSize)
+    #     print (message)
+    # #endif
+    # if Shablon == Shablon2:
+    #     #Shablon2: str = '{FileName={FullFileName}|{FullFileDir}|{FileDir}'
+    #     message = Shablon.format(FileName=LFileName,FullFileName=LFullFileName,FullFileDir=LFullFileName,FileDir=LFileDir)
+    #     print (message)
+    # #endif
+#endfunction
+
+#-------------------------------------------------------------------------------
+# ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
+#-------------------------------------------------------------------------------
+def ListFile (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile):
+#beginfunction
+    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
+        LHandleFile = LUFile.OpenTextFile (_OutFile, '')
+    #endif
+
+    #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
+
+    LSourcePath = ASourcePath
+    LFileCount = 0
+
+    with os.scandir(ASourcePath) as LFiles:
+        for LFile in LFiles:
+            if (not LFile.name.startswith ('.')) and (not LFile.is_symlink ()):
+                if LFile.is_file():
+                    # class os.DirEntry - Это файл
+                    LFullFileName = LFile.path
+                    Lstats = os.stat (LFullFileName)
+                    LFileName = LFile.name
+                    s = '  ' * (GLevel - 1) + '   ' + LFileName
+                    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+                    LFileCount = LFileCount + 1
+
+                    LFileNameSource = LFullFileName
+                    # LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
+                    # LFileTimeSource = LUFile.GetFileTime (LFileNameSource)
+
+                    if (_OutFile) and (_OutFile.upper == 'CONSOLE'):
+                       print (s)
+                    #endif
+                    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
+                        LHandleFile = LUFile.OpenTextFile (_OutFile, '')
+                        # LRes = WriteLine ($HandleDir, ASourcePath+" "+$DirCount+@CRLF)
+                        # LHandleDir.write ('\n'.join (s))
+                        LHandleFile.write (s+'\n')
+                        LUFile.CloseTextFile (LHandleFile)
+                    #endif
+
+                    #--------------------------------------------------------------------------------
+                    #$Y = Val(SUBSTR(LFileTimeSource,1,4))
+                    #$M = Val(SUBSTR(LFileTimeSource,6,2))
+                    #$D = Val(SUBSTR(LFileTimeSource,9,2))
+                    #LFileDaySource = EncodeDate($Y,$M,$D)
+                    #--------------------------------------------------------------------------------
+                    WorkFile (LFullFileName)
+
+                    if _FuncFile:
+                        _FuncFile (LFile)
+                    #endif
+                #endif
+            #endif
+        #endfor
+    #endwith
+    return LFileCount
+#endfunction
+
+#-------------------------------------------------------------------------------
+# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
+#-------------------------------------------------------------------------------
+def ListDir (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile):
+#beginfunction
+    global GLevel
+    GLevel = GLevel + 1
+
+    #------------------------------------------------------------
+    # Dir
+    #------------------------------------------------------------
+    LPath = ASourcePath
+    LPath = LUFile.ExpandFileName (ASourcePath)
+    LPath = os.path.basename (LPath)
+    s = '  '*(GLevel-1)+LPath
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+
+    if _Option == 10 or _Option == 11 or _Option == 12:
+        if (_OutFile) and (_OutFile.upper == 'CONSOLE'):
+            print (s)
+        #endif
+        if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
+            LHandleDir = LUFile.OpenTextFile(_OutFile, '')
+            # LRes = WriteLine ($HandleDir, ASourcePath+" "+$DirCount+@CRLF)
+            # LHandleDir.write ('\n'.join (s))
+            LHandleDir.write (s+'\n')
+            LUFile.CloseTextFile(LHandleDir)
+        #endif
+    #endif
+
+    #------------------------------------------------------------
+    # список файлов в каталоге
+    #------------------------------------------------------------
+    LFileCount = ListFile (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
+
+    with os.scandir(ASourcePath) as LFiles:
+        for LFile in LFiles:
+            Lname = LFile.name
+            # print('name:',Lname)
+            Lpath = LFile.path
+            # print('path:',Lpath)
+            Linode = LFile.inode()
+            # print('inode:',Linode)
+            Lis_dir = LFile.is_dir()
+            # print('is_dir:',Lis_dir)
+            Lis_file = LFile.is_file()
+            # print('is_file:',Lis_file)
+            Lis_symlink = LFile.is_symlink()
+            # print('is_symlink:',Lis_symlink)
+            Lstat = LFile.stat()
+            # print('stat:',Lstat)
+
+            if (not LFile.name.startswith('.')) and (not LFile.is_symlink()):
+                if LFile.is_dir ():
+                    #------------------------------------------------------------
+                    # class os.DirEntry - Это каталог
+                    #------------------------------------------------------------
+                    LPath = os.path.join (ASourcePath, LFile.name)
+                    LPath = LUFile.ExpandFileName (LFile.path)
+                    Lstats = os.stat (LFile.path)
+                    if _FuncDir:
+                        _FuncDir(LFile)
+                    #endif
+
+                    # на следующий уровень
+                    ListDir (LFile.path, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
+                #endif
+            #endif
+        #endfor
+        GLevel = GLevel - 1
+    #endwith
+
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  DirFiles (ASourcePath, AMask, optional $OutFile)
+#-------------------------------------------------------------------------------
+def DirFiles (ASourcePath, AMask, _OutFile):
+#beginfunction
+    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
+        LHandleDir = LUFile.OpenTextFile (_OutFile, '')
+    #endif
+    with os.scandir (ASourcePath) as LFiles:
+        for LFile in LFiles:
+            if (not LFile.name.startswith ('.')) and (not LFile.is_symlink ()):
+                if LFile.is_file():
+                    # class os.DirEntry - Это файл
+                    LFullFileName = LFile.path
+                    Lstats = os.stat (LFullFileName)
+                    LFileName = LFile.name
+                    s = LFileName
+                    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+                    LFileCount = LFileCount + 1
+
+                    LFileNameSource = LFullFileName
+                    # LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
+                    # LFileTimeSource = LUFile.GetFileTime (LFileNameSource)
+
+                    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
+                        LHandleFile.write (s+'\n')
+                    #endif
+                #endif
+            #endif
+        #endfor
+    #endwith
+    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
+        LUFile.CloseTextFile (LHandleDir)
+    #endif
+#endfunction
+
+#-------------------------------------------------------------------------------
+# DelFiles (ASourcePath, AMask, $Day)
+#-------------------------------------------------------------------------------
+def DelFiles (ASourcePath, AMask, ADay):
+#beginfunction
+    ...
 """
    LFile = Dir (ASourcePath+"\\"+AMask)
    L_Day = EncodeDate(@Year,@MonthNo,@MDayNo)
@@ -414,580 +634,6 @@ def DelFile (ASourcePath, AMask, $Day)
    loop
 """
 #endfunction
-
-#-------------------------------------------------------------------------------
-#  ListFile (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncFile)
-#-------------------------------------------------------------------------------
-def ListFile (ASourcePath, AMask, _OutFile, _Option, _FuncFile)
-#beginfunction
-
-"""
-   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-      $HandleFile = FreeFileHandle
-      $Res = Open ($HandleFile, $OutFile, 1+4)
-   #endif
-"""
-
-   #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-
-   LFile = Dir (ASourcePath+"\\"+AMask)
-
-"""
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
-            ListFile = ListFile + 1
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-
-            if $OutFile
-               if UCase($OutFile) = "CONSOLE"
-                  select
-                     case $Option = 1 or $Option = 11
-                        ? LFile
-                     case $Option = 2 or $Option = 12
-                        ? LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource
-                  endselect
-               else
-                  select
-                     case $Option = 1 or $Option = 11
-                        $Res = WriteLine ($HandleFile, LFile+@CRLF)
-                     case $Option = 2 or $Option = 12
-                        $Res = WriteLine ($HandleFile, LFileNameSource+" "+LFileTimeSource+" "+LFileSizeSource+" "+ListFile+@CRLF)
-                  endselect
-               #endif
-            #endif
-
-            if FuncFile
-               $s = '$$Res = FuncFile ($ListFile, $LFileNameSource, $LFileTimeSource, $LFileSizeSource)'
-               $ResExe = execute ($s)
-            #endif
-
-            #--------------------------------------------------------------------------------
-            #$Y = Val(SUBSTR(LFileTimeSource,1,4))
-            #$M = Val(SUBSTR(LFileTimeSource,6,2))
-            #$D = Val(SUBSTR(LFileTimeSource,9,2))
-            #LFileDaySource = EncodeDate($Y,$M,$D)
-            #--------------------------------------------------------------------------------
-
-         #endif
-      #endif
-
-      if (@ERROR = 0) or (@ERROR = 5)
-         LFile = Dir("")
-      #endif
-   loop
-"""
-
-"""
-   if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-      $Res = Close ($HandleFile)
-   #endif
-"""
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  ListDir (ASourcePath, AMask, optional $OutFile, optional $Option, optional FuncDir, optional FuncFile)
-#-------------------------------------------------------------------------------
-def ListDir (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
-#beginfunction
-    global GLevel
-    global GDirCount
-    GLevel = GLevel + 1
-    #------------------------------------------------------------
-    # Dir
-    #------------------------------------------------------------
-    GDirCount = GDirCount + 1
-    LDirName = os.path.basename (ASourcePath)
-    LFullDirName = ASourcePath
-
-"""
-   # FileCount = ListFile(ASourcePath, AMask, $OutFile, $Option, FuncFile)
-   if $Option = 10 or $Option = 11 or $Option = 12
-      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-         $HandleDir = FreeFileHandle
-         $Res = Open ($HandleDir, $OutFile, 1+4)
-      #endif
-      if $OutFile
-         if UCase($OutFile) = "CONSOLE"
-            ? ASourcePath
-         else
-            $Res = WriteLine ($HandleDir, ASourcePath+" "+$DirCount+@CRLF)
-         #endif
-      #endif
-      if ($OutFile) and (UCase($OutFile) <> "CONSOLE")
-         $Res = Close ($HandleDir)
-      #endif
-   #endif
-"""
-
-"""
-   LFiles = Dir (ASourcePath+"\*.*")
-   WHILE @ERROR = 0 AND LFiles
-      if LFiles <> "." AND LFiles <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFiles) & 16    # Это каталог....
-            LSourcePath = ASourcePath + "\\" + LFiles
-            FileCount = ListFile(LSourcePath, AMask, _OutFile, _Option, _FuncFile)
-            #if FuncDir
-            #   $s = '$$Res = FuncDir ($$DirCount, $LSourcePath, $FileCount)'
-            #   $ResExe = execute ($s)
-            ##endif
-
-            ListDir (LSourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
-
-            GLevel = GLevel - 1
-         #endif
-      #endif
-      if (@ERROR = 0) 
-         LFiles = Dir("")
-      #endif
-   loop
-"""
-
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  DirFile (ASourcePath, AMask, optional $OutFile)
-#-------------------------------------------------------------------------------
-def DirFile (ASourcePath, AMask, optional $OutFile)
-   Dim LResult
-#beginfunction
-"""
-   if $OutFile
-      del $OutFile
-      $Handle = FreeFileHandle
-      Open ($Handle, $OutFile, 1+4)
-   #endif
-   LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-   LFile = Dir (ASourcePath+"\\"+AMask)
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if (GetFileAttr (ASourcePath + "\\" + LFile) & 16)=0
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileSizeSource = GetFileSize (LFileNameSource)
-            LFileTimeSource = GetFileTime (LFileNameSource)
-            if $OutFile
-               WriteLine ($Handle, LFile+@CRLF)
-            #endif
-            # LogAdd ("3", LogFile, "I", LFile)
-         #endif
-      #endif
-      if (@ERROR = 0) or (@ERROR = 5)
-         LFile = Dir("")
-      #endif
-   loop
-   if $OutFile
-      Close ($Handle)
-   #endif
-"""
-#endfunction
-
-"""
-{ FileLink }
-const
-    IID_IPersistFile: TGUID = (D1: $0000010B; D2: $0000; D3: $0000;
-        D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
-"""
-
-"""
-procedure FileLink (const FileName, Arg, DisplayName, Folder: string);
-var
-    ShellLink: IShellLink;
-    PersistFile: IPersistFile;
-    FileDestPath: string;
-    FileNameW: array [0 .. MAX_PATH] of WideChar;
-begin
-    CoInitialize (nil);
-    try
-        OleCheck (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_SERVER,
-            IID_IShellLinkA, ShellLink));
-        try
-            OleCheck (ShellLink.QueryInterface(IID_IPersistFile, PersistFile));
-            try
-                FileDestPath := Folder + '\' + DisplayName + '.lnk';
-                ShellLink.SetPath (PChar(FileName));
-                ShellLink.SetIconLocation (PChar(FileName), 0);
-                ShellLink.SetWorkingDirectory
-                    (PChar(ExtractFilePath(FileName)));
-                ShellLink.SetArguments (PChar(Arg));
-                MultiByteToWideChar (CP_ACP, 0, PAnsiChar(FileDestPath), - 1,
-                    FileNameW, MAX_PATH);
-                OleCheck (PersistFile.Save(FileNameW, True));
-            finally
-                PersistFile := nil;
-            end;
-        finally
-            ShellLink := nil;
-        end;
-    finally
-        CoUninitialize;
-    end;
-end;
-"""
-
-"""
-function CreateFileLink (const FileName, Arg, WorkPath, IconFile, Name, DestPath: string): string;
-{ CreateFileLink }
-var
-    LShellLink: IShellLink;
-    LPersistFile: IPersistFile;
-    LFileDestPath: string;
-    LFileNameW: array [0 .. MAX_PATH] of WideChar;
-    LDescription: string;
-    LFileExt: string;
-    LFileNameS: string;
-begin
-    Result := '';
-    CoInitialize (nil);
-    try
-        OleCheck (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_SERVER,
-            IID_IShellLinkA, LShellLink));
-        try
-            OleCheck (LShellLink.QueryInterface(IID_IPersistFile,
-                LPersistFile));
-            try
-                LFileExt := ExtractFileExt (FileName);
-                if (UpperCase(LFileExt) = '.BAT') then
-                begin
-                    if IsNT then
-                        LFileDestPath := DestPath + '\' + name + '.lnk'
-                    else
-                        LFileDestPath := DestPath + '\' + name + '.pif';
-                end else if (UpperCase(LFileExt) = '.EXE') then
-                begin
-                    if IsNT then
-                        LFileDestPath := DestPath + '\' + name + '.lnk'
-                    else
-                        LFileDestPath := DestPath + '\' + name + '.pif';
-                end else begin
-                    if IsNT then
-                        LFileDestPath := DestPath + '\' + name + '.lnk'
-                    else
-                        LFileDestPath := DestPath + '\' + name + '.pif';
-                end;
-
-                LShellLink.SetPath (PChar(FileName));
-                LShellLink.SetIconLocation (PChar(IconFile), 0);
-                LShellLink.SetWorkingDirectory (PChar(WorkPath));
-                LShellLink.SetArguments (PChar(Arg));
-                LShellLink.SetDescription (PChar(LDescription));
-                MultiByteToWideChar (CP_ACP, 0, PAnsiChar(LFileDestPath), - 1,
-                    LFileNameW, MAX_PATH);
-                OleCheck (LPersistFile.Save(LFileNameW, True));
-
-                if IsNT then
-                begin
-                    SetLength (LFileNameS, MAX_PATH * 2 + 1);
-               { ????OleCheck(LPersistFile.GetCurFile(PWideChar(LFileNameS))); }
-                    Result := WideCharToStr (PWideChar(LFileNameS), 0);
-                end else begin
-                    Result := LFileDestPath;
-                end;
-
-            finally
-                LPersistFile := nil;
-            end;
-        finally
-            LShellLink := nil;
-        end;
-    finally
-        CoUninitialize;
-    end;
-end;
-"""
-
-"""
-#----------------------------------------------------------------------------
-# CreateLink ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
-#----------------------------------------------------------------------------
-#  $Minimize      = [0,1]   
-#  $Replace       = [0,1]   
-#  $RunInOwnSpace = [0,1]   
-#----------------------------------------------------------------------------
-def CreateLink ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
-#beginfunction
-   $CreateLink = AddProgramItem ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
-#endfunction
-"""
-
-"""
-#----------------------------------------------------------------------------
-# CreateLinkLU (Links, $DestPath, $name, $targetpath, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
-#----------------------------------------------------------------------------
-def CreateLinkLU(Links, $DestPath, $name, $targetpath, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
-#beginfunction
-   $s = 'Links -f "$targetpath" -a "Arguments" -w "$startdir" -i "$iconpath" -d "$DestPath" -n "$Name"'
-   # ? $s
-   Shell $s
-   $CreateLinkLU = 0
-#endfunction
-"""
-
-"""
-#---------------------------------------------------------------------------------
-# wshShortCut($shortcutname,$targetpath,optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
-#---------------------------------------------------------------------------------
-def wshShortCut($shortcutname, $CommandFile, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
-   dim $shell, $desktop, $shortcut, $index, $iconinfo, $iconindex, $scdir, $pif
-#beginfunction
-   $shell = createobject("wscript.shell")
-   $wshshortcut=""
-   if $shell
-      if ucase(right($shortcutname,4))=".URL" or ucase(right($shortcutname,4))=".LNK"
-         #do nothing
-      else
-         if ucase(left($CommandFile,5))="HTTP:" or ucase(left($CommandFile,6))="HTTPS:" or ucase(left($CommandFile,4))="FTP:"
-            $shortcutname=$shortcutname + ".url"
-         else
-            $shortcutname=$shortcutname + ".lnk"
-         #endif
-      #endif
-
-      if instr($shortcutname,".lnk") and not exist($CommandFile)
-         exit 2
-      #endif
-
-      if instr($shortcutname,"\\")=0
-         $Desktop = $shell.SpecialFolders("Desktop")
-         $shortcutname=$desktop + "\\" + $shortcutname
-      else
-         $scdir=substr($shortcutname,1,instrrev($shortcutname,"\\"))
-         if not exist($scdir)
-            md $scdir
-            if @error
-               exit @error
-            #endif
-         #endif
-      #endif
-
-      select
-         case (@ProductType = "Windows 98") or (@ProductType = "Windows 95")
-            if instr($shortcutname,".lnk")
-               $pif=substr($shortcutname,1,instrrev($shortcutname,".lnk")-1)+".pif"
-               if Exist ($pif)
-                  Del ($pif)
-               #endif 
-            #endif
-         case 1
-            if Exist ($shortcutname)
-               Del ($shortcutname)
-            #endif 
-      EndSelect
-
-      $shortcut = $shell.createshortcut($shortcutname)
-      if $shortcut
-         $shortcut.targetpath = $CommandFile
-         if $iconpath
-            $shortcut.iconlocation = $iconpath
-         #endif
-         if Arguments
-            $shortcut.arguments = Arguments
-         #endif
-         if $startdir
-            $shortcut.workingdirectory = $startdir
-         #endif
-         if $style
-            $shortcut.windowstyle = $style
-         else
-            $shortcut.windowstyle = 1
-         #endif
-         if $description
-            $shortcut.description = $description
-         else
-            $shortcut.description = ""
-         #endif
-         $shortcut.save
-         if @error
-            exit @error
-         #endif
-         if instrrev($shortcutname,".url") and $iconpath
-            $index=instrrev($iconpath,",")
-            if $index=0
-               $iconindex=0
-            else
-               $iconindex=split($iconpath,",")[1]
-               $iconpath=split($iconpath,",")[0]
-            #endif
-            $=writeprofilestring($shortcutname,"InternetShortcut","IconFile",$iconpath)
-            $=writeprofilestring($shortcutname,"InternetShortcut","IconIndex",$iconindex)
-         else
-         #endif
-         #$wshshortcut=$shortcut.FullName
-         $wshshortcut = 0
-         $shortcut = 0
-      else
-         exit @error
-      #endif 
-   else
-      exit @error
-   #endif 
-#endfunction 
-
-"""
-
-"""
-function GetFileOwner (FileName: string; var Domain, Username: string): Boolean;
-{ GetFileOwner(FileName }
-var
-    SecDescr: PSecurityDescriptor;
-    SizeNeeded, SizeNeeded2: DWORD;
-    OwnerSID: PSID;
-    OwnerDefault: BOOL;
-    OwnerName, DomainName: PChar;
-    OwnerType: SID_NAME_USE;
-begin
-    Result := False;
-    GetMem (SecDescr, 1024);
-    GetMem (OwnerSID, SizeOf(PSID));
-    GetMem (OwnerName, 1024);
-    GetMem (DomainName, 1024);
-    try
-        if not GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
-            SecDescr, 1024, SizeNeeded) then
-            Exit;
-        if not GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault)
-        then
-            Exit;
-        SizeNeeded := 1024;
-        SizeNeeded2 := 1024;
-        if not LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
-            DomainName, SizeNeeded2, OwnerType) then
-            Exit;
-        Domain := DomainName;
-        Username := OwnerName;
-    finally
-        FreeMem (SecDescr);
-        FreeMem (OwnerName);
-        FreeMem (DomainName);
-    end;
-    Result := True;
-end;
-"""
-
-"""
-function GetFileOwner_02 (const FileName: string; var Domain, Username: string)
-    : Boolean; overload;
-var
-    SecDescr: PSecurityDescriptor;
-    SizeNeeded, SizeNeeded2: DWORD;
-    OwnerSID: PSID;
-    OwnerDefault: BOOL;
-    OwnerName, DomainName: PChar;
-    OwnerType: SID_NAME_USE;
-begin
-   // result := false;
-    GetMem (SecDescr, 1024);
-    GetMem (OwnerSID, SizeOf(PSID));
-    GetMem (OwnerName, 1024);
-    GetMem (DomainName, 1024);
-    try
-        Result := GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
-            SecDescr, 1024, SizeNeeded);
-        if not Result then
-            Exit;
-        Result := GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault);
-        if not Result then
-            Exit;
-        SizeNeeded := 1024;
-        SizeNeeded2 := 1024;
-        Result := LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
-            DomainName, SizeNeeded2, OwnerType);
-        if not Result then
-            Exit;
-        Domain := DomainName;
-        Username := OwnerName;
-    finally
-        FreeMem (SecDescr);
-        FreeMem (OwnerName);
-        FreeMem (DomainName);
-    end;
-    Result := True;
-end;
-"""
-
-"""
-function GetFileOwner_02 (const FileName: string): string; overload;
-var
-    Domain, User: string;
-begin
-    if GetFileOwner (FileName, Domain, User) then
-        Result := Domain + '\' + User
-    else
-        Result := '<error>';
-end;
-"""
-
-"""
-function SetFileOwner (FileName: string; const Domain, Username: string): Boolean;
-{ SetFileOwner(FileName }
-var
-    SecDescr: PSecurityDescriptor;
-    SizeNeeded, SizeNeeded2: DWORD;
-    OwnerSID: PSID;
-    OwnerDefault: BOOL;
-    OwnerName, DomainName: PChar;
-    OwnerType: SID_NAME_USE;
-   // SecurityInformation: SECURITY_INFORMATION;
-begin
-    Result := False;
-    GetMem (SecDescr, 1024);
-    GetMem (OwnerSID, SizeOf(PSID));
-    GetMem (OwnerName, 1024);
-    GetMem (DomainName, 1024);
-    try
-        if not GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
-            SecDescr, 1024, SizeNeeded) then
-            Exit;
-        if not GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault)
-        then
-            Exit;
-        SizeNeeded := 1024;
-        SizeNeeded2 := 1024;
-        if not LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
-            DomainName, SizeNeeded2, OwnerType) then
-            Exit;
-    finally
-        FreeMem (SecDescr);
-        FreeMem (OwnerName);
-        FreeMem (DomainName);
-    end;
-    Result := True;
-end;
-"""
-
-"""
-function SetFileOwner_02 (const FileName: string; const Domain, Username: string): Boolean; overload;
-var
-    sd: PSecurityDescriptor;
-    OwnerSID: PSID;
-begin
-    Result := GetUserSID_02 (Domain, Username, OwnerSID);
-    if not Result then
-        Exit;
-    GetMem (sd, 1024);
-    try
-        Result := InitializeSecurityDescriptor (sd,
-            SECURITY_DESCRIPTOR_REVISION);
-        Result := Result and SetSecurityDescriptorOwner (sd, OwnerSID,
-            True{ ? });
-        Result := Result and SetFileSecurity (PChar(FileName),
-            OWNER_SECURITY_INFORMATION, sd);
-    finally
-        FreeMem (sd);
-    end;
-end;
-"""
-
-"""
-function SetFileOwner_02 (const FileName: string; Username: string) : Boolean; overload;
-var
-    Domain: string;
-begin
-    DivideUserName_02 (Username, Domain, Username);
-    Result := SetFileOwner_02 (FileName, Domain, Username);
-end;
-"""
 
 """
 function BacCopy (const APathSource, APathDest: string; CheckSize, Log: Boolean; Delta: Integer): Boolean;
@@ -1439,54 +1085,409 @@ end;
 """
 
 """
-#-------------------------------------------------------------------------------
-# Associate($Extension, $Type, $Description, $OCmd, OPTIONAL $ECmd, OPTIONAL AddFlag, OPTIONAL $System)
-#-------------------------------------------------------------------------------
-def Associate($Extension, $Type, $Description, $OCmd, OPTIONAL $ECmd, OPTIONAL AddFlag, OPTIONAL $System)
+{ FileLink }
+const
+    IID_IPersistFile: TGUID = (D1: $0000010B; D2: $0000; D3: $0000;
+        D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
+"""
+
+"""
+procedure FileLink (const FileName, Arg, DisplayName, Folder: string);
+var
+    ShellLink: IShellLink;
+    PersistFile: IPersistFile;
+    FileDestPath: string;
+    FileNameW: array [0 .. MAX_PATH] of WideChar;
+begin
+    CoInitialize (nil);
+    try
+        OleCheck (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_SERVER,
+            IID_IShellLinkA, ShellLink));
+        try
+            OleCheck (ShellLink.QueryInterface(IID_IPersistFile, PersistFile));
+            try
+                FileDestPath := Folder + '\' + DisplayName + '.lnk';
+                ShellLink.SetPath (PChar(FileName));
+                ShellLink.SetIconLocation (PChar(FileName), 0);
+                ShellLink.SetWorkingDirectory
+                    (PChar(ExtractFilePath(FileName)));
+                ShellLink.SetArguments (PChar(Arg));
+                MultiByteToWideChar (CP_ACP, 0, PAnsiChar(FileDestPath), - 1,
+                    FileNameW, MAX_PATH);
+                OleCheck (PersistFile.Save(FileNameW, True));
+            finally
+                PersistFile := nil;
+            end;
+        finally
+            ShellLink := nil;
+        end;
+    finally
+        CoUninitialize;
+    end;
+end;
+"""
+
+"""
+function CreateFileLink (const FileName, Arg, WorkPath, IconFile, Name, DestPath: string): string;
+{ CreateFileLink }
+var
+    LShellLink: IShellLink;
+    LPersistFile: IPersistFile;
+    LFileDestPath: string;
+    LFileNameW: array [0 .. MAX_PATH] of WideChar;
+    LDescription: string;
+    LFileExt: string;
+    LFileNameS: string;
+begin
+    Result := '';
+    CoInitialize (nil);
+    try
+        OleCheck (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_SERVER,
+            IID_IShellLinkA, LShellLink));
+        try
+            OleCheck (LShellLink.QueryInterface(IID_IPersistFile,
+                LPersistFile));
+            try
+                LFileExt := ExtractFileExt (FileName);
+                if (UpperCase(LFileExt) = '.BAT') then
+                begin
+                    if IsNT then
+                        LFileDestPath := DestPath + '\' + name + '.lnk'
+                    else
+                        LFileDestPath := DestPath + '\' + name + '.pif';
+                end else if (UpperCase(LFileExt) = '.EXE') then
+                begin
+                    if IsNT then
+                        LFileDestPath := DestPath + '\' + name + '.lnk'
+                    else
+                        LFileDestPath := DestPath + '\' + name + '.pif';
+                end else begin
+                    if IsNT then
+                        LFileDestPath := DestPath + '\' + name + '.lnk'
+                    else
+                        LFileDestPath := DestPath + '\' + name + '.pif';
+                end;
+
+                LShellLink.SetPath (PChar(FileName));
+                LShellLink.SetIconLocation (PChar(IconFile), 0);
+                LShellLink.SetWorkingDirectory (PChar(WorkPath));
+                LShellLink.SetArguments (PChar(Arg));
+                LShellLink.SetDescription (PChar(LDescription));
+                MultiByteToWideChar (CP_ACP, 0, PAnsiChar(LFileDestPath), - 1,
+                    LFileNameW, MAX_PATH);
+                OleCheck (LPersistFile.Save(LFileNameW, True));
+
+                if IsNT then
+                begin
+                    SetLength (LFileNameS, MAX_PATH * 2 + 1);
+               { ????OleCheck(LPersistFile.GetCurFile(PWideChar(LFileNameS))); }
+                    Result := WideCharToStr (PWideChar(LFileNameS), 0);
+                end else begin
+                    Result := LFileDestPath;
+                end;
+
+            finally
+                LPersistFile := nil;
+            end;
+        finally
+            LShellLink := nil;
+        end;
+    finally
+        CoUninitialize;
+    end;
+end;
+"""
+
+"""
+#----------------------------------------------------------------------------
+# CreateLink ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
+#----------------------------------------------------------------------------
+#  $Minimize      = [0,1]   
+#  $Replace       = [0,1]   
+#  $RunInOwnSpace = [0,1]   
+#----------------------------------------------------------------------------
+def CreateLink ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
 #beginfunction
-   # make sure the "dot" is specified
-   if Left($Extension, 1) <> "."
-      $Extension = "." + $Extension
-   #endif
-
-   # insure that "$System" has the right format if it's specified
-   if $Server <> ""
-      if Left($System,2) <> "\\" $System = "\\" + $System #endif
-      if Right($System,1) <> "\\" $System = $System + "\\" #endif
-   #endif
-
-   # Obtain the Windows System Path value from the target system
-   $WSPath = ReadValue($System + "HKEY_Local_Machine\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "SystemRoot")
-
-   # Define the Extension
-   $RTN = DelTree($System + "HKEY_CLASSES_ROOT\\" + $Extension)
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Extension)
-   $RTN = WriteValue($System + "HKEY_CLASSES_ROOT\\" + $Extension, "", $Type, "REG_SZ")
-
-   # just return if we're adding a new Extension to an existing association
-   if AddFlag = 0
-      Exit 0
-   #endif
-
-   # Create the definitions for the OPEN command
-   $RTN = DelTree($System + "HKEY_CLASSES_ROOT\\" + $Type)
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type)
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\DefaultIcon")
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell")
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Open")
-   $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Open\Command")
-   
-   $RTN = WriteValue($System + "HKEY_CLASSES_ROOT\\" + $Type, "", $Description, "REG_SZ")
-   $RTN = WriteValue($System + "HKEY_CLASSES_ROOT\\" + $Type + "\DefaultIcon", "", $WSPath + "\system32\SHELL32.dll,21", "REG_SZ")
-   $RTN = WriteValue($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Open\Command", "", $OCmd, "REG_EXPAND_SZ")
-
-   # Create the association for the EDIT command, if specified
-   if $ECmd <> ""
-      $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Edit")
-      $RTN = AddKey($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Edit\Command")
-      $RTN = WriteValue($System + "HKEY_CLASSES_ROOT\\" + $Type + "\Shell\Edit\Command", "", $ECmd, "REG_EXPAND_SZ")
-   #endif
+   $CreateLink = AddProgramItem ($CommandLine, $Name, $IconFile, $IconIndex, $WorkDir, $Minimize, $Replace, $RunInOwnSpace)
 #endfunction
+"""
+
+"""
+#----------------------------------------------------------------------------
+# CreateLinkLU (Links, $DestPath, $name, $targetpath, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
+#----------------------------------------------------------------------------
+def CreateLinkLU(Links, $DestPath, $name, $targetpath, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
+#beginfunction
+   $s = 'Links -f "$targetpath" -a "Arguments" -w "$startdir" -i "$iconpath" -d "$DestPath" -n "$Name"'
+   # ? $s
+   Shell $s
+   $CreateLinkLU = 0
+#endfunction
+"""
+
+"""
+#---------------------------------------------------------------------------------
+# wshShortCut($shortcutname,$targetpath,optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
+#---------------------------------------------------------------------------------
+def wshShortCut($shortcutname, $CommandFile, optional Arguments, optional $startdir, optional $iconpath, optional $style, optional $description)
+   dim $shell, $desktop, $shortcut, $index, $iconinfo, $iconindex, $scdir, $pif
+#beginfunction
+   $shell = createobject("wscript.shell")
+   $wshshortcut=""
+   if $shell
+      if ucase(right($shortcutname,4))=".URL" or ucase(right($shortcutname,4))=".LNK"
+         #do nothing
+      else
+         if ucase(left($CommandFile,5))="HTTP:" or ucase(left($CommandFile,6))="HTTPS:" or ucase(left($CommandFile,4))="FTP:"
+            $shortcutname=$shortcutname + ".url"
+         else
+            $shortcutname=$shortcutname + ".lnk"
+         #endif
+      #endif
+
+      if instr($shortcutname,".lnk") and not exist($CommandFile)
+         exit 2
+      #endif
+
+      if instr($shortcutname,"\\")=0
+         $Desktop = $shell.SpecialFolders("Desktop")
+         $shortcutname=$desktop + "\\" + $shortcutname
+      else
+         $scdir=substr($shortcutname,1,instrrev($shortcutname,"\\"))
+         if not exist($scdir)
+            md $scdir
+            if @error
+               exit @error
+            #endif
+         #endif
+      #endif
+
+      select
+         case (@ProductType = "Windows 98") or (@ProductType = "Windows 95")
+            if instr($shortcutname,".lnk")
+               $pif=substr($shortcutname,1,instrrev($shortcutname,".lnk")-1)+".pif"
+               if Exist ($pif)
+                  Del ($pif)
+               #endif 
+            #endif
+         case 1
+            if Exist ($shortcutname)
+               Del ($shortcutname)
+            #endif 
+      EndSelect
+
+      $shortcut = $shell.createshortcut($shortcutname)
+      if $shortcut
+         $shortcut.targetpath = $CommandFile
+         if $iconpath
+            $shortcut.iconlocation = $iconpath
+         #endif
+         if Arguments
+            $shortcut.arguments = Arguments
+         #endif
+         if $startdir
+            $shortcut.workingdirectory = $startdir
+         #endif
+         if $style
+            $shortcut.windowstyle = $style
+         else
+            $shortcut.windowstyle = 1
+         #endif
+         if $description
+            $shortcut.description = $description
+         else
+            $shortcut.description = ""
+         #endif
+         $shortcut.save
+         if @error
+            exit @error
+         #endif
+         if instrrev($shortcutname,".url") and $iconpath
+            $index=instrrev($iconpath,",")
+            if $index=0
+               $iconindex=0
+            else
+               $iconindex=split($iconpath,",")[1]
+               $iconpath=split($iconpath,",")[0]
+            #endif
+            $=writeprofilestring($shortcutname,"InternetShortcut","IconFile",$iconpath)
+            $=writeprofilestring($shortcutname,"InternetShortcut","IconIndex",$iconindex)
+         else
+         #endif
+         #$wshshortcut=$shortcut.FullName
+         $wshshortcut = 0
+         $shortcut = 0
+      else
+         exit @error
+      #endif 
+   else
+      exit @error
+   #endif 
+#endfunction 
+
+"""
+
+"""
+function GetFileOwner (FileName: string; var Domain, Username: string): Boolean;
+{ GetFileOwner(FileName }
+var
+    SecDescr: PSecurityDescriptor;
+    SizeNeeded, SizeNeeded2: DWORD;
+    OwnerSID: PSID;
+    OwnerDefault: BOOL;
+    OwnerName, DomainName: PChar;
+    OwnerType: SID_NAME_USE;
+begin
+    Result := False;
+    GetMem (SecDescr, 1024);
+    GetMem (OwnerSID, SizeOf(PSID));
+    GetMem (OwnerName, 1024);
+    GetMem (DomainName, 1024);
+    try
+        if not GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
+            SecDescr, 1024, SizeNeeded) then
+            Exit;
+        if not GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault)
+        then
+            Exit;
+        SizeNeeded := 1024;
+        SizeNeeded2 := 1024;
+        if not LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
+            DomainName, SizeNeeded2, OwnerType) then
+            Exit;
+        Domain := DomainName;
+        Username := OwnerName;
+    finally
+        FreeMem (SecDescr);
+        FreeMem (OwnerName);
+        FreeMem (DomainName);
+    end;
+    Result := True;
+end;
+"""
+
+"""
+function GetFileOwner_02 (const FileName: string; var Domain, Username: string)
+    : Boolean; overload;
+var
+    SecDescr: PSecurityDescriptor;
+    SizeNeeded, SizeNeeded2: DWORD;
+    OwnerSID: PSID;
+    OwnerDefault: BOOL;
+    OwnerName, DomainName: PChar;
+    OwnerType: SID_NAME_USE;
+begin
+   // result := false;
+    GetMem (SecDescr, 1024);
+    GetMem (OwnerSID, SizeOf(PSID));
+    GetMem (OwnerName, 1024);
+    GetMem (DomainName, 1024);
+    try
+        Result := GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
+            SecDescr, 1024, SizeNeeded);
+        if not Result then
+            Exit;
+        Result := GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault);
+        if not Result then
+            Exit;
+        SizeNeeded := 1024;
+        SizeNeeded2 := 1024;
+        Result := LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
+            DomainName, SizeNeeded2, OwnerType);
+        if not Result then
+            Exit;
+        Domain := DomainName;
+        Username := OwnerName;
+    finally
+        FreeMem (SecDescr);
+        FreeMem (OwnerName);
+        FreeMem (DomainName);
+    end;
+    Result := True;
+end;
+"""
+
+"""
+function GetFileOwner_02 (const FileName: string): string; overload;
+var
+    Domain, User: string;
+begin
+    if GetFileOwner (FileName, Domain, User) then
+        Result := Domain + '\' + User
+    else
+        Result := '<error>';
+end;
+"""
+
+"""
+function SetFileOwner (FileName: string; const Domain, Username: string): Boolean;
+{ SetFileOwner(FileName }
+var
+    SecDescr: PSecurityDescriptor;
+    SizeNeeded, SizeNeeded2: DWORD;
+    OwnerSID: PSID;
+    OwnerDefault: BOOL;
+    OwnerName, DomainName: PChar;
+    OwnerType: SID_NAME_USE;
+   // SecurityInformation: SECURITY_INFORMATION;
+begin
+    Result := False;
+    GetMem (SecDescr, 1024);
+    GetMem (OwnerSID, SizeOf(PSID));
+    GetMem (OwnerName, 1024);
+    GetMem (DomainName, 1024);
+    try
+        if not GetFileSecurity (PChar(FileName), OWNER_SECURITY_INFORMATION,
+            SecDescr, 1024, SizeNeeded) then
+            Exit;
+        if not GetSecurityDescriptorOwner (SecDescr, OwnerSID, OwnerDefault)
+        then
+            Exit;
+        SizeNeeded := 1024;
+        SizeNeeded2 := 1024;
+        if not LookupAccountSid (nil, OwnerSID, OwnerName, SizeNeeded,
+            DomainName, SizeNeeded2, OwnerType) then
+            Exit;
+    finally
+        FreeMem (SecDescr);
+        FreeMem (OwnerName);
+        FreeMem (DomainName);
+    end;
+    Result := True;
+end;
+"""
+
+"""
+function SetFileOwner_02 (const FileName: string; const Domain, Username: string): Boolean; overload;
+var
+    sd: PSecurityDescriptor;
+    OwnerSID: PSID;
+begin
+    Result := GetUserSID_02 (Domain, Username, OwnerSID);
+    if not Result then
+        Exit;
+    GetMem (sd, 1024);
+    try
+        Result := InitializeSecurityDescriptor (sd,
+            SECURITY_DESCRIPTOR_REVISION);
+        Result := Result and SetSecurityDescriptorOwner (sd, OwnerSID,
+            True{ ? });
+        Result := Result and SetFileSecurity (PChar(FileName),
+            OWNER_SECURITY_INFORMATION, sd);
+    finally
+        FreeMem (sd);
+    end;
+end;
+"""
+
+"""
+function SetFileOwner_02 (const FileName: string; Username: string) : Boolean; overload;
+var
+    Domain: string;
+begin
+    DivideUserName_02 (Username, Domain, Username);
+    Result := SetFileOwner_02 (FileName, Domain, Username);
+end;
 """
 
 #------------------------------------------

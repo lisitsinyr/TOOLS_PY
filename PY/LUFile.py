@@ -398,6 +398,29 @@ def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
    #endif
 #endfunction
 
+#-------------------------------------------------------------------------------
+# OpenTextFile
+#-------------------------------------------------------------------------------
+def OpenTextFile(AFileName: str, AEncoding: str):
+    """OpenTextFile"""
+#beginfunction
+    LEncoding = AEncoding
+    if AEncoding == '':
+        LEncoding = LUStrDecode.cCP1251
+    LHandle = open (AFileName, 'a+', encoding = LEncoding)
+    return LHandle
+#endfunction
+
+#-------------------------------------------------------------------------------
+# CloseTextFile
+#-------------------------------------------------------------------------------
+def CloseTextFile(AHandle):
+    """CloseTextFile"""
+#beginfunction
+    AHandle.flush ()
+    AHandle.close ()
+#endfunction
+
 """
 function FileCopy (const FileName, DestPathName: string; Overwrite: Boolean): Boolean;
 { FileCopy }
