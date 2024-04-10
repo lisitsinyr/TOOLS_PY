@@ -20,6 +20,7 @@ __annotations__ = """
 import datetime
 import os
 import tempfile
+import platform
 
 # import win32api
 # import pathlib
@@ -101,24 +102,78 @@ def GetFileDateTime (AFileName: str) -> ():
 #beginfunction
     LTuple = ()
     if os.path.isfile (AFileName):
-        # file modification
-        LFileTimeMod: datetime = os.path.getmtime (AFileName)
-        # convert timestamp into DateTime object
-        LFileTimeMod1: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
-        # file creation
-        LFileTimeCreate: datetime = os.path.getctime (AFileName)
-        # convert creation timestamp into DateTime object
-        LFileTimeCreate1: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
-        LTuple = (LFileTimeMod1, LFileTimeCreate1)
+        if platform.system() == 'Windows':
+            # file creation
+            LFileTimeCreate: datetime = os.path.getctime (AFileName)
+            # convert creation timestamp into DateTime object
+            LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+            # file modification
+            LFileTimeMod: datetime = os.path.getmtime (AFileName)
+            # convert timestamp into DateTime object
+            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
+        else:
+            stat = os.stat(AFileName)
+            # file modification
+            LFileTimeMod: datetime = stat.st_mtime
+            # convert timestamp into DateTime object
+            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
+            try:
+                LFileTimeCreate: datetime = stat.st_birthtime
+                # convert creation timestamp into DateTime object
+                LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+            except AttributeError:
+                # We're probably on Linux. No easy way to get creation dates here,
+                # so we'll settle for when its content was last modified.
+                LFileTimeCreate: datetime = 0
+                LFileTimeCreateDate: datetime = 0
+            #endtry
+        #endif
+        LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
     #endif
     return LTuple
+#endfunction
+
+
+def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
+    """COMPAREFILETIMES"""
+#beginfunction
+    #-3 File2 could not be opened (see @ERROR for more information).
+    #-2 File1 could not be opened (see @ERROR for more information).
+    #-1 File1 is older than file2.
+    #0 File1 and file2 have the same date and time.
+    #1 File1 is more recent than file2.
+    if not FileExists (AFileName1):
+        return -2
+    #endif
+    if not FileExists (AFileName2):
+        return -3
+    #endif
+    LFileName1m = GetFileDateTime (AFileName1)[0]
+    LFileName2m = GetFileDateTime (AFileName2)[0]
+    if LFileName1m == LFileName2m:
+        return 0
+    else:
+        if LFileName1m > LFileName2m:
+            return -1
+        else:
+            return 1
+        #endif
+    #endif
 #endfunction
 
 def GetFileSize (AFileName: str) -> int:
     """GetFileSize"""
 #beginfunction
-    if FileExists (AFileName):
-        return os.path.getsize (AFileName)
+    if os.path.isfile (AFileName):
+        if platform.system() == 'Windows':
+            if FileExists (AFileName):
+                return os.path.getsize (AFileName)
+            else:
+                return 0
+        else:
+            stat = os.stat(AFileName)
+            return stat.st_size
+        #endif
     else:
         return 0
     #endif
