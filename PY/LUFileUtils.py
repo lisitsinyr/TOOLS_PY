@@ -505,7 +505,7 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
             # print('stat:',Lstat)
 
             if (not LFile.is_symlink()):
-                if LFile.is_dir ():
+                if LFile.is_dir () and (not LFile.name.startswith('.')):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
@@ -540,7 +540,7 @@ def DirFiles (ASourcePath, AMask, _OutFile):
     with os.scandir (ASourcePath) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink ()):
-                if LFile.is_dir ():
+                if LFile.is_dir () and (not LFile.name.startswith('.')):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
