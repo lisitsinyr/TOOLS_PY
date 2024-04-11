@@ -21,6 +21,7 @@ import datetime
 import os
 import tempfile
 import platform
+import re
 
 # import win32api
 # import pathlib
@@ -65,12 +66,18 @@ ab+ Откроет для добавления нового содержимог
 
 cDefaultEncoding = 'cp1251'
 
+#--------------------------------------------------------------------------------
+# DirectoryExists
+#--------------------------------------------------------------------------------
 def DirectoryExists (APath: str) -> bool:
     """DirectoryExists """
 #beginfunction
     return os.path.isdir(APath)
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def ForceDirectories (ADir: str) -> bool:
     """ForceDirectories"""
 #beginfunction
@@ -80,6 +87,9 @@ def ForceDirectories (ADir: str) -> bool:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def DirectoryDelete (ADirectoryName: str) -> bool:
     """DirectoryDelete"""
 #beginfunction
@@ -91,12 +101,18 @@ def DirectoryDelete (ADirectoryName: str) -> bool:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def FileExists (AFileName: str) -> bool:
     """FileExists"""
 #beginfunction
     return os.path.isfile(AFileName)
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def GetFileDateTime (AFileName: str) -> ():
     """GetFileDateTime"""
 #beginfunction
@@ -133,7 +149,9 @@ def GetFileDateTime (AFileName: str) -> ():
     return LTuple
 #endfunction
 
-
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
     """COMPAREFILETIMES"""
 #beginfunction
@@ -161,6 +179,9 @@ def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
     #endif
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def GetFileSize (AFileName: str) -> int:
     """GetFileSize"""
 #beginfunction
@@ -176,27 +197,6 @@ def GetFileSize (AFileName: str) -> int:
         #endif
     else:
         return 0
-    #endif
-#endfunction
-
-#--------------------------------------------------------------------------------
-# WriteStrToFile (AStr: str, AFileName: str):
-#--------------------------------------------------------------------------------
-def WriteStrToFile (AStr: str, AFileName: str):
-    """WriteStrToFile"""
-#beginfunction
-    if FileExists(AFileName):
-        # Откроет для добавления нового содержимого.
-        # Создаст новый файл для чтения записи, если не найдет с указанным именем.
-        LEncoding = GetFileEncoding (AFileName)
-        if LEncoding == '':
-            LEncoding = cDefaultEncoding
-        LFile = open (AFileName, 'a+', encoding = LEncoding)
-        LFile.write (AStr)
-        LFile.flush ()
-        LFile.close ()
-    else:
-        raise LUErrors.LUFileError_FileERROR (AFileName)
     #endif
 #endfunction
 
@@ -313,6 +313,9 @@ def GetFileEncoding (AFileName: str) -> str:
     return LEncoding
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def IncludeTrailingBackslash (APath: str) -> str:
     """IncludeTrailingBackslash"""
 #beginfunction
@@ -325,6 +328,9 @@ def IncludeTrailingBackslash (APath: str) -> str:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMMDD"""
 #beginfunction
@@ -334,6 +340,9 @@ def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMM"""
 #beginfunction
@@ -342,6 +351,9 @@ def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def GetTempDir () -> str:
     """GetTempDir"""
 #beginfunction
@@ -350,6 +362,9 @@ def GetTempDir () -> str:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def SearchFile (AFileName: str, ADefaultExt: str) -> str:
     """SearchFile"""
 #beginfunction
@@ -383,6 +398,9 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
     return LResult
 #endfunction
 
+#--------------------------------------------------------------------------------
+#
+#--------------------------------------------------------------------------------
 def SearchINIFile (AFileName: str) -> str:
     """SearchINIFile"""
 #beginfunction
@@ -390,6 +408,9 @@ def SearchINIFile (AFileName: str) -> str:
     return LResult
 #endfunction
 
+#-------------------------------------------------------------------------------
+# SearchEXEFile
+#-------------------------------------------------------------------------------
 def SearchEXEFile (AFileName: str) -> str:
     """SearchEXEFile"""
 #beginfunction
@@ -397,6 +418,9 @@ def SearchEXEFile (AFileName: str) -> str:
     return LResult
 #endfunction
 
+#-------------------------------------------------------------------------------
+# FileSearch
+#-------------------------------------------------------------------------------
 def FileSearch (AFileName: str, APath: str) -> str:
     """FileSearch"""
 #beginfunction
@@ -414,6 +438,9 @@ def FileSearch (AFileName: str, APath: str) -> str:
     return LResult
 #endfunction
 
+#-------------------------------------------------------------------------------
+# FileDelete
+#-------------------------------------------------------------------------------
 def FileDelete (AFileName: str) -> bool:
     """FileDelete"""
 #beginfunction
@@ -429,6 +456,39 @@ def FileDelete (AFileName: str) -> bool:
         #endtry
     #endif
     return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
+# FileSearch
+#-------------------------------------------------------------------------------
+def CheckFileNameMask (AFileName: str, AMask: str) -> bool:
+    """FileSearch"""
+#beginfunction
+    LFileName = AFileName
+    # LMask = '^[a-zA-Z0-9]+.py$'         # *.py - только латинские буквы и цифры
+    # LMask = '^.*..*$'                   # *.* - все символы
+    # LMask = '^.*.py$'                   # *.py - все символы
+    # LMask = '^[\\S ]*.py$'              # *.py - все символы включая пробелы
+    # LMask = '^[a-zA-Z0-9]*.py$'         # *.py - только латинские буквы и цифры
+    LMask = AMask
+    #-------------------------------------------------------------------------------
+    # regex = re.compile (LMask)
+    # Lresult = regex.match(LFileName)
+    #-------------------------------------------------------------------------------
+    # эквивалентно
+    #-------------------------------------------------------------------------------
+    Lresult = re.match (LMask, LFileName)
+    # Lresult = re.search (LMask, LFileName)
+    #-------------------------------------------------------------------------------
+
+    # regex = re.compile (LMask)
+    # if regex.match(LFileName):
+    #     print(LFileName + ' ok!')
+    # else:
+    #     print(LFileName + ' not match')
+    # #endif
+    # matches = re.finditer (regex, AFileName, re.MULTILINE)
+    return Lresult
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -451,6 +511,23 @@ def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
         LFile.flush ()
         LFile.close ()
    #endif
+#endfunction
+
+#--------------------------------------------------------------------------------
+# WriteStrToFile (AStr: str, AFileName: str):
+#--------------------------------------------------------------------------------
+def WriteStrToFile (AFileName: str, AStr: str):
+    """WriteStrToFile"""
+#beginfunction
+    # Откроет для добавления нового содержимого.
+    # Создаст новый файл для чтения записи, если не найдет с указанным именем.
+    LEncoding = GetFileEncoding (AFileName)
+    if LEncoding == '':
+        LEncoding = cDefaultEncoding
+    LFile = open (AFileName, 'a+', encoding = LEncoding)
+    LFile.write (AStr)
+    LFile.flush ()
+    LFile.close ()
 #endfunction
 
 #-------------------------------------------------------------------------------

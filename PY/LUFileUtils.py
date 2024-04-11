@@ -26,6 +26,7 @@ import chardet
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import datetime
+# import date
 import shutil
 import win32api
 import platform
@@ -70,8 +71,8 @@ def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
     LFileCount = 0
     with os.scandir (ASourcePath) as LFiles:
         for LFile1 in LFiles:
-            if (not LFile1.name.startswith ('.')) and (not LFile1.is_symlink ()):
-                if LFile1.is_file ():
+            if (not LFile1.is_symlink ()):
+                if LFile1.is_file () and LUFile.CheckFileNameMask (LFile1.name, AMask):
                     # class os.DirEntry - Это файл
                     LFullFileName1 = LFile1.path
                     Lstats = os.stat (LFullFileName1)
@@ -181,7 +182,7 @@ def ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delet
         for LFile in LFiles:
             Lname = LFile.name
             # print('name:',Lname)
-            if (not LFile.name.startswith('.')) and (not LFile.is_symlink()):
+            if (not LFile.is_symlink()):
                 if LFile.is_dir ():
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
@@ -410,13 +411,16 @@ def __WorkFile (AFullFileName):
 #-------------------------------------------------------------------------------
 # ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
 #-------------------------------------------------------------------------------
-def ListFile (ASourcePath, AMask='*.*', _OutFile='', _Option=0, _FuncDir=None, _FuncFile=None):
+def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _Option=0, _FuncDir=None, _FuncFile=None):
 #beginfunction
     LFileCount = 0
     with os.scandir(ASourcePath) as LFiles:
         for LFile in LFiles:
-            if (not LFile.name.startswith ('.')) and (not LFile.is_symlink ()):
-                if LFile.is_file():
+            if (not LFile.is_symlink ()):
+                if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
+
+                    # Lresult = LUFile.CheckFileNameMask (LFile.name, AMask)
+
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
@@ -429,13 +433,15 @@ def ListFile (ASourcePath, AMask='*.*', _OutFile='', _Option=0, _FuncDir=None, _
                     s = '    ' * (GLevel - 1) + '    ' + LFileName
                     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
 
-                    if (_OutFile) and (_OutFile.upper == 'CONSOLE'):
+                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
                        print (s)
                     #endif
-                    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-                        LHandleFile = LUFile.OpenTextFile (_OutFile, '')
-                        LHandleFile.write (s+'\n')
-                        LUFile.CloseTextFile (LHandleFile)
+                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
+                        LUFile.WriteStrToFile(_OutFile, s+'\n')
+
+                        # LHandleFile = LUFile.OpenTextFile (_OutFile, '')
+                        # LHandleFile.write (s+'\n')
+                        # LUFile.CloseTextFile (LHandleFile)
                     #endif
 
                     __WorkFile (LFullFileName)
@@ -468,13 +474,11 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
 
     if _Option == 10 or _Option == 11 or _Option == 12:
-        if (_OutFile) and (_OutFile.upper == 'CONSOLE'):
+        if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
             print (s)
         #endif
-        if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-            LHandleDir = LUFile.OpenTextFile(_OutFile, '')
-            LHandleDir.write (s+'\n')
-            LUFile.CloseTextFile(LHandleDir)
+        if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
+            LUFile.WriteStrToFile (_OutFile, s + '\n')
         #endif
     #endif
 
@@ -500,7 +504,7 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
             Lstat = LFile.stat()
             # print('stat:',Lstat)
 
-            if (not LFile.name.startswith('.')) and (not LFile.is_symlink()):
+            if (not LFile.is_symlink()):
                 if LFile.is_dir ():
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
@@ -509,10 +513,6 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
                     LFullPathName = LUFile.ExpandFileName (LFile.path)
                     Lstats = os.stat (LFullPathName)
-
-                    # if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-                    #     LHandleDir.write (LPathName + '\n')
-                    # #endif
 
                     if _FuncDir:
                         _FuncDir(LFile)
@@ -539,7 +539,7 @@ def DirFiles (ASourcePath, AMask, _OutFile):
     LFileCount = 0
     with os.scandir (ASourcePath) as LFiles:
         for LFile in LFiles:
-            if (not LFile.name.startswith ('.')) and (not LFile.is_symlink ()):
+            if (not LFile.is_symlink ()):
                 if LFile.is_dir ():
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
@@ -548,30 +548,29 @@ def DirFiles (ASourcePath, AMask, _OutFile):
                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
                     LFullPathName = LUFile.ExpandFileName (LFile.path)
                     Lstats = os.stat (LFullPathName)
-
-                    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-                        LHandleFile.write (LPathName + '\n')
+                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
+                        print (LPathName)
+                    #endif
+                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
+                        LUFile.WriteStrToFile (_OutFile, LPathName + '\n')
                     #endif
                 #endif
-                if LFile.is_file():
+                if LFile.is_file () and LUFile.CheckFileNameMask (LFile.name, AMask):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
                     LFileCount = LFileCount + 1
                     LFileName = LFile.name
                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullPathName = LUFile.ExpandFileName (LFile.path)
+                    LFullFileName = LUFile.ExpandFileName (LFile.path)
                     Lstats = os.stat (LFullFileName)
-                    s = LFileName
-
-                    if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-                        LHandleFile = LUFile.OpenTextFile (_OutFile, '')
-                        LHandleFile.write (s+'\n')
-                        LUFile.CloseTextFile (LHandleFile)
+                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
+                        print (LFileName)
                     #endif
-
+                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
+                        LUFile.WriteStrToFile (_OutFile, LFileName + '\n')
+                    #endif
                     __WorkFile (LFullFileName)
-
                 #endif
             #endif
         #endfor
@@ -581,32 +580,35 @@ def DirFiles (ASourcePath, AMask, _OutFile):
 #-------------------------------------------------------------------------------
 # DelFiles (ASourcePath, AMask, $Day)
 #-------------------------------------------------------------------------------
-def DelFiles (ASourcePath, AMask, ADay):
+def DelFiles (ASourcePath, AMask, _OutFile, ADay):
 #beginfunction
     L_Day = LUDateTime.Now()
     LFileCount = 0
-    with os.scandir (ASourcePath) as LFiles:
+    with (os.scandir (ASourcePath) as LFiles):
         for LFile in LFiles:
-            if (not LFile.name.startswith ('.')) and (not LFile.is_symlink ()):
-                if LFile.is_file():
+            if (not LFile.is_symlink ()):
+                if LFile.is_file () and LUFile.CheckFileNameMask (LFile.name, AMask):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
                     LFileCount = LFileCount + 1
                     LFileName = LFile.name
                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullPathName = LUFile.ExpandFileName (LFile.path)
+                    LFullFileName = LUFile.ExpandFileName (LFile.path)
                     Lstats = os.stat (LFullFileName)
-                    # s = LFileName
-                    # if (_OutFile) and (_OutFile.upper != 'CONSOLE'):
-                    #     LHandleFile = LUFile.OpenTextFile (_OutFile, '')
-                    #     LHandleFile.write (s+'\n')
-                    #     LUFile.CloseTextFile (LHandleFile)
-                    # #endif
+                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
+                        print (LFileName)
+                    #endif
+                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
+                        LUFile.WriteStrToFile (_OutFile, LFileName + '\n')
+                    #endif
                     # __WorkFile (LFullFileName)
-                    LFileTimeSource = LUFile.GetFileDateTime(LFileNameSource)[0]
-                    if (L_Day - LFileTimeSource) > ADay:
-                        os.remove (LFileNameSource)
+
+                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName) [3]
+                    print((L_Day - LFileTimeSource).days)
+                    if (L_Day - LFileTimeSource).days > ADay:
+                        # os.remove (LFileNameSource)
+                        ...
                     #endif
                 #endif
             #endif
