@@ -18,6 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
+import stat
 import sys
 import time
 import chardet
@@ -56,45 +57,51 @@ GLevelMAX = sys.maxsize
 #-------------------------------------------------------------------------------
 # ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
-              _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+def ScanFile (ASourcePath, ADestPath, AMask,
+              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
+    print(ASourcePath)
+    print(ADestPath)
     if not LUFile.DirectoryExists(ADestPath):
         LUFile.ForceDirectories(ADestPath)
     #endif
 
-    if ADestPathDelta:
-        if not LUFile.DirectoryExists (ADestPathDelta):
-            LUFile.ForceDirectories (ADestPathDelta)
+    # print(_ADestPathDelta)
+    if _ADestPathDelta:
+        if not LUFile.DirectoryExists (_ADestPathDelta):
+            LUFile.ForceDirectories (_ADestPathDelta)
         #endif
     #endif
+
     LFileCount = 0
-    with os.scandir (ASourcePath) as LFiles:
-        for LFile1 in LFiles:
-            if (not LFile1.is_symlink ()):
-                if LFile1.is_file () and LUFile.CheckFileNameMask (LFile1.name, AMask):
+    with os.scandir (ASourcePath) as LSourceFiles:
+        for LSourceFile in LSourceFiles:
+            if (not LSourceFile.is_symlink ()):
+                if LSourceFile.is_file () and LUFile.CheckFileNameMask (LSourceFile.name, AMask):
                     # class os.DirEntry - Это файл
-                    LFullFileName1 = LFile1.path
-                    Lstats = os.stat (LFullFileName1)
-                    LFileName1 = LFile1.name
-                    s = '  ' * (GLevel - 1) + '   ' + LFileName1
+                    LFileCount = LFileCount + 1
+
+                    LFullFileNameSource = LSourceFile.path
+                    Lstats = os.stat (LFullFileNameSource)
+                    LFileNameSource = LSourceFile.name
+                    s = '  ' * (GLevel - 1) + '   ' + LFileNameSource
                     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-
-                    LFileNameSource1 = LFile1.path
-                    # LFileSizeSource1 = GetFileSize (LFileNameSource1)
-                    # LFileTimeSource1 = GetFileTime (LFileNameSource1)
-                    LFileNameDest2 = os.path.join (ADestPath, LFile1.name)
-                    if ADestPathDelta:
-                        LFileNameDestDelta2 = os.path.join (ADestPathDelta, LFile1.name)
+                    LFileNameSource = LSourceFile.path
+                    LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
+                    LFileAttrSource = LUFile.GetFileAttr (LFileNameSource)
+                    # print(LFileSizeSource)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)[2]
+                    LFileNameDest = os.path.join (ADestPath, LSourceFile.name)
+                    if _ADestPathDelta:
+                        LFileNameDestDelta = os.path.join (_ADestPathDelta, LSourceFile.name)
                     #endif
-
-                    LResult = CompareFileTimes (LFileNameSource1, LFileNameDest2)
+                    #--------------------------------------------------------------------
+                    LResult = LUFile.COMPAREFILETIMES(LFileNameSource, LFileNameDest)
                     # -3 File2 could not be opened (see @ERROR for more information).
                     # -2 File1 could not be opened (see @ERROR for more information).
                     # -1 File1 is older than file2.
                     # 0  File1 and file2 have the same date and time.
                     # 1  File1 is more recent than file2.
-
                     #--------------------------------------------------------------------
                     # Check Result
                     #--------------------------------------------------------------------
@@ -106,12 +113,12 @@ def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
                         #endif
                     else:
                         if LResult == -3:
-                            LFileSizeDest2 = "new"
-                            LFileTimeDest2 = "new"
+                            LFileSizeDest = "new"
+                            LFileTimeDest = "new"
                             LCopy = True
                         else:
-                            LFileSizeDest2 = GetFileSize (LFileNameDest2)
-                            LFileTimeDest2 = GetFileTime (LFileNameDest2)
+                            LFileSizeDest = LUFile.GetFileSize (LFileNameDest)
+                            LFileTimeDest = LUFile.GetFileDateTime (LFileNameDest)[2]
                             if LResult == 1:
                                 LCopy = True
                             else:
@@ -120,33 +127,30 @@ def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
                                     LogAdd ("3", LogFile, "F", _warnOWN, "w+/n")
                                     LCopy = True
                                 #endif
-                                if (ACheckSize) and (LFileSizeSource1 != LFileSizeDest2):
+                                if (_ACheckSize) and (LFileSizeSource != LFileSizeDest):
                                     LCopy = True
                                 #endif
                             #endif
                         #endif
                     #endif
+
                     #--------------------------------------------------------------------
                     # Copy
                     #--------------------------------------------------------------------
                     if LCopy == True:
-                        s = LFileNameSource1 + " ("+LFileSizeSource1+"|"+LFileTimeSource1+")" + " => " + \
-                            LFileNameDest2   + " ("+LFileSizeDest2+"|"+LFileTimeDest2+")"
-                        LogAdd ("3", LogFile, "F", s, "w+/n")
-
-                        # Copy LFileNameSource1 LFileNameDest2 /r /h
-
+                        s = LFileNameSource + " ("+str(LFileSizeSource)+"|"+str(LFileTimeSource)+")" + " => " + \
+                            LFileNameDest   + " ("+str(LFileSizeDest)+"|"+str(LFileTimeDest)+")"
+                        LUFile.FileCopy (LFileNameSource, LFileNameDest,False)
+                        Lattr = LUFile.GetFileAttr (LFileNameDest)
+                        Lattr = Lattr & stat.FILE_ATTRIBUTE_READONLY
+                        # os.chflags (AFileName, 0)
+                        LUFile.SetFileAttr (LFileNameDest, Lattr)
                         if _ExecFunc:
-                            if _ExecFuncPAR1:
-                                s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest, $$ExecFuncPAR1)'
-                            else:
-                                s1 = '$$Res = $ExecFunc ($LFileNameSource, $LFileNameDest)'
-                            #endif
-                            # ResExe = execute ($s1)
+                            ResExe = _ExecFunc (LFileNameSource, LFileNameDest, _ExecFuncPAR1)
                         #endif
-                        if ADestPathDelta:
+                        if _ADestPathDelta:
                             s = s + " => " + LFileNameDestDelta
-                            # Copy LFileNameSource1 LFileNameDestDelta2 /r
+                            LUFile.FileCopy (LFileNameSource, LFileNameDestDelta, False)
                         #endif
                     #endif
 
@@ -154,9 +158,8 @@ def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
                     # Delete
                     #--------------------------------------------------------------------
                     if LDelete:
-                        s = "Delete file "+LFileNameSource1 + " ("+LFileSizeSource1+"|"+LFileTimeSource1+")"+" ..."
-                        LogAdd ("3", LogFile, "F", s, "w+/n")
-                        # Del LFileNameSource1
+                        s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
+                        # LUFile.FileDelete (LFileNameSource)
                     #endif
                 #endif
             #endif
@@ -167,16 +170,26 @@ def ScanFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta,
 #-------------------------------------------------------------------------------
 #  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
 #-------------------------------------------------------------------------------
-def ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+def ScanDir (ASourcePath, ADestPath, AMask,
+             _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
+    global GLevel
+    GLevel = GLevel + 1
+
     #------------------------------------------------------------
     # Dir
     #------------------------------------------------------------
     LPath = ASourcePath
     LPath = LUFile.ExpandFileName (ASourcePath)
     LPath = os.path.basename (LPath)
-    s = '  ' * (GLevel - 1) + LPath
+    s = '    '*(GLevel-1)+LPath+' [DIR]'
     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+
+    #------------------------------------------------------------
+    # список файлов в каталоге
+    #------------------------------------------------------------
+    ScanFile (ASourcePath, ADestPath, AMask,
+          _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
 
     with os.scandir (ASourcePath) as LFiles:
         for LFile in LFiles:
@@ -187,21 +200,28 @@ def ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delet
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
-                    LPath = os.path.join (ASourcePath, LFile.name)
-                    LPath = LUFile.ExpandFileName (LFile.path)
+                    LPathName = LFile.name
+                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
+                    LFullPathName = LUFile.ExpandFileName (LFile.path)
+                    print(LFullPathName)
+                    Lstats = os.stat (LFullPathName)
 
-                    LSourcePath = os.path.join (ASourcePath, LFile.name)
-                    LDestPath = os.path.join (ADestPath, LFile)
-                    if ADestPathDelta:
-                        LDestPathDelta = os.path.join (ADestPathDelta, LFile.name)
+                    LDestPath = os.path.join (ADestPath, LFile.name)
+                    print(LDestPath)
+
+                    if _ADestPathDelta:
+                        LDestPathDelta = os.path.join (_ADestPathDelta, LFile.name)
+                        print (LDestPathDelta)
                     else:
                         LDestPathDelta = ''
                     #endif
+
                     #------------------------------------------------------------
-                    # список файлов в каталоге
+                    # на следующий уровень
                     #------------------------------------------------------------
-                    ScanFile (LSourcePath, LDestPath, AMask, _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-                    ScanDir  (LSourcePath, LDestPath, AMask, _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+                    # print(GLevel)
+                    ScanDir  (LFile.path, LDestPath, AMask,
+                              _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
                 #endif
             #endif
         #endfor
@@ -209,177 +229,46 @@ def ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delet
 #endfunction
 
 #-------------------------------------------------------------------------------
-#  BacDirs (ASourcePath, ADestPath, ACheckSize)
+#  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacDirs (ASourcePath, ADestPath, ACheckSize) -> int:
+def BacFile (ASourcePath, ADestPath, AMask,
+             _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
-    ...
-"""
-   if LSourcePath = 0
-      if IsDeclared (ASourcePath)
-         LSourcePath = ASourcePath
-      else
-         return 1
-      #endif
+   if (ASourcePath != "") and (ADestPath != ""):
+      # if $Debug
+      #    LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+      # #endif
+      ScanFile(ASourcePath, ADestPath, AMask,
+               _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
    #endif
-   if LDestPath = 0
-      if IsDeclared (ADestPath)
-         LDestPath = ADestPath
-      else
-         return 1
-      #endif
-   #endif
-   LMask = "*.*"
-   if IsDeclared (ACheckSize)
-      LCheckSize = ACheckSize
-   else
-      LCheckSize = False
-   #endif
-
-   LFile = Dir (ASourcePath+"\\"+LMask)
-   WHILE @ERROR = 0 AND LFile
-      if LFile <> "." AND LFile <> ".."
-         if GetFileAttr (ASourcePath + "\\" + LFile) & 16    # is it a directory ?
-            LSourcePath = ASourcePath
-            LDestPath = ADestPath
-
-            LSourcePath = ASourcePath + "\\" + LFile
-            LDestPath = ADestPath + "\\" + LFile
-
-            BacDirs(LSourcePath, LDestPath, ACheckSize)
-
-            ASourcePath = LSaveLSourcePath
-            ADestPath = LSaveLDestPath
-         else
-            LFileNameSource = ASourcePath + "\\" + LFile
-            LFileNameDest = ADestPath + "\\" + LFile
-            if 0=EXIST(ADestPath)
-               MD ADestPath
-            #endif
-            LCopy = False
-            LResult = CompareFileTimes(LFileNameSource, LFileNameDest)
-            if $Result = 1 Or LResult = -3
-               LCopy = True
-            else
-               LFileSizeSource = GetFileSize (LFileNameSource)
-               LFileSizeDest = GetFileSize (LFileNameDest)
-               if (LCheckSize=True) and (LFileSizeSource<>LFileSizeDest)
-                  LCopy = True
-               #endif
-            #endif
-            if LCopy = True
-               ? LFileNameSource+" => "+LFileNameDest+" ..."
-               Copy LFileNameSource LFileNameDest /r
-            #endif
-         #endif
-      #endif
-      if @ERROR = 0
-         LFile = Dir("")
-      #endif
-   loop
-"""
 #endfunction
 
 #-------------------------------------------------------------------------------
 #  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+def BacFiles (ASourcePath, ADestPath, AMask,
+              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
-    ...
-"""
-   if (ASourcePath <> "") and (ADestPath <> "")
-      if $Debug
-         LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      #endif
-      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-      ScanDir (ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-   #endif
-"""
+   if (ASourcePath != "") and (ADestPath != ""):
+      # if $Debug
+      #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+      # #endif
+      ScanDir (ASourcePath, ADestPath, AMask,
+               _ACheckSize, ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+    #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
-#  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
+#  BacDirs (ASourcePath, ADestPath, ACheckSize)
 #-------------------------------------------------------------------------------
-def BacFile (ASourcePath, ADestPath, AMask, _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+def BacDirs (ASourcePath, ADestPath, ACheckSize):
 #beginfunction
-    ...
-"""
-   if (ASourcePath <> "") and (ADestPath <> "")
-      if $Debug
-         LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      #endif
-      ScanFile(ASourcePath, ADestPath, AMask, ACheckSize, ADestPathDelta, $Delete, $ExecFunc, $OverwriteNewer, $ExecFuncPAR1)
-   #endif
-"""
-#endfunction
-
-#-------------------------------------------------------------------------------
-# SyncFile(Array, optional $Delete, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def SyncFile(Array, _Delete, _OverwriteNewer):
-#beginfunction
-    ...
-"""
-   #LogAdd(Log, LogFile, "I", "Array="+UBound(Array))
-   for Each $Item in Array
-      #LogAdd(Log, LogFile, "I", "Item="+UBound($Item))
-      if UBound($Item) > 0
-         if ($Item[0] <> "") and ($Item[1] <> "")
-            LogAdd(Log, LogFile, "I", $Item[0]+"\\"+$Item[2]+" => "+$Item[1])
-            #---------------------------------------
-            #
-            #---------------------------------------
-            if UBound($Item) > 3
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  if UBound($Item) > 4
-                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
-                  else
-                     BacFiles ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
-                  #endif
-               else                                                             
-                  if UBound($Item) > 4
-                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer, $Item[5])
-                  else
-                     BacFile  ($Item[0], $Item[1], $Item[2], True, , 0,  $Item[4], $OverwriteNewer,)
-                  #endif
-               #endif
-            else
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  BacFiles ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
-               else
-                  BacFile  ($Item[0], $Item[1], $Item[2], True, , 0, , $OverwriteNewer,)
-               #endif
-            #endif
-      
-            #---------------------------------------
-            #
-            #---------------------------------------
-            if $Delete
-               LogAdd(Log, LogFile, "I", "Delete ..."+$Item[1]+"\\"+$Item[2]+" "+$Item[0])
-               if UCase($Item[3]) = "S"
-                  #---------------------------------------
-                  # with subdir
-                  #---------------------------------------
-                  BacFiles ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
-               else
-                  BacFile ($Item[1], $Item[0], $Item[2], , , 1, , $OverwriteNewer,)
-               #endif
-            #endif
-
-         #endif   
-      else
-         #---------------------------------------------------
-         LogAdd(Log, LogFile, "I", $Item)
-         #---------------------------------------------------
-      #endif
-   next
-"""
+    if (ASourcePath != "") and (ADestPath != ""):
+        # if $Debug
+        #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+        # #endif
+        ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize)
+    #endif
 #endfunction
 
 # -------------------------------------------------------------------------------
@@ -394,9 +283,7 @@ def __WorkFile (AFullFileName):
     LFileDir: str = os.path.dirname(LFullFileName)
     #--------------------------------------------------------------------------------
     LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
-    # print (LFileSizeSource)
     LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)
-    # print (LFileTimeSource)
     #--------------------------------------------------------------------------------
     #$Y = Val(SUBSTR(LFileTimeSource[2],1,4))
     #$M = Val(SUBSTR(LFileTimeSource[2],6,2))
@@ -418,9 +305,7 @@ def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _Option=0, _FuncDir=Non
         for LFile in LFiles:
             if (not LFile.is_symlink ()):
                 if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
-
                     # Lresult = LUFile.CheckFileNameMask (LFile.name, AMask)
-
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
@@ -429,23 +314,15 @@ def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _Option=0, _FuncDir=Non
                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
                     LFullFileName = LUFile.ExpandFileName (LFile.path)
                     Lstats = os.stat (LFullFileName)
-
                     s = '    ' * (GLevel - 1) + '    ' + LFileName
                     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-
                     if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
                        print (s)
                     #endif
                     if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
                         LUFile.WriteStrToFile(_OutFile, s+'\n')
-
-                        # LHandleFile = LUFile.OpenTextFile (_OutFile, '')
-                        # LHandleFile.write (s+'\n')
-                        # LUFile.CloseTextFile (LHandleFile)
                     #endif
-
                     __WorkFile (LFullFileName)
-
                     if _FuncFile:
                         _FuncFile (LFile)
                     #endif
@@ -518,8 +395,10 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
                         _FuncDir(LFile)
                     #endif
                     
-                    # print(GLevel, _ALevel)
+                    #------------------------------------------------------------
                     # на следующий уровень
+                    #------------------------------------------------------------
+                    # print(GLevel, _ALevel)
                     if GLevel < _ALevel:
                         ListDir (LFile.path, AMask, _OutFile, _Option, _FuncDir, _FuncFile, _ALevel)
                     #endif
@@ -528,7 +407,6 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
         #endfor
         GLevel = GLevel - 1
     #endwith
-
 #endfunction
 
 #-------------------------------------------------------------------------------

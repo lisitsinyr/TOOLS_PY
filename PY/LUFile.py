@@ -19,9 +19,11 @@ __annotations__ = """
 #------------------------------------------
 import datetime
 import os
+import stat
 import tempfile
 import platform
 import re
+import ctypes
 
 # import win32api
 # import pathlib
@@ -39,6 +41,7 @@ import chardet
 import LUErrors
 import LUStrDecode
 import LUDateTime
+import LUos
 
 """
 f = open(file_name, access_mode, encoding='')
@@ -76,7 +79,7 @@ def DirectoryExists (APath: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# ForceDirectories
 #--------------------------------------------------------------------------------
 def ForceDirectories (ADir: str) -> bool:
     """ForceDirectories"""
@@ -88,7 +91,7 @@ def ForceDirectories (ADir: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# DirectoryDelete
 #--------------------------------------------------------------------------------
 def DirectoryDelete (ADirectoryName: str) -> bool:
     """DirectoryDelete"""
@@ -102,7 +105,7 @@ def DirectoryDelete (ADirectoryName: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# FileExists
 #--------------------------------------------------------------------------------
 def FileExists (AFileName: str) -> bool:
     """FileExists"""
@@ -111,7 +114,7 @@ def FileExists (AFileName: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# GetFileDateTime
 #--------------------------------------------------------------------------------
 def GetFileDateTime (AFileName: str) -> ():
     """GetFileDateTime"""
@@ -150,7 +153,7 @@ def GetFileDateTime (AFileName: str) -> ():
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# COMPAREFILETIMES
 #--------------------------------------------------------------------------------
 def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
     """COMPAREFILETIMES"""
@@ -314,7 +317,7 @@ def GetFileEncoding (AFileName: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# IncludeTrailingBackslash
 #--------------------------------------------------------------------------------
 def IncludeTrailingBackslash (APath: str) -> str:
     """IncludeTrailingBackslash"""
@@ -329,7 +332,7 @@ def IncludeTrailingBackslash (APath: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# GetDirNameYYMMDD
 #--------------------------------------------------------------------------------
 def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMMDD"""
@@ -341,7 +344,7 @@ def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# GetDirNameYYMM
 #--------------------------------------------------------------------------------
 def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMM"""
@@ -352,7 +355,7 @@ def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# GetTempDir
 #--------------------------------------------------------------------------------
 def GetTempDir () -> str:
     """GetTempDir"""
@@ -363,7 +366,7 @@ def GetTempDir () -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# SearchFile
 #--------------------------------------------------------------------------------
 def SearchFile (AFileName: str, ADefaultExt: str) -> str:
     """SearchFile"""
@@ -399,7 +402,7 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# SearchINIFile
 #--------------------------------------------------------------------------------
 def SearchINIFile (AFileName: str) -> str:
     """SearchINIFile"""
@@ -439,6 +442,74 @@ def FileSearch (AFileName: str, APath: str) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
+# SetFileAttr
+#-------------------------------------------------------------------------------
+def SetFileAttr (AFileName: str, Aflags) -> bool:
+    """SetFileAttr"""
+#beginfunction
+    LResult = True
+    LOSInfo = LUos.TOSInfo ()
+    match LOSInfo.system.upper ():
+        case 'LINUX':
+            # os.chflags() method in Python used to set the flags of path to the numeric flags;
+            # available in Unix only
+            os.chflags (AFileName, Aflags)
+        case 'WINDOWS':
+            FILE_ATTRIBUTE_HIDDEN = 0x02
+            LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, FILE_ATTRIBUTE_HIDDEN)
+            ...
+        case _:
+            ...
+    #endmatch
+    return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
+# GetFileAttr
+#-------------------------------------------------------------------------------
+def GetFileAttr (AFileName: str) -> int:
+    """GetFileAttr"""
+#beginfunction
+    LResult = 0
+    if FileExists (AFileName):
+        LStat = os.stat (AFileName)
+        Lmode = LStat.st_mode
+
+        # print ('Lmode:', Lmode, stat.filemode (Lmode))
+
+        Lattr = LStat.st_file_attributes
+        print ('Lattr:', Lattr, hex(Lattr), bin(Lattr))
+        print ('stat.FILE_ATTRIBUTE_ARCHIVE',bin(stat.FILE_ATTRIBUTE_ARCHIVE))
+        print ('stat.FILE_ATTRIBUTE_SYSTEM',bin(stat.FILE_ATTRIBUTE_SYSTEM))
+        print ('stat.FILE_ATTRIBUTE_HIDDEN',bin(stat.FILE_ATTRIBUTE_HIDDEN))
+        print ('stat.FILE_ATTRIBUTE_READONLY',bin(stat.FILE_ATTRIBUTE_READONLY))
+
+        # print (stat.FILE_ATTRIBUTE_READONLY)
+        # print ("Attributes of:", AFileName)
+        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_ARCHIVE:  print (" - archive")
+        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_SYSTEM:   print (" - system")
+        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:   print (" - hidden")
+        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_READONLY: print (" - read only")
+
+        # LAccess = os.access (AFileName, os.R_OK)
+        # LAccess = os.access (AFileName, os.W_OK)
+        # Clear ReadOnly
+        # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
+        # import win32con
+        # import win32api
+        # attrs = win32api.GetFileAttributes (filepath)
+        # attrs & win32con.FILE_ATTRIBUTE_SYSTEM
+        # attrs & win32con.FILE_ATTRIBUTE_HIDDEN
+
+        # Change the file's permissions to writable
+        # os.chmod (AFileName, os.W_OK)
+
+        LResult = Lattr
+    #endif
+    return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
 # FileDelete
 #-------------------------------------------------------------------------------
 def FileDelete (AFileName: str) -> bool:
@@ -449,6 +520,10 @@ def FileDelete (AFileName: str) -> bool:
         try:
             # Clear ReadOnly
             # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
+
+            # Change the file's permissions to writable
+            os.chmod (AFileName, os.W_OK)
+            # Remove the file
             os.remove (AFileName)
             LResult = True
         except:
@@ -459,10 +534,42 @@ def FileDelete (AFileName: str) -> bool:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# FileSearch
+# FileCopy
+#-------------------------------------------------------------------------------
+def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool:
+    """FileCopy"""
+#beginfunction
+    LDestPath = ExtractFileDir(AFileNameDest)
+    if not DirectoryExists(LDestPath):
+        ForceDirectories(LDestPath)
+    #endif
+    LResult = shutil.copy (AFileNameSource, AFileNameDest)
+    return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
+# FileMove
+#-------------------------------------------------------------------------------
+def FileMove (AFileNameSource: str, APathNameDest: str) -> bool:
+    """FileMove"""
+#beginfunction
+    if not LUFile.DirectoryExists(APathNameDest):
+        LUFile.ForceDirectories(APathNameDest)
+    #endif
+    LFileNameSource = ExtractFileName (AFileNameSource)
+    LFileNameDest = os.path.join (APathNameDest, LFileNameSource)
+    LResult = FileCopy (AFileNameSource, LFileNameDest, True);
+    if Result:
+        Result = FileDelete (AFileNameSource);
+    #endif
+    return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
+# CheckFileNameMask
 #-------------------------------------------------------------------------------
 def CheckFileNameMask (AFileName: str, AMask: str) -> bool:
-    """FileSearch"""
+    """CheckFileNameMask"""
 #beginfunction
     LFileName = AFileName
     # LMask = '^[a-zA-Z0-9]+.py$'         # *.py - только латинские буквы и цифры
@@ -546,75 +653,12 @@ def OpenTextFile(AFileName: str, AEncoding: str):
 #-------------------------------------------------------------------------------
 # CloseTextFile
 #-------------------------------------------------------------------------------
-def CloseTextFile(AHandle):
+def CloseTextFile (AHandle):
     """CloseTextFile"""
 #beginfunction
     AHandle.flush ()
     AHandle.close ()
 #endfunction
-
-"""
-function FileCopy (const FileName, DestPathName: string; Overwrite: Boolean): Boolean;
-{ FileCopy }
-function FileCopy (const FileName, DestPathName: string;
-    Overwrite: Boolean): Boolean;
-var
-    FNS, FND: string;
-    LDestPathName: string;
-begin
-    if Trim (DestPathName) = '' then
-        LDestPathName := GetCurrentDir
-    else
-        LDestPathName := ExpandFileName (DestPathName);
-    FNS := FileName;
-    FND := IncludeTrailingBackslash (LDestPathName) +
-        ExtractFileName (FileName);
-   { New }
-    Result := File2File (FNS, FND, Overwrite);
-end;
-"""
-
-"""
-function FileMove (const FileName, DestPathName: string): Boolean;
-{ FileMove }
-begin
-   { Clear ReadOnly }
-    FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
-    Result := FileCopy (FileName, DestPathName, True);
-    if Result then
-        Result := FileDelete (FileName);
-end;
-"""
-
-"""
-function File2File (const FileNameS, FileNameD: string; Overwrite: Boolean): Boolean;
-{ File2File }
-var
-    FNS, FND: string;
-    PNS, PND: string;
-begin
-    PNS := ExtractFilePath (FileNameS);
-    PND := ExtractFilePath (FileNameD);
-    FNS := FileNameS;
-    FND := FileNameD;
-
-    try
-        if not DirectoryExists (PND) then
-            ForceDirectories (PND);
-        if Windows.CopyFile (PChar(FNS), PChar(FND), LongBool(not Overwrite))
-        then
-        begin
-         { Clear ReadOnly }
-            FileSetAttr (FND, FileGetAttr(FND) and (faReadOnly xor $FF));
-            Result := True;
-        end else begin
-            Result := False; { Error Copy! }
-        end;
-    except
-        Result := False; { Error Copy! }
-    end;
-end;
-"""
 
 #------------------------------------------
 def main ():
