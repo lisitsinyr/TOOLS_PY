@@ -54,6 +54,63 @@ GMask = '*.*'
 GDirCount = 0
 GLevelMAX = sys.maxsize
 
+# -------------------------------------------------------------------------------
+# __WorkFile (AFile_path)
+# -------------------------------------------------------------------------------
+def __WorkFile (AFile: os.DirEntry, _OutFile: str, _FuncFile):
+    # global Shablon
+#beginfunction
+    LFileName = AFile.name
+    LFullFileName = LUFile.ExpandFileName (AFile.path)
+    s = '    ' * (GLevel - 1) + '    ' + LFileName
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
+        print (s)
+    #endif
+    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
+        LUFile.WriteStrToFile (_OutFile, s + '\n')
+    #endif
+
+    #--------------------------------------------------------------------------------
+    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
+    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)
+    #--------------------------------------------------------------------------------
+    #$Y = Val(SUBSTR(LFileTimeSource[2],1,4))
+    #$M = Val(SUBSTR(LFileTimeSource[2],6,2))
+    #$D = Val(SUBSTR(LFileTimeSource[2],9,2))
+    #LFileDaySource = EncodeDate($Y,$M,$D)
+    #--------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------
+    #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
+    #--------------------------------------------------------------------------------
+
+    if _FuncFile:
+        _FuncFile (AFile)
+    #endif
+#endfunction
+
+# -------------------------------------------------------------------------------
+# __WorkDir
+# -------------------------------------------------------------------------------
+def __WorkDir (AFile: os.DirEntry, _OutFile: str, _FuncDir):
+    # global Shablon
+#beginfunction
+    LPath = AFile.name
+    LFullPath = LUFile.ExpandFileName (AFile.path)
+    s = '    ' * (GLevel - 1) + '    ' + LPath
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
+        print (s)
+    #endif
+    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
+        LUFile.WriteStrToFile (_OutFile, s + '\n')
+    #endif
+
+    if _FuncDir:
+        _FuncDir (AFile)
+    #endif
+#endfunction
+
 #-------------------------------------------------------------------------------
 # ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
@@ -271,63 +328,6 @@ def BacDirs (ASourcePath, ADestPath, ACheckSize):
     #endif
 #endfunction
 
-# -------------------------------------------------------------------------------
-# __WorkFile (AFile_path)
-# -------------------------------------------------------------------------------
-def __WorkFile (AFile: os.DirEntry, _OutFile: str, _FuncFile):
-    # global Shablon
-#beginfunction
-    LFileName = AFile.name
-    LFullFileName = LUFile.ExpandFileName (AFile.path)
-    s = '    ' * (GLevel - 1) + '    ' + LFileName
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
-        print (s)
-    #endif
-    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
-        LUFile.WriteStrToFile (_OutFile, s + '\n')
-    #endif
-
-    #--------------------------------------------------------------------------------
-    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
-    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)
-    #--------------------------------------------------------------------------------
-    #$Y = Val(SUBSTR(LFileTimeSource[2],1,4))
-    #$M = Val(SUBSTR(LFileTimeSource[2],6,2))
-    #$D = Val(SUBSTR(LFileTimeSource[2],9,2))
-    #LFileDaySource = EncodeDate($Y,$M,$D)
-    #--------------------------------------------------------------------------------
-    #--------------------------------------------------------------------------------
-    #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-    #--------------------------------------------------------------------------------
-
-    if _FuncFile:
-        _FuncFile (AFile)
-    #endif
-#endfunction
-
-# -------------------------------------------------------------------------------
-# __WorkDir
-# -------------------------------------------------------------------------------
-def __WorkDir (AFile: os.DirEntry, _OutFile: str, _FuncDir):
-    # global Shablon
-#beginfunction
-    LPath = AFile.name
-    LFullPath = LUFile.ExpandFileName (AFile.path)
-    s = '    ' * (GLevel - 1) + '    ' + LPath
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
-        print (s)
-    #endif
-    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
-        LUFile.WriteStrToFile (_OutFile, s + '\n')
-    #endif
-
-    if _FuncDir:
-        _FuncDir (AFile)
-    #endif
-#endfunction
-
 #-------------------------------------------------------------------------------
 # ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
 #-------------------------------------------------------------------------------
@@ -408,45 +408,7 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
 #-------------------------------------------------------------------------------
 def DirFiles (ASourcePath, AMask, _OutFile):
 #beginfunction
-    LFileCount = 0
-    with os.scandir (ASourcePath) as LFiles:
-        for LFile in LFiles:
-            if (not LFile.is_symlink ()):
-                if LFile.is_dir () and (not LFile.name.startswith('.')):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это каталог
-                    #------------------------------------------------------------
-                    LPathName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullPathName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullPathName)
-                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-                        print (LPathName)
-                    #endif
-                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-                        LUFile.WriteStrToFile (_OutFile, LPathName + '\n')
-                    #endif
-                #endif
-                if LFile.is_file () and LUFile.CheckFileNameMask (LFile.name, AMask):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это файл
-                    #------------------------------------------------------------
-                    LFileCount = LFileCount + 1
-                    LFileName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullFileName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullFileName)
-                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-                        print (LFileName)
-                    #endif
-                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-                        LUFile.WriteStrToFile (_OutFile, LFileName + '\n')
-                    #endif
-                    __WorkFile (LFullFileName)
-                #endif
-            #endif
-        #endfor
-    #endwith
+    ListDir(ASourcePath, AMask, _OutFile, 11, None, None, sys.maxsize)
 #endfunction
 
 #-------------------------------------------------------------------------------
