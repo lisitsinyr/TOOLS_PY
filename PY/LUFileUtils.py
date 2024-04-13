@@ -274,16 +274,23 @@ def BacDirs (ASourcePath, ADestPath, ACheckSize):
 # -------------------------------------------------------------------------------
 # __WorkFile (AFile_path)
 # -------------------------------------------------------------------------------
-def __WorkFile (AFullFileName):
+def __WorkFile (AFile: os.DirEntry, _OutFile: str, _FuncFile):
     # global Shablon
 #beginfunction
-    LFileNameSource: str = AFullFileName
-    LFullFileName: str = LFileNameSource
-    LFileName: str = os.path.basename(LFullFileName)
-    LFileDir: str = os.path.dirname(LFullFileName)
+    LFileName = AFile.name
+    LFullFileName = LUFile.ExpandFileName (AFile.path)
+    s = '    ' * (GLevel - 1) + '    ' + LFileName
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
+        print (s)
+    #endif
+    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
+        LUFile.WriteStrToFile (_OutFile, s + '\n')
+    #endif
+
     #--------------------------------------------------------------------------------
-    LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
-    LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)
+    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
+    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)
     #--------------------------------------------------------------------------------
     #$Y = Val(SUBSTR(LFileTimeSource[2],1,4))
     #$M = Val(SUBSTR(LFileTimeSource[2],6,2))
@@ -293,39 +300,49 @@ def __WorkFile (AFullFileName):
     #--------------------------------------------------------------------------------
     #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
     #--------------------------------------------------------------------------------
+
+    if _FuncFile:
+        _FuncFile (AFile)
+    #endif
+#endfunction
+
+# -------------------------------------------------------------------------------
+# __WorkDir
+# -------------------------------------------------------------------------------
+def __WorkDir (AFile: os.DirEntry, _OutFile: str, _FuncDir):
+    # global Shablon
+#beginfunction
+    LPath = AFile.name
+    LFullPath = LUFile.ExpandFileName (AFile.path)
+    s = '    ' * (GLevel - 1) + '    ' + LPath
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
+        print (s)
+    #endif
+    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
+        LUFile.WriteStrToFile (_OutFile, s + '\n')
+    #endif
+
+    if _FuncDir:
+        _FuncDir (AFile)
+    #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
 # ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
 #-------------------------------------------------------------------------------
-def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _Option=0, _FuncDir=None, _FuncFile=None):
+def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _FuncFile=None):
 #beginfunction
     LFileCount = 0
     with os.scandir(ASourcePath) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink ()):
                 if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
-                    # Lresult = LUFile.CheckFileNameMask (LFile.name, AMask)
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
                     LFileCount = LFileCount + 1
-                    LFileName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullFileName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullFileName)
-                    s = '    ' * (GLevel - 1) + '    ' + LFileName
-                    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-                       print (s)
-                    #endif
-                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-                        LUFile.WriteStrToFile(_OutFile, s+'\n')
-                    #endif
-                    __WorkFile (LFullFileName)
-                    if _FuncFile:
-                        _FuncFile (LFile)
-                    #endif
+                    __WorkFile (LFile, _OutFile, _FuncFile)
                 #endif
             #endif
         #endfor
@@ -362,39 +379,16 @@ def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFi
     #------------------------------------------------------------
     # список файлов в каталоге
     #------------------------------------------------------------
-    LFileCount = ListFile (ASourcePath, AMask, _OutFile, _Option, _FuncDir, _FuncFile)
+    LFileCount = ListFile (ASourcePath, AMask, _OutFile, _FuncFile)
 
     with os.scandir(ASourcePath) as LFiles:
         for LFile in LFiles:
-            Lname = LFile.name
-            # print('name:',Lname)
-            Lpath = LFile.path
-            # print('path:',Lpath)
-            Linode = LFile.inode()
-            # print('inode:',Linode)
-            Lis_dir = LFile.is_dir()
-            # print('is_dir:',Lis_dir)
-            Lis_file = LFile.is_file()
-            # print('is_file:',Lis_file)
-            Lis_symlink = LFile.is_symlink()
-            # print('is_symlink:',Lis_symlink)
-            Lstat = LFile.stat()
-            # print('stat:',Lstat)
-
             if (not LFile.is_symlink()):
                 if LFile.is_dir () and (not LFile.name.startswith('.')):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
-                    LPathName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullPathName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullPathName)
-
-                    if _FuncDir:
-                        _FuncDir(LFile)
-                    #endif
-                    
+                    __WorkDir (LFile, _OutFile, _FuncDir)
                     #------------------------------------------------------------
                     # на следующий уровень
                     #------------------------------------------------------------

@@ -453,10 +453,12 @@ def SetFileAttr (AFileName: str, Aflags) -> bool:
         case 'LINUX':
             # os.chflags() method in Python used to set the flags of path to the numeric flags;
             # available in Unix only
-            os.chflags (AFileName, Aflags)
+            # os.UF_HIDDEN
+            # os.chflags (AFileName, Aflags)
+            ...
         case 'WINDOWS':
-            FILE_ATTRIBUTE_HIDDEN = 0x02
-            LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, FILE_ATTRIBUTE_HIDDEN)
+            # FILE_ATTRIBUTE_HIDDEN = 0x02
+            # LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, FILE_ATTRIBUTE_HIDDEN)
             ...
         case _:
             ...
@@ -522,7 +524,8 @@ def FileDelete (AFileName: str) -> bool:
             # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
 
             # Change the file's permissions to writable
-            os.chmod (AFileName, os.W_OK)
+            # os.chmod (AFileName, os.W_OK)
+
             # Remove the file
             os.remove (AFileName)
             LResult = True
