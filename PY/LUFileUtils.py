@@ -49,239 +49,146 @@ import LUDateTime
 #CONST
 #------------------------------------------
 GLevel = 0
+GFileCount = 0
 GDir = ''
 GMask = '*.*'
 GDirCount = 0
 GLevelMAX = sys.maxsize
 
-# -------------------------------------------------------------------------------
-# __WorkFile (AFile_path)
-# -------------------------------------------------------------------------------
-def __WorkFile (AFile: os.DirEntry, _OutFile: str, _FuncFile):
-    # global Shablon
-#beginfunction
-    LFileName = AFile.name
-    LFullFileName = LUFile.ExpandFileName (AFile.path)
-    s = '    ' * (GLevel - 1) + '    ' + LFileName
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
-        print (s)
-    #endif
-    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
-        LUFile.WriteStrToFile (_OutFile, s + '\n')
-    #endif
-
-    #--------------------------------------------------------------------------------
-    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
-    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)
-    #--------------------------------------------------------------------------------
-    #$Y = Val(SUBSTR(LFileTimeSource[2],1,4))
-    #$M = Val(SUBSTR(LFileTimeSource[2],6,2))
-    #$D = Val(SUBSTR(LFileTimeSource[2],9,2))
-    #LFileDaySource = EncodeDate($Y,$M,$D)
-    #--------------------------------------------------------------------------------
-    #--------------------------------------------------------------------------------
-    #LDay = EncodeDate(@Year,@MonthNo,@MDayNo)
-    #--------------------------------------------------------------------------------
-
-    if _FuncFile:
-        _FuncFile (AFile)
-    #endif
-#endfunction
-
-# -------------------------------------------------------------------------------
-# __WorkDir
-# -------------------------------------------------------------------------------
-def __WorkDir (AFile: os.DirEntry, _OutFile: str, _FuncDir):
-    # global Shablon
-#beginfunction
-    LPath = AFile.name
-    LFullPath = LUFile.ExpandFileName (AFile.path)
-    s = '    ' * (GLevel - 1) + '    ' + LPath
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-    if (_OutFile) and (_OutFile.upper () == 'CONSOLE'):
-        print (s)
-    #endif
-    if (_OutFile) and (_OutFile.upper () != 'CONSOLE'):
-        LUFile.WriteStrToFile (_OutFile, s + '\n')
-    #endif
-
-    if _FuncDir:
-        _FuncDir (AFile)
-    #endif
-#endfunction
 
 #-------------------------------------------------------------------------------
-# ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
+# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
 #-------------------------------------------------------------------------------
-def ScanFile (ASourcePath, ADestPath, AMask,
-              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
-#beginfunction
-    print(ASourcePath)
-    print(ADestPath)
-    if not LUFile.DirectoryExists(ADestPath):
-        LUFile.ForceDirectories(ADestPath)
-    #endif
-
-    # print(_ADestPathDelta)
-    if _ADestPathDelta:
-        if not LUFile.DirectoryExists (_ADestPathDelta):
-            LUFile.ForceDirectories (_ADestPathDelta)
-        #endif
-    #endif
-
-    LFileCount = 0
-    with os.scandir (ASourcePath) as LSourceFiles:
-        for LSourceFile in LSourceFiles:
-            if (not LSourceFile.is_symlink ()):
-                if LSourceFile.is_file () and LUFile.CheckFileNameMask (LSourceFile.name, AMask):
-                    # class os.DirEntry - Это файл
-                    LFileCount = LFileCount + 1
-
-                    LFullFileNameSource = LSourceFile.path
-                    Lstats = os.stat (LFullFileNameSource)
-                    LFileNameSource = LSourceFile.name
-                    s = '  ' * (GLevel - 1) + '   ' + LFileNameSource
-                    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-                    LFileNameSource = LSourceFile.path
-                    LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
-                    LFileAttrSource = LUFile.GetFileAttr (LFileNameSource)
-                    # print(LFileSizeSource)
-                    LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)[2]
-                    LFileNameDest = os.path.join (ADestPath, LSourceFile.name)
-                    if _ADestPathDelta:
-                        LFileNameDestDelta = os.path.join (_ADestPathDelta, LSourceFile.name)
-                    #endif
-                    #--------------------------------------------------------------------
-                    LResult = LUFile.COMPAREFILETIMES(LFileNameSource, LFileNameDest)
-                    # -3 File2 could not be opened (see @ERROR for more information).
-                    # -2 File1 could not be opened (see @ERROR for more information).
-                    # -1 File1 is older than file2.
-                    # 0  File1 and file2 have the same date and time.
-                    # 1  File1 is more recent than file2.
-                    #--------------------------------------------------------------------
-                    # Check Result
-                    #--------------------------------------------------------------------
-                    LCopy = False
-                    LDelete = False
-                    if _Delete:
-                        if LResult == -3:
-                            LDelete = True
-                        #endif
-                    else:
-                        if LResult == -3:
-                            LFileSizeDest = "new"
-                            LFileTimeDest = "new"
-                            LCopy = True
-                        else:
-                            LFileSizeDest = LUFile.GetFileSize (LFileNameDest)
-                            LFileTimeDest = LUFile.GetFileDateTime (LFileNameDest)[2]
-                            if LResult == 1:
-                                LCopy = True
-                            else:
-                                if (LResult == -1) and (_OverwriteNewer == 1):
-                                    warnOWN = "More recent dest file " + LFileNameDest2 + " is to be overwritten"
-                                    LogAdd ("3", LogFile, "F", _warnOWN, "w+/n")
-                                    LCopy = True
-                                #endif
-                                if (_ACheckSize) and (LFileSizeSource != LFileSizeDest):
-                                    LCopy = True
-                                #endif
-                            #endif
-                        #endif
-                    #endif
-
-                    #--------------------------------------------------------------------
-                    # Copy
-                    #--------------------------------------------------------------------
-                    if LCopy == True:
-                        s = LFileNameSource + " ("+str(LFileSizeSource)+"|"+str(LFileTimeSource)+")" + " => " + \
-                            LFileNameDest   + " ("+str(LFileSizeDest)+"|"+str(LFileTimeDest)+")"
-                        LUFile.FileCopy (LFileNameSource, LFileNameDest,False)
-                        Lattr = LUFile.GetFileAttr (LFileNameDest)
-                        Lattr = Lattr & stat.FILE_ATTRIBUTE_READONLY
-                        # os.chflags (AFileName, 0)
-                        LUFile.SetFileAttr (LFileNameDest, Lattr)
-                        if _ExecFunc:
-                            ResExe = _ExecFunc (LFileNameSource, LFileNameDest, _ExecFuncPAR1)
-                        #endif
-                        if _ADestPathDelta:
-                            s = s + " => " + LFileNameDestDelta
-                            LUFile.FileCopy (LFileNameSource, LFileNameDestDelta, False)
-                        #endif
-                    #endif
-
-                    #--------------------------------------------------------------------
-                    # Delete
-                    #--------------------------------------------------------------------
-                    if LDelete:
-                        s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
-                        # LUFile.FileDelete (LFileNameSource)
-                    #endif
-                #endif
-            #endif
-        #endfor
-    #endwith
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
-#-------------------------------------------------------------------------------
-def ScanDir (ASourcePath, ADestPath, AMask,
-             _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile):
 #beginfunction
     global GLevel
-    GLevel = GLevel + 1
+    global GFileCount
 
+    GFileCount = 0
     #------------------------------------------------------------
     # Dir
     #------------------------------------------------------------
     LPath = ASourcePath
-    LPath = LUFile.ExpandFileName (ASourcePath)
-    LPath = os.path.basename (LPath)
-    s = '    '*(GLevel-1)+LPath+' [DIR]'
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    LFullPath = LUFile.ExpandFileName (ASourcePath)
+    LBaseName = os.path.basename (LFullPath)
+
+    Lstat = os.stat (LFullPath)
+    LmTime = Lstat.st_mtime
+
+    LFileTimeSource = LUFile.GetFileDateTime (LFullPath)[2]
+
+    s = ''
+    match _Option:
+        case 1 | 11:
+            s = ('    ' * GLevel + '<DIR> ' + LBaseName)
+            s = ('    ' * GLevel + LUDateTime.DateTimeStr(False,LFileTimeSource,
+                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
+                 + '    <DIR> ' + '.')
+            s = (LUDateTime.DateTimeStr(False,LFileTimeSource,
+                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
+                 + '    <DIR> ' + '.')
+
+        case 2 | 12:
+            s = (LUDateTime.DateTimeStr(False,LFileTimeSource,
+                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
+                 + '    <DIR> ' + '.')
+        case _:
+            ...
+    #endmatch
+    if (_OutFile) and (s != ''):
+        if (_OutFile.upper () == 'CONSOLE'):
+            print (s)
+        else:
+            LUFile.WriteStrToFile (_OutFile, s + '\n')
+        #endif
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    #endif
 
     #------------------------------------------------------------
     # список файлов в каталоге
     #------------------------------------------------------------
-    ScanFile (ASourcePath, ADestPath, AMask,
-          _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+    # LFileCount = __ListFile (ASourcePath, AMask, ADestPath, _OutFile, _Option, _FuncFile)
 
-    with os.scandir (ASourcePath) as LFiles:
+    with os.scandir(ASourcePath) as LFiles:
         for LFile in LFiles:
-            Lname = LFile.name
-            # print('name:',Lname)
             if (not LFile.is_symlink()):
-                if LFile.is_dir ():
+                if LFile.is_file(): # and (not LFile.name.startswith('.')):
+                    #------------------------------------------------------------
+                    # class os.DirEntry - Это файл
+                    #------------------------------------------------------------
+                    LFileName = LFile.name
+                    LFullFileName = LUFile.ExpandFileName (LFile.path)
+                    LBaseName = os.path.basename (LFullFileName)
+                    # print(LFullFileName)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)[2]
+                    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
+
+                    GFileCount = GFileCount + 1
+                    s = ''
+                    match _Option:
+                        case 1 | 11:
+                            s = ('    ' * GLevel + LUDateTime.DateTimeStr (False, LFileTimeSource,
+                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
+                                 + '          '+str(LFileSizeSource)+' ' + LBaseName)
+                            s = (LUDateTime.DateTimeStr (False, LFileTimeSource,
+                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
+                                 + '          ' + str (LFileSizeSource) + ' ' + LBaseName)
+                        case 2 | 12:
+                            s = ('    ' * GLevel + LUDateTime.DateTimeStr (False, LFileTimeSource,
+                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
+                                 + '          '+str(LFileSizeSource)+' ' + LBaseName)
+                            s = (LUDateTime.DateTimeStr (False, LFileTimeSource,
+                                                 ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
+                                 + '          ' + str (LFileSizeSource) + ' ' + LBaseName)
+                        case _:
+                            ...
+                    #endmatch
+                    if (_OutFile) and (s != ''):
+                        if (_OutFile.upper () == 'CONSOLE'):
+                            print (s)
+                        else:
+                            LUFile.WriteStrToFile (_OutFile, s + '\n')
+                        #endif
+                        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+                    #endif
+
+                    if _FuncFile:
+                        print(_FuncFile.__name__)
+                        _FuncFile (LFullFileName, 100)
+                    #endif
+
+                #endif
+                if LFile.is_dir (): # and (not LFile.name.startswith('.')):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
-                    LPathName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullPathName = LUFile.ExpandFileName (LFile.path)
-                    print(LFullPathName)
-                    Lstats = os.stat (LFullPathName)
+                    LPath = LFile.path
+                    LFullPath = LUFile.ExpandFileName (LPath)
+                    LBaseName = os.path.basename (LFullPath)
+                    # print(LFullFileName)
 
-                    LDestPath = os.path.join (ADestPath, LFile.name)
-                    print(LDestPath)
-
-                    if _ADestPathDelta:
-                        LDestPathDelta = os.path.join (_ADestPathDelta, LFile.name)
-                        print (LDestPathDelta)
-                    else:
-                        LDestPathDelta = ''
+                    if _FuncDir:
+                        print(_FuncDir.__name__)
+                        _FuncDir (LFullPath)
                     #endif
+                    # __WorkDir (LFile, ADestPath, _OutFile, _Option, _FuncDir)
 
                     #------------------------------------------------------------
                     # на следующий уровень
                     #------------------------------------------------------------
-                    # print(GLevel)
-                    ScanDir  (LFile.path, LDestPath, AMask,
-                              _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+                    if ASubdir:
+                        GLevel = GLevel + 1
+                        if ADestPath != '':
+                            LPathDest = os.path.join (ADestPath, LFile.name)
+                        else:
+                            LPathDest = ''
+                        #endif
+                        __ListDir (LFile.path, AMask, LPathDest, ASubdir, _OutFile, _Option, _FuncDir, _FuncFile)
+                    #endif
                 #endif
             #endif
         #endfor
+        GLevel = GLevel - 1
     #endwith
 #endfunction
 
@@ -295,7 +202,7 @@ def BacFile (ASourcePath, ADestPath, AMask,
       # if $Debug
       #    LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
       # #endif
-      ScanFile(ASourcePath, ADestPath, AMask,
+      __ScanFile(ASourcePath, ADestPath, AMask,
                _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
    #endif
 #endfunction
@@ -303,151 +210,72 @@ def BacFile (ASourcePath, ADestPath, AMask,
 #-------------------------------------------------------------------------------
 #  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask,
+def BacFiles (ASourcePath, ADestPath, AMask, ASubDir, _OutFile, _Option,
               _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
 #beginfunction
-   if (ASourcePath != "") and (ADestPath != ""):
-      # if $Debug
-      #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      # #endif
-      ScanDir (ASourcePath, ADestPath, AMask,
-               _ACheckSize, ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+    if (ASourcePath != "") and (ADestPath != ""):
+        # if $Debug
+        #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
+        # #endif
+        # __ScanDir (ASourcePath, ADestPath, AMask,
+        #        _ACheckSize, ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+        __ListDir (ASourcePath, '.*', '', ASubDir, _OutFile, _Option, None, None)
     #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
 #  BacDirs (ASourcePath, ADestPath, ACheckSize)
 #-------------------------------------------------------------------------------
-def BacDirs (ASourcePath, ADestPath, ACheckSize):
+def BacDirs (ASourcePath, AMask, ASubDir, ADestPath, _OutFile, _Option,
+             _ACheckSize):
 #beginfunction
     if (ASourcePath != "") and (ADestPath != ""):
         # if $Debug
         #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
         # #endif
-        ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize)
+        # __ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize)
+        __ListDir (ASourcePath, AMask, ADestPath, ASubDir, _OutFile, _Option,None, None)
     #endif
-#endfunction
-
-#-------------------------------------------------------------------------------
-# ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
-#-------------------------------------------------------------------------------
-def ListFile (ASourcePath, AMask='^.*..*$', _OutFile='', _FuncFile=None):
-#beginfunction
-    LFileCount = 0
-    with os.scandir(ASourcePath) as LFiles:
-        for LFile in LFiles:
-            if (not LFile.is_symlink ()):
-                if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это файл
-                    #------------------------------------------------------------
-                    LFileCount = LFileCount + 1
-                    __WorkFile (LFile, _OutFile, _FuncFile)
-                #endif
-            #endif
-        #endfor
-    #endwith
-    return LFileCount
-#endfunction
-
-#-------------------------------------------------------------------------------
-# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
-#-------------------------------------------------------------------------------
-def ListDir (ASourcePath, AMask, _OutFile='', _Option=10, _FuncDir=None, _FuncFile=None, _ALevel: int=sys.maxsize):
-#beginfunction
-    global GLevel
-    GLevel = GLevel + 1
-
-    #------------------------------------------------------------
-    # Dir
-    #------------------------------------------------------------
-    LPath = ASourcePath
-    LPath = LUFile.ExpandFileName (ASourcePath)
-    LPath = os.path.basename (LPath)
-    s = '    '*(GLevel-1)+LPath+' [DIR]'
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-
-    if _Option == 10 or _Option == 11 or _Option == 12:
-        if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-            print (s)
-        #endif
-        if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-            LUFile.WriteStrToFile (_OutFile, s + '\n')
-        #endif
-    #endif
-
-    #------------------------------------------------------------
-    # список файлов в каталоге
-    #------------------------------------------------------------
-    LFileCount = ListFile (ASourcePath, AMask, _OutFile, _FuncFile)
-
-    with os.scandir(ASourcePath) as LFiles:
-        for LFile in LFiles:
-            if (not LFile.is_symlink()):
-                if LFile.is_dir () and (not LFile.name.startswith('.')):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это каталог
-                    #------------------------------------------------------------
-                    __WorkDir (LFile, _OutFile, _FuncDir)
-                    #------------------------------------------------------------
-                    # на следующий уровень
-                    #------------------------------------------------------------
-                    # print(GLevel, _ALevel)
-                    if GLevel < _ALevel:
-                        ListDir (LFile.path, AMask, _OutFile, _Option, _FuncDir, _FuncFile, _ALevel)
-                    #endif
-                #endif
-            #endif
-        #endfor
-        GLevel = GLevel - 1
-    #endwith
 #endfunction
 
 #-------------------------------------------------------------------------------
 #  DirFiles (ASourcePath, AMask, optional $OutFile)
 #-------------------------------------------------------------------------------
-def DirFiles (ASourcePath, AMask, _OutFile):
+def DirFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option):
 #beginfunction
-    ListDir(ASourcePath, AMask, _OutFile, 11, None, None, sys.maxsize)
+    '''
+    Содержимое папки D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TESTS_PY\TEST_LU\ListDir
+
+    15.04.2024  15:39    <DIR>          .
+    15.04.2024  15:39    <DIR>          ..
+    09.04.2024  18:17             2070 ListDir.bat
+    15.04.2024  14:54             4349 ListDir.py
+    15.04.2024  14:05               266 ListDir.txt
+    09.04.2024  18:17             2073 ListDir2.bat
+    10.04.2024  15:05             5714 ListDir2.py
+    09.04.2024  18:18             2035 ListDir3.bat
+    15.04.2024  14:07             4710 ListDir3.py
+    15.04.2024  15:39               284 ListDir3.txt
+    15.04.2024  15:39           188455 LOGGING_FILEINI.log
+    10.04.2024  15:25                 0 LOGGING_FILEINI_json.log
+    10.04.2024  15:06    <DIR>          OLD
+                  10 файлов        209956 байт
+                   3 папок  686997602304 байт свободно
+    '''
+
+    if (ASourcePath != ""):
+        __ListDir(ASourcePath, AMask, ASubDir, '', _OutFile, _Option,None, None)
+    #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
 # DelFiles (ASourcePath, AMask, $Day)
 #-------------------------------------------------------------------------------
-def DelFiles (ASourcePath, AMask, _OutFile, ADay):
+def DelFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option, _Older: int):
 #beginfunction
-    L_Day = LUDateTime.Now()
-    LFileCount = 0
-    with (os.scandir (ASourcePath) as LFiles):
-        for LFile in LFiles:
-            if (not LFile.is_symlink ()):
-                if LFile.is_file () and LUFile.CheckFileNameMask (LFile.name, AMask):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это файл
-                    #------------------------------------------------------------
-                    LFileCount = LFileCount + 1
-                    LFileName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullFileName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullFileName)
-                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-                        print (LFileName)
-                    #endif
-                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-                        LUFile.WriteStrToFile (_OutFile, LFileName + '\n')
-                    #endif
-                    # __WorkFile (LFullFileName)
-
-                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName) [3]
-                    print((L_Day - LFileTimeSource).days)
-                    if (L_Day - LFileTimeSource).days > ADay:
-                        # os.remove (LFileNameSource)
-                        ...
-                    #endif
-                #endif
-            #endif
-        #endfor
-    #endwith
+    if (ASourcePath != ""):
+        __ListDir (ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, LUFile.FileDelete)
+    #endif
 #endfunction
 
 #------------------------------------------

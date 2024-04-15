@@ -149,6 +149,35 @@ def GetFileDateTime (AFileName: str) -> ():
         #endif
         LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
     #endif
+    if os.path.isdir (AFileName):
+        if platform.system() == 'Windows':
+            # file creation
+            LFileTimeCreate: datetime = os.path.getctime (AFileName)
+            # convert creation timestamp into DateTime object
+            LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+            # file modification
+            LFileTimeMod: datetime = os.path.getmtime (AFileName)
+            # convert timestamp into DateTime object
+            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
+        else:
+            stat = os.stat(AFileName)
+            # file modification
+            LFileTimeMod: datetime = stat.st_mtime
+            # convert timestamp into DateTime object
+            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
+            try:
+                LFileTimeCreate: datetime = stat.st_birthtime
+                # convert creation timestamp into DateTime object
+                LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+            except AttributeError:
+                # We're probably on Linux. No easy way to get creation dates here,
+                # so we'll settle for when its content was last modified.
+                LFileTimeCreate: datetime = 0
+                LFileTimeCreateDate: datetime = 0
+            #endtry
+        #endif
+        LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
+    #endif
     return LTuple
 #endfunction
 
@@ -514,7 +543,7 @@ def GetFileAttr (AFileName: str) -> int:
 #-------------------------------------------------------------------------------
 # FileDelete
 #-------------------------------------------------------------------------------
-def FileDelete (AFileName: str) -> bool:
+def FileDelete (AFileName: str, _Older: int) -> bool:
     """FileDelete"""
 #beginfunction
     LResult = True
@@ -526,8 +555,16 @@ def FileDelete (AFileName: str) -> bool:
             # Change the file's permissions to writable
             # os.chmod (AFileName, os.W_OK)
 
-            # Remove the file
-            os.remove (AFileName)
+            LDay = LUDateTime.Now ()
+            LFileTimeSource = GetFileDateTime (AFileName) [3]
+            # print ((L_Day - LFileTimeSource).days)
+            if (LDay - LFileTimeSource).days > _Older:
+                # os.remove (AFileName)
+                ...
+            #endif
+
+            # os.remove (AFileName)
+
             LResult = True
         except:
             LResult = False

@@ -2064,6 +2064,8 @@ def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFile
     #-------------------------------------------------
     logger = logging.getLogger('chardet.charsetprober')
     logger.setLevel(logging.INFO)
+    logger = logging.getLogger('chardet.universaldetector')
+    logger.setLevel(logging.INFO)
     #-------------------------------------------------
     # Отключить журнал 'pytube.extract'
     #-------------------------------------------------
