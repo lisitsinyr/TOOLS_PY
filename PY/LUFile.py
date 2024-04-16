@@ -352,11 +352,8 @@ def IncludeTrailingBackslash (APath: str) -> str:
     """IncludeTrailingBackslash"""
 #beginfunction
     LResult = APath.rstrip('\\')+'\\'
-
     # LResult = pathlib.WindowsPath (APath)
-
     # LResult = APath.rstrip('/')+'/'
-
     return LResult
 #endfunction
 
@@ -543,7 +540,7 @@ def GetFileAttr (AFileName: str) -> int:
 #-------------------------------------------------------------------------------
 # FileDelete
 #-------------------------------------------------------------------------------
-def FileDelete (AFileName: str, _Older: int) -> bool:
+def FileDelete (AFileName: str) -> bool:
     """FileDelete"""
 #beginfunction
     LResult = True
@@ -551,20 +548,9 @@ def FileDelete (AFileName: str, _Older: int) -> bool:
         try:
             # Clear ReadOnly
             # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
-
             # Change the file's permissions to writable
             # os.chmod (AFileName, os.W_OK)
-
-            LDay = LUDateTime.Now ()
-            LFileTimeSource = GetFileDateTime (AFileName) [3]
-            # print ((L_Day - LFileTimeSource).days)
-            if (LDay - LFileTimeSource).days > _Older:
-                # os.remove (AFileName)
-                ...
-            #endif
-
-            # os.remove (AFileName)
-
+            os.remove (AFileName)
             LResult = True
         except:
             LResult = False

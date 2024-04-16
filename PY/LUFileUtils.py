@@ -50,6 +50,7 @@ import LUDateTime
 #------------------------------------------
 GLevel = 0
 GFileCount = 0
+GFileSize = 0
 GDir = ''
 GMask = '*.*'
 GDirCount = 0
@@ -59,119 +60,143 @@ GLevelMAX = sys.maxsize
 #-------------------------------------------------------------------------------
 # ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
 #-------------------------------------------------------------------------------
-def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile):
+def __OUTFILE (s: str, _OutFile: str):
 #beginfunction
-    global GLevel
-    global GFileCount
-
-    GFileCount = 0
-    #------------------------------------------------------------
-    # Dir
-    #------------------------------------------------------------
-    LPath = ASourcePath
-    LFullPath = LUFile.ExpandFileName (ASourcePath)
-    LBaseName = os.path.basename (LFullPath)
-
-    Lstat = os.stat (LFullPath)
-    LmTime = Lstat.st_mtime
-
-    LFileTimeSource = LUFile.GetFileDateTime (LFullPath)[2]
-
-    s = ''
-    match _Option:
-        case 1 | 11:
-            s = ('    ' * GLevel + '<DIR> ' + LBaseName)
-            s = ('    ' * GLevel + LUDateTime.DateTimeStr(False,LFileTimeSource,
-                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
-                 + '    <DIR> ' + '.')
-            s = (LUDateTime.DateTimeStr(False,LFileTimeSource,
-                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
-                 + '    <DIR> ' + '.')
-
-        case 2 | 12:
-            s = (LUDateTime.DateTimeStr(False,LFileTimeSource,
-                                                         ('%d.%m.%Y  %H:%M','%d.%m.%Y  %H:%M'),False)
-                 + '    <DIR> ' + '.')
-        case _:
-            ...
-    #endmatch
     if (_OutFile) and (s != ''):
         if (_OutFile.upper () == 'CONSOLE'):
             print (s)
         else:
             LUFile.WriteStrToFile (_OutFile, s + '\n')
         #endif
-        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+        # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
     #endif
+#endfunction
+
+#-------------------------------------------------------------------------------
+# ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
+#-------------------------------------------------------------------------------
+def __ListFile (ASourcePath, AMask='^.*..*$', ADestPath='',
+                _OutFile='', _Option=1, _FuncDir=None, _FuncFile=None):
+    global GFileCount
+    global GFileSize
+#beginfunction
+    LFileCount = 0
+    with os.scandir(ASourcePath) as LFiles:
+        for LFile in LFiles:
+            if (not LFile.is_symlink ()):
+                if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
+                    #------------------------------------------------------------
+                    # class os.DirEntry - Это файл
+                    #------------------------------------------------------------
+                    LBaseName = os.path.basename (LFile.path)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFile.path)[2]
+                    LFileSizeSource = LUFile.GetFileSize (LFile.path)
+
+                    GFileCount = GFileCount + 1
+                    LFileCount = LFileCount + 1
+                    GFileSize = GFileSize + LFileSizeSource
+
+                    match _Option:
+                        case 1 | 11:
+                            s = f"{LFileTimeSource:%d.%m.%Y  %H:%M} {LFileSizeSource:-17,d} {LBaseName:s}"
+                        case 2 | 12:
+                            s = f"{LFileTimeSource:%d.%m.%Y  %H:%M} {LFileSizeSource:-17,d} {LBaseName:s}"
+                        case _:
+                            s = ''
+                    #endmatch
+                    __OUTFILE (s, _OutFile)
+
+                    if _FuncFile:
+                        # print(_FuncFile.__name__)
+                        _FuncFile (LUFile.ExpandFileName (LFile.path))
+                    #endif
+                #endif
+            #endif
+            if LFile.is_dir ():  # and (not LFile.name.startswith('.')):
+                #------------------------------------------------------------
+                # class os.DirEntry - Это каталог
+                #------------------------------------------------------------
+                LBaseName = os.path.basename (LFile.path)
+                LPathTimeSource = LUFile.GetFileDateTime (LFile.path) [2]
+
+                match _Option:
+                    case 1 | 11:
+                        s = f"{LPathTimeSource:%d.%m.%Y  %H:%M} {'   <DIR>':17s} {LBaseName:s}"
+                    case 2 | 12:
+                        s = f"{LPathTimeSource:%d.%m.%Y  %H:%M} {'   <DIR>':17s} {LBaseName:s}"
+                    case _:
+                        s = ''
+                #endmatch
+                __OUTFILE (s, _OutFile)
+
+                #------------------------------------------------------------
+                #
+                #------------------------------------------------------------
+                if _FuncDir:
+                    # print(_FuncDir.__name__)
+                    _FuncDir (LUFile.ExpandFileName (LFile.path))
+                #endif
+            #endif
+        #endfor
+    #endwith
+    return LFileCount
+#endfunction
+
+#-------------------------------------------------------------------------------
+# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
+#-------------------------------------------------------------------------------
+def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile):
+#beginfunction
+    global GLevel
+    global GFileCount
+    global GFileSize
+
+    #------------------------------------------------------------
+    # Dir
+    #------------------------------------------------------------
+    LBaseName = os.path.basename (ASourcePath)
+    LPathTimeSource = LUFile.GetFileDateTime (ASourcePath)[2]
+
+    GFileCount = 0
+    GFileSize = 0
 
     #------------------------------------------------------------
     # список файлов в каталоге
     #------------------------------------------------------------
-    # LFileCount = __ListFile (ASourcePath, AMask, ADestPath, _OutFile, _Option, _FuncFile)
+    s = f"\nСодержимое папки {ASourcePath:s}\n"
+    __OUTFILE (s, _OutFile)
+    match _Option:
+        case 1 | 11:
+            s = f"{LPathTimeSource:%d.%m.%Y  %H:%M} {'   <DIR>':17s} {LBaseName:s}"
+        case 2 | 12:
+            s = f"{LPathTimeSource:%d.%m.%Y  %H:%M} {'   <DIR>':17s} {LBaseName:s}"
+        case _:
+            s = ''
+    #endmatch
+    __OUTFILE (s, _OutFile)
+
+    LFileCount = __ListFile (ASourcePath, AMask, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile)
+
+    match _Option:
+        case 1 | 11:
+            s = f"{GFileCount:16d} файлов {GFileSize:16,d} байт"
+        case 2 | 12:
+            s = f"{GFileCount:16d} файлов {GFileSize:16,d} байт"
+        case _:
+            s = ''
+    #endmatch
+    __OUTFILE (s, _OutFile)
+    #------------------------------------------------------------
 
     with os.scandir(ASourcePath) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink()):
-                if LFile.is_file(): # and (not LFile.name.startswith('.')):
-                    #------------------------------------------------------------
-                    # class os.DirEntry - Это файл
-                    #------------------------------------------------------------
-                    LFileName = LFile.name
-                    LFullFileName = LUFile.ExpandFileName (LFile.path)
-                    LBaseName = os.path.basename (LFullFileName)
-                    # print(LFullFileName)
-                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)[2]
-                    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
-
-                    GFileCount = GFileCount + 1
-                    s = ''
-                    match _Option:
-                        case 1 | 11:
-                            s = ('    ' * GLevel + LUDateTime.DateTimeStr (False, LFileTimeSource,
-                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
-                                 + '          '+str(LFileSizeSource)+' ' + LBaseName)
-                            s = (LUDateTime.DateTimeStr (False, LFileTimeSource,
-                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
-                                 + '          ' + str (LFileSizeSource) + ' ' + LBaseName)
-                        case 2 | 12:
-                            s = ('    ' * GLevel + LUDateTime.DateTimeStr (False, LFileTimeSource,
-                                                                   ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
-                                 + '          '+str(LFileSizeSource)+' ' + LBaseName)
-                            s = (LUDateTime.DateTimeStr (False, LFileTimeSource,
-                                                 ('%d.%m.%Y  %H:%M', '%d.%m.%Y  %H:%M'), False)
-                                 + '          ' + str (LFileSizeSource) + ' ' + LBaseName)
-                        case _:
-                            ...
-                    #endmatch
-                    if (_OutFile) and (s != ''):
-                        if (_OutFile.upper () == 'CONSOLE'):
-                            print (s)
-                        else:
-                            LUFile.WriteStrToFile (_OutFile, s + '\n')
-                        #endif
-                        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-                    #endif
-
-                    if _FuncFile:
-                        print(_FuncFile.__name__)
-                        _FuncFile (LFullFileName, 100)
-                    #endif
-
-                #endif
                 if LFile.is_dir (): # and (not LFile.name.startswith('.')):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
-                    LPath = LFile.path
-                    LFullPath = LUFile.ExpandFileName (LPath)
-                    LBaseName = os.path.basename (LFullPath)
-                    # print(LFullFileName)
-
-                    if _FuncDir:
-                        print(_FuncDir.__name__)
-                        _FuncDir (LFullPath)
-                    #endif
-                    # __WorkDir (LFile, ADestPath, _OutFile, _Option, _FuncDir)
+                    LBaseName = os.path.basename (LFile.path)
+                    LPathTimeSource = LUFile.GetFileDateTime (LFile.path)[2]
 
                     #------------------------------------------------------------
                     # на следующий уровень
@@ -193,25 +218,27 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
 #endfunction
 
 #-------------------------------------------------------------------------------
-#  BacFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
+# BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
 #-------------------------------------------------------------------------------
-def BacFile (ASourcePath, ADestPath, AMask,
-             _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
-#beginfunction
-   if (ASourcePath != "") and (ADestPath != ""):
-      # if $Debug
-      #    LogAdd (Log, LogFile, "I", "BacFile: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-      # #endif
-      __ScanFile(ASourcePath, ADestPath, AMask,
-               _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-   #endif
-#endfunction
+def BacFiles (ASourcePath, ADestPath, AMask, ASubDir,
+              _OutFile, _Option):
 
-#-------------------------------------------------------------------------------
-#  BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
-#-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask, ASubDir, _OutFile, _Option,
-              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+    #-------------------------------------------------------------------------------
+    # FuncDir
+    #-------------------------------------------------------------------------------
+    def FuncDir (APath: str):
+    #beginfunction
+        LPathTimeSource = LUFile.GetFileDateTime (APath) [2]
+    #endfunction
+
+    #-------------------------------------------------------------------------------
+    # FuncFile 
+    #-------------------------------------------------------------------------------
+    def FuncFile (AFileName: str):
+    #beginfunction
+        LFileTimeSource = LUFile.GetFileDateTime (AFileName) [2]
+    #endfunction
+
 #beginfunction
     if (ASourcePath != "") and (ADestPath != ""):
         # if $Debug
@@ -219,52 +246,18 @@ def BacFiles (ASourcePath, ADestPath, AMask, ASubDir, _OutFile, _Option,
         # #endif
         # __ScanDir (ASourcePath, ADestPath, AMask,
         #        _ACheckSize, ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-        __ListDir (ASourcePath, '.*', '', ASubDir, _OutFile, _Option, None, None)
-    #endif
-#endfunction
-
-#-------------------------------------------------------------------------------
-#  BacDirs (ASourcePath, ADestPath, ACheckSize)
-#-------------------------------------------------------------------------------
-def BacDirs (ASourcePath, AMask, ASubDir, ADestPath, _OutFile, _Option,
-             _ACheckSize):
-#beginfunction
-    if (ASourcePath != "") and (ADestPath != ""):
-        # if $Debug
-        #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
-        # #endif
-        # __ScanDir (ASourcePath, ADestPath, AMask, _ACheckSize)
-        __ListDir (ASourcePath, AMask, ADestPath, ASubDir, _OutFile, _Option,None, None)
+        __ListDir (ASourcePath, '.*', '', ASubDir, _OutFile, _Option, FuncDir, FuncFile)
     #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
 #  DirFiles (ASourcePath, AMask, optional $OutFile)
 #-------------------------------------------------------------------------------
-def DirFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option):
+def DirFiles (ASourcePath, AMask, ASubDir,
+              _OutFile, _Option, _FuncDir, _FuncFile):
 #beginfunction
-    '''
-    Содержимое папки D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TESTS_PY\TEST_LU\ListDir
-
-    15.04.2024  15:39    <DIR>          .
-    15.04.2024  15:39    <DIR>          ..
-    09.04.2024  18:17             2070 ListDir.bat
-    15.04.2024  14:54             4349 ListDir.py
-    15.04.2024  14:05               266 ListDir.txt
-    09.04.2024  18:17             2073 ListDir2.bat
-    10.04.2024  15:05             5714 ListDir2.py
-    09.04.2024  18:18             2035 ListDir3.bat
-    15.04.2024  14:07             4710 ListDir3.py
-    15.04.2024  15:39               284 ListDir3.txt
-    15.04.2024  15:39           188455 LOGGING_FILEINI.log
-    10.04.2024  15:25                 0 LOGGING_FILEINI_json.log
-    10.04.2024  15:06    <DIR>          OLD
-                  10 файлов        209956 байт
-                   3 папок  686997602304 байт свободно
-    '''
-
     if (ASourcePath != ""):
-        __ListDir(ASourcePath, AMask, ASubDir, '', _OutFile, _Option,None, None)
+        __ListDir(ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, None)
     #endif
 #endfunction
 
@@ -272,9 +265,25 @@ def DirFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option):
 # DelFiles (ASourcePath, AMask, $Day)
 #-------------------------------------------------------------------------------
 def DelFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option, _Older: int):
+
+    #-------------------------------------------------------------------------------
+    # DelFiles (ASourcePath, AMask, $Day)
+    #-------------------------------------------------------------------------------
+    def DelFile (AFileName: str):
+    #beginfunction
+        LDay = LUDateTime.Now ()
+        # print(LUFile.GetFileDateTime (AFileName))
+        LFileTimeSource = LUFile.GetFileDateTime (AFileName) [2]
+        # print ((LDay - LFileTimeSource).days)
+        if (LDay - LFileTimeSource).days > _Older:
+            print('Delete',AFileName,'...')
+            LUFile.FileDelete(AFileName)
+        #endif
+    #endfunction
+
 #beginfunction
     if (ASourcePath != ""):
-        __ListDir (ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, LUFile.FileDelete)
+        __ListDir (ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, DelFile)
     #endif
 #endfunction
 
