@@ -58,7 +58,7 @@ GLevelMAX = sys.maxsize
 
 
 #-------------------------------------------------------------------------------
-# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
+# __OUTFILE
 #-------------------------------------------------------------------------------
 def __OUTFILE (s: str, _OutFile: str):
 #beginfunction
@@ -73,15 +73,15 @@ def __OUTFILE (s: str, _OutFile: str):
 #endfunction
 
 #-------------------------------------------------------------------------------
-# ListFile (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncFile)
+# __ListFile
 #-------------------------------------------------------------------------------
-def __ListFile (ASourcePath, AMask='^.*..*$', ADestPath='',
-                _OutFile='', _Option=1, _FuncDir=None, _FuncFile=None):
+def __ListFile (APathSource, AMask, APathDest,
+                _OutFile, _Option, _FuncDir, _FuncFile):
     global GFileCount
     global GFileSize
 #beginfunction
     LFileCount = 0
-    with os.scandir(ASourcePath) as LFiles:
+    with os.scandir(APathSource) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink ()):
                 if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
@@ -108,7 +108,7 @@ def __ListFile (ASourcePath, AMask='^.*..*$', ADestPath='',
 
                     if _FuncFile:
                         # print(_FuncFile.__name__)
-                        _FuncFile (LUFile.ExpandFileName (LFile.path))
+                        _FuncFile (LUFile.ExpandFileName (LFile.path), APathDest)
                     #endif
                 #endif
             #endif
@@ -134,7 +134,7 @@ def __ListFile (ASourcePath, AMask='^.*..*$', ADestPath='',
                 #------------------------------------------------------------
                 if _FuncDir:
                     # print(_FuncDir.__name__)
-                    _FuncDir (LUFile.ExpandFileName (LFile.path))
+                    _FuncDir (LUFile.ExpandFileName (LFile.path), APathDest)
                 #endif
             #endif
         #endfor
@@ -143,9 +143,10 @@ def __ListFile (ASourcePath, AMask='^.*..*$', ADestPath='',
 #endfunction
 
 #-------------------------------------------------------------------------------
-# ListDir (ASourcePath, AMask, optional _OutFile, optional _Option, optional _FuncDir, optional _FuncFile)
+# __ListDir
 #-------------------------------------------------------------------------------
-def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile):
+def __ListDir (APathSource, AMask, ASubdir, APathDest,
+               _OutFile, _Option, _FuncDir, _FuncFile):
 #beginfunction
     global GLevel
     global GFileCount
@@ -154,8 +155,8 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
     #------------------------------------------------------------
     # Dir
     #------------------------------------------------------------
-    LBaseName = os.path.basename (ASourcePath)
-    LPathTimeSource = LUFile.GetFileDateTime (ASourcePath)[2]
+    LBaseName = os.path.basename (APathSource)
+    LPathTimeSource = LUFile.GetFileDateTime (APathSource)[2]
 
     GFileCount = 0
     GFileSize = 0
@@ -163,8 +164,10 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
     #------------------------------------------------------------
     # список файлов в каталоге
     #------------------------------------------------------------
-    s = f"\nСодержимое папки {ASourcePath:s}\n"
-    __OUTFILE (s, _OutFile)
+    if _Option != 0:
+        s = f"\nСодержимое папки {APathSource:s}\n"
+        __OUTFILE (s, _OutFile)
+    #endif
     match _Option:
         case 1 | 11:
             s = f"{LPathTimeSource:%d.%m.%Y  %H:%M} {'   <DIR>':17s} {LBaseName:s}"
@@ -175,7 +178,7 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
     #endmatch
     __OUTFILE (s, _OutFile)
 
-    LFileCount = __ListFile (ASourcePath, AMask, ADestPath, _OutFile, _Option, _FuncDir, _FuncFile)
+    LFileCount = __ListFile (APathSource, AMask, APathDest, _OutFile, _Option, _FuncDir, _FuncFile)
 
     match _Option:
         case 1 | 11:
@@ -188,7 +191,7 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
     __OUTFILE (s, _OutFile)
     #------------------------------------------------------------
 
-    with os.scandir(ASourcePath) as LFiles:
+    with os.scandir(APathSource) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink()):
                 if LFile.is_dir (): # and (not LFile.name.startswith('.')):
@@ -203,12 +206,12 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
                     #------------------------------------------------------------
                     if ASubdir:
                         GLevel = GLevel + 1
-                        if ADestPath != '':
-                            LPathDest = os.path.join (ADestPath, LFile.name)
+                        if APathDest != '':
+                            LPathDest = os.path.join (APathDest, LFile.name)
                         else:
                             LPathDest = ''
                         #endif
-                        __ListDir (LFile.path, AMask, LPathDest, ASubdir, _OutFile, _Option, _FuncDir, _FuncFile)
+                        __ListDir (LFile.path, AMask, ASubdir, LPathDest, _OutFile, _Option, _FuncDir, _FuncFile)
                     #endif
                 #endif
             #endif
@@ -218,56 +221,58 @@ def __ListDir (ASourcePath, AMask, ASubdir, ADestPath, _OutFile, _Option, _FuncD
 #endfunction
 
 #-------------------------------------------------------------------------------
-# BacFiles (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $OverwriteNewer)
+# BacFiles
 #-------------------------------------------------------------------------------
-def BacFiles (ASourcePath, ADestPath, AMask, ASubDir,
+def BacFiles (APathSource, AMask, ASubDir, APathDest,
               _OutFile, _Option):
 
     #-------------------------------------------------------------------------------
     # FuncDir
     #-------------------------------------------------------------------------------
-    def FuncDir (APath: str):
+    def FuncDir (APath: str, _APathDest: str):
     #beginfunction
         LPathTimeSource = LUFile.GetFileDateTime (APath) [2]
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, APath)
     #endfunction
 
     #-------------------------------------------------------------------------------
     # FuncFile 
     #-------------------------------------------------------------------------------
-    def FuncFile (AFileName: str):
+    def FuncFile (AFileName: str, _APathDest: str):
     #beginfunction
+        LBaseName = os.path.basename (AFileName)
         LFileTimeSource = LUFile.GetFileDateTime (AFileName) [2]
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, AFileName+' -> '+_APathDest)
     #endfunction
 
 #beginfunction
-    if (ASourcePath != "") and (ADestPath != ""):
+    if (APathSource != "") and (APathDest != ""):
         # if $Debug
         #    LogAdd (Log, LogFile, "I", "BacFiles: "+ASourcePath+" => "+ADestPath+" "+AMask, "w+/n")
         # #endif
-        # __ScanDir (ASourcePath, ADestPath, AMask,
-        #        _ACheckSize, ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-        __ListDir (ASourcePath, '.*', '', ASubDir, _OutFile, _Option, FuncDir, FuncFile)
+        __ListDir (APathSource, AMask, ASubDir, APathDest, _OutFile, _Option, FuncDir, FuncFile)
     #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
-#  DirFiles (ASourcePath, AMask, optional $OutFile)
+# DirFiles
 #-------------------------------------------------------------------------------
-def DirFiles (ASourcePath, AMask, ASubDir,
+def DirFiles (APathSource, AMask, ASubDir,
               _OutFile, _Option, _FuncDir, _FuncFile):
 #beginfunction
     if (ASourcePath != ""):
-        __ListDir(ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, None)
+        __ListDir(APathSource, AMask, ASubDir, '', _OutFile, _Option, None, None)
     #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
-# DelFiles (ASourcePath, AMask, $Day)
+# DelFiles
 #-------------------------------------------------------------------------------
-def DelFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option, _Older: int):
+def DelFiles (APathSource, AMask, ASubDir, _OutFile, _Option, _Older: int):
+#beginfunction
 
     #-------------------------------------------------------------------------------
-    # DelFiles (ASourcePath, AMask, $Day)
+    # DelFile
     #-------------------------------------------------------------------------------
     def DelFile (AFileName: str):
     #beginfunction
@@ -282,8 +287,8 @@ def DelFiles (ASourcePath, AMask, ASubDir, _OutFile, _Option, _Older: int):
     #endfunction
 
 #beginfunction
-    if (ASourcePath != ""):
-        __ListDir (ASourcePath, AMask, ASubDir, '', _OutFile, _Option, None, DelFile)
+    if (APathSource != ""):
+        __ListDir (APathSource, AMask, ASubDir, '', _OutFile, _Option, None, DelFile)
     #endif
 #endfunction
 
