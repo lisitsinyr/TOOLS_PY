@@ -91,18 +91,128 @@ def ForceDirectories (ADir: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# if not file.endswith(ext):
+#     contains_other_ext=True
+#--------------------------------------------------------------------------------
+
+#--------------------------------------------------------------------------------
+# get_tree_size
+#--------------------------------------------------------------------------------
+def get_tree_size(path):
+    """get_tree_size"""
+#beginfunction
+    """Return total size of files in given path and subdirs."""
+    total = 0
+    for entry in os.scandir(path):
+        if entry.is_dir(follow_symlinks=False):
+            total += get_tree_size(entry.path)
+        else:
+            total += entry.stat(follow_symlinks=False).st_size
+    return total
+#endfunction
+
+#--------------------------------------------------------------------------------
 # DirectoryDelete
 #--------------------------------------------------------------------------------
 def DirectoryDelete (ADirectoryName: str) -> bool:
     """DirectoryDelete"""
+
+    # В этом примере показано, как удалить дерево каталогов в Windows,
+    # где для некоторых файлов установлен бит только для чтения.
+    # Он использует обратный вызов onerror, чтобы очистить бит readonly и повторить попытку удаления.
+    def remove_readonly (func, path, _):
+        """remove_readonly"""
+    #beginfunction
+        "Clear the readonly bit and reattempt the removal"
+        os.chmod (path, stat.S_IWRITE)
+        func (path)
+    #endfunction
+
+    def errorRemoveReadonly (func, path, exc):
+        """errorRemoveReadonly"""
+    #beginfunction
+        excvalue = exc [1]
+        if func in (os.rmdir, os.remove) and excvalue.errno == errno.EACCES:
+            # change the file to be readable,writable,executable: 0777
+            os.chmod (path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+            # retry
+            func (path)
+        else:
+            # raiseenter code here
+            ...
+        #endif
+    #endfunction
+
 #beginfunction
     LResult = False
     if DirectoryExists (ADirectoryName):
-        shutil.rmtree (ADirectoryName)
+        # shutil.rmtree (ADirectoryName, ignore_errors = True, onexc = None)
+        shutil.rmtree (ADirectoryName, ignore_errors = False, onerror = remove_readonly)
         LResult = True
     #endif
     return LResult
 #endfunction
+
+#--------------------------------------------------------------------------------
+# DirectoryDelete_walk
+#--------------------------------------------------------------------------------
+# Delete everything reachable from the directory named in 'top',
+# assuming there are no symbolic links.
+# CAUTION:  This is dangerous!  For example, if top == '/', it
+# could delete all your disk files.
+#--------------------------------------------------------------------------------
+def DirectoryDelete_walk (ADirectoryName: str) -> bool:
+    """DirectoryDelete_walk"""
+#beginfunction
+    LResult = False
+    if DirectoryExists (ADirectoryName):
+        for root, dirs, files in os.walk (ADirectoryName, topdown = False):
+            for name in files:
+                os.remove (os.path.join (root, name))
+            #endfor
+            for name in dirs:
+                os.rmdir (os.path.join (root, name))
+            #endfor
+        #endfor
+        LResult = True
+    #endif
+    return LResult
+#endfunction
+
+#--------------------------------------------------------------------------------
+# DirectoryDelete_walk_2
+#--------------------------------------------------------------------------------
+# Replace with the path to the directory you want to remove
+# directory = '/path/to/directory'
+def DirectoryDelete_walk_2 (ADirectoryName: str) -> bool:
+    """DirectoryDelete_walk_2"""
+#beginfunction
+    LResult = False
+    if DirectoryExists (ADirectoryName):
+        # Use os.walk to traverse the directory tree
+        for root, dirs, files in os.walk(directory):
+            # For each file in the directory
+            for file in files:
+                # Construct the full path to the file
+                file_path = os.path.join(root, file)
+                # Delete the file
+                os.remove(file_path)
+            #endfor
+            # For each subdirectory in the directory
+            for dir in dirs:
+                # Construct the full path to the subdirectory
+                dir_path = os.path.join(root, dir)
+                # Delete the subdirectory
+                os.rmdir(dir_path)
+            #endfor
+        #endfor
+        LResult = True
+    #endif
+    return LResult
+#endfunction
+# Delete the top-level directory
+# os.rmdir(directory)
 
 #--------------------------------------------------------------------------------
 # FileExists
@@ -181,10 +291,25 @@ def GetFileDateTime (AFileName: str) -> ():
     return LTuple
 #endfunction
 
+def cmptimestamps(AFileNameSource: str, AFileNameDest: str, _use_ctime):
+    """ Compare time stamps of two files and return True
+#beginfunction
+    if file1 (source) is more recent than file2 (target) """
+    st1 = os.stat (AFileNameSource)
+    st2 = os.stat (AFileNameDest)
+
+    mtime_cmp = int((st1.st_mtime - st2.st_mtime) * 1000) > 0
+    if _use_ctime:
+        return mtime_cmp or int((AFileNameSource.st_ctime - AFileNameDest.st_mtime) * 1000) > 0
+    else:
+        return mtime_cmp
+    #endif
+#endfunction
+
 #--------------------------------------------------------------------------------
 # COMPAREFILETIMES
 #--------------------------------------------------------------------------------
-def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
+def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
     """COMPAREFILETIMES"""
 #beginfunction
     #-3 File2 could not be opened (see @ERROR for more information).
@@ -192,23 +317,39 @@ def COMPAREFILETIMES (AFileName1: str, AFileName2: str) -> int:
     #-1 File1 is older than file2.
     #0 File1 and file2 have the same date and time.
     #1 File1 is more recent than file2.
-    if not FileExists (AFileName1):
+    if not FileExists (AFileNameSource):
         return -2
     #endif
-    if not FileExists (AFileName2):
+    if not FileExists (AFileNameDest):
         return -3
     #endif
-    LFileName1m = GetFileDateTime (AFileName1)[0]
-    LFileName2m = GetFileDateTime (AFileName2)[0]
+    LFileName1m = GetFileDateTime (AFileNameSource)[0]
+    LFileName2m = GetFileDateTime (AFileNameDest)[0]
+    LFileName1c = GetFileDateTime (AFileNameSource)[0]
+    LFileName2c = GetFileDateTime (AFileNameDest)[0]
     if LFileName1m == LFileName2m:
         return 0
     else:
         if LFileName1m > LFileName2m:
-            return -1
-        else:
             return 1
+        else:
+            return -1
         #endif
     #endif
+
+    # int ((st1.st_mtime - st2.st_mtime) * 1000) > 0
+    # mtime_cmp = int ((LFileName1m - LFileName2m) * 1000) > 0
+    # mtime_cmp = int ((st1.st_mtime - st2.st_mtime) * 1000) > 0
+    # print('mtime_cmp:', mtime_cmp)
+    # if int ((LFileName1m - LFileName2m) * 1000) == 0:
+    #     return 0
+    # else:
+    #     if int ((LFileName1m - LFileName2m) * 1000) > 0:
+    #         return 1
+    #     else:
+    #         return -1
+    #     #endif
+    # #endif
 #endfunction
 
 #--------------------------------------------------------------------------------

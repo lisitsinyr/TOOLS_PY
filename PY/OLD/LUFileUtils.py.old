@@ -74,212 +74,179 @@
 
 
 
-# #-------------------------------------------------------------------------------
-# # ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
-# #-------------------------------------------------------------------------------
-# def __ScanFile (ASourcePath, ADestPath, AMask,
-#               _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
-# #beginfunction
-#     print(ASourcePath)
-#     print(ADestPath)
-#     if not LUFile.DirectoryExists(ADestPath):
-#         LUFile.ForceDirectories(ADestPath)
-#     #endif
-#
-#     # print(_ADestPathDelta)
-#     if _ADestPathDelta:
-#         if not LUFile.DirectoryExists (_ADestPathDelta):
-#             LUFile.ForceDirectories (_ADestPathDelta)
-#         #endif
-#     #endif
-#
-#     LFileCount = 0
-#     with os.scandir (ASourcePath) as LSourceFiles:
-#         for LSourceFile in LSourceFiles:
-#             if (not LSourceFile.is_symlink ()):
-#                 if LSourceFile.is_file () and LUFile.CheckFileNameMask (LSourceFile.name, AMask):
-#                     # class os.DirEntry - Это файл
-#                     LFileCount = LFileCount + 1
-#
-#                     LFullFileNameSource = LSourceFile.path
-#                     Lstats = os.stat (LFullFileNameSource)
-#                     LFileNameSource = LSourceFile.name
-#                     s = '  ' * (GLevel - 1) + '   ' + LFileNameSource
-#                     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-#                     LFileNameSource = LSourceFile.path
-#                     LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
-#                     LFileAttrSource = LUFile.GetFileAttr (LFileNameSource)
-#                     # print(LFileSizeSource)
-#                     LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)[2]
-#
-#                     LFileNameDest = os.path.join (ADestPath, LSourceFile.name)
-#
-#
-#                     if _ADestPathDelta:
-#                         LFileNameDestDelta = os.path.join (_ADestPathDelta, LSourceFile.name)
-#                     #endif
-#                     #--------------------------------------------------------------------
-#                     LResult = LUFile.COMPAREFILETIMES(LFileNameSource, LFileNameDest)
-#                     # -3 File2 could not be opened (see @ERROR for more information).
-#                     # -2 File1 could not be opened (see @ERROR for more information).
-#                     # -1 File1 is older than file2.
-#                     # 0  File1 and file2 have the same date and time.
-#                     # 1  File1 is more recent than file2.
-#                     #--------------------------------------------------------------------
-#                     # Check Result
-#                     #--------------------------------------------------------------------
-#                     LCopy = False
-#                     LDelete = False
-#                     if _Delete:
-#                         if LResult == -3:
-#                             LDelete = True
-#                         #endif
-#                     else:
-#                         if LResult == -3:
-#                             LFileSizeDest = "new"
-#                             LFileTimeDest = "new"
-#                             LCopy = True
-#                         else:
-#                             LFileSizeDest = LUFile.GetFileSize (LFileNameDest)
-#                             LFileTimeDest = LUFile.GetFileDateTime (LFileNameDest)[2]
-#                             if LResult == 1:
-#                                 LCopy = True
-#                             else:
-#                                 if (LResult == -1) and (_OverwriteNewer == 1):
-#                                     warnOWN = "More recent dest file " + LFileNameDest2 + " is to be overwritten"
-#                                     LogAdd ("3", LogFile, "F", _warnOWN, "w+/n")
-#                                     LCopy = True
-#                                 #endif
-#                                 if (_ACheckSize) and (LFileSizeSource != LFileSizeDest):
-#                                     LCopy = True
-#                                 #endif
-#                             #endif
-#                         #endif
-#                     #endif
-#
-#                     #--------------------------------------------------------------------
-#                     # Copy
-#                     #--------------------------------------------------------------------
-#                     if LCopy == True:
-#                         s = LFileNameSource + " ("+str(LFileSizeSource)+"|"+str(LFileTimeSource)+")" + " => " + \
-#                             LFileNameDest   + " ("+str(LFileSizeDest)+"|"+str(LFileTimeDest)+")"
-#                         LUFile.FileCopy (LFileNameSource, LFileNameDest,False)
-#                         Lattr = LUFile.GetFileAttr (LFileNameDest)
-#                         Lattr = Lattr & stat.FILE_ATTRIBUTE_READONLY
-#                         # os.chflags (AFileName, 0)
-#                         LUFile.SetFileAttr (LFileNameDest, Lattr)
-#                         if _ExecFunc:
-#                             ResExe = _ExecFunc (LFileNameSource, LFileNameDest, _ExecFuncPAR1)
-#                         #endif
-#                         if _ADestPathDelta:
-#                             s = s + " => " + LFileNameDestDelta
-#                             LUFile.FileCopy (LFileNameSource, LFileNameDestDelta, False)
-#                         #endif
-#                     #endif
-#
-#                     #--------------------------------------------------------------------
-#                     # Delete
-#                     #--------------------------------------------------------------------
-#                     if LDelete:
-#                         s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
-#                         # LUFile.FileDelete (LFileNameSource)
-#                     #endif
-#                 #endif
-#             #endif
-#         #endfor
-#     #endwith
-# #endfunction
-#
-# #-------------------------------------------------------------------------------
-# #  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
-# #-------------------------------------------------------------------------------
-# def __ScanDir (ASourcePath, ADestPath, AMask,
-#              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
-# #beginfunction
-#     global GLevel
-#     GLevel = GLevel + 1
-#
-#     #------------------------------------------------------------
-#     # Dir
-#     #------------------------------------------------------------
-#     LPath = ASourcePath
-#     LPath = LUFile.ExpandFileName (ASourcePath)
-#     LPath = os.path.basename (LPath)
-#     s = '    '*(GLevel-1)+LPath+' [DIR]'
-#     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-#
-#     #------------------------------------------------------------
-#     # список файлов в каталоге
-#     #------------------------------------------------------------
-#     __ScanFile (ASourcePath, ADestPath, AMask,
-#           _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-#
-#     with os.scandir (ASourcePath) as LFiles:
-#         for LFile in LFiles:
-#             Lname = LFile.name
-#             # print('name:',Lname)
-#             if (not LFile.is_symlink()):
-#                 if LFile.is_dir ():
-#                     #------------------------------------------------------------
-#                     # class os.DirEntry - Это каталог
-#                     #------------------------------------------------------------
-#                     LPathName = LFile.name
-#                     # LFullPathName = os.path.join (ASourcePath, LFile.name)
-#                     LFullPathName = LUFile.ExpandFileName (LFile.path)
-#                     print(LFullPathName)
-#                     Lstats = os.stat (LFullPathName)
-#
-#                     LDestPath = os.path.join (ADestPath, LFile.name)
-#                     print(LDestPath)
-#
-#                     if _ADestPathDelta:
-#                         LDestPathDelta = os.path.join (_ADestPathDelta, LFile.name)
-#                         print (LDestPathDelta)
-#                     else:
-#                         LDestPathDelta = ''
-#                     #endif
-#
-#                     #------------------------------------------------------------
-#                     # на следующий уровень
-#                     #------------------------------------------------------------
-#                     # print(GLevel)
-#                     __ScanDir  (LFile.path, LDestPath, AMask,
-#                               _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
-#                 #endif
-#             #endif
-#         #endfor
-#     #endwith
-# #endfunction
+#-------------------------------------------------------------------------------
+# ScanFile (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc, optional $ExecFuncPAR1, optional $OverwriteNewer)
+#-------------------------------------------------------------------------------
+def __ScanFile (ASourcePath, ADestPath, AMask,
+              _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+#beginfunction
+    print(ASourcePath)
+    print(ADestPath)
+    if not LUFile.DirectoryExists(ADestPath):
+        LUFile.ForceDirectories(ADestPath)
+    #endif
 
+    # print(_ADestPathDelta)
+    if _ADestPathDelta:
+        if not LUFile.DirectoryExists (_ADestPathDelta):
+            LUFile.ForceDirectories (_ADestPathDelta)
+        #endif
+    #endif
 
     LFileCount = 0
-    with (os.scandir (ASourcePath) as LFiles):
-        for LFile in LFiles:
-            if (not LFile.is_symlink ()):
-                if LFile.is_file () and LUFile.CheckFileNameMask (LFile.name, AMask):
-                    #------------------------------------------------------------
+    with os.scandir (ASourcePath) as LSourceFiles:
+        for LSourceFile in LSourceFiles:
+            if (not LSourceFile.is_symlink ()):
+                if LSourceFile.is_file () and LUFile.CheckFileNameMask (LSourceFile.name, AMask):
                     # class os.DirEntry - Это файл
-                    #------------------------------------------------------------
                     LFileCount = LFileCount + 1
-                    LFileName = LFile.name
-                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
-                    LFullFileName = LUFile.ExpandFileName (LFile.path)
-                    Lstats = os.stat (LFullFileName)
-                    if (_OutFile) and (_OutFile.upper() == 'CONSOLE'):
-                        print (LFileName)
-                    #endif
-                    if (_OutFile) and (_OutFile.upper() != 'CONSOLE'):
-                        LUFile.WriteStrToFile (_OutFile, LFileName + '\n')
-                    #endif
-                    # __WorkFile (LFullFileName)
 
-                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName) [3]
-                    print((L_Day - LFileTimeSource).days)
-                    if (L_Day - LFileTimeSource).days > ADay:
-                        # os.remove (LFileNameSource)
-                        ...
+                    LFullFileNameSource = LSourceFile.path
+                    Lstats = os.stat (LFullFileNameSource)
+                    LFileNameSource = LSourceFile.name
+                    s = '  ' * (GLevel - 1) + '   ' + LFileNameSource
+                    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+                    LFileNameSource = LSourceFile.path
+                    LFileSizeSource = LUFile.GetFileSize (LFileNameSource)
+                    LFileAttrSource = LUFile.GetFileAttr (LFileNameSource)
+                    # print(LFileSizeSource)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFileNameSource)[2]
+
+                    LFileNameDest = os.path.join (ADestPath, LSourceFile.name)
+
+
+                    if _ADestPathDelta:
+                        LFileNameDestDelta = os.path.join (_ADestPathDelta, LSourceFile.name)
+                    #endif
+                    #--------------------------------------------------------------------
+                    LResult = LUFile.COMPAREFILETIMES(LFileNameSource, LFileNameDest)
+                    # -3 File2 could not be opened (see @ERROR for more information).
+                    # -2 File1 could not be opened (see @ERROR for more information).
+                    # -1 File1 is older than file2.
+                    # 0  File1 and file2 have the same date and time.
+                    # 1  File1 is more recent than file2.
+                    #--------------------------------------------------------------------
+                    # Check Result
+                    #--------------------------------------------------------------------
+                    LCopy = False
+                    LDelete = False
+                    if _Delete:
+                        if LResult == -3:
+                            LDelete = True
+                        #endif
+                    else:
+                        if LResult == -3:
+                            LFileSizeDest = "new"
+                            LFileTimeDest = "new"
+                            LCopy = True
+                        else:
+                            LFileSizeDest = LUFile.GetFileSize (LFileNameDest)
+                            LFileTimeDest = LUFile.GetFileDateTime (LFileNameDest)[2]
+                            if LResult == 1:
+                                LCopy = True
+                            else:
+                                if (LResult == -1) and (_OverwriteNewer == 1):
+                                    warnOWN = "More recent dest file " + LFileNameDest2 + " is to be overwritten"
+                                    LogAdd ("3", LogFile, "F", _warnOWN, "w+/n")
+                                    LCopy = True
+                                #endif
+                                if (_ACheckSize) and (LFileSizeSource != LFileSizeDest):
+                                    LCopy = True
+                                #endif
+                            #endif
+                        #endif
+                    #endif
+
+                    #--------------------------------------------------------------------
+                    # Copy
+                    #--------------------------------------------------------------------
+                    if LCopy == True:
+                        s = LFileNameSource + " ("+str(LFileSizeSource)+"|"+str(LFileTimeSource)+")" + " => " + \
+                            LFileNameDest   + " ("+str(LFileSizeDest)+"|"+str(LFileTimeDest)+")"
+                        LUFile.FileCopy (LFileNameSource, LFileNameDest,False)
+                        Lattr = LUFile.GetFileAttr (LFileNameDest)
+                        Lattr = Lattr & stat.FILE_ATTRIBUTE_READONLY
+                        # os.chflags (AFileName, 0)
+                        LUFile.SetFileAttr (LFileNameDest, Lattr)
+                        if _ExecFunc:
+                            ResExe = _ExecFunc (LFileNameSource, LFileNameDest, _ExecFuncPAR1)
+                        #endif
+                        if _ADestPathDelta:
+                            s = s + " => " + LFileNameDestDelta
+                            LUFile.FileCopy (LFileNameSource, LFileNameDestDelta, False)
+                        #endif
+                    #endif
+
+                    #--------------------------------------------------------------------
+                    # Delete
+                    #--------------------------------------------------------------------
+                    if LDelete:
+                        s = "Delete file "+LFileNameSource + " ("+LFileSizeSource+"|"+LFileTimeSource+")"+" ..."
+                        # LUFile.FileDelete (LFileNameSource)
                     #endif
                 #endif
             #endif
         #endfor
     #endwith
+#endfunction
+
+#-------------------------------------------------------------------------------
+#  ScanDir (ASourcePath, ADestPath, AMask, optional ACheckSize, optional ADestPathDelta, optional $Delete, optional $ExecFunc)
+#-------------------------------------------------------------------------------
+def __ScanDir (ASourcePath, ADestPath, AMask,
+             _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1):
+#beginfunction
+    global GLevel
+    GLevel = GLevel + 1
+
+    #------------------------------------------------------------
+    # Dir
+    #------------------------------------------------------------
+    LPath = ASourcePath
+    LPath = LUFile.ExpandFileName (ASourcePath)
+    LPath = os.path.basename (LPath)
+    s = '    '*(GLevel-1)+LPath+' [DIR]'
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+
+    #------------------------------------------------------------
+    # список файлов в каталоге
+    #------------------------------------------------------------
+    __ScanFile (ASourcePath, ADestPath, AMask,
+          _ACheckSize, _ADestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+
+    with os.scandir (ASourcePath) as LFiles:
+        for LFile in LFiles:
+            Lname = LFile.name
+            # print('name:',Lname)
+            if (not LFile.is_symlink()):
+                if LFile.is_dir ():
+                    #------------------------------------------------------------
+                    # class os.DirEntry - Это каталог
+                    #------------------------------------------------------------
+                    LPathName = LFile.name
+                    # LFullPathName = os.path.join (ASourcePath, LFile.name)
+                    LFullPathName = LUFile.ExpandFileName (LFile.path)
+                    print(LFullPathName)
+                    Lstats = os.stat (LFullPathName)
+
+                    LDestPath = os.path.join (ADestPath, LFile.name)
+                    print(LDestPath)
+
+                    if _ADestPathDelta:
+                        LDestPathDelta = os.path.join (_ADestPathDelta, LFile.name)
+                        print (LDestPathDelta)
+                    else:
+                        LDestPathDelta = ''
+                    #endif
+
+                    #------------------------------------------------------------
+                    # на следующий уровень
+                    #------------------------------------------------------------
+                    # print(GLevel)
+                    __ScanDir  (LFile.path, LDestPath, AMask,
+                              _ACheckSize, LDestPathDelta, _Delete, _ExecFunc, _OverwriteNewer, _ExecFuncPAR1)
+                #endif
+            #endif
+        #endfor
+    #endwith
+#endfunction
