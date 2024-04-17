@@ -1983,6 +1983,13 @@ def CreateTFileMemoLog () -> TFileMemoLog:
 #-------------------------------------------------
 # Инициализация системы logging
 #-------------------------------------------------
+GLoggerFILEINI = None
+GLoggerCONFIG = None
+LoggerTOOLS = None
+LoggerAPPS = None
+LoggerTLogger = None
+FileMemoLog = None
+
 def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> None:
     """STARTLogging"""
 #beginfunction
@@ -1995,17 +2002,11 @@ def STARTLogging (T: TTypeSETUPLOG, ADirectoryLOG: str, AFileNameLOG: str, AFile
     # print (traceback.extract_stack () [-1].name, '...')
 
     global GLoggerFILEINI
-    GLoggerFILEINI = None
     global GLoggerCONFIG
-    GLoggerCONFIG = None
     global LoggerTOOLS
-    LoggerTOOLS = None
     global LoggerAPPS
-    LoggerAPPS = None
     global LoggerTLogger
-    LoggerTLogger = None
     global FileMemoLog
-    FileMemoLog = None
 
     AddLevelName ()
 

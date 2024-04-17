@@ -18,6 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import datetime
+import logging
 import os
 import stat
 import tempfile
@@ -33,6 +34,8 @@ import ctypes
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import shutil
+
+import LULog
 import chardet
 
 #------------------------------------------
@@ -125,6 +128,7 @@ def DirectoryDelete (ADirectoryName: str) -> bool:
         """remove_readonly"""
     #beginfunction
         "Clear the readonly bit and reattempt the removal"
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, path)
         os.chmod (path, stat.S_IWRITE)
         func (path)
     #endfunction
@@ -147,8 +151,11 @@ def DirectoryDelete (ADirectoryName: str) -> bool:
 #beginfunction
     LResult = False
     if DirectoryExists (ADirectoryName):
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, ADirectoryName)
+
         # shutil.rmtree (ADirectoryName, ignore_errors = True, onexc = None)
         shutil.rmtree (ADirectoryName, ignore_errors = False, onerror = remove_readonly)
+
         LResult = True
     #endif
     return LResult

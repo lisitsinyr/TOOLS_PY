@@ -334,10 +334,10 @@ def BacFiles (APathSource, AMask, ASubDir, APathDest,
 #-------------------------------------------------------------------------------
 # SyncFiles
 #-------------------------------------------------------------------------------
-def SyncFiles (APathSource, APathDest):
+def SyncFiles (APathSource, AMask, APathDest, _OutFile, _Option):
 #beginfunction
-    BacFiles (APathSource, '.*', True, APathDest, '', 0, False)
-    BacFiles (APathDest, '.*', True, APathSource, '', 0, True)
+    BacFiles (APathSource, AMask, True, APathDest, _OutFile, _Option, False)
+    BacFiles (APathDest, AMask, True, APathSource, _OutFile, _Option, True)
 #endfunction
 
 #-------------------------------------------------------------------------------
