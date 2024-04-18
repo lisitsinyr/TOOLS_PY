@@ -25,17 +25,14 @@ import tempfile
 import platform
 import re
 import ctypes
-
-# import win32api
-# import pathlib
-# import logging
+import win32con
+import win32api
+import pathlib
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import shutil
-
-import LULog
 import chardet
 
 #------------------------------------------
@@ -45,6 +42,7 @@ import LUErrors
 import LUStrDecode
 import LUDateTime
 import LUos
+import LULog
 
 """
 f = open(file_name, access_mode, encoding='')
@@ -237,7 +235,7 @@ def GetFileDateTime (AFileName: str) -> ():
     """GetFileDateTime"""
 #beginfunction
     LTuple = ()
-    if os.path.isfile (AFileName):
+    if FileExists (AFileName):
         if platform.system() == 'Windows':
             # file creation
             LFileTimeCreate: datetime = os.path.getctime (AFileName)
@@ -266,7 +264,7 @@ def GetFileDateTime (AFileName: str) -> ():
         #endif
         LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
     #endif
-    if os.path.isdir (AFileName):
+    if DirectoryExists (AFileName):
         if platform.system() == 'Windows':
             # file creation
             LFileTimeCreate: datetime = os.path.getctime (AFileName)
@@ -300,11 +298,10 @@ def GetFileDateTime (AFileName: str) -> ():
 
 def cmptimestamps(AFileNameSource: str, AFileNameDest: str, _use_ctime):
     """ Compare time stamps of two files and return True
-#beginfunction
     if file1 (source) is more recent than file2 (target) """
+#beginfunction
     st1 = os.stat (AFileNameSource)
     st2 = os.stat (AFileNameDest)
-
     mtime_cmp = int((st1.st_mtime - st2.st_mtime) * 1000) > 0
     if _use_ctime:
         return mtime_cmp or int((AFileNameSource.st_ctime - AFileNameDest.st_mtime) * 1000) > 0
@@ -319,35 +316,33 @@ def cmptimestamps(AFileNameSource: str, AFileNameDest: str, _use_ctime):
 def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
     """COMPAREFILETIMES"""
 #beginfunction
-    #-3 File2 could not be opened (see @ERROR for more information).
-    #-2 File1 could not be opened (see @ERROR for more information).
-    #-1 File1 is older than file2.
-    #0 File1 and file2 have the same date and time.
-    #1 File1 is more recent than file2.
     if not FileExists (AFileNameSource):
+        #-2 File1 could not be opened (see @ERROR for more information).
         return -2
     #endif
     if not FileExists (AFileNameDest):
+        #-3 File2 could not be opened (see @ERROR for more information).
         return -3
     #endif
+
     LFileName1m = GetFileDateTime (AFileNameSource)[0]
     LFileName2m = GetFileDateTime (AFileNameDest)[0]
     LFileName1c = GetFileDateTime (AFileNameSource)[0]
     LFileName2c = GetFileDateTime (AFileNameDest)[0]
+
     if LFileName1m == LFileName2m:
+        #0 File1 and file2 have the same date and time.
         return 0
     else:
         if LFileName1m > LFileName2m:
+            #1 File1 is more recent than file2.
             return 1
         else:
+            #-1 File1 is older than file2.
             return -1
         #endif
     #endif
-
-    # int ((st1.st_mtime - st2.st_mtime) * 1000) > 0
-    # mtime_cmp = int ((LFileName1m - LFileName2m) * 1000) > 0
-    # mtime_cmp = int ((st1.st_mtime - st2.st_mtime) * 1000) > 0
-    # print('mtime_cmp:', mtime_cmp)
+    #------------------------------------------------------------------------------
     # if int ((LFileName1m - LFileName2m) * 1000) == 0:
     #     return 0
     # else:
@@ -357,6 +352,7 @@ def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
     #         return -1
     #     #endif
     # #endif
+    #------------------------------------------------------------------------------
 #endfunction
 
 #--------------------------------------------------------------------------------
@@ -365,7 +361,7 @@ def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
 def GetFileSize (AFileName: str) -> int:
     """GetFileSize"""
 #beginfunction
-    if os.path.isfile (AFileName):
+    if FileExists (AFileName):
         if platform.system() == 'Windows':
             if FileExists (AFileName):
                 return os.path.getsize (AFileName)
@@ -386,7 +382,6 @@ def GetFileSize (AFileName: str) -> int:
 def ExpandFileName (APath: str) -> str:
     """ExpandFileName"""
 #beginfunction
-    # LResult = os.path.basename(APath)
     LResult = os.path.abspath(APath)
     return LResult
 #endfunction
@@ -550,12 +545,14 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
         if ExtractFileExt (LResult) == '':
             LResult = LResult + ADefaultExt
         #endif
+
         # int = SearchPath(path, fileName , fileExt )
         #   The return value is a tuple of (string, int).
         #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
 
         # L = win32api.SearchPath (None, LResult, None)
         print('L = win32api.SearchPath (None, LResult, None)')
+
         LResult = ''
         #L = ''
         #if L[0] != '':
@@ -616,28 +613,66 @@ def FileSearch (AFileName: str, APath: str) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# SetFileAttr
+# GetFileAttr
 #-------------------------------------------------------------------------------
-def SetFileAttr (AFileName: str, Aflags) -> bool:
-    """SetFileAttr"""
+def FileAttrStr (Aattr: int) -> str:
+    """FileAttrStr"""
 #beginfunction
-    LResult = True
-    LOSInfo = LUos.TOSInfo ()
-    match LOSInfo.system.upper ():
-        case 'LINUX':
-            # os.chflags() method in Python used to set the flags of path to the numeric flags;
-            # available in Unix only
-            # os.UF_HIDDEN
-            # os.chflags (AFileName, Aflags)
-            ...
-        case 'WINDOWS':
-            # FILE_ATTRIBUTE_HIDDEN = 0x02
-            # LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, FILE_ATTRIBUTE_HIDDEN)
-            ...
-        case _:
-            ...
-    #endmatch
-    return LResult
+    #-------------------------------------------------------------------------------
+    #                                        0x      00       00       20       20
+    #                                        0b00000000 00000000 00100000 00100000
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_NO_SCRUB_DATA       0b00000000 00000010 00000000 00000000
+    #stat.FILE_ATTRIBUTE_VIRTUAL             0b00000000 00000001 00000000 00000000
+
+    #stat.FILE_ATTRIBUTE_INTEGRITY_STREAM    0b00000000 00000000 10000000 00000000
+    #stat.FILE_ATTRIBUTE_ENCRYPTED           0b00000000 00000000 01000000 00000000
+    #stat.FILE_ATTRIBUTE_NOT_CONTENT_INDEXED 0b00000000 00000000 00100000 00000000
+    #stat.FILE_ATTRIBUTE_OFFLINE             0b00000000 00000000 00010000 00000000
+    #stat.FILE_ATTRIBUTE_COMPRESSED          0b00000000 00000000 00001000 00000000
+    #stat.FILE_ATTRIBUTE_REPARSE_POINT       0b00000000 00000000 00000100 00000000
+    #stat.FILE_ATTRIBUTE_SPARSE_FILE         0b00000000 00000000 00000010 00000000
+    #stat.FILE_ATTRIBUTE_TEMPORARY           0b00000000 00000000 00000001 00000000
+
+    #stat.FILE_ATTRIBUTE_NORMAL              0b00000000 00000000 00000000 10000000
+    #stat.FILE_ATTRIBUTE_DEVICE              0b00000000 00000000 00000000 01000000
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_ARCHIVE             0b00000000 00000000 00000000 00100000
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_DIRECTORY           0b00000000 00000000 00000000 00010000
+    #-------------------------------------------------------------------------------
+    #stat.                                   0b00000000 00000000 00000000 00001000
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_SYSTEM              0b00000000 00000000 00000000 00000100
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_HIDDEN              0b00000000 00000000 00000000 00000010
+    #-------------------------------------------------------------------------------
+    #stat.FILE_ATTRIBUTE_READONLY            0b00000000 00000000 00000000 00000001
+    #-------------------------------------------------------------------------------
+    Lattr = Aattr
+    sa = ''
+
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_NO_SCRUB_DATA else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_VIRTUAL else '.'
+
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_INTEGRITY_STREAM else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_ENCRYPTED else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_NOT_CONTENT_INDEXED else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_OFFLINE else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_COMPRESSED else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_REPARSE_POINT else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_SPARSE_FILE else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_TEMPORARY else '.'
+
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_NORMAL else '.'
+    sa += '1' if Lattr & stat.FILE_ATTRIBUTE_DEVICE else '.'
+    sa += 'a' if Lattr & stat.FILE_ATTRIBUTE_ARCHIVE else '.'
+    sa += 'd' if Lattr & stat.FILE_ATTRIBUTE_DIRECTORY else '.'
+    sa += '.'
+    sa += 's' if Lattr & stat.FILE_ATTRIBUTE_SYSTEM else '.'
+    sa += 'h' if Lattr & stat.FILE_ATTRIBUTE_HIDDEN else '.'
+    sa += 'r' if Lattr & stat.FILE_ATTRIBUTE_READONLY else '.'
+    return sa
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -646,43 +681,76 @@ def SetFileAttr (AFileName: str, Aflags) -> bool:
 def GetFileAttr (AFileName: str) -> int:
     """GetFileAttr"""
 #beginfunction
+    s = f'GetFileAttr: {AFileName:s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = 0
+
     if FileExists (AFileName):
         LStat = os.stat (AFileName)
-        Lmode = LStat.st_mode
 
-        # print ('Lmode:', Lmode, stat.filemode (Lmode))
+        Lmode = LStat.st_mode
+        s = f'Lmode: {Lmode:d} {stat.filemode (Lmode):s}'
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
 
         Lattr = LStat.st_file_attributes
-        print ('Lattr:', Lattr, hex(Lattr), bin(Lattr))
-        print ('stat.FILE_ATTRIBUTE_ARCHIVE',bin(stat.FILE_ATTRIBUTE_ARCHIVE))
-        print ('stat.FILE_ATTRIBUTE_SYSTEM',bin(stat.FILE_ATTRIBUTE_SYSTEM))
-        print ('stat.FILE_ATTRIBUTE_HIDDEN',bin(stat.FILE_ATTRIBUTE_HIDDEN))
-        print ('stat.FILE_ATTRIBUTE_READONLY',bin(stat.FILE_ATTRIBUTE_READONLY))
-
-        # print (stat.FILE_ATTRIBUTE_READONLY)
-        # print ("Attributes of:", AFileName)
-        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_ARCHIVE:  print (" - archive")
-        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_SYSTEM:   print (" - system")
-        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN:   print (" - hidden")
-        if LStat.st_file_attributes & stat.FILE_ATTRIBUTE_READONLY: print (" - read only")
-
-        # LAccess = os.access (AFileName, os.R_OK)
-        # LAccess = os.access (AFileName, os.W_OK)
-        # Clear ReadOnly
-        # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
-        # import win32con
-        # import win32api
-        # attrs = win32api.GetFileAttributes (filepath)
-        # attrs & win32con.FILE_ATTRIBUTE_SYSTEM
-        # attrs & win32con.FILE_ATTRIBUTE_HIDDEN
-
-        # Change the file's permissions to writable
-        # os.chmod (AFileName, os.W_OK)
+        # Lattr = win32api.GetFileAttributes (AFileName)
+        s = f'Lattr:{Lattr:d} {hex(Lattr):s} {bin(Lattr):s} {FileAttrStr(Lattr):s}'
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
 
         LResult = Lattr
     #endif
     return LResult
+#endfunction
+
+#-------------------------------------------------------------------------------
+# SetFileAttr
+#-------------------------------------------------------------------------------
+def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
+    """SetFileAttr"""
+#beginfunction
+    # s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+    # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
+    LOSInfo = LUos.TOSInfo ()
+    match LOSInfo.system.upper ():
+        case 'WINDOWS':
+            Lattr = GetFileAttr(AFileName)
+            s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
+            if AClear:
+                LattrNew = Lattr & ~Aflags
+                s = f'SetFileAttr [clear]: {bin (Aflags):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            else:
+                LattrNew = Lattr | Aflags
+                s = f'SetFileAttr [set]: {bin (Aflags):s}{LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            #endif
+
+            win32api.SetFileAttributes (AFileName, LattrNew)
+            # LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, stat.FILE_ATTRIBUTE_HIDDEN)
+
+            # Change the file's permissions to writable
+            # os.chmod (AFileName, os.W_OK)
+
+        case 'LINUX':
+            # os.chflags() method in Python used to set the flags of path to the numeric flags;
+            # available in Unix only
+            # os.UF_HIDDEN
+            if AClear:
+                LattrNew = Lattr & ~Aflags
+                s = f'SetFileAttr [clear]: {bin (Aflags):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            else:
+                LattrNew = Lattr | Aflags
+                s = f'SetFileAttr [set]: {bin (Aflags):s}{LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            #endif
+            os.chflags (AFileName, Aflags)
+        case _:
+            ...
+    #endmatch
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -691,13 +759,22 @@ def GetFileAttr (AFileName: str) -> int:
 def FileDelete (AFileName: str) -> bool:
     """FileDelete"""
 #beginfunction
+    s = f'FileDelete: {AFileName:s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = True
+
     if FileExists (AFileName):
         try:
-            # Clear ReadOnly
-            # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
-            # Change the file's permissions to writable
-            # os.chmod (AFileName, os.W_OK)
+            Lattr = GetFileAttr(AFileName)
+            if Lattr & stat.FILE_ATTRIBUTE_READONLY:
+                s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                # Clear ReadOnly
+                LUFile.SetFileAttr (AFileName, stat.FILE_ATTRIBUTE_READONLY, True)
+                # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
+                # Change the file's permissions to writable
+                # os.chmod (AFileName, os.W_OK)
+            #endif
             os.remove (AFileName)
             LResult = True
         except:
@@ -713,11 +790,19 @@ def FileDelete (AFileName: str) -> bool:
 def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool:
     """FileCopy"""
 #beginfunction
+    s = f'FileCopy: {AFileNameSource:s} -> {AFileNameDest:s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    LResult = True
+
     LDestPath = ExtractFileDir(AFileNameDest)
     if not DirectoryExists(LDestPath):
         ForceDirectories(LDestPath)
     #endif
-    LResult = shutil.copy (AFileNameSource, AFileNameDest)
+
+    # Функция shutil.copy() копирует данные файла и режима доступа к файлу.
+    # Другие метаданные, такие как время создания и время изменения файла не сохраняются.
+    # Чтобы сохранить все метаданные файла из оригинала, используйте функцию shutil.copy2().
+    LResult = shutil.copy2 (AFileNameSource, AFileNameDest)
     return LResult
 #endfunction
 
@@ -727,15 +812,22 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
 def FileMove (AFileNameSource: str, APathNameDest: str) -> bool:
     """FileMove"""
 #beginfunction
+    s = f'FileMove: {AFileNameSource:s} -> {APathNameDest:s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    LResult = True
+
     if not LUFile.DirectoryExists(APathNameDest):
         LUFile.ForceDirectories(APathNameDest)
     #endif
     LFileNameSource = ExtractFileName (AFileNameSource)
     LFileNameDest = os.path.join (APathNameDest, LFileNameSource)
-    LResult = FileCopy (AFileNameSource, LFileNameDest, True);
-    if Result:
-        Result = FileDelete (AFileNameSource);
-    #endif
+
+    LResult = shutil.move(AFileNameSource, APathNameDest, copy_function=shutil.copy2())
+
+    # LResult = FileCopy (AFileNameSource, LFileNameDest, True);
+    # if Result:
+    #     Result = FileDelete (AFileNameSource);
+    # #endif
     return LResult
 #endfunction
 
@@ -778,6 +870,9 @@ def CheckFileNameMask (AFileName: str, AMask: str) -> bool:
 def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
     """CreateTextFile"""
 #beginfunction
+    s = f'CreateTextFile: {AFileName:s} ...'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
     LEncoding = AEncoding
     if AEncoding == '':
         LEncoding = LUStrDecode.cCP1251
@@ -800,6 +895,9 @@ def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
 def WriteStrToFile (AFileName: str, AStr: str):
     """WriteStrToFile"""
 #beginfunction
+    s = f'WriteStrToFile: {AFileName:s} ...'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
     # Откроет для добавления нового содержимого.
     # Создаст новый файл для чтения записи, если не найдет с указанным именем.
     LEncoding = GetFileEncoding (AFileName)
@@ -817,6 +915,9 @@ def WriteStrToFile (AFileName: str, AStr: str):
 def OpenTextFile(AFileName: str, AEncoding: str):
     """OpenTextFile"""
 #beginfunction
+    s = f'OpenTextFile: {AFileName:s} ...'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
     LEncoding = AEncoding
     if AEncoding == '':
         LEncoding = LUStrDecode.cCP1251
@@ -830,6 +931,9 @@ def OpenTextFile(AFileName: str, AEncoding: str):
 def CloseTextFile (AHandle):
     """CloseTextFile"""
 #beginfunction
+    s = f'CloseTextFile: {AFileName:s} ...'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
     AHandle.flush ()
     AHandle.close ()
 #endfunction
