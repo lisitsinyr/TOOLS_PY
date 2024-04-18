@@ -487,6 +487,7 @@ def GetFileEncoding (AFileName: str) -> str:
         LResult = chardet.detect (LRawData)
         LEncoding = LResult ['encoding']
         LFile.close ()
+    #endif
     return LEncoding
 #endfunction
 
