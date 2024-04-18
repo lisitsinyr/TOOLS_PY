@@ -25,9 +25,11 @@ import tempfile
 import platform
 import re
 import ctypes
-import win32con
-import win32api
 import pathlib
+if platform.system() == 'Windows':
+    import win32api
+    import win32con
+#endif
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние

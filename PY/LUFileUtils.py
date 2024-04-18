@@ -30,8 +30,11 @@ import logging
 import datetime
 # import date
 import shutil
-import win32api
 import platform
+if platform.system() == 'Windows':
+    import win32api
+    import win32con
+#endif
 
 #------------------------------------------
 # БИБЛИОТЕКА LU

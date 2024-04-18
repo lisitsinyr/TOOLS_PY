@@ -28,13 +28,18 @@ import logging
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import psutil
+if platform.system() == 'Windows':
+    import win32api
+    import win32con
+#endif
 
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-if sys.platform == "win32":
+if platform.system() == 'Windows':
     import LUParserREG
 #endif
+
 import LUDateTime
 
 cHOME = 'HOME'
