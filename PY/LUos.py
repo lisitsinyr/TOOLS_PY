@@ -590,7 +590,7 @@ class TOSInfo (object):
 #endclass
 
 #------------------------------------------
-# GetCurrentDir () -> str:
+# GetCurrentDir
 #------------------------------------------
 def GetCurrentDir () -> str:
     """GetCurrentDir"""
@@ -599,7 +599,7 @@ def GetCurrentDir () -> str:
 #endfunction
 
 #------------------------------------------
-# APPWorkDir () -> str:
+# APPWorkDir
 #------------------------------------------
 def APPWorkDir () -> str:
     """APPWorkDir"""
@@ -633,6 +633,9 @@ def SetEnvVar (AEnvVar: str, AValue: str):
     os.environ[AEnvVar] = AValue
 #endfunction
 
+#------------------------------------------
+# get_data
+#------------------------------------------
 def get_data (EXTENDED_NAME_FORMAT: int):
 #beginfunction
     GetUserNameEx = ctypes.windll.secur32.GetUserNameExW
@@ -644,6 +647,9 @@ def get_data (EXTENDED_NAME_FORMAT: int):
     return nameBuffer.value
 #endfunction
 
+#------------------------------------------
+# get_display_name
+#------------------------------------------
 def get_display_name ():
 #beginfunction
     GetUserNameEx = ctypes.windll.secur32.GetUserNameExW
@@ -655,6 +661,9 @@ def get_display_name ():
     return nameBuffer.value
 #endfunction
 
+#------------------------------------------
+# Print_get_data
+#------------------------------------------
 def Print_get_data ():
 #beginfunction
     print ("NameUnknown            : ", get_data (0))
@@ -670,7 +679,7 @@ def Print_get_data ():
 #endfunction
 
 #------------------------------------------------------
-# PrintGeneralTitle ($LLog, $LFile)
+# PrintGeneralTitle
 #------------------------------------------------------
 def PrintGeneralTitle ():
 #beginfunction
@@ -693,7 +702,9 @@ def PrintGeneralTitle ():
     print ('===========================================')
 #endfunction
 
-#------------------------------------------
+#------------------------------------------------------
+# main
+#------------------------------------------------------
 def main ():
 #beginfunction
     # PrintGeneralTitle ()

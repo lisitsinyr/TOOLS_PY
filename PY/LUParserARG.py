@@ -249,8 +249,13 @@ ArgumentParser.parse_args(args=None, namespace=None)
 ----------------------------------
 """
 
+#------------------------------------------------------
 """ Работа со параметрами программы """
+#------------------------------------------------------
 
+#------------------------------------------------------
+# __GetCmdLineArg
+#------------------------------------------------------
 def __GetCmdLineArg (ASwitch: str, ASwitchChars: (), AIgnoreCase: bool) -> str:
     """__GetCmdLineArg"""
 #beginfunction
@@ -287,6 +292,9 @@ def __GetCmdLineArg (ASwitch: str, ASwitchChars: (), AIgnoreCase: bool) -> str:
     return ''
 #endfunction
 
+#------------------------------------------------------
+# FindCmdLineSwitch
+#------------------------------------------------------
 def FindCmdLineSwitch (ASwitch: str, ASwitchChars: (), AIgnoreCase: bool) -> bool:
     """FindCmdLineSwitch"""
 #beginfunction
@@ -310,7 +318,7 @@ def FindCmdLineSwitch (ASwitch: str, ASwitchChars: (), AIgnoreCase: bool) -> boo
 #endfunction
 
 #---------------------------------------------------------
-# GetParam (AParamName: str, ADefaultValue: str) -> str:
+# GetParam
 #---------------------------------------------------------
 def GetParam (AParamName: str, ADefaultValue: str) -> str:
     """GetParam"""
@@ -323,6 +331,9 @@ def GetParam (AParamName: str, ADefaultValue: str) -> str:
     return LResult
 #endfunction
 
+#---------------------------------------------------------
+# CreateTArgParser
+#---------------------------------------------------------
 def CreateTArgParser (AProg: str, ADescrption: str) -> TArgParser:
     """CreateTArgParser"""
 #beginfunction
@@ -335,7 +346,9 @@ def CreateTArgParser (AProg: str, ADescrption: str) -> TArgParser:
 
 GArgParser = CreateTArgParser ('LUArgParser', 'Параметры')
 
-#------------------------------------------
+#---------------------------------------------------------
+# main
+#---------------------------------------------------------
 def main ():
 #beginfunction
     ...

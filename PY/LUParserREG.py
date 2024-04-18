@@ -477,6 +477,9 @@ def SaveRegToFile_regedit (AFileName: str, AHKEY: THKEYConst, ASection: str):
     #endif
 #endfunction
 
+#---------------------------------------------------------
+# CreateTREGParser
+#---------------------------------------------------------
 def CreateTREGParser () -> TREGParser:
     """CreateTREGParser"""
 #beginfunction
@@ -485,7 +488,9 @@ def CreateTREGParser () -> TREGParser:
 
 GREGParser = CreateTREGParser ()
 
-#------------------------------------------
+#---------------------------------------------------------
+# main
+#---------------------------------------------------------
 def main ():
 #beginfunction
     # print (tuple(THKEYConst))
@@ -494,9 +499,9 @@ def main ():
     ...
 #endfunction
 
-#------------------------------------------
+#---------------------------------------------------------
 #
-#------------------------------------------
+#---------------------------------------------------------
 #beginmodule
 if __name__ == '__main__':
     main()

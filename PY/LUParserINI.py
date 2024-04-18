@@ -342,6 +342,9 @@ class TINIFile (configparser.ConfigParser):
 
 #endclass
 
+#---------------------------------------------------------
+# CreateTINIFile
+#---------------------------------------------------------
 def CreateTINIFile () -> TINIFile:
     """CreateTINIFile"""
 #beginfunction
@@ -350,7 +353,9 @@ def CreateTINIFile () -> TINIFile:
 
 GINIFile = CreateTINIFile ()
 
-#------------------------------------------
+#---------------------------------------------------------
+# main
+#---------------------------------------------------------
 def main ():
 #beginfunction
     ...

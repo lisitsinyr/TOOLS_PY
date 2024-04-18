@@ -28,6 +28,9 @@ import sys
 #------------------------------------------
 import LULog
 
+#---------------------------------------------------------------
+# PrintInfoObject
+#---------------------------------------------------------------
 def PrintInfoObject (AObject):
 #beginfunction
     # print (sys._getframe (0).f_code.co_name, '...')
@@ -39,7 +42,9 @@ def PrintInfoObject (AObject):
     LULog.LoggerTOOLS_AddLevel(LULog.DEBUGTEXT, s)
 #endfunction
 
-#------------------------------------------
+#---------------------------------------------------------------
+# main
+#---------------------------------------------------------------
 def main ():
 #beginfunction
     ...

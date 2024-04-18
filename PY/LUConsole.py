@@ -202,7 +202,7 @@ BACKGROUND = [Back.BLACK, Back.RED, Back.GREEN, Back.YELLOW, Back.BLUE, Back.MAG
 BRIGHTNESS = [Style.DIM, Style.NORMAL, Style.BRIGHT]
 
 #-------------------------------------------------
-# ISTerminal () -> bool:
+# ISTerminal
 #-------------------------------------------------
 def ISTerminal () -> bool:
     """ISTerminal"""
@@ -211,7 +211,7 @@ def ISTerminal () -> bool:
 #endfunction
 
 #-------------------------------------------------
-# GetTupleStr (ATuple:()):
+# GetTupleStr
 #-------------------------------------------------
 def GetTupleStr (ATuple:()):
     """GetTupleStr"""
@@ -325,7 +325,7 @@ def WriteLN (s, **kwargs):
 #endfunction
 
 #-------------------------------------------------
-# ClearLine():
+# ClearLine
 #-------------------------------------------------
 def ClearLine():
     """ClearLine"""
@@ -340,7 +340,7 @@ def ClearLine():
 #endfunction
 
 #-------------------------------------------------
-# ReadParam($Title,$Default)
+# ReadParam
 #-------------------------------------------------
 def ReadParam (ATitle: str, ADefault: str) -> str:
     """ReadParam"""
@@ -354,7 +354,7 @@ def ReadParam (ATitle: str, ADefault: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------
-# Pause(optional $prompt)
+# Pause
 #--------------------------------------------------------------------
 def Pause (Aprompt: str = ''):
     """Pause"""
@@ -369,7 +369,7 @@ def Pause (Aprompt: str = ''):
 #endfunction
 
 #--------------------------------------------------------------------
-# pause2(optional $delay, optional $prompt)
+# pause2
 #--------------------------------------------------------------------
 def pause2 (ADelay:int=0, Aprompt:str=''):
     """pause2"""
@@ -406,7 +406,7 @@ def pause2 (ADelay:int=0, Aprompt:str=''):
 #endfunction 
 
 #------------------------------------------------------
-# PasswdFromKbd(optional $Prompt)
+# PasswdFromKbd
 #------------------------------------------------------
 #def PasswdFromKbd(Prompt = ''):
 ##beginfunction
@@ -415,7 +415,9 @@ def pause2 (ADelay:int=0, Aprompt:str=''):
 #    PasswdFromKbd = fnGetM("*")
 #endfunction
 
-#------------------------------------------
+#------------------------------------------------------
+# main
+#------------------------------------------------------
 def main ():
 #beginfunction
     ...

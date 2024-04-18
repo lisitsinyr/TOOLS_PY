@@ -34,7 +34,7 @@ from email.mime.text import MIMEText
 import LULog
 
 #---------------------------------------------------------------
-#
+# TIMING
 #---------------------------------------------------------------
 def TIMING(func):
     #beginfunction
@@ -51,7 +51,7 @@ def TIMING(func):
 #endfunction
 
 #---------------------------------------------------------------
-#
+# retry
 #---------------------------------------------------------------
 """
 1. Декоратор retry
@@ -81,7 +81,7 @@ def call_dummy_api():
     return response
 
 #---------------------------------------------------------------
-#
+# memoize
 #---------------------------------------------------------------
 """
 2. Результаты функции кэширования
@@ -100,7 +100,7 @@ def memoize(func):
     return wrapper
 
 #---------------------------------------------------------------
-#
+# email_on_failure
 #---------------------------------------------------------------
 """
 5. Декоратор Notification
@@ -109,7 +109,6 @@ def memoize(func):
 Это не ново, если вы когда-либо создавали конвейер данных и надеялись, что он всегда будет работать без перебоев.
 Следующий декоратор отправляет электронное письмо всякий раз, когда выполнение внутренней функции завершается неудачей. В вашем случае это не обязательно должно быть уведомление по электронной почте. Вы можете настроить его для отправки уведомлений Teams / slack:
 """
-
 def email_on_failure (sender_email, password, recipient_email):
     def decorator (func):
         def wrapper (*args, **kwargs):
@@ -135,6 +134,10 @@ def email_on_failure (sender_email, password, recipient_email):
 
         return wrapper
     return decorator
+
+#---------------------------------------------------------------
+# my_function
+#---------------------------------------------------------------
 @email_on_failure (sender_email = 'your_email@gmail.com', password = 'your_password',
                    recipient_email = 'recipient_email@gmail.com')
 def my_function ():
@@ -142,7 +145,7 @@ def my_function ():
     ...
 
 #---------------------------------------------------------------
-#
+# timeit
 #---------------------------------------------------------------
 """
 To overcome this, created the @timeit decorator which allows you to measure the execution time of the method/function by just adding the @timeit decorator on the method.
@@ -161,6 +164,9 @@ def timeit(method):
         return result
     return timed
 
+#---------------------------------------------------------------
+# get_all_employee_details
+#---------------------------------------------------------------
 # Adding decorator to the method
 @timeit
 def get_all_employee_details(**kwargs):
@@ -172,7 +178,7 @@ def get_all_employee_details(**kwargs):
 # log_time and log_name are optional. Make use of them accordingly when needed.
 
 #---------------------------------------------------------------
-#
+# timeit
 #---------------------------------------------------------------
 def timeit(func):
     @wraps(func)

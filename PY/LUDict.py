@@ -28,6 +28,8 @@ import json
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+...
+
 """
     data = {}
     data ['people'] = []
@@ -48,6 +50,9 @@ import json
     })
 """
 
+#---------------------------------------------------------------
+# PrintDict
+#---------------------------------------------------------------
 def PrintDict (ADict: dict):
     """PrintDict"""
 #beginfunction
@@ -65,6 +70,9 @@ def PrintDict (ADict: dict):
     #endfor
 #endfunction
 
+#---------------------------------------------------------------
+# SaveDictJSON
+#---------------------------------------------------------------
 def SaveDictJSON (ADict, AFileName):
     """SaveDictJSON"""
 #beginfunction
@@ -73,6 +81,9 @@ def SaveDictJSON (ADict, AFileName):
     #endwith
 #endfunction
 
+#---------------------------------------------------------------
+# SaveDictSTR
+#---------------------------------------------------------------
 def SaveDictSTR (ADict, AFileName):
     """SaveDictSTR"""
 #beginfunction
@@ -88,7 +99,9 @@ def SaveDictSTR (ADict, AFileName):
     sys.stdout = original_stdout
 #endfunction
 
-#------------------------------------------
+#---------------------------------------------------------------
+#
+#---------------------------------------------------------------
 def main ():
 #beginfunction
     ...

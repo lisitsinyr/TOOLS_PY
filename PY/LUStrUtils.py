@@ -221,7 +221,7 @@ cWordDelimiters = ('|', ';')
 cWordDelimiter = '|'
 
 #---------------------------------------------------------------
-#
+# PrintableStr
 #---------------------------------------------------------------
 def PrintableStr(s: str) -> str:
     return ''.join(c for c in s if c.isalpha()
@@ -242,7 +242,7 @@ def MakeStr (C: str, N: int) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# CharFromSet
 #---------------------------------------------------------------
 def CharFromSet (C: TCharSet) -> str:
     """CharFromSet"""
@@ -256,7 +256,7 @@ def CharFromSet (C: TCharSet) -> str:
 #endfunction
 
 #--------------------------------------------------------------------
-# AddChar (Pad, Input, Length):
+# AddChar
 #--------------------------------------------------------------------
 def AddChar (APad, AInput, ALength) -> str:
     """AddChar"""
@@ -270,7 +270,7 @@ def AddChar (APad, AInput, ALength) -> str:
 #endfunction
 
 #--------------------------------------------------------------------
-# AddCharR (Pad, Input, Length):
+# AddCharR
 #--------------------------------------------------------------------
 def AddCharR (APad, AInput, ALength):
     """AddCharR"""
@@ -284,7 +284,7 @@ def AddCharR (APad, AInput, ALength):
 #endfunction
 
 #---------------------------------------------------------------
-#
+# Trim
 #---------------------------------------------------------------
 def Trim (s: str) -> str:
     """Trim"""
@@ -293,7 +293,7 @@ def Trim (s: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# TrimL
 #---------------------------------------------------------------
 def TrimL (s: str) -> str:
     """TrimL"""
@@ -302,7 +302,7 @@ def TrimL (s: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# TrimR
 #---------------------------------------------------------------
 def TrimR (s: str) -> str:
     """TrimR"""
@@ -311,7 +311,7 @@ def TrimR (s: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# TrimChar
 #---------------------------------------------------------------
 def TrimChar (s: str, c: str) -> str:
     """TrimChar"""
@@ -320,7 +320,7 @@ def TrimChar (s: str, c: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# TrimCharL
 #---------------------------------------------------------------
 def TrimCharL (s: str, c: str) -> str:
     """TrimCharL"""
@@ -329,7 +329,7 @@ def TrimCharL (s: str, c: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# TrimCharR
 #---------------------------------------------------------------
 def TrimCharR (s: str, c: str) -> str:
     """TrimCharR"""
@@ -338,7 +338,7 @@ def TrimCharR (s: str, c: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------
-# WordCount (String, Delimiter):
+# WordCount
 #--------------------------------------------------------------------
 def WordCount (AString: str, AWordDelims) -> int:
     """WordCount"""
@@ -349,7 +349,7 @@ def WordCount (AString: str, AWordDelims) -> int:
 #endfunction
 
 #--------------------------------------------------------------------
-#ExtractWord (i, String, Delimiter):
+# ExtractWord
 #--------------------------------------------------------------------
 def ExtractWord (i: int, AString: str, AWordDelims):
     """ExtractWord"""
@@ -368,7 +368,7 @@ def ExtractWord (i: int, AString: str, AWordDelims):
 #endfunction
 
 #--------------------------------------------------------------------
-#ExistWord (String, Delimiter, Word):
+# ExistWord
 #--------------------------------------------------------------------
 def ExistWord (AString: str, AWordDelims, AWord: str):
     """ExistWord"""
@@ -384,7 +384,7 @@ def ExistWord (AString: str, AWordDelims, AWord: str):
 #endfunction
 
 #---------------------------------------------------------------
-#
+# GetParamFromString
 #---------------------------------------------------------------
 def GetParamFromString (AParamName: str, AParamValues: str,
     AParamNames: (), AWordDelims: TCharSet) -> str:
@@ -403,7 +403,7 @@ def GetParamFromString (AParamName: str, AParamValues: str,
 #endfunction
 
 #---------------------------------------------------------------
-#
+# SetParamToString
 #---------------------------------------------------------------
 def SetParamToString (AParamName: str, AParamValues: str,
     AParamNames: (), AWordDelims: TCharSet, AValue: str):
@@ -427,7 +427,7 @@ def SetParamToString (AParamName: str, AParamValues: str,
 #endfunction
 
 #---------------------------------------------------------------
-# DelChars return a string with all Chr characters removed
+# DelChars
 #---------------------------------------------------------------
 def DelChars (s: str, c: str) -> str:
     """DelChars"""
@@ -437,7 +437,7 @@ def DelChars (s: str, c: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-# DelSpace return a string with all white spaces removed.
+# DelSpace
 #---------------------------------------------------------------
 def DelSpaces (s: str) -> str:
     """DelSpaces"""
@@ -447,7 +447,7 @@ def DelSpaces (s: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-# DelSpace return a string with all white spaces removed.
+# ReplaceChars
 #---------------------------------------------------------------
 def ReplaceChars (s, sOld, sNew: str) -> str:
     """ReplaceChars"""
@@ -457,7 +457,7 @@ def ReplaceChars (s, sOld, sNew: str) -> str:
 #endfunction
 
 #---------------------------------------------------------------
-#
+# CenterStr
 #---------------------------------------------------------------
 def CenterStr (s: str, c: str, ALen: int) -> str:
     """CenterStr"""
@@ -465,6 +465,9 @@ def CenterStr (s: str, c: str, ALen: int) -> str:
     return s.center (len(s)+ALen, c)
 #endfunction
 
+#---------------------------------------------------------------
+# strtobool
+#---------------------------------------------------------------
 def strtobool (val: str):
     """Convert a string representation of truth to true (1) or false (0).
     True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
@@ -481,6 +484,9 @@ def strtobool (val: str):
     #endif
 #endfunction
 
+#---------------------------------------------------------------
+# booltostr
+#---------------------------------------------------------------
 def booltostr (val: bool) -> str:
     """booltostr"""
 #beginfunction
@@ -598,15 +604,17 @@ begin
 end;
 """
 
-#------------------------------------------
+#---------------------------------------------------------
+# main
+#---------------------------------------------------------
 def main ():
 #beginfunction
     ...
 #endfunction
 
-#------------------------------------------
+#---------------------------------------------------------
 #
-#------------------------------------------
+#---------------------------------------------------------
 #beginmodule
 if __name__ == "__main__":
     main()
