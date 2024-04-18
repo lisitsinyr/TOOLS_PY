@@ -699,7 +699,7 @@ def GetFileAttr (AFileName: str) -> int:
             Lattr = LStat.st_file_attributes
             # Lattr = win32api.GetFileAttributes (AFileName)
         else:
-            Lattr = 0
+            Lattr = LStat.st_flags
         #endif
         s = f'Lattr:{Lattr:d} {hex(Lattr):s} {bin(Lattr):s} {FileAttrStr(Lattr):s}'
         LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
