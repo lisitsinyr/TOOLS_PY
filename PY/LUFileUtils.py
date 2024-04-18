@@ -53,10 +53,9 @@ GLevel = 0
 GFileCount = 0
 GFileSize = 0
 GDir = ''
-GMask = '*.*'
+GMask = '.*'
 GDirCount = 0
 GLevelMAX = sys.maxsize
-
 
 #-------------------------------------------------------------------------------
 # __OUTFILE
@@ -108,7 +107,7 @@ def __ListFile (APathSource, AMask, APathDest,
 
                     if _FuncFile:
                         s = f'_FuncFile: {_FuncFile.__name__:s}'
-                        LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                        # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                         _FuncFile (LUFile.ExpandFileName (LFile.path), APathDest)
                     #endif
                 #endif
@@ -135,7 +134,7 @@ def __ListFile (APathSource, AMask, APathDest,
                 #------------------------------------------------------------
                 if _FuncDir:
                     s = f'_FuncDir: {_FuncDir.__name__:s}'
-                    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                    # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                     _FuncDir (LUFile.ExpandFileName (LFile.path), APathDest)
                 #endif
             #endif
@@ -233,22 +232,23 @@ def BacFiles (APathSource, AMask, ASubDir, APathDest,
     #-------------------------------------------------------------------------------
     def FuncDir (_APathSource: str, _APathDest: str):
     #beginfunction
+        LPathSource = _APathSource
         LBaseName = os.path.basename (_APathSource)
         LPathDest = os.path.join (_APathDest, LBaseName)
         LPathTimeSource = LUFile.GetFileDateTime (_APathSource) [2]
-        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, _APathSource)
+        Lattr = LUFile.GetFileAttr (_APathSource)
         if not _ASync:
             if not LUFile.DirectoryExists(LPathDest):
                 s = f'Create {LPathDest:s} ...'
-                LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 LUFile.ForceDirectories(LPathDest)
+                LUFile.SetFileAttr(LPathDest, Lattr, False)
             #endif
         else:
             if not LUFile.DirectoryExists(LPathDest):
-                s = f'Delete {LPathDest:s} ...'
-                LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-                # LUFile.DirectoryDelete(LPathDest)
-                ...
+                s = f'Delete {LPathSource:s} ...'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                LUFile.DirectoryDelete(LPathSource)
             #endif
         #endif
     #endfunction
@@ -258,11 +258,14 @@ def BacFiles (APathSource, AMask, ASubDir, APathDest,
     #-------------------------------------------------------------------------------
     def FuncFile (AFileName: str, _APathDest: str):
     #beginfunction
+        LFileNameSource = AFileName
         LBaseName = os.path.basename (AFileName)
         LFileTimeSource = LUFile.GetFileDateTime (AFileName) [2]
         LFileSizeSource = LUFile.GetFileSize (AFileName)
-        LFileNameSource = AFileName
+        LFileAttrSource = LUFile.GetFileAttr (AFileName)
+
         LFileNameDest = os.path.join (_APathDest, LBaseName)
+
         #--------------------------------------------------------------------
         LResult = LUFile.COMPAREFILETIMES(LFileNameSource, LFileNameDest)
         #--------------------------------------------------------------------
@@ -291,28 +294,36 @@ def BacFiles (APathSource, AMask, ASubDir, APathDest,
                 # 0  File1 and file2 have the same date and time.
                 LDelete = False
                 LCopy = False
+                LFileTimeDest = LUFile.GetFileDateTime (LFileNameDest) [2]
+                LFileSizeDest = LUFile.GetFileSize (LFileNameDest)
+                LFileAttrDest = LUFile.GetFileAttr (LFileNameDest)
                 if (LFileSizeSource != LFileSizeDest):
                     LCopy = True
+                else:
+                    LUFile.SetFileAttr(LFileNameDest, LFileAttrSource, False)
+                    # shutil.copystat (LFileNameSource, LFileNameDest)
                 #endif
             case 1:
                 # 1  File1 is more recent than file2.
                 LDelete = False
                 LCopy = True
         #endmatch
+
         #--------------------------------------------------------------------
         # Copy
         #--------------------------------------------------------------------
         if LCopy == True:
             s = f'Copy {LFileNameSource:s} -> {LFileNameDest:s} ...'
-            LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             LUFile.FileCopy (LFileNameSource, LFileNameDest, True)
         #endif
+
         #--------------------------------------------------------------------
         # Delete
         #--------------------------------------------------------------------
         if LDelete == True:
             s = f'Delete {LFileNameSource:s} ...'
-            LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             LUFile.FileDelete (LFileNameSource)
         #endif
     #endfunction
@@ -320,8 +331,8 @@ def BacFiles (APathSource, AMask, ASubDir, APathDest,
 #beginfunction
     if (APathSource != "") and (APathDest != ""):
         LBaseName = os.path.basename (APathSource)
-        LPathDest = os.path.join (APathDest, LBaseName)
-        stat = f'BacFiles: {APathSource:s} {AMask:s} => {APathDest:s} ...'
+        LPathDest = APathDest
+        s = f'BacFiles: {APathSource:s} {AMask:s} => {APathDest:s} ...'
         LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
         __ListDir (APathSource, AMask, ASubDir, LPathDest, _OutFile, _Option, FuncDir, FuncFile)
     #endif
@@ -368,7 +379,8 @@ def DelFiles (APathSource, AMask, ASubDir, _OutFile, _Option, _Older: int):
         LFileTimeSource = LUFile.GetFileDateTime (AFileName) [2]
         # print ((LDay - LFileTimeSource).days)
         if (LDay - LFileTimeSource).days > _Older:
-            print('Delete',AFileName,'...')
+            s = f'Delete {AFileName:s} ...'
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             LUFile.FileDelete(AFileName)
         #endif
     #endfunction

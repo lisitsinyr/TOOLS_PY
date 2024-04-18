@@ -685,7 +685,7 @@ def GetFileAttr (AFileName: str) -> int:
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = 0
 
-    if FileExists (AFileName):
+    if FileExists (AFileName) or DirectoryExists (AFileName):
         LStat = os.stat (AFileName)
 
         Lmode = LStat.st_mode
@@ -708,8 +708,8 @@ def GetFileAttr (AFileName: str) -> int:
 def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
     """SetFileAttr"""
 #beginfunction
-    # s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
-    # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     LOSInfo = LUos.TOSInfo ()
     match LOSInfo.system.upper ():
@@ -728,8 +728,12 @@ def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             #endif
 
-            win32api.SetFileAttributes (AFileName, LattrNew)
-            # LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, stat.FILE_ATTRIBUTE_HIDDEN)
+            # if os.path.isdir (AFileName):
+            #     LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, LattrNew)
+            # else:
+            #     win32api.SetFileAttributes (AFileName, LattrNew)
+            # #endif
+            LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, LattrNew)
 
             # Change the file's permissions to writable
             # os.chmod (AFileName, os.W_OK)
@@ -792,7 +796,6 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
 #beginfunction
     s = f'FileCopy: {AFileNameSource:s} -> {AFileNameDest:s}'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-    LResult = True
 
     LDestPath = ExtractFileDir(AFileNameDest)
     if not DirectoryExists(LDestPath):
@@ -802,8 +805,23 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
     # Функция shutil.copy() копирует данные файла и режима доступа к файлу.
     # Другие метаданные, такие как время создания и время изменения файла не сохраняются.
     # Чтобы сохранить все метаданные файла из оригинала, используйте функцию shutil.copy2().
-    LResult = shutil.copy2 (AFileNameSource, AFileNameDest)
+
+    # unix
+    # LFileNameSource_stat = os.stat (AFileNameSource)
+    # Lowner = LFileNameSource_stat [stat.ST_UID]
+    # Lgroup = LFileNameSource_stat [stat.ST_GID]
+
+    LResult = shutil.copy2 (AFileNameSource, AFileNameDest) != ''
+    # LResult = shutil.copy2 (AFileNameSource, LDestPath) != ''
+
+    # LResult = shutil.copy (AFileNameSource, AFileNameDest) != ''
+    # shutil.copystat (AFileNameSource, AFileNameDest)
+
+    # unix
+    # os.chown (AFileNameDest, Lowner, Lgroup)
+
     return LResult
+
 #endfunction
 
 #-------------------------------------------------------------------------------
