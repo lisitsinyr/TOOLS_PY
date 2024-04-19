@@ -251,10 +251,12 @@ def GetFileDateTime (AFileName: str) -> ():
             stat = os.stat(AFileName)
             # file modification
             LFileTimeMod: datetime = stat.st_mtime
+            LFileTimeMod: datetime = os.path.getmtime (AFileName)
             # convert timestamp into DateTime object
             LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
             try:
                 LFileTimeCreate: datetime = stat.st_birthtime
+                LFileTimeCreate: datetime = os.path.getctime (AFileName)
                 # convert creation timestamp into DateTime object
                 LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
             except AttributeError:
@@ -358,7 +360,7 @@ def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
 #endfunction
 
 #--------------------------------------------------------------------------------
-#
+# GetFileSize
 #--------------------------------------------------------------------------------
 def GetFileSize (AFileName: str) -> int:
     """GetFileSize"""
@@ -366,12 +368,16 @@ def GetFileSize (AFileName: str) -> int:
     if FileExists (AFileName):
         if platform.system() == 'Windows':
             if FileExists (AFileName):
-                return os.path.getsize (AFileName)
+                LFileSize = os.path.getsize (AFileName)
+                return LFileSize
             else:
                 return 0
+            #endif
         else:
-            stat = os.stat(AFileName)
-            return stat.st_size
+            Lstat = os.stat(AFileName)
+            LFileSize = Lstat.st_size
+            LFileSize = os.path.getsize (AFileName)
+            return LFileSize
         #endif
     else:
         return 0
@@ -379,7 +385,7 @@ def GetFileSize (AFileName: str) -> int:
 #endfunction
 
 #--------------------------------------------------------------------------------
-# ExpandFileName (APath: str) -> str:
+# ExpandFileName
 #--------------------------------------------------------------------------------
 def ExpandFileName (APath: str) -> str:
     """ExpandFileName"""
@@ -616,7 +622,7 @@ def FileSearch (AFileName: str, APath: str) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# GetFileAttr
+# FileAttrStr
 #-------------------------------------------------------------------------------
 def FileAttrStr (Aattr: int) -> str:
     """FileAttrStr"""
@@ -653,7 +659,7 @@ def FileAttrStr (Aattr: int) -> str:
     #stat.FILE_ATTRIBUTE_READONLY            0b00000000 00000000 00000000 00000001
     #-------------------------------------------------------------------------------
     Lattr = Aattr
-    sa = ''
+    sa = '..............'
 
     sa += '1' if Lattr & stat.FILE_ATTRIBUTE_NO_SCRUB_DATA else '.'
     sa += '1' if Lattr & stat.FILE_ATTRIBUTE_VIRTUAL else '.'
@@ -679,6 +685,120 @@ def FileAttrStr (Aattr: int) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
+# FileAttrStrUnix
+#-------------------------------------------------------------------------------
+def FileAttrStrUnix (Amode: int) -> str:
+    """FileAttrStr"""
+#beginfunction
+    # chmod(path,mode)
+    # s = f'stat.S_ISUID: {bin (stat.S_ISUID):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_ISGID: {bin (stat.S_ISGID):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_ENFMT: {bin (stat.S_ENFMT):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_ISVTX: {bin (stat.S_ISVTX):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IREAD: {bin (stat.S_IREAD):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IWRITE: {bin (stat.S_IWRITE):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IEXEC: {bin (stat.S_IEXEC):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IRWXU: {bin (stat.S_IRWXU):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IRUSR: {bin (stat.S_IRUSR):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IWUSR: {bin (stat.S_IWUSR):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IXUSR: {bin (stat.S_IXUSR):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IRWXG: {bin (stat.S_IRWXG):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IRGRP: {bin (stat.S_IRGRP):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IWGRP: {bin (stat.S_IWGRP):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IXGRP: {bin (stat.S_IXGRP):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IRWXO: {bin (stat.S_IRWXO):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IROTH: {bin (stat.S_IROTH):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IWOTH: {bin (stat.S_IWOTH):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # s = f'stat.S_IXOTH: {bin (stat.S_IXOTH):s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    #-------------------------------------------------------------------------------
+    # stat.S_ISUID − Set user ID on execution
+    # stat.S_ISUID:  0b00010000 00000000
+    # stat.S_ISGID − Set group ID on execution
+    # stat.S_ISGID:  0b00000100 00000000
+    # stat.S_ENFMT – Enforced record locking
+    # stat.S_ENFMT:  0b00000100 00000000
+    # stat.S_ISVTX – After execution, save text image
+    # stat.S_ISVTX:  0b00000010 00000000
+    #-------------------------------------------------------------------------------
+    # stat.S_IREAD − Read by owner
+    # stat.S_IREAD:  0b00000001 00000000
+    # stat.S_IWRITE − Write by owner
+    # stat.S_IWRITE: 0b00000000 10000000
+    # stat.S_IEXEC − Execute by owner
+    # stat.S_IEXEC:  0b00000000 01000000
+    #-------------------------------------------------------------------------------
+    # stat.S_IRWXU − Read, write, and execute by owner
+    # stat.S_IRWXU:  0b00000001 11000000 Owner
+    #-------------------------------------------------------------------------------
+    # stat.S_IRUSR − Read by owner
+    # stat.S_IRUSR:  0b00000001 00000000
+    # stat.S_IWUSR − Write by owner
+    # stat.S_IWUSR:  0b00000000 10000000
+    # stat.S_IXUSR − Execute by owner
+    # stat.S_IXUSR:  0b00000000 01000000
+    #-------------------------------------------------------------------------------
+    # stat.S_IRWXG − Read, write, and execute by group
+    # stat.S_IRWXG:  0b00000000 00111000 Group
+    #-------------------------------------------------------------------------------
+    # stat.S_IRGRP − Read by group
+    # stat.S_IRGRP:  0b00000000 00100000
+    # stat.S_IWGRP − Write by group
+    # stat.S_IWGRP:  0b00000000 00010000
+    # stat.S_IXGRP − Execute by group
+    # stat.S_IXGRP:  0b00000000 00001000
+    #-------------------------------------------------------------------------------
+    # stat.S_IRWXO − Read, write, and execute by others
+    # stat.S_IRWXO:  0b00000000 00000111 Others
+    #-------------------------------------------------------------------------------
+    # stat.S_IROTH − Read by others
+    # stat.S_IROTH:  0b00000000 00000100
+    # stat.S_IWOTH − Write by others
+    # stat.S_IWOTH:  0b00000000 00000010
+    # stat.S_IXOTH − Execute by others
+    # stat.S_IXOTH:  0b00000000 00000001
+    #-------------------------------------------------------------------------------
+
+    Lmode = Amode
+    sa = '---'
+    sa += '1' if Lmode & stat.S_ISUID else '-'
+    sa += '1' if Lmode & stat.S_ISGID else '-'
+    sa += '1' if Lmode & stat.S_ENFMT else '-'
+    sa += '1' if Lmode & stat.S_ISVTX else '-'
+    #-------------------------------------------------------------------------------
+    sa += 'r' if Lmode & stat.S_IRUSR else '-'
+    sa += 'w' if Lmode & stat.S_IWUSR else '-'
+    sa += 'x' if Lmode & stat.S_IXUSR else '-'
+    #-------------------------------------------------------------------------------
+    sa += 'r' if Lmode & stat.S_IRGRP else '-'
+    sa += 'w' if Lmode & stat.S_IWGRP else '-'
+    sa += 'x' if Lmode & stat.S_IXGRP else '-'
+    #-------------------------------------------------------------------------------
+    sa += 'r' if Lmode & stat.S_IROTH else '-'
+    sa += 'w' if Lmode & stat.S_IWOTH else '-'
+    sa += 'x' if Lmode & stat.S_IXOTH else '-'
+    return sa
+#endfunction
+
+#-------------------------------------------------------------------------------
 # GetFileAttr
 #-------------------------------------------------------------------------------
 def GetFileAttr (AFileName: str) -> int:
@@ -693,18 +813,19 @@ def GetFileAttr (AFileName: str) -> int:
 
         Lmode = LStat.st_mode
         s = f'Lmode: {Lmode:d} {stat.filemode (Lmode):s}'
-        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
+        LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
         if platform.system() == 'Windows':
             Lattr = LStat.st_file_attributes
+            LResult = Lattr
             # Lattr = win32api.GetFileAttributes (AFileName)
+            s = f'Lattr:{Lattr:d} {hex (Lattr):s} {bin (Lattr):s} {FileAttrStr (Lattr):s}'
         else:
-            Lattr = LStat.st_flags
+            LResult = Lmode
+            s = f'Lmode:{Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {FileAttrStrUnix (Lmode):s}'
         #endif
-        s = f'Lattr:{Lattr:d} {hex(Lattr):s} {bin(Lattr):s} {FileAttrStr(Lattr):s}'
         LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
 
-        LResult = Lattr
     #endif
     return LResult
 #endfunction
