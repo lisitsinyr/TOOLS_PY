@@ -17,18 +17,21 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
+import os
+import platform
+import stat
 import datetime
 import logging
-import os
-import stat
 import tempfile
-import platform
 import re
 import ctypes
 import pathlib
 if platform.system() == 'Windows':
     import win32api
     import win32con
+#endif
+if platform.system() == 'Linux':
+    ...
 #endif
 
 #------------------------------------------
@@ -47,6 +50,15 @@ import LUos
 import LULog
 
 """
+#--------------------------------------------------------------------------------
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# if not file.endswith(ext):
+#     contains_other_ext=True
+#--------------------------------------------------------------------------------
+"""
+
+"""
+#--------------------------------------------------------------------------------
 f = open(file_name, access_mode, encoding='')
     file_name = имя открываемого файла
     access_mode = режим открытия файла. Он может быть: для чтения, записи и т. д.
@@ -68,6 +80,7 @@ ab+ Откроет для добавления нового содержимог
 
 # LFile = open (AFileName, 'r', encoding='utf-8')
 # LFile = open (AFileName, 'r', encoding='cp1251')
+#--------------------------------------------------------------------------------
 """
 
 cDefaultEncoding = 'cp1251'
@@ -87,48 +100,47 @@ def DirectoryExists (APath: str) -> bool:
 def ForceDirectories (ADir: str) -> bool:
     """ForceDirectories"""
 #beginfunction
-    # SCannotCreateDir: str = 'Unable to create directory'
-    os.makedirs (ADir, exist_ok = True)
+    try:
+        os.makedirs (ADir, exist_ok = True)
+    except:
+        s = f'Unable to create directory {ADir:s} ...'
+        LULog.LoggerTOOLS_AddLevel(logging.error, s)
+    #endtry
     LResult = DirectoryExists (ADir)
     return LResult
 #endfunction
 
 #--------------------------------------------------------------------------------
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# if not file.endswith(ext):
-#     contains_other_ext=True
+# GetDirectoryTreeSize
 #--------------------------------------------------------------------------------
-
-#--------------------------------------------------------------------------------
-# get_tree_size
-#--------------------------------------------------------------------------------
-def get_tree_size(path):
-    """get_tree_size"""
+def GetDirectoryTreeSize(ADir: str) -> int:
+    """GetDirectoryTreeSize"""
+    """Return total size of files in given path and subdirs"""
 #beginfunction
-    """Return total size of files in given path and subdirs."""
-    total = 0
-    for entry in os.scandir(path):
-        if entry.is_dir(follow_symlinks=False):
-            total += get_tree_size(entry.path)
+    Ltotal = 0
+    for Lentry in os.scandir(ADir):
+        if Lentry.is_dir(follow_symlinks=False):
+            Ltotal += GetDirectoryTreeSize(Lentry.path)
         else:
-            total += entry.stat(follow_symlinks=False).st_size
-    return total
+            Ltotal += Lentry.stat(follow_symlinks=False).st_size
+    return Ltotal
 #endfunction
 
 #--------------------------------------------------------------------------------
-# DirectoryDelete
+# DeleteDirectoryTree
 #--------------------------------------------------------------------------------
-def DirectoryDelete (ADirectoryName: str) -> bool:
-    """DirectoryDelete"""
-
-    # В этом примере показано, как удалить дерево каталогов в Windows,
-    # где для некоторых файлов установлен бит только для чтения.
-    # Он использует обратный вызов onerror, чтобы очистить бит readonly и повторить попытку удаления.
+def DeleteDirectoryTree (ADir: str) -> bool:
+    """DeleteDirectoryTree"""
+    """
+    Удалить дерево каталогов в Windows,
+    где для некоторых файлов установлен бит только для чтения.
+    Он использует обратный вызов onerror, чтобы очистить бит readonly и повторить попытку удаления.
+    """
     def remove_readonly (func, path, _):
         """remove_readonly"""
     #beginfunction
-        "Clear the readonly bit and reattempt the removal"
-        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, path)
+        s = f'Clear the readonly bit and reattempt the removal {path:s} ...'
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
         os.chmod (path, stat.S_IWRITE)
         func (path)
     #endfunction
@@ -149,30 +161,34 @@ def DirectoryDelete (ADirectoryName: str) -> bool:
     #endfunction
 
 #beginfunction
-    LResult = False
-    if DirectoryExists (ADirectoryName):
-        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, ADirectoryName)
-
-        # shutil.rmtree (ADirectoryName, ignore_errors = True, onexc = None)
-        shutil.rmtree (ADirectoryName, ignore_errors = False, onerror = remove_readonly)
-
-        LResult = True
+    if DirectoryExists (ADir):
+        s = f'DeleteDirectoryTree {ADir:s} ...'
+        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
+        try:
+            # shutil.rmtree (ADirectoryName, ignore_errors = True, onexc = None)
+            shutil.rmtree (ADir, ignore_errors = False, onerror = remove_readonly)
+            LResult = True
+        except:
+            s = f'Unable delete directory {ADir:s} ...'
+            LULog.LoggerTOOLS_AddLevel (logging.error, s)
+            LResult = False
+        #endtry
     #endif
     return LResult
 #endfunction
 
 #--------------------------------------------------------------------------------
-# DirectoryDelete_walk
+# DeleteDirectory_walk
 #--------------------------------------------------------------------------------
 # Delete everything reachable from the directory named in 'top',
 # assuming there are no symbolic links.
 # CAUTION:  This is dangerous!  For example, if top == '/', it
 # could delete all your disk files.
 #--------------------------------------------------------------------------------
-def DirectoryDelete_walk (ADirectoryName: str) -> bool:
-    """DirectoryDelete_walk"""
+def DeleteDirectory_walk (ADirectoryName: str) -> bool:
+    """DeleteDirectory_walk"""
 #beginfunction
-    LResult = False
+    LResult = True
     if DirectoryExists (ADirectoryName):
         for root, dirs, files in os.walk (ADirectoryName, topdown = False):
             for name in files:
@@ -188,14 +204,14 @@ def DirectoryDelete_walk (ADirectoryName: str) -> bool:
 #endfunction
 
 #--------------------------------------------------------------------------------
-# DirectoryDelete_walk_2
+# DeleteDirectory_walk_2
 #--------------------------------------------------------------------------------
 # Replace with the path to the directory you want to remove
 # directory = '/path/to/directory'
-def DirectoryDelete_walk_2 (ADirectoryName: str) -> bool:
-    """DirectoryDelete_walk_2"""
+def DeleteDirectory_walk_2 (ADirectoryName: str) -> bool:
+    """DeleteDirectory_walk_2"""
 #beginfunction
-    LResult = False
+    LResult = True
     if DirectoryExists (ADirectoryName):
         # Use os.walk to traverse the directory tree
         for root, dirs, files in os.walk(directory):
@@ -218,8 +234,6 @@ def DirectoryDelete_walk_2 (ADirectoryName: str) -> bool:
     #endif
     return LResult
 #endfunction
-# Delete the top-level directory
-# os.rmdir(directory)
 
 #--------------------------------------------------------------------------------
 # FileExists
@@ -237,66 +251,31 @@ def GetFileDateTime (AFileName: str) -> ():
     """GetFileDateTime"""
 #beginfunction
     LTuple = ()
+    LFileTimeCreate = 0
+    LFileTimeMod = 0
+    LFileTimeCreateDate = 0
+    LFileTimeModDate = 0
     if FileExists (AFileName):
-        if platform.system() == 'Windows':
-            # file creation
-            LFileTimeCreate: datetime = os.path.getctime (AFileName)
-            # convert creation timestamp into DateTime object
-            LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
-            # file modification
-            LFileTimeMod: datetime = os.path.getmtime (AFileName)
-            # convert timestamp into DateTime object
-            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
-        else:
-            stat = os.stat(AFileName)
-            # file modification
-            LFileTimeMod: datetime = stat.st_mtime
-            LFileTimeMod: datetime = os.path.getmtime (AFileName)
-            # convert timestamp into DateTime object
-            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
-            try:
-                LFileTimeCreate: datetime = stat.st_birthtime
-                LFileTimeCreate: datetime = os.path.getctime (AFileName)
-                # convert creation timestamp into DateTime object
-                LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
-            except AttributeError:
-                # We're probably on Linux. No easy way to get creation dates here,
-                # so we'll settle for when its content was last modified.
-                LFileTimeCreate: datetime = 0
-                LFileTimeCreateDate: datetime = 0
-            #endtry
-        #endif
-        LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
+        # file creation
+        LFileTimeCreate: datetime = os.path.getctime (AFileName)
+        # file modification
+        LFileTimeMod: datetime = os.path.getmtime (AFileName)
+        # convert creation timestamp into DateTime object
+        LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+        # convert timestamp into DateTime object
+        LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
     #endif
     if DirectoryExists (AFileName):
-        if platform.system() == 'Windows':
-            # file creation
-            LFileTimeCreate: datetime = os.path.getctime (AFileName)
-            # convert creation timestamp into DateTime object
-            LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
-            # file modification
-            LFileTimeMod: datetime = os.path.getmtime (AFileName)
-            # convert timestamp into DateTime object
-            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
-        else:
-            stat = os.stat(AFileName)
-            # file modification
-            LFileTimeMod: datetime = stat.st_mtime
-            # convert timestamp into DateTime object
-            LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
-            try:
-                LFileTimeCreate: datetime = stat.st_birthtime
-                # convert creation timestamp into DateTime object
-                LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
-            except AttributeError:
-                # We're probably on Linux. No easy way to get creation dates here,
-                # so we'll settle for when its content was last modified.
-                LFileTimeCreate: datetime = 0
-                LFileTimeCreateDate: datetime = 0
-            #endtry
-        #endif
-        LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
+        # file creation
+        LFileTimeCreate: datetime = os.path.getctime (AFileName)
+        # file modification
+        LFileTimeMod: datetime = os.path.getmtime (AFileName)
+        # convert creation timestamp into DateTime object
+        LFileTimeCreateDate: datetime = datetime.datetime.fromtimestamp (LFileTimeCreate)
+        # convert timestamp into DateTime object
+        LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
     #endif
+    LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
     return LTuple
 #endfunction
 
@@ -550,8 +529,8 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
     """SearchFile"""
 #beginfunction
     LResult = AFileName
-    if ExtractFileDir (LResult) == '':
-        if ExtractFileExt (LResult) == '':
+    if ExtractFileDir (AFileName) == '':
+        if ExtractFileExt (AFileName) == '':
             LResult = LResult + ADefaultExt
         #endif
 
@@ -570,7 +549,7 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
         #    LResult = ''
         ##endif
     else:
-        if ExtractFileExt (LResult) == '':
+        if ExtractFileExt (AFileName) == '':
             LResult = LResult + ADefaultExt
         #endif
         LResult = ExpandFileName (LResult)
@@ -659,8 +638,14 @@ def FileAttrStr (Aattr: int) -> str:
     #stat.FILE_ATTRIBUTE_READONLY            0b00000000 00000000 00000000 00000001
     #-------------------------------------------------------------------------------
     Lattr = Aattr
-    sa = '..............'
-
+    sa = ''
+    sa += '????????'
+    sa += '1' if Lattr & 0b100000000000000000000000 else '?'
+    sa += '1' if Lattr & 0b010000000000000000000000 else '?'
+    sa += '1' if Lattr & 0b001000000000000000000000 else '?'
+    sa += '1' if Lattr & 0b000100000000000000000000 else '?'
+    sa += '1' if Lattr & 0b000010000000000000000000 else '?'
+    sa += '1' if Lattr & 0b000001000000000000000000 else '?'
     sa += '1' if Lattr & stat.FILE_ATTRIBUTE_NO_SCRUB_DATA else '.'
     sa += '1' if Lattr & stat.FILE_ATTRIBUTE_VIRTUAL else '.'
 
@@ -729,6 +714,7 @@ def FileAttrStrUnix (Amode: int) -> str:
     # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
     # s = f'stat.S_IXOTH: {bin (stat.S_IXOTH):s}'
     # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+
     #-------------------------------------------------------------------------------
     # stat.S_ISUID − Set user ID on execution
     # stat.S_ISUID:  0b00010000 00000000
@@ -776,9 +762,12 @@ def FileAttrStrUnix (Amode: int) -> str:
     # stat.S_IXOTH − Execute by others
     # stat.S_IXOTH:  0b00000000 00000001
     #-------------------------------------------------------------------------------
-
     Lmode = Amode
-    sa = '---'
+    sa = ''
+    sa += '1' if Lmode & 0b1000000000000000 else '-'
+    sa += '1' if Lmode & 0b0100000000000000 else '-'
+    sa += '1' if Lmode & 0b0010000000000000 else '-'
+
     sa += '1' if Lmode & stat.S_ISUID else '-'
     sa += '1' if Lmode & stat.S_ISGID else '-'
     sa += '1' if Lmode & stat.S_ENFMT else '-'
@@ -823,6 +812,7 @@ def GetFileAttr (AFileName: str) -> int:
         else:
             LResult = Lmode
             s = f'Lmode:{Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {FileAttrStrUnix (Lmode):s}'
+            # 2113 Lmode:33204 0x81b4 0b1000000110110100 -------rw-rw-r--
         #endif
         LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
 
