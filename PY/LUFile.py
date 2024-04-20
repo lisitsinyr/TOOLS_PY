@@ -185,49 +185,17 @@ def DeleteDirectoryTree (ADir: str) -> bool:
 # CAUTION:  This is dangerous!  For example, if top == '/', it
 # could delete all your disk files.
 #--------------------------------------------------------------------------------
-def DeleteDirectory_walk (ADirectoryName: str) -> bool:
-    """DeleteDirectory_walk"""
+def ClearDirectory (ADir: str) -> bool:
+    """ClearDirectory"""
 #beginfunction
     LResult = True
-    if DirectoryExists (ADirectoryName):
-        for root, dirs, files in os.walk (ADirectoryName, topdown = False):
-            for name in files:
-                os.remove (os.path.join (root, name))
-            #endfor
-            for name in dirs:
-                os.rmdir (os.path.join (root, name))
-            #endfor
-        #endfor
-        LResult = True
-    #endif
-    return LResult
-#endfunction
-
-#--------------------------------------------------------------------------------
-# DeleteDirectory_walk_2
-#--------------------------------------------------------------------------------
-# Replace with the path to the directory you want to remove
-# directory = '/path/to/directory'
-def DeleteDirectory_walk_2 (ADirectoryName: str) -> bool:
-    """DeleteDirectory_walk_2"""
-#beginfunction
-    LResult = True
-    if DirectoryExists (ADirectoryName):
-        # Use os.walk to traverse the directory tree
-        for root, dirs, files in os.walk(directory):
-            # For each file in the directory
+    if DirectoryExists (ADir):
+        for root, dirs, files in os.walk (ADir, topdown = False):
             for file in files:
-                # Construct the full path to the file
-                file_path = os.path.join(root, file)
-                # Delete the file
-                os.remove(file_path)
+                os.remove (os.path.join (root, file))
             #endfor
-            # For each subdirectory in the directory
             for dir in dirs:
-                # Construct the full path to the subdirectory
-                dir_path = os.path.join(root, dir)
-                # Delete the subdirectory
-                os.rmdir(dir_path)
+                os.rmdir (os.path.join (root, dir))
             #endfor
         #endfor
         LResult = True

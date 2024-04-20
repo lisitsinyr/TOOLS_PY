@@ -375,8 +375,6 @@ def __FakeFile (APathSource,
 #beginfunction
     for LFileCount in range(0, 2):
         s = f'FakeFile_{str(GLevel+1):s}_{str(LFileCount+1):s}'
-        print(s)
-
         LFileName = os.path.join (APathSource, s)
 
         LHahdle = LUFile.OpenTextFile(LFileName, '')
@@ -387,7 +385,7 @@ def __FakeFile (APathSource,
         if _FuncFile:
             s = f'_FuncFile: {_FuncFile.__name__:s}'
             # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-            # _FuncFile (LUFile.ExpandFileName (LFile.path), APathDest)
+            _FuncFile (LFileName)
         #endif
     #endfor
 #endfunction
@@ -404,6 +402,7 @@ def __FakeDir (APathSource,
     # Dir
     #------------------------------------------------------------
     LBaseName = os.path.basename (APathSource)
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, LUFile.ExpandFileName (APathSource))
 
     #------------------------------------------------------------
     #
@@ -411,7 +410,7 @@ def __FakeDir (APathSource,
     if _FuncDir:
         s = f'_FuncDir: {_FuncDir.__name__:s}'
         # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-        # _FuncDir (LUFile.ExpandFileName (LFile.path), APathDest)
+        _FuncDir (LUFile.ExpandFileName (APathSource))
     #endif
 
     __FakeFile (APathSource, _OutFile, _Option, _FuncDir, _FuncFile)
@@ -421,7 +420,6 @@ def __FakeDir (APathSource,
     #------------------------------------------------------------
     if GLevel < 3:
         for LDirCount in range (0, 2):
-
             s = f'FakeDir_{str(GLevel+1):s}_{str(LDirCount+1):s}'
             LPathSource = os.path.join (APathSource, s)
             LUFile.ForceDirectories(LPathSource)
