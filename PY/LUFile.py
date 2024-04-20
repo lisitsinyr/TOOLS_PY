@@ -821,7 +821,7 @@ def SetFileAttr (AFileName: str, Aattr: int, AClear: bool):
             # #endif
             LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, LattrNew)
         case 'Linux':
-            ...
+            raise NotImplementedError('SetFileAttr Linux not implemented ...')
         case _:
             s = f'Неизвестная система ...'
             LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
@@ -875,7 +875,7 @@ def SetFileFlags (AFileName: str, Aflags: int):
     LOSInfo = LUos.TOSInfo ()
     match LOSInfo.system:
         case 'Windows':
-            ...
+            raise NotImplementedError('SetFileAttr Windows not implemented...')
         case 'Linux':
             # os.chflags() method in Python used to set the flags of path to the numeric flags;
             # available in Unix only
@@ -932,7 +932,7 @@ def FileDelete (AFileName: str) -> bool:
                     LResult = False
                 #endtry
             case 'Linux':
-                ...
+                raise NotImplementedError('FileDelete Linux not implemented...')
             case _:
                 s = f'Неизвестная система ...'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
@@ -983,6 +983,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
                 Lowner = LFileNameSource_stat [stat.ST_UID]
                 Lgroup = LFileNameSource_stat [stat.ST_GID]
                 # os.chown (AFileNameDest, Lowner, Lgroup)
+                raise NotImplementedError('FileCopy Linux not implemented...')
             case _:
                 s = f'Неизвестная система ...'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
@@ -1026,19 +1027,13 @@ def CheckFileNameMask (AFileName: str, AMask: str) -> bool:
     # regex = re.compile (LMask)
     # Lresult = regex.match(LFileName)
     #-------------------------------------------------------------------------------
+
     # эквивалентно
+
     #-------------------------------------------------------------------------------
     Lresult = re.match (LMask, LFileName)
     # Lresult = re.search (LMask, LFileName)
     #-------------------------------------------------------------------------------
-
-    # regex = re.compile (LMask)
-    # if regex.match(LFileName):
-    #     print(LFileName + ' ok!')
-    # else:
-    #     print(LFileName + ' not match')
-    # #endif
-    # matches = re.finditer (regex, AFileName, re.MULTILINE)
     return Lresult
 #endfunction
 

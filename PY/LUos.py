@@ -17,13 +17,45 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
+import platform
 import sys
 import enum
-import platform
 import ctypes
 import datetime
 import logging
 
+"""
+Кроссплатформенные функции:
+Информации об архитектуре platform.architecture(),
+Тип машины platform.machine(),
+Сетевое имя компьютера platform.node(),
+Сведения о базовой платформе platform.platform(),
+Реальное имя процессора platform.processor(),
+Номер и дата сборки Python platform.python_build(),
+Версия компилятора platform.python_compiler(),
+Ветвь SCM реализации Python platform.python_branch(),
+Реализация Python platform.python_implementation(),
+Ревизия SCM реализации Python platform.python_revision(),
+Версия Python как строка platform.python_version(),
+Версия Python как кортеж platform.python_version_tuple(),
+Сведения о выпуске системы platform.release(),
+Имя операционной системы platform.system(),
+platform.system_alias(),
+Версия выпуска системы platform.version(),
+Сведения команды терминала uname platform.uname(),
+Функции платформы Java:
+Версия интерфейса для Jython platform.java_ver(),
+Функции платформы Windows:
+Информация о версии из реестра Windows platform.win32_ver(),
+Текущая редакция Windows platform.win32_edition(),
+True, если Windows, распознается как IoT platform.win32_is_iot(),
+Функции платформы Mac OS:
+Информация о версии Mac OS platform.mac_ver(),
+Функции платформы Unix:
+Версия библиотеки libc platform.libc_ver(),
+Функции платформы Linux:
+Идентификатор ОС из os-release platform.freedesktop_os_release() (доступна в Python 3.10).
+"""
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
