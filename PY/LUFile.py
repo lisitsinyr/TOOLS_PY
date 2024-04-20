@@ -265,6 +265,21 @@ def GetFileDateTime (AFileName: str) -> ():
         # convert timestamp into DateTime object
         LFileTimeModDate: datetime = datetime.datetime.fromtimestamp (LFileTimeMod)
     #endif
+    LTuple = (LFileTimeMod, LFileTimeCreate, LFileTimeModDate, LFileTimeCreateDate)
+    return LTuple
+#endfunction
+
+#--------------------------------------------------------------------------------
+# GetDirDateTime
+#--------------------------------------------------------------------------------
+def GetDirDateTime (AFileName: str) -> ():
+    """GetDirDateTime"""
+#beginfunction
+    LTuple = ()
+    LFileTimeCreate = 0
+    LFileTimeMod = 0
+    LFileTimeCreateDate = 0
+    LFileTimeModDate = 0
     if DirectoryExists (AFileName):
         # file creation
         LFileTimeCreate: datetime = os.path.getctime (AFileName)
@@ -345,22 +360,11 @@ def GetFileSize (AFileName: str) -> int:
     """GetFileSize"""
 #beginfunction
     if FileExists (AFileName):
-        if platform.system() == 'Windows':
-            if FileExists (AFileName):
-                LFileSize = os.path.getsize (AFileName)
-                return LFileSize
-            else:
-                return 0
-            #endif
-        else:
-            Lstat = os.stat(AFileName)
-            LFileSize = Lstat.st_size
-            LFileSize = os.path.getsize (AFileName)
-            return LFileSize
-        #endif
+        LResult = os.path.getsize (AFileName)
     else:
-        return 0
+        LResult = 0
     #endif
+    return LResult
 #endfunction
 
 #--------------------------------------------------------------------------------
@@ -374,7 +378,7 @@ def ExpandFileName (APath: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-# ExtractFileDir (APath: str) -> str:
+# ExtractFileDir
 #--------------------------------------------------------------------------------
 def ExtractFileDir (APath: str) -> str:
     """ExtractFileDir"""
@@ -384,7 +388,7 @@ def ExtractFileDir (APath: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-# ExtractFileName (APath: str) -> str:
+# ExtractFileName
 #--------------------------------------------------------------------------------
 def ExtractFileName (APath: str) -> str:
     """ExtractFileName"""
@@ -394,7 +398,7 @@ def ExtractFileName (APath: str) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# ExtractFileNameWithoutExt (AFileName: str) -> str:
+# ExtractFileNameWithoutExt
 #-------------------------------------------------------------------------------
 def ExtractFileNameWithoutExt (AFileName: str) -> str:
     """ExtractFileNameWithoutExt"""
@@ -404,7 +408,7 @@ def ExtractFileNameWithoutExt (AFileName: str) -> str:
 #endfunction
 
 #--------------------------------------------------------------------------------
-# ExtractFileExt (APath: str) -> str:
+# ExtractFileExt
 #--------------------------------------------------------------------------------
 def ExtractFileExt (AFileName: str) -> str:
     """ExtractFileExt"""
@@ -494,7 +498,6 @@ def IncludeTrailingBackslash (APath: str) -> str:
 def GetDirNameYYMMDD (ARootDir: str, ADate: datetime.datetime) -> str:
     """GetDirNameYYMMDD"""
 #beginfunction
-    # LYMD = LUDateTime.DecodeDate_ (ADate)
     LYMDStr: str = LUDateTime.DateTimeStr(False, ADate, LUDateTime.cFormatDateYYMMDD_02, False)
     LResult = IncludeTrailingBackslash(ARootDir)+LYMDStr
     return LResult
@@ -517,7 +520,7 @@ def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
 def GetTempDir () -> str:
     """GetTempDir"""
 #beginfunction
-    # LResult = win32api.GetTempPath()
+    LResult = win32api.GetTempPath()
     LResult = tempfile.gettempdir ()
     return LResult
 #endfunction
@@ -1039,16 +1042,16 @@ def WriteStrToFile (AFileName: str, AStr: str):
     LEncoding = GetFileEncoding (AFileName)
     if LEncoding == '':
         LEncoding = cDefaultEncoding
-    LFile = open (AFileName, 'a+', encoding = LEncoding)
-    LFile.write (AStr)
-    LFile.flush ()
-    LFile.close ()
+    LHandle = open (AFileName, 'a+', encoding = LEncoding)
+    LHandle.write (AStr)
+    LHandle.flush ()
+    LHandle.close ()
 #endfunction
 
 #-------------------------------------------------------------------------------
 # OpenTextFile
 #-------------------------------------------------------------------------------
-def OpenTextFile(AFileName: str, AEncoding: str):
+def OpenTextFile(AFileName: str, AEncoding: str) -> int:
     """OpenTextFile"""
 #beginfunction
     s = f'OpenTextFile: {AFileName:s} ...'
@@ -1062,12 +1065,22 @@ def OpenTextFile(AFileName: str, AEncoding: str):
 #endfunction
 
 #-------------------------------------------------------------------------------
+# WriteTextFile
+#-------------------------------------------------------------------------------
+def WriteTextFile(AHandle, AStr: str):
+    """WriteTextFile"""
+#beginfunction
+    AHandle.write (AStr+'\n')
+    AHandle.flush ()
+#endfunction
+
+#-------------------------------------------------------------------------------
 # CloseTextFile
 #-------------------------------------------------------------------------------
 def CloseTextFile (AHandle):
     """CloseTextFile"""
 #beginfunction
-    s = f'CloseTextFile: {AFileName:s} ...'
+    s = f'CloseTextFile ...'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     AHandle.flush ()

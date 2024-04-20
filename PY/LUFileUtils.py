@@ -78,7 +78,7 @@ def __OUTFILE (s: str, _OutFile: str):
 # __ListFile
 #-------------------------------------------------------------------------------
 def __ListFile (APathSource, AMask, APathDest,
-                _OutFile, _Option, _FuncDir, _FuncFile):
+                _OutFile, _Option, _FuncDir, _FuncFile) -> int:
     global GFileCount
     global GFileSize
 #beginfunction
@@ -120,7 +120,7 @@ def __ListFile (APathSource, AMask, APathDest,
                 # class os.DirEntry - Это каталог
                 #------------------------------------------------------------
                 LBaseName = os.path.basename (LFile.path)
-                LPathTimeSource = LUFile.GetFileDateTime (LFile.path) [2]
+                LPathTimeSource = LUFile.GetDirDateTime (LFile.path) [2]
 
                 match _Option:
                     case 1 | 11:
@@ -160,7 +160,7 @@ def __ListDir (APathSource, AMask, ASubdir, APathDest,
     # Dir
     #------------------------------------------------------------
     LBaseName = os.path.basename (APathSource)
-    LPathTimeSource = LUFile.GetFileDateTime (APathSource)[2]
+    LPathTimeSource = LUFile.GetDirDateTime (APathSource)[2]
 
     GFileCount = 0
     GFileSize = 0
@@ -363,6 +363,86 @@ def DirFiles (APathSource, AMask, ASubDir,
         s = f'DirFiles: {APathSource:s} {AMask:s} ...'
         LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
         __ListDir(APathSource, AMask, ASubDir, '', _OutFile, _Option, _FuncDir, _FuncFile)
+    #endif
+#endfunction
+
+#-------------------------------------------------------------------------------
+# __FakeFile
+#-------------------------------------------------------------------------------
+def __FakeFile (APathSource,
+                _OutFile, _Option, _FuncDir, _FuncFile):
+    global GLevel
+#beginfunction
+    for LFileCount in range(0, 2):
+        s = f'FakeFile_{str(GLevel+1):s}_{str(LFileCount+1):s}'
+        print(s)
+
+        LFileName = os.path.join (APathSource, s)
+
+        LHahdle = LUFile.OpenTextFile(LFileName, '')
+        LUFile.WriteTextFile(LHahdle, 'test')
+        LUFile.WriteTextFile(LHahdle, 'тест')
+        LUFile.CloseTextFile(LHahdle)
+
+        if _FuncFile:
+            s = f'_FuncFile: {_FuncFile.__name__:s}'
+            # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            # _FuncFile (LUFile.ExpandFileName (LFile.path), APathDest)
+        #endif
+    #endfor
+#endfunction
+
+#-------------------------------------------------------------------------------
+# __FakeDir
+#-------------------------------------------------------------------------------
+def __FakeDir (APathSource,
+               _OutFile, _Option, _FuncDir, _FuncFile):
+#beginfunction
+    global GLevel
+
+    #------------------------------------------------------------
+    # Dir
+    #------------------------------------------------------------
+    LBaseName = os.path.basename (APathSource)
+
+    #------------------------------------------------------------
+    #
+    #------------------------------------------------------------
+    if _FuncDir:
+        s = f'_FuncDir: {_FuncDir.__name__:s}'
+        # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+        # _FuncDir (LUFile.ExpandFileName (LFile.path), APathDest)
+    #endif
+
+    __FakeFile (APathSource, _OutFile, _Option, _FuncDir, _FuncFile)
+
+    #------------------------------------------------------------
+    # на следующий уровень
+    #------------------------------------------------------------
+    if GLevel < 3:
+        for LDirCount in range (0, 2):
+
+            s = f'FakeDir_{str(GLevel+1):s}_{str(LDirCount+1):s}'
+            LPathSource = os.path.join (APathSource, s)
+            LUFile.ForceDirectories(LPathSource)
+
+            GLevel = GLevel + 1
+            __FakeDir(LPathSource, _OutFile, _Option, _FuncDir, _FuncFile)
+        #endfor
+    #endif
+    GLevel = GLevel - 1
+#endfunction
+
+#-------------------------------------------------------------------------------
+# FakeFiles
+#-------------------------------------------------------------------------------
+def FakeFiles (APathSource,
+              _OutFile, _Option, _FuncDir, _FuncFile):
+#beginfunction
+    if (APathSource != ""):
+        s = f'FakeFiles: {APathSource:s} ...'
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+        __FakeDir(APathSource, _OutFile, _Option, _FuncDir, _FuncFile)
     #endif
 #endfunction
 
