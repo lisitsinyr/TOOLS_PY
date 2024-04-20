@@ -185,8 +185,8 @@ def DeleteDirectoryTree (ADir: str) -> bool:
 # CAUTION:  This is dangerous!  For example, if top == '/', it
 # could delete all your disk files.
 #--------------------------------------------------------------------------------
-def ClearDirectory (ADir: str) -> bool:
-    """ClearDirectory"""
+def DirectoryClear (ADir: str) -> bool:
+    """DirectoryClear"""
 #beginfunction
     LResult = True
     if DirectoryExists (ADir):
@@ -493,6 +493,25 @@ def GetTempDir () -> str:
     return LResult
 #endfunction
 
+#-------------------------------------------------------------------------------
+# FileSearch
+#-------------------------------------------------------------------------------
+def FileSearch (AFileName: str, APath: str) -> str:
+    """FileSearch"""
+#beginfunction
+    try:
+        # int = SearchPath(path, fileName , fileExt )
+        #   The return value is a tuple of (string, int).
+        #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
+        L = win32api.SearchPath (APath, AFileName, None)
+        print('L = win32api.SearchPath (APath, AFileName, None)')
+
+        LResult = L [0]
+    except:
+        LResult = ''
+    return LResult
+#endfunction
+
 #--------------------------------------------------------------------------------
 # SearchFile
 #--------------------------------------------------------------------------------
@@ -508,17 +527,10 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
         # int = SearchPath(path, fileName , fileExt )
         #   The return value is a tuple of (string, int).
         #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-
-        # L = win32api.SearchPath (None, LResult, None)
+        L = win32api.SearchPath (None, LResult, None)
         print('L = win32api.SearchPath (None, LResult, None)')
 
-        LResult = ''
-        #L = ''
-        #if L[0] != '':
-        #    LResult = L[0]
-        #else:
-        #    LResult = ''
-        ##endif
+        LResult = L[0]
     else:
         if ExtractFileExt (AFileName) == '':
             LResult = LResult + ADefaultExt
@@ -552,30 +564,10 @@ def SearchEXEFile (AFileName: str) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# FileSearch
+# GetFileAttrStr
 #-------------------------------------------------------------------------------
-def FileSearch (AFileName: str, APath: str) -> str:
-    """FileSearch"""
-#beginfunction
-    try:
-        # L = win32api.SearchPath (APath, AFileName, None)
-        print('L = win32api.SearchPath (APath, AFileName, None)')
-        L = ''
-        if L [0] != '':
-            LResult = L [0]
-        else:
-            LResult = ''
-        #endif
-    except:
-        LResult = ''
-    return LResult
-#endfunction
-
-#-------------------------------------------------------------------------------
-# FileAttrStr
-#-------------------------------------------------------------------------------
-def FileAttrStr (Aattr: int) -> str:
-    """FileAttrStr"""
+def GetFileAttrStr (Aattr: int) -> str:
+    """GetFileAttrStr"""
 #beginfunction
     #-------------------------------------------------------------------------------
     #                                        0x      00       00       20       20
@@ -641,10 +633,10 @@ def FileAttrStr (Aattr: int) -> str:
 #endfunction
 
 #-------------------------------------------------------------------------------
-# FileAttrStrUnix
+# GetFileModeStrUnix
 #-------------------------------------------------------------------------------
-def FileAttrStrUnix (Amode: int) -> str:
-    """FileAttrStr"""
+def GetFileModeStrUnix (Amode: int) -> str:
+    """GetFileModeStrUnix"""
 #beginfunction
     # chmod(path,mode)
     # s = f'stat.S_ISUID: {bin (stat.S_ISUID):s}'
@@ -771,22 +763,27 @@ def GetFileAttr (AFileName: str) -> int:
     if FileExists (AFileName) or DirectoryExists (AFileName):
         LStat = os.stat (AFileName)
 
-        Lmode = LStat.st_mode
-        s = f'Lmode: {Lmode:d} {stat.filemode (Lmode):s}'
-        LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-
-        if platform.system() == 'Windows':
-            Lattr = LStat.st_file_attributes
-            LResult = Lattr
-            # Lattr = win32api.GetFileAttributes (AFileName)
-            s = f'Lattr:{Lattr:d} {hex (Lattr):s} {bin (Lattr):s} {FileAttrStr (Lattr):s}'
-        else:
-            LResult = Lmode
-            s = f'Lmode:{Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {FileAttrStrUnix (Lmode):s}'
-            # 2113 Lmode:33204 0x81b4 0b1000000110110100 -------rw-rw-r--
-        #endif
-        LULog.LoggerTOOLS_AddLevel(logging.DEBUG, s)
-
+        LOSInfo = LUos.TOSInfo ()
+        match LOSInfo.system:
+            case 'Windows':
+                Lmode = LStat.st_mode
+                s = f'Lmode: {Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {stat.filemode (Lmode):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                Lattr = LStat.st_file_attributes
+                # Lattr = win32api.GetFileAttributes (AFileName)
+                s = f'Lattr:{Lattr:d} {hex (Lattr):s} {bin (Lattr):s} {GetFileAttrStr (Lattr):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                LResult = Lattr
+            case 'Linux':
+                Lmode = LStat.st_mode
+                s = f'Lmode:{Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {GetFileModeStrUnix (Lmode):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                LResult = Lmode
+            case _:
+                s = f'Неизвестная система ...'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                LResult = 0
+        #endmatch
     #endif
     return LResult
 #endfunction
@@ -794,26 +791,26 @@ def GetFileAttr (AFileName: str) -> int:
 #-------------------------------------------------------------------------------
 # SetFileAttr
 #-------------------------------------------------------------------------------
-def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
+def SetFileAttr (AFileName: str, Aattr: int, AClear: bool):
     """SetFileAttr"""
 #beginfunction
-    s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+    s = f'SetFileAttr: {Aattr:d} {hex (Aattr):s} {bin (Aattr):s}'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     LOSInfo = LUos.TOSInfo ()
-    match LOSInfo.system.upper ():
-        case 'WINDOWS':
+    match LOSInfo.system:
+        case 'Windows':
             Lattr = GetFileAttr(AFileName)
-            s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+            s = f'Lattr - current: {Lattr:d} {hex (Lattr):s} {bin (Lattr):s}'
             LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
             if AClear:
-                LattrNew = Lattr & ~Aflags
-                s = f'SetFileAttr [clear]: {bin (Aflags):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                LattrNew = Lattr & ~Aattr
+                s = f'[clear]: {bin (LattrNew):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             else:
                 LattrNew = Lattr | Aflags
-                s = f'SetFileAttr [set]: {bin (Aflags):s}{LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
+                s = f'[set]: {bin (LattrNew):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             #endif
 
@@ -823,11 +820,30 @@ def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
             #     win32api.SetFileAttributes (AFileName, LattrNew)
             # #endif
             LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, LattrNew)
+        case 'Linux':
+            ...
+        case _:
+            s = f'Неизвестная система ...'
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    #endmatch
+#endfunction
 
+#-------------------------------------------------------------------------------
+# SetFileMode
+#-------------------------------------------------------------------------------
+def SetFileMode (AFileName: str, Amode: int):
+    """SetFileMode"""
+#beginfunction
+    s = f'SetFileMode: {Amode:d} {hex (Amode):s} {bin (Amode):s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
+    LOSInfo = LUos.TOSInfo ()
+    match LOSInfo.system:
+        case 'Windows':
             # Change the file's permissions to writable
             # os.chmod (AFileName, os.W_OK)
-
-        case 'LINUX':
+            ...
+        case 'Linux':
             # os.chflags() method in Python used to set the flags of path to the numeric flags;
             # available in Unix only
             # os.UF_HIDDEN
@@ -842,7 +858,44 @@ def SetFileAttr (AFileName: str, Aflags: int, AClear: bool):
             #endif
             os.chflags (AFileName, Aflags)
         case _:
+            s = f'Неизвестная система ...'
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    #endmatch
+#endfunction
+
+#-------------------------------------------------------------------------------
+# SetFileFlags
+#-------------------------------------------------------------------------------
+def SetFileFlags (AFileName: str, Aflags: int):
+    """SetFileMode"""
+#beginfunction
+    s = f'SetFileMode: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+
+    LOSInfo = LUos.TOSInfo ()
+    match LOSInfo.system:
+        case 'Windows':
             ...
+        case 'Linux':
+            # os.chflags() method in Python used to set the flags of path to the numeric flags;
+            # available in Unix only
+            # os.UF_HIDDEN
+
+            Lattr = 0
+
+            if AClear:
+                LflagsNew = Lattr & ~Aflags
+                s = f'[clear]: {bin (LflagsNew):s} {LflagsNew:d} {hex (LflagsNew):s} {bin (LflagsNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            else:
+                LflagsNew = Lflags | Aflags
+                s = f'[set]: {bin (LflagsNew):s} {LflagsNew:d} {hex (LflagsNew):s} {bin (LflagsNew):s}'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            #endif
+            os.chflags (AFileName, LflagsNew)
+        case _:
+            s = f'Неизвестная система ...'
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     #endmatch
 #endfunction
 
@@ -857,22 +910,33 @@ def FileDelete (AFileName: str) -> bool:
     LResult = True
 
     if FileExists (AFileName):
-        try:
-            Lattr = GetFileAttr(AFileName)
-            if Lattr & stat.FILE_ATTRIBUTE_READONLY:
-                s = f'SetFileAttr: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
+        LOSInfo = LUos.TOSInfo ()
+        match LOSInfo.system:
+            case 'Windows':
+                try:
+                    Lattr = GetFileAttr (AFileName)
+                    if Lattr & stat.FILE_ATTRIBUTE_READONLY:
+                        s = f'Clear ReadOnly ...'
+                        LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                        LUFile.SetFileAttr (AFileName, stat.FILE_ATTRIBUTE_READONLY, True)
+
+                        # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
+                        # Change the file's permissions to writable
+                        # os.chmod (AFileName, os.W_OK)
+                    #endif
+                    os.remove (AFileName)
+                    LResult = True
+                except:
+                    s = f'ERROR: FileDelete ...'
+                    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                    LResult = False
+                #endtry
+            case 'Linux':
+                ...
+            case _:
+                s = f'Неизвестная система ...'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-                # Clear ReadOnly
-                LUFile.SetFileAttr (AFileName, stat.FILE_ATTRIBUTE_READONLY, True)
-                # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
-                # Change the file's permissions to writable
-                # os.chmod (AFileName, os.W_OK)
-            #endif
-            os.remove (AFileName)
-            LResult = True
-        except:
-            LResult = False
-        #endtry
+        #endmatch
     #endif
     return LResult
 #endfunction
@@ -886,31 +950,45 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
     s = f'FileCopy: {AFileNameSource:s} -> {AFileNameDest:s}'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
-    LDestPath = ExtractFileDir(AFileNameDest)
-    if not DirectoryExists(LDestPath):
-        ForceDirectories(LDestPath)
+    if FileExists (AFileNameSource):
+
+        LDestPath = ExtractFileDir (AFileNameDest)
+        if not DirectoryExists (LDestPath):
+            ForceDirectories (LDestPath)
+        #endif
+
+        LOSInfo = LUos.TOSInfo ()
+        match LOSInfo.system:
+            case 'Windows':
+                try:
+                    # Функция shutil.copy() копирует данные файла и режима доступа к файлу.
+                    # Другие метаданные, такие как время создания и время изменения файла не сохраняются.
+                    # Чтобы сохранить все метаданные файла из оригинала, используйте функцию shutil.copy2().
+
+                    # LResult = shutil.copy (AFileNameSource, AFileNameDest) != ''
+
+                    LResult = shutil.copy2 (AFileNameSource, AFileNameDest) != ''
+                    # LResult = shutil.copy2 (AFileNameSource, LDestPath) != ''
+                    # shutil.copystat (AFileNameSource, AFileNameDest)
+
+                    LResult = True
+                except:
+                    s = f'ERROR: FileCopy ...'
+                    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                    LResult = False
+                #endtry
+            case 'Linux':
+                # unix
+                LFileNameSource_stat = os.stat (AFileNameSource)
+                Lowner = LFileNameSource_stat [stat.ST_UID]
+                Lgroup = LFileNameSource_stat [stat.ST_GID]
+                # os.chown (AFileNameDest, Lowner, Lgroup)
+            case _:
+                s = f'Неизвестная система ...'
+                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+        #endmatch
     #endif
-
-    # Функция shutil.copy() копирует данные файла и режима доступа к файлу.
-    # Другие метаданные, такие как время создания и время изменения файла не сохраняются.
-    # Чтобы сохранить все метаданные файла из оригинала, используйте функцию shutil.copy2().
-
-    # unix
-    # LFileNameSource_stat = os.stat (AFileNameSource)
-    # Lowner = LFileNameSource_stat [stat.ST_UID]
-    # Lgroup = LFileNameSource_stat [stat.ST_GID]
-
-    LResult = shutil.copy2 (AFileNameSource, AFileNameDest) != ''
-    # LResult = shutil.copy2 (AFileNameSource, LDestPath) != ''
-
-    # LResult = shutil.copy (AFileNameSource, AFileNameDest) != ''
-    # shutil.copystat (AFileNameSource, AFileNameDest)
-
-    # unix
-    # os.chown (AFileNameDest, Lowner, Lgroup)
-
     return LResult
-
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -922,19 +1000,12 @@ def FileMove (AFileNameSource: str, APathNameDest: str) -> bool:
     s = f'FileMove: {AFileNameSource:s} -> {APathNameDest:s}'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = True
-
     if not LUFile.DirectoryExists(APathNameDest):
         LUFile.ForceDirectories(APathNameDest)
     #endif
     LFileNameSource = ExtractFileName (AFileNameSource)
     LFileNameDest = os.path.join (APathNameDest, LFileNameSource)
-
     LResult = shutil.move(AFileNameSource, APathNameDest, copy_function=shutil.copy2())
-
-    # LResult = FileCopy (AFileNameSource, LFileNameDest, True);
-    # if Result:
-    #     Result = FileDelete (AFileNameSource);
-    # #endif
     return LResult
 #endfunction
 
@@ -982,22 +1053,24 @@ def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
 
     LEncoding = AEncoding
     if AEncoding == '':
-        LEncoding = LUStrDecode.cCP1251
+        # LEncoding = LUStrDecode.cCP1251
+        LEncoding = cDefaultEncoding
+    #endif
     if len(AText) > 0:
-        LFile = open (AFileName, 'w', encoding = LEncoding)
-        LFile.write (AText + '\n')
-        LFile.flush ()
-        LFile.close ()
+        LHandle = open (AFileName, 'w', encoding = LEncoding)
+        LHandle.write (AText + '\n')
+        LHandle.flush ()
+        LHandle.close ()
     else:
         FileDelete (AFileName)
-        LFile = open (AFileName, 'w', encoding = LEncoding)
-        LFile.flush ()
-        LFile.close ()
+        LHandle = open (AFileName, 'w', encoding = LEncoding)
+        LHandle.flush ()
+        LHandle.close ()
    #endif
 #endfunction
 
 #--------------------------------------------------------------------------------
-# WriteStrToFile (AStr: str, AFileName: str):
+# WriteStrToFile
 #--------------------------------------------------------------------------------
 def WriteStrToFile (AFileName: str, AStr: str):
     """WriteStrToFile"""
@@ -1009,11 +1082,16 @@ def WriteStrToFile (AFileName: str, AStr: str):
     # Создаст новый файл для чтения записи, если не найдет с указанным именем.
     LEncoding = GetFileEncoding (AFileName)
     if LEncoding == '':
+        # LEncoding = LUStrDecode.cCP1251
         LEncoding = cDefaultEncoding
-    LHandle = open (AFileName, 'a+', encoding = LEncoding)
-    LHandle.write (AStr)
-    LHandle.flush ()
-    LHandle.close ()
+    #endif
+
+    if len(AText) > 0:
+        LHandle = open (AFileName, 'a+', encoding = LEncoding)
+        LHandle.write (AStr + '\n')
+        LHandle.flush ()
+        LHandle.close ()
+    #endif
 #endfunction
 
 #-------------------------------------------------------------------------------
@@ -1027,7 +1105,9 @@ def OpenTextFile(AFileName: str, AEncoding: str) -> int:
 
     LEncoding = AEncoding
     if AEncoding == '':
-        LEncoding = LUStrDecode.cCP1251
+        # LEncoding = LUStrDecode.cCP1251
+        LEncoding = cDefaultEncoding
+    #endif
     LHandle = open (AFileName, 'a+', encoding = LEncoding)
     return LHandle
 #endfunction
