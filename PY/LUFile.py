@@ -26,13 +26,14 @@ import tempfile
 import re
 import ctypes
 import pathlib
-if platform.system() == 'Windows':
-    import win32api
-    import win32con
-#endif
-if platform.system() == 'Linux':
-    ...
-#endif
+# if platform.system() == 'Windows':
+#     import win32api
+#     print('Windows')
+#     import win32con
+# #endif
+# if platform.system() == 'Linux':
+#     ...
+# #endif
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -488,7 +489,7 @@ def GetDirNameYYMM (ARootDir: str, ADate: datetime.datetime) -> str:
 def GetTempDir () -> str:
     """GetTempDir"""
 #beginfunction
-    LResult = win32api.GetTempPath()
+    # LResult = win32api.GetTempPath()
     LResult = tempfile.gettempdir ()
     return LResult
 #endfunction
@@ -503,7 +504,7 @@ def FileSearch (AFileName: str, APath: str) -> str:
         # int = SearchPath(path, fileName , fileExt )
         #   The return value is a tuple of (string, int).
         #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-        L = win32api.SearchPath (APath, AFileName, None)
+        # L = win32api.SearchPath (APath, AFileName, None)
         print('L = win32api.SearchPath (APath, AFileName, None)')
 
         LResult = L [0]
@@ -527,7 +528,7 @@ def SearchFile (AFileName: str, ADefaultExt: str) -> str:
         # int = SearchPath(path, fileName , fileExt )
         #   The return value is a tuple of (string, int).
         #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-        L = win32api.SearchPath (None, LResult, None)
+        # L = win32api.SearchPath (None, LResult, None)
         print('L = win32api.SearchPath (None, LResult, None)')
 
         LResult = L[0]
@@ -770,7 +771,9 @@ def GetFileAttr (AFileName: str) -> int:
                 s = f'Lmode: {Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {stat.filemode (Lmode):s}'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 Lattr = LStat.st_file_attributes
+
                 # Lattr = win32api.GetFileAttributes (AFileName)
+
                 s = f'Lattr:{Lattr:d} {hex (Lattr):s} {bin (Lattr):s} {GetFileAttrStr (Lattr):s}'
                 LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 LResult = Lattr
@@ -819,6 +822,7 @@ def SetFileAttr (AFileName: str, Aattr: int, AClear: bool):
             # else:
             #     win32api.SetFileAttributes (AFileName, LattrNew)
             # #endif
+
             LResult = ctypes.windll.kernel32.SetFileAttributesW (AFileName, LattrNew)
         case 'Linux':
             raise NotImplementedError('SetFileAttr Linux not implemented ...')
