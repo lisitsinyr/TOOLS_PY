@@ -18,6 +18,7 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import string
+import codecs
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -30,6 +31,15 @@ import string
 #---------------------------------------------------------------
 #
 #---------------------------------------------------------------
+
+"""
+# #import codecs
+#
+# f = codecs.open(filename, 'r', 'cp1251')
+# u = f.read()   # now the contents have been transformed to a Unicode string
+# out = codecs.open(output, 'w', 'utf-8')
+# out.write(u)   # and now the contents have been output as UTF-8
+"""
 
 CRLFd = chr(13)+chr(10)
 CRLFx = '\x0d'+'\x0a'

@@ -1402,18 +1402,19 @@ def LogFileName(ALog: int, ALogDir: str, ALogFile: str) -> str:
         case 1|3|10|30:
             LLogDir = ALogDir
             if len (ALogDir) == 0:
-                LLogDir = os.environ['TEMP']
+                # LLogDir = os.environ['TEMP']
+                LLogDir = LUFile.GetTempDir()
             #endif
             LLogFile = ALogFile
             if ALogFile == '':
                 s = LUDateTime.DateTimeStr (False, LToday, LUDateTime.cFormatDateYYMMDD_01, False)
                 LLogFile = s+'.log'
             #endif
-            LLogFileName = os.sep.join([LLogDir,LLogFile])
+            LLogFileName = s.path.join([LLogDir, LLogFile])
             if ALog == 10 or ALog == 30:
                 if LUFile.FileExists(LLogFileName):
                     try:
-                        os.remove (LLogFileName)
+                        LUFile.FileDelete(LLogFileName)
                     except:
                     # except LUErrors.LUFileError_FileERROR as ERROR:
                         s = f'Ошибка при удалении файла {LLogFileName}'
@@ -1720,9 +1721,9 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str,
         # log будет создан в ADirectoryLOG
         LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
     #endif
-    print('LDirectoryLOG:',LDirectoryLOG)
+    # print('LDirectoryLOG:',LDirectoryLOG)
     if not LUFile.DirectoryExists (LDirectoryLOG):
-        os.mkdir (LDirectoryLOG)
+        LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
     # установить имена log файлов в CONFIG
@@ -1803,9 +1804,9 @@ def CreateLoggerYAML (AFileNameYAML: str, ALogerName: str, ADirectoryLOG: str, A
         # log будет создан в ADirectoryLOG
         LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
     #endif
-    print('LDirectoryLOG:',LDirectoryLOG)
+    # print('LDirectoryLOG:',LDirectoryLOG)
     if not LUFile.DirectoryExists (LDirectoryLOG):
-        os.mkdir (LDirectoryLOG)
+        LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
     # установить имена log файлов в CONFIG
@@ -1863,17 +1864,14 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
             SetEditINI = False
         #endif
     #endif
-    # print (LPathINI)
-    # print (LFileNameINI)
+    # print ('LPathINI:',LPathINI)
+    # print ('LFileNameINI:',LFileNameINI)
 
     if not SetEditINI:
-        # log будет создан в текущем каталоге (по умолчанию)
-        LDirectoryLOG = LUos.GetCurrentDir ()
-        ...
+        pass
     else:
         LINIFile = LUParserINI.TINIFile ()
         LINIFile.FileNameINI = LFileNameINI
-
         LOptionName = 'args'
         if AFileNameLOG == '':
             LSectionName_01 = 'handler_FILE_01'
@@ -1894,38 +1892,41 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         #endif
         # print('LFileNameLOGjson:',LFileNameLOGjson)
 
-        if ADirectoryLOG == '':
-            # log будет создан в текущем каталоге (по умолчанию)
-            LDirectoryLOG = LUos.GetCurrentDir ()
-        else:
-            # log будет создан в ADirectoryLOG
-            LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
-        #endif
-        # print('LDirectoryLOG:',LDirectoryLOG)
-        if not LUFile.DirectoryExists (LDirectoryLOG):
-            os.mkdir (LDirectoryLOG)
-        #endif
-
-        # print(LUos.GOSInfo.system)
-
         # установить имена log файлов в ini
         LOptionValue_01 = "('" + os.path.join (LDirectoryLOG, LFileNameLOG) + "',)"
-        # LOptionValue_01 = "('" + os.path.join (ADirectoryLOG, LFileNameLOG) + "',)"
         if LUos.GOSInfo.system == 'Windows':
             LOptionValue_01 = LOptionValue_01.replace ('\\', "\\\\")
+        #endif
+        if LUos.GOSInfo.system == 'Linux':
+            raise 'Linux не поддерживается'
         #endif
         # print(LOptionValue_01)
 
         LINIFile.SetOption ('handler_FILE_01', LOptionName, LOptionValue_01)
         LOptionValue_02 = "('" + os.path.join (LDirectoryLOG, LFileNameLOGjson) + "',)"
-        # LOptionValue_02 = "('" + os.path.join (ADirectoryLOG, LFileNameLOGjson) + "',)"
+
         if LUos.GOSInfo.system == 'Windows':
             LOptionValue_02 = LOptionValue_02.replace ("\\", "\\\\")
+        #endif
+        if LUos.GOSInfo.system == 'Linux':
+            raise 'Linux не поддерживается'
         #endif
         # print(LOptionValue_02)
 
         LINIFile.SetOption ('handler_FILE_02', LOptionName, LOptionValue_02)
         LINIFile.UpdateFileINI ()
+    #endif
+
+    if ADirectoryLOG == '':
+        # log будет создан в текущем каталоге (по умолчанию)
+        LDirectoryLOG = LUos.GetCurrentDir ()
+    else:
+        # log будет создан в ADirectoryLOG
+        LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
+    #endif
+    # print('LDirectoryLOG:',LDirectoryLOG)
+    if not LUFile.DirectoryExists (LDirectoryLOG):
+        LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
     logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)

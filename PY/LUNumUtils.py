@@ -21,10 +21,10 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-if platform.system() == 'Windows':
-    import win32api
-    import win32con
-#endif
+#if platform.system() == 'Windows':
+#    import win32api
+#    import win32con
+##endif
 
 #------------------------------------------
 # БИБЛИОТЕКИ LU
