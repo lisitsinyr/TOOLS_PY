@@ -1059,72 +1059,95 @@ def CloseTextFile (AHandle):
 #endfunction
 
 #-------------------------------------------------------------------------------
-# FileSearch
+# SearchFileMask
 #-------------------------------------------------------------------------------
-def FileSearch (AFileName: str, APath: str) -> str:
-    """FileSearch"""
+def SearchFileMask (ADir: str, AFileName: str, AMask: str) -> str:
+    """SearchFileMask"""
 #beginfunction
-    try:
-        # int = SearchPath(path, fileName , fileExt )
-        #   The return value is a tuple of (string, int).
-        #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-        # L = win32api.SearchPath (APath, AFileName, None)
-        print('L = win32api.SearchPath (APath, AFileName, None)')
+    #Finding Files in the Current Directory
+    # list_dirs.py
+    here = pathlib.Path (".")
+    files = here.glob ("*")
+    for item in files:
+        print (item)
+    #endfor
 
-        LResult = L [0]
-    except:
-        LResult = ''
+    #Searching for Files Recursively in Python
+    # list_dirs_recursive.py
+    here = pathlib.Path (".")
+    files = here.glob ("**/*")
+    for item in files:
+        print (item)
+    #endfor
+
+    #Finding a Single File Recursively
+    # find_file.py
+    here = pathlib.Path (".")
+    files = here.glob ("**/something.txt")
+    for item in files:
+        print (item)
+
+    LResult = ''
     return LResult
 #endfunction
 
 #--------------------------------------------------------------------------------
-# SearchFile
+# SearchFileExt
 #--------------------------------------------------------------------------------
-def SearchFile (AFileName: str, ADefaultExt: str) -> str:
-    """SearchFile"""
+def SearchFileExt (ADir: str, AFileName: str, AExt: str) -> str:
+    """SearchFileExt"""
 #beginfunction
-    LResult = AFileName
-    if ExtractFileDir (AFileName) == '':
-        if ExtractFileExt (AFileName) == '':
-            LResult = LResult + ADefaultExt
-        #endif
+    if FileExists(AFileName):
+        LResult = AFileName
+        return LResult
+    #endif
 
-        # int = SearchPath(path, fileName , fileExt )
-        #   The return value is a tuple of (string, int).
-        #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-        # L = win32api.SearchPath (None, LResult, None)
-        print('L = win32api.SearchPath (None, LResult, None)')
+    LFileName = ExtractFileName (AFileName)
+    LFileNameWithoutExt = ExtractFileNameWithoutExt (AFileName)
 
-        LResult = L[0]
+    if ADir == '*':
+        # искать везде
+        pass
     else:
-        if ExtractFileExt (AFileName) == '':
-            LResult = LResult + ADefaultExt
-        #endif
-        LResult = ExpandFileName (LResult)
-        if not FileExists (LResult):
-            LResult = ''
+        if ADir == '':
+            # искать в текущем каталоге
+            LDir = GetCurrentDir ()
+        else:
+            # искать в каталоге ADir
+            LDir = ExpandFileName (ADir)
         #endif
     #endif
+
+    LResult = ''
+
+    # int = SearchPath(LDir, LFileNameWithoutExt , AExt)
+    #   The return value is a tuple of (string, int).
+    #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
+    # L = win32api.SearchPath (None, LResult, None)
+    # print('L = win32api.SearchPath (None, LResult, None)')
+    # LResult = L[0]
+
+
     return LResult
 #endfunction
 
 #--------------------------------------------------------------------------------
-# SearchINIFile
+# SearchFileINI
 #--------------------------------------------------------------------------------
-def SearchINIFile (AFileName: str) -> str:
-    """SearchINIFile"""
+def SearchFileINI (ADir: str, AFileName: str) -> str:
+    """SearchFileINI"""
 #beginfunction
-    LResult = SearchFile (AFileName, '.ini')
+    LResult = SearchFileExt (ADir, AFileName, '.ini')
     return LResult
 #endfunction
 
 #-------------------------------------------------------------------------------
-# SearchEXEFile
+# SearchFileEXE
 #-------------------------------------------------------------------------------
-def SearchEXEFile (AFileName: str) -> str:
-    """SearchEXEFile"""
+def SearchFileEXE (ADir: str, AFileName: str) -> str:
+    """SearchFileEXE"""
 #beginfunction
-    LResult = SearchFile (AFileName, '.exe')
+    LResult = SearchFileExt (AFileName, '.exe')
     return LResult
 #endfunction
 
