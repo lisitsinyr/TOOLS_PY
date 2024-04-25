@@ -71,7 +71,7 @@ class TTimer (threading.Timer):
     #--------------------------------------------------
     # getter
     @property
-    def TTimer(self) -> TTimer:
+    def Timer(self):
     #beginfunction
         return self
     #endfunction
