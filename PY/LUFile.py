@@ -25,6 +25,7 @@ import logging
 import tempfile
 import re
 import ctypes
+import copy
 
 import pathlib
 # if platform.system() == 'Windows':
@@ -321,7 +322,11 @@ def COMPAREFILETIMES (AFileNameSource: str, AFileNameDest: str) -> int:
 def CheckFileExt (AFileName: str, AExt: str) -> bool:
     """CheckFileExt"""
 #beginfunction
-    LResult = AFileName.endswith(AExt)
+    if AExt != "":
+        LResult = ExtractFileName(AFileName).endswith(AExt)
+    else:
+        LResult = False
+    #endif
     return LResult
 #endfunction
 
@@ -944,24 +949,27 @@ def FileMove (AFileNameSource: str, APathNameDest: str) -> bool:
 def CheckFileNameMask (AFileName: str, AMask: str) -> bool:
     """CheckFileNameMask"""
 #beginfunction
-    LFileName = AFileName
-    # LMask = '^[a-zA-Z0-9]+.py$'         # *.py - только латинские буквы и цифры
-    # LMask = '^.*..*$'                   # *.* - все символы
-    # LMask = '^.*.py$'                   # *.py - все символы
-    # LMask = '^[\\S ]*.py$'              # *.py - все символы включая пробелы
-    # LMask = '^[a-zA-Z0-9]*.py$'         # *.py - только латинские буквы и цифры
-    LMask = AMask
-    #-------------------------------------------------------------------------------
-    # regex = re.compile (LMask)
-    # Lresult = regex.match(LFileName)
-    #-------------------------------------------------------------------------------
+    if AMask != '':
+        LFileName = AFileName
+        # LMask = '^[a-zA-Z0-9]+.py$'         # *.py - только латинские буквы и цифры
+        # LMask = '^.*..*$'                   # *.* - все символы
+        # LMask = '^.*.py$'                   # *.py - все символы
+        # LMask = '^[\\S ]*.py$'              # *.py - все символы включая пробелы
+        # LMask = '^[a-zA-Z0-9]*.py$'         # *.py - только латинские буквы и цифры
+        LMask = AMask
 
-    # эквивалентно
-
-    #-------------------------------------------------------------------------------
-    Lresult = re.match (LMask, LFileName)
-    # Lresult = re.search (LMask, LFileName)
-    #-------------------------------------------------------------------------------
+        #-------------------------------------------------------------------------------
+        # regex = re.compile (LMask)
+        # Lresult = regex.match(LFileName)
+        #-------------------------------------------------------------------------------
+        # эквивалентно
+        #-------------------------------------------------------------------------------
+        Lresult = re.match (LMask, LFileName)
+        # Lresult = re.search (LMask, LFileName)
+        #-------------------------------------------------------------------------------
+    else:
+        Lresult = False
+    #endif
     return Lresult
 #endfunction
 
@@ -1009,7 +1017,7 @@ def WriteStrToFile (AFileName: str, AStr: str):
         LEncoding = cDefaultEncoding
     #endif
 
-    if len(AText) > 0:
+    if len(AStr) > 0:
         LHandle = open (AFileName, 'a+', encoding = LEncoding)
         LHandle.write (AStr + '\n')
         LHandle.flush ()
@@ -1058,97 +1066,86 @@ def CloseTextFile (AHandle):
     AHandle.close ()
 #endfunction
 
-#-------------------------------------------------------------------------------
-# SearchFileMask
-#-------------------------------------------------------------------------------
-def SearchFileMask (ADir: str, AFileName: str, AMask: str) -> str:
-    """SearchFileMask"""
-#beginfunction
-    #Finding Files in the Current Directory
-    # list_dirs.py
-    here = pathlib.Path (".")
-    files = here.glob ("*")
-    for item in files:
-        print (item)
-    #endfor
-
-    #Searching for Files Recursively in Python
-    # list_dirs_recursive.py
-    here = pathlib.Path (".")
-    files = here.glob ("**/*")
-    for item in files:
-        print (item)
-    #endfor
-
-    #Finding a Single File Recursively
-    # find_file.py
-    here = pathlib.Path (".")
-    files = here.glob ("**/something.txt")
-    for item in files:
-        print (item)
-
-    LResult = ''
-    return LResult
-#endfunction
-
 #--------------------------------------------------------------------------------
-# SearchFileExt
+# SearchFile
 #--------------------------------------------------------------------------------
-def SearchFileExt (ADir: str, AFileName: str, AExt: str) -> str:
-    """SearchFileExt"""
+def __SearchFile (ADir: str, AFileName: str, AMask: str, AExt: str, ASubDir: bool) -> []:
+    """SearchFile"""
 #beginfunction
-    if FileExists(AFileName):
-        LResult = AFileName
-        return LResult
-    #endif
-
-    LFileName = ExtractFileName (AFileName)
-    LFileNameWithoutExt = ExtractFileNameWithoutExt (AFileName)
-
-    if ADir == '*':
-        # искать везде
-        pass
+    LList = []
+    if ADir == '':
+        # искать в текущем каталоге
+        LDir = LUos.GetCurrentDir ()
     else:
-        if ADir == '':
-            # искать в текущем каталоге
-            LDir = GetCurrentDir ()
-        else:
-            # искать в каталоге ADir
-            LDir = ExpandFileName (ADir)
-        #endif
+        # искать в каталоге ADir
+        LDir = ExpandFileName (ADir)
+    #endif
+    Lhere = pathlib.Path (LDir)
+    # print('LDir:', LDir)
+    LFileName = ExtractFileName (AFileName)
+    # print('LFileName:', LFileName)
+    # print('AMask:', AMask)
+    # print('AExt:', AExt)
+
+    if ASubDir:
+        # Searching for LDir Recursively in Python
+        LStr = '**/*'
+    else:
+        # Searching for LDir
+        LStr = '*'
     #endif
 
-    LResult = ''
-
-    # int = SearchPath(LDir, LFileNameWithoutExt , AExt)
-    #   The return value is a tuple of (string, int).
-    #   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-    # L = win32api.SearchPath (None, LResult, None)
-    # print('L = win32api.SearchPath (None, LResult, None)')
-    # LResult = L[0]
-
-
-    return LResult
+    Lfiles = Lhere.glob (LStr)
+    for item in Lfiles:
+        if item.name == LFileName:
+            # print (item)
+            LList.append (item)
+        else:
+            if CheckFileNameMask (item.name, AMask):
+                # print (item)
+                LList.append (item)
+            else:
+                if CheckFileExt (item, AExt):
+                    # print (item)
+                    LList.append (item)
+                #endif
+            #endif
+        #endif
+    #endfor
+    return LList
 #endfunction
 
-#--------------------------------------------------------------------------------
-# SearchFileINI
-#--------------------------------------------------------------------------------
-def SearchFileINI (ADir: str, AFileName: str) -> str:
-    """SearchFileINI"""
-#beginfunction
-    LResult = SearchFileExt (ADir, AFileName, '.ini')
-    return LResult
-#endfunction
+# #Finding a Single File Recursively
+# # find_file.py
+# here = pathlib.Path (".")
+# files = here.glob ("**/something.txt")
+# for item in files:
+#     print (item)
 
-#-------------------------------------------------------------------------------
-# SearchFileEXE
-#-------------------------------------------------------------------------------
-def SearchFileEXE (ADir: str, AFileName: str) -> str:
-    """SearchFileEXE"""
+# int = SearchPath(LDir, LFileNameWithoutExt , AExt)
+#   The return value is a tuple of (string, int).
+#   string - представляет собой полный путь. int — смещение в строке базового имени файла.
+# L = win32api.SearchPath (None, LResult, None)
+# print('L = win32api.SearchPath (None, LResult, None)')
+# LResult = L[0]
+
+#--------------------------------------------------------------------------------
+# SearchFileDirs
+#--------------------------------------------------------------------------------
+def SearchFileDirs (ADirs: [], AFileName: str, AMask: str, AExt: str, ASubDir: bool) -> []:
+    """SearchFileDirs"""
 #beginfunction
-    LResult = SearchFileExt (AFileName, '.exe')
-    return LResult
+    LListDirs = []
+    for LDir in ADirs:
+        # print('LDir:', LDir)
+        LList = __SearchFile (LDir, AFileName, AMask, AExt, ASubDir)
+        if len(LList) > 0:
+            # LListDirs = copy.deepcopy(LList)
+            # LListDirs.append(LList)
+            LListDirs += LList # copy.deepcopy(LList)
+        #endif
+    #endfor
+    return LListDirs
 #endfunction
 
 #--------------------------------------------------------------------------------

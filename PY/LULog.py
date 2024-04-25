@@ -1843,6 +1843,8 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
                          ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> logging.Logger:
     """CreateLoggerFILEINI"""
 #beginfunction
+    LDirectoryLOG = ADirectoryLOG
+
     # читаем конфигурацию из файла INI
     LFileNameINI = LUFile.ExpandFileName (AFileNameINI)
     if LUFile.FileExists (LFileNameINI):

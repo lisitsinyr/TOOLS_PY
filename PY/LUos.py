@@ -687,7 +687,6 @@ def GetEnvVar (AEnvVar: str) -> str:
     s = ''
     try:
         s = os.environ [AEnvVar]
-    # except KeyError as Key:
     except:
         ...
     finally:

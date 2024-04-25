@@ -19,8 +19,9 @@ __annotations__ = """
 #------------------------------------------
 import datetime
 import time
-from calendar import *
+import calendar
 import logging
+import platform
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -45,9 +46,17 @@ cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
 cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S', '%H:%M:%S')
 
 cFormatDateYYMMDD_01 = ('', '%Y%m%d')
-cFormatDateYYMMDD_02 = ('', '%Y/%m/%d')
-cFormatDateYYMM_01 = ('', '%Y/%m')
-cFormatDateYYMM_02 = ('', '%Y\\%m')
+cFormatDateYYMM_01 = ('', '%Y%m')
+
+if platform.system() == 'Windows':
+    cFormatDateYYMMDD_02 = ('', r'%Y\%m\%d')
+    cFormatDateYYMM_02 = ('', r'%Y\%m')
+#endif
+if platform.system() == 'Linux':
+    cFormatDateYYMMDD_02 = ('', r'%Y/%m/%d')
+    cFormatDateYYMM_02 = ('', r'%Y/%m')
+#endif
+
 
 #---------------------------------------------------------------
 # Now

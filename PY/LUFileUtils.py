@@ -374,7 +374,7 @@ def __FakeFile (APathSource,
     global GLevel
 #beginfunction
     for LFileCount in range(0, 2):
-        s = f'FakeFile_{str(GLevel+1):s}_{str(LFileCount+1):s}'
+        s = f'FakeFile_{str(GLevel+1):s}_{str(LFileCount+1):s}.txt'
         LFileName = os.path.join (APathSource, s)
 
         LHahdle = LUFile.OpenTextFile(LFileName, '')
