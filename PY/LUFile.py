@@ -1094,6 +1094,8 @@ def __SearchFile (ADir: str, AFileName: str, AMask: str, AExt: str, ASubDir: boo
         # Searching for LDir
         LStr = '*'
     #endif
+    # Finding a Single File Recursively
+    # LStr = here.glob ("**/something.txt")
 
     Lfiles = Lhere.glob (LStr)
     for item in Lfiles:
@@ -1115,20 +1117,6 @@ def __SearchFile (ADir: str, AFileName: str, AMask: str, AExt: str, ASubDir: boo
     return LList
 #endfunction
 
-# #Finding a Single File Recursively
-# # find_file.py
-# here = pathlib.Path (".")
-# files = here.glob ("**/something.txt")
-# for item in files:
-#     print (item)
-
-# int = SearchPath(LDir, LFileNameWithoutExt , AExt)
-#   The return value is a tuple of (string, int).
-#   string - представляет собой полный путь. int — смещение в строке базового имени файла.
-# L = win32api.SearchPath (None, LResult, None)
-# print('L = win32api.SearchPath (None, LResult, None)')
-# LResult = L[0]
-
 #--------------------------------------------------------------------------------
 # SearchFileDirs
 #--------------------------------------------------------------------------------
@@ -1140,9 +1128,7 @@ def SearchFileDirs (ADirs: [], AFileName: str, AMask: str, AExt: str, ASubDir: b
         # print('LDir:', LDir)
         LList = __SearchFile (LDir, AFileName, AMask, AExt, ASubDir)
         if len(LList) > 0:
-            # LListDirs = copy.deepcopy(LList)
-            # LListDirs.append(LList)
-            LListDirs += LList # copy.deepcopy(LList)
+            LListDirs += LList
         #endif
     #endfor
     return LListDirs
@@ -1177,7 +1163,7 @@ def main ():
 #endfunction
 
 #------------------------------------------
-#
+# module
 #------------------------------------------
 #beginmodule
 if __name__ == "__main__":
