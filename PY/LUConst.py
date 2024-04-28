@@ -2,8 +2,8 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
- Author:
+Copyright (c) 2023-2024
+  Author:
      Lisitsin Y.R.
  Project:
      LU_PY

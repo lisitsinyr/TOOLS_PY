@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2024
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -28,6 +28,7 @@ from colorama import Fore, Back, Style
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
+import LUSupport
 
 #------------------------------------------
 # CONST
@@ -202,39 +203,6 @@ BACKGROUND = [Back.BLACK, Back.RED, Back.GREEN, Back.YELLOW, Back.BLUE, Back.MAG
 BRIGHTNESS = [Style.DIM, Style.NORMAL, Style.BRIGHT]
 
 #-------------------------------------------------
-# ISTerminal
-#-------------------------------------------------
-def ISTerminal () -> bool:
-    """ISTerminal"""
-#beginfunction
-    return sys.stdout.isatty ()
-#endfunction
-
-#-------------------------------------------------
-# GetTupleStr
-#-------------------------------------------------
-def GetTupleStr (ATuple:()):
-    """GetTupleStr"""
-#beginfunction
-    LResult = ''
-    i = 0
-    j = 0
-    if type(ATuple) is tuple:
-        for r in ATuple:
-            i = i + 1
-            if r != '':
-                j = j + 1
-                if j == 1:
-                    LResult = LResult + r
-                else:
-                    LResult = LResult + ';' + r
-    else:
-        if len (ATuple) > 0:
-            LResult = LResult + ATuple
-    return LResult
-#endfunction
-
-#-------------------------------------------------
 # FormatColorStr (s, AStyles:()='', AFG8:str='', ABG8:str='', AFG256:str='', ABG256:str='', AESC:str=''):
 #-------------------------------------------------
 def FormatColorStr (s, **kwargs) -> str:
@@ -251,7 +219,7 @@ def FormatColorStr (s, **kwargs) -> str:
     if  AESC is not None:
         LResult = LResult + AESC + s + sRESET
     else:
-        LStyles = GetTupleStr (AStyles)
+        LStyles = LUSupport.GetTupleStr (AStyles)
         # --------------------------------------------
         if len(LStyles) > 0 \
                 or AFG8 is not None or ABG8 is not None \
@@ -300,7 +268,7 @@ def Write (s, **kwargs):
     """Write"""
 #beginfunction
     _s = s
-    if ISTerminal():
+    if LUSupport.ISTerminal():
         sys.stdout.write (_s)
     else:
         if len(kwargs):

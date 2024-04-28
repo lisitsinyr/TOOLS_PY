@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -17,6 +17,7 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
+import sys
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -63,6 +64,41 @@ begin
     Result := ErrorString (GetLastError);
 end;
 """
+
+#-------------------------------------------------
+# ISTerminal
+# Возвращает True, если текущая консоль является терминалом
+#-------------------------------------------------
+def ISTerminal () -> bool:
+    """ISTerminal"""
+#beginfunction
+    return sys.stdout.isatty ()
+#endfunction
+
+#-------------------------------------------------
+# GetTupleStr
+# Возвращает кортеж в виде строки, состоящей из элементов ATuple
+#-------------------------------------------------
+def GetTupleStr (ATuple:()):
+    """GetTupleStr"""
+#beginfunction
+    LResult = ''
+    i = 0
+    j = 0
+    if type(ATuple) is tuple:
+        for r in ATuple:
+            i = i + 1
+            if r != '':
+                j = j + 1
+                if j == 1:
+                    LResult = LResult + r
+                else:
+                    LResult = LResult + ';' + r
+    else:
+        if len (ATuple) > 0:
+            LResult = LResult + ATuple
+    return LResult
+#endfunction
 
 #---------------------------------------------------------
 # main

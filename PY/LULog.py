@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ ="""
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -48,6 +48,7 @@ import LUDateTime
 import LUos
 import LUParserINI
 import LUDict
+import LUSupport
 
 # ===========================================================================
 # CONST
@@ -496,7 +497,7 @@ class TFileMemoLog (object):
                 _s = s
             else:
                 _s = self._LogDateStr (False) + ' ' + str(T.value) + ' ' + s
-            if not LUConsole.ISTerminal ():
+            if not LUSupport.ISTerminal ():
                 LCOLOR = COLORS_tls.get (T)
                 if LCOLOR is not None:
                     LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
@@ -751,7 +752,7 @@ class TStreamHandler(logging.StreamHandler):
                     msg = self.format(record)
                     stream = self.stream
                     # issue 35046: merged two stream.writes into one.
-                    if not LUConsole.ISTerminal ():
+                    if not LUSupport.ISTerminal ():
                         stream.write(msg + self.terminator)
                         self.flush()
                     else:
@@ -892,7 +893,7 @@ class TFormatter(logging.Formatter):
         """_SetColor"""
     #beginfunction
         if self.FUseColor:
-            if not LUConsole.ISTerminal ():
+            if not LUSupport.ISTerminal ():
                 LCOLOR = COLORS.get (ALevelNo)
                 LFmt = LUConsole.sBEGIN_oct + LCOLOR + AFmt + LUConsole.sRESET
                 return LFmt
@@ -1438,7 +1439,7 @@ def LogAdd (ALog: int, ALogFile: str, AOpt: TTypeLogString, AMessage: str):
 
     def _WriteConsole(_s, T):
     #beginfunction
-        if not LUConsole.ISTerminal ():
+        if not LUSupport.ISTerminal ():
             LCOLOR = COLORS_tls.get (T)
             if LCOLOR is not None:
                 LFmt = LUConsole.sBEGIN_oct + LCOLOR + _s + LUConsole.sRESET
@@ -1528,7 +1529,7 @@ def SetFormatterForLogger (ALogger: logging.Logger):
             item.formatter.json_ensure_ascii = False
         #endif
         if type (item) is logging.StreamHandler or type (item) is TStreamHandler:
-            # if LUConsole.ISTerminal ():
+            # if LUSupport.ISTerminal ():
             #     TStreamHandler(item).setLevel(logging.CRITICAL)
             #     # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             #     ...
