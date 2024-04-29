@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -37,7 +37,8 @@ from email.mime.text import MIMEText
 # TIMING
 #---------------------------------------------------------------
 def TIMING(func):
-    #beginfunction
+#beginfunction
+
     def wrapper(*args, **kwargs):
     #beginfunction
         start_time = time.time()
@@ -46,8 +47,9 @@ def TIMING(func):
         s = f"Функция {func.__name__} работала {end_time - start_time} секунд..."
         LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
         return result
-    return wrapper
     #endfunction
+
+    return wrapper
 #endfunction
 
 #---------------------------------------------------------------
@@ -79,6 +81,7 @@ def call_dummy_api():
     response = None
     # response = requests.get("https://jsonplaceholder.typicode.com/todos/1")
     return response
+#endfunction
 
 #---------------------------------------------------------------
 # memoize
@@ -98,6 +101,7 @@ def memoize(func):
             cache[args] = result
             return result
     return wrapper
+#endfunction
 
 #---------------------------------------------------------------
 # email_on_failure
@@ -134,6 +138,7 @@ def email_on_failure (sender_email, password, recipient_email):
 
         return wrapper
     return decorator
+#endfunction
 
 #---------------------------------------------------------------
 # my_function
@@ -143,6 +148,7 @@ def email_on_failure (sender_email, password, recipient_email):
 def my_function ():
     # code that might fail
     ...
+#endfunction
 
 #---------------------------------------------------------------
 # timeit
@@ -163,6 +169,7 @@ def timeit(method):
             print ('%r  %2.2f ms' % (method.__name__, (te - ts) * 1000))
         return result
     return timed
+#endfunction
 
 #---------------------------------------------------------------
 # get_all_employee_details
@@ -190,6 +197,7 @@ def timeit(func):
         print(f'Function {func.__name__}{args} {kwargs} Took {total_time:.4f} seconds')
         return result
     return timeit_wrapper
+#endfunction
 
 @timeit
 def calculate_something(num):
@@ -198,6 +206,7 @@ def calculate_something(num):
     """
     total = sum((x for x in range(0, num**2)))
     return total
+#endfunction
 
 class Calculator:
     @timeit
@@ -395,7 +404,7 @@ def testee(x, y):
 #------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUDecotators.py ...')
 #endfunction
 
 #------------------------------------------

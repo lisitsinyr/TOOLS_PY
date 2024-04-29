@@ -41,22 +41,21 @@ import PySide6.QtWidgets
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
-import lyr.LUConst
-import lyr.LUFile
-import lyr.LUConsole
-import lyr.LUDateTime
-import lyr.LUos
-import lyr.LUParserINI
-import lyr.LUDict
-import lyr.LUSupport
-
-# import lyr
+import lyr
+import lyr.LUConst as LUConst
+import lyr.LUFile as LUFile
+import lyr.LUConsole as LUConsole
+import lyr.LUDateTime as LUDateTime
+import lyr.LUos as LUos
+import lyr.LUParserINI as LUParserINI
+import lyr.LUDict as LUDict
+import lyr.LUSupport as LUSupport
 
 # ===========================================================================
 # CONST
 # ===========================================================================
 import rich
-import rich.console
+import rich.console as console
 GConsoleRich = rich.console.Console ()
 
 STATLogging = True
@@ -713,11 +712,6 @@ class TStreamHandler(logging.StreamHandler):
         # self.__Fwidget.setReadOnly (True)
 
     #endfunction
-
-    # def __new__(cls, clsname, bases, attrs):
-    #     newclass = super(cls, MetaClass).__new__(cls, clsname, bases, attrs)
-    #     register(newclass)  # here is your register function
-    #     return newclass
 
     #--------------------------------------------------
     # @property widget
@@ -2238,7 +2232,7 @@ def LoggerAPPS_AddDebug (Astr):
 #-------------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LULog.py...')
 #endfunction
 
 #------------------------------------------

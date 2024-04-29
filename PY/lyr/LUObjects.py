@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -27,7 +27,7 @@ import enum
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# import LULog
+import lyr.LULog as LULog
 
 # ===========================================================================
 # type
@@ -194,7 +194,7 @@ class TObjectsCollection (list):
 #------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUObjects.py...')
 #endfunction
 
 #------------------------------------------

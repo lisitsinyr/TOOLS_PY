@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
 ------------------------------------------------------
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -26,7 +26,7 @@ import sys
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LULog
+import lyr.LULog as LULog
 
 #---------------------------------------------------------------
 # PrintInfoObject
@@ -39,7 +39,7 @@ def PrintInfoObject (AObject):
     # print (traceback.extract_stack () [-1].name, '...')
     s = f'{AObject}'
     #LULog_LoggerTOOLS_log(LULog.DEBUGTEXT, s)
-    lyr.LULog.LoggerTOOLS_AddLevel(lyr.LULog.DEBUGTEXT, s)
+    LULog.LoggerTOOLS_AddLevel(LULog.DEBUGTEXT, s)
 #endfunction
 
 #---------------------------------------------------------------
@@ -47,7 +47,7 @@ def PrintInfoObject (AObject):
 #---------------------------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUDoc.py...')
 #endfunction
 
 #------------------------------------------

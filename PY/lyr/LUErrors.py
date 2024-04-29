@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -65,7 +65,7 @@ class LUFileError_FileERROR(Exception):
 #------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUEditors.py ...')
 #endfunction
 
 #------------------------------------------

@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -30,16 +30,11 @@ import platform
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# import LUStrUtils
+import lyr.LUSupport as LUSupport
 
 #------------------------------------------
 # CONST
 #------------------------------------------
-# cFormatDateTimeLog01 = ('%H:%M:%S %f', '%d/%m/%Y %H:%M:%S %f')
-# cFormatDateTimeLog02 = ('%H%M%S%f', '%Y%m%d %H%M%S%f')
-# cFormatDateTimeLog03 = ('', '%Y%m%d')
-# cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
-# cFormatDateTimeLog05 = ('%d/%m/%Y %H:%M:%S %f', '%H:%M:%S %f')
 cFormatDateTimeLog01 = ('%H:%M:%S', '%d/%m/%Y %H:%M:%S')
 cFormatDateTimeLog02 = ('%H%M%S', '%Y%m%d %H%M%S')
 cFormatDateTimeLog04 = ('', '%Y%m%d%H%M%S%f')
@@ -61,7 +56,7 @@ if platform.system() == 'Linux':
 # Now
 #---------------------------------------------------------------
 def Now () -> datetime:
-    """DateTimeStr"""
+    """Now"""
 #beginfunction
     LResult = datetime.datetime.now ()
     return LResult
@@ -83,11 +78,13 @@ def DateTimeStr (ATimeOnly: bool, ADateTime: datetime.datetime, AFormat: (), Ams
             LResult = ADateTime.strftime (AFormat[0]+' '+smsecs)
         else:
             LResult = ADateTime.strftime (AFormat [0])
+        #endif
     else:
         if Amsecs:
             LResult = ADateTime.strftime (AFormat[1]+' '+smsecs)
         else:
             LResult = ADateTime.strftime (AFormat[1])
+        #endif
     #endif
     return LResult
 #endfunction
@@ -164,7 +161,6 @@ def DaysInMonth (AYear: int, AMonth: int):
 def IsLeapYear(AYear: int) -> bool:
     """IsLeapYear"""
 #beginfunction
-    # return calendar.isleap(AYear)
     return (AYear % 4 == 0) and ((AYear % 100 != 0) or (AYear % 400 == 0))
 #endfunction
 
@@ -178,6 +174,7 @@ def DaysPerMonth(AYear: int, AMonth: int) -> int:
     LResult = LDaysInMonth[AMonth]
     if (AMonth == 2) and IsLeapYear(AYear):
         LResult = LResult + 1
+    #endif
     return LResult
 #endfunction
 
@@ -196,7 +193,7 @@ def GenerateObjectIDStr (AObjectID: datetime.datetime) -> str:
 #---------------------------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUDatTime.py ...')
 #endfunction
 
 #------------------------------------------

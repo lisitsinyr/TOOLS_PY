@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -28,7 +28,6 @@ import logging
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import datetime
-# import date
 import shutil
 import platform
 # if platform.system() == 'Windows':
@@ -39,11 +38,11 @@ import platform
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyr.LUErrors
-import lyr.LUFile
-import lyr.LUStrDecode
-import lyr.LULog
-import lyr.LUDateTime
+import lyr.LUErrors as LUErrors
+import lyr.LUFile as LUFile
+import lyr.LUStrDecode as LUStrDecode
+import lyr.LULog as LULog
+import lyr.LUDateTime as LUDateTime
 
 #------------------------------------------
 #CONST
@@ -82,13 +81,13 @@ def __ListFile (APathSource, AMask, APathDest,
     with os.scandir(APathSource) as LFiles:
         for LFile in LFiles:
             if (not LFile.is_symlink ()):
-                if LFile.is_file() and lyr.LUFile.CheckFileNameMask (LFile.name, AMask):
+                if LFile.is_file() and LUFile.CheckFileNameMask (LFile.name, AMask):
                     #------------------------------------------------------------
                     # class os.DirEntry - Это файл
                     #------------------------------------------------------------
                     LBaseName = os.path.basename (LFile.path)
-                    LFileTimeSource = lyr.LUFile.GetFileDateTime (LFile.path)[2]
-                    LFileSizeSource = lyr.LUFile.GetFileSize (LFile.path)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFile.path)[2]
+                    LFileSizeSource = LUFile.GetFileSize (LFile.path)
 
                     GFileCount = GFileCount + 1
                     LFileCount = LFileCount + 1
@@ -107,7 +106,7 @@ def __ListFile (APathSource, AMask, APathDest,
                     if _FuncFile:
                         s = f'_FuncFile: {_FuncFile.__name__:s}'
                         # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-                        _FuncFile (lyr.LUFile.ExpandFileName (LFile.path), APathDest)
+                        _FuncFile (LUFile.ExpandFileName (LFile.path), APathDest)
                     #endif
                 #endif
             #endif
@@ -116,7 +115,7 @@ def __ListFile (APathSource, AMask, APathDest,
                 # class os.DirEntry - Это каталог
                 #------------------------------------------------------------
                 LBaseName = os.path.basename (LFile.path)
-                LPathTimeSource = lyr.LUFile.GetDirDateTime (LFile.path) [2]
+                LPathTimeSource = LUFile.GetDirDateTime (LFile.path) [2]
 
                 match _Option:
                     case 1 | 11:
@@ -134,7 +133,7 @@ def __ListFile (APathSource, AMask, APathDest,
                 if _FuncDir:
                     s = f'_FuncDir: {_FuncDir.__name__:s}'
                     # LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-                    _FuncDir (lyr.LUFile.ExpandFileName (LFile.path), APathDest)
+                    _FuncDir (LUFile.ExpandFileName (LFile.path), APathDest)
                 #endif
             #endif
         #endfor
@@ -156,7 +155,7 @@ def __ListDir (APathSource, AMask, ASubdir, APathDest,
     # Dir
     #------------------------------------------------------------
     LBaseName = os.path.basename (APathSource)
-    LPathTimeSource = lyr.LUFile.GetDirDateTime (APathSource)[2]
+    LPathTimeSource = LUFile.GetDirDateTime (APathSource)[2]
 
     GFileCount = 0
     GFileSize = 0
@@ -199,7 +198,7 @@ def __ListDir (APathSource, AMask, ASubdir, APathDest,
                     # class os.DirEntry - Это каталог
                     #------------------------------------------------------------
                     LBaseName = os.path.basename (LFile.path)
-                    LPathTimeSource = lyr.LUFile.GetFileDateTime (LFile.path)[2]
+                    LPathTimeSource = LUFile.GetFileDateTime (LFile.path)[2]
 
                     #------------------------------------------------------------
                     # на следующий уровень
@@ -357,7 +356,7 @@ def DirFiles (APathSource, AMask, ASubDir,
 #beginfunction
     if (APathSource != ""):
         s = f'DirFiles: {APathSource:s} {AMask:s} ...'
-        lyr.LULog.LoggerTOOLS_AddLevel (lyr.LULog.TEXT, s)
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
         __ListDir(APathSource, AMask, ASubDir, '', _OutFile, _Option, _FuncDir, _FuncFile)
     #endif
 #endfunction
@@ -374,9 +373,9 @@ def __FakeFile (APathSource,
         LFileName = os.path.join (APathSource, s)
 
         LHahdle = LUFile.OpenTextFile(LFileName, '')
-        lyr.LUFile.WriteTextFile(LHahdle, 'test')
-        lyr.LUFile.WriteTextFile(LHahdle, 'тест')
-        lyr.LUFile.CloseTextFile(LHahdle)
+        LUFile.WriteTextFile(LHahdle, 'test')
+        LUFile.WriteTextFile(LHahdle, 'тест')
+        LUFile.CloseTextFile(LHahdle)
 
         if _FuncFile:
             s = f'_FuncFile: {_FuncFile.__name__:s}'
@@ -398,7 +397,7 @@ def __FakeDir (APathSource,
     # Dir
     #------------------------------------------------------------
     LBaseName = os.path.basename (APathSource)
-    lyr.LULog.LoggerTOOLS_AddLevel (LULog.TEXT, LUFile.ExpandFileName (APathSource))
+    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, LUFile.ExpandFileName (APathSource))
 
     #------------------------------------------------------------
     #
@@ -418,7 +417,7 @@ def __FakeDir (APathSource,
         for LDirCount in range (0, 2):
             s = f'FakeDir_{str(GLevel+1):s}_{str(LDirCount+1):s}'
             LPathSource = os.path.join (APathSource, s)
-            lyr.LUFile.ForceDirectories(LPathSource)
+            LUFile.ForceDirectories(LPathSource)
 
             GLevel = GLevel + 1
             __FakeDir(LPathSource, _OutFile, _Option, _FuncDir, _FuncFile)
@@ -435,7 +434,7 @@ def FakeFiles (APathSource,
 #beginfunction
     if (APathSource != ""):
         s = f'FakeFiles: {APathSource:s} ...'
-        lyr.LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
         __FakeDir(APathSource, _OutFile, _Option, _FuncDir, _FuncFile)
     #endif
 #endfunction
@@ -457,15 +456,15 @@ def DelFiles (APathSource, AMask, ASubDir, _OutFile, _Option, _Older: int):
         # print ((LDay - LFileTimeSource).days)
         if (LDay - LFileTimeSource).days > _Older:
             s = f'Delete {AFileName:s} ...'
-            lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-            lyr.LUFile.FileDelete(AFileName)
+            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            LUFile.FileDelete(AFileName)
         #endif
     #endfunction
 
 #beginfunction
     if (APathSource != ""):
         stat = f'DelFiles: {APathSource:s} {AMask:s} ...'
-        lyr.LULog.LoggerTOOLS_AddLevel (lyr.LULog.TEXT, s)
+        LULog.LoggerTOOLS_AddLevel (lyr.LULog.TEXT, s)
         __ListDir (APathSource, AMask, ASubDir, '', _OutFile, _Option, None, DelFile)
     #endif
 #endfunction
@@ -473,7 +472,7 @@ def DelFiles (APathSource, AMask, ASubDir, _OutFile, _Option, _Older: int):
 #------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUFileUtils.py ...')
 #endfunction
 
 #------------------------------------------

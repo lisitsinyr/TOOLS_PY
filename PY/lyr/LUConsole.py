@@ -28,7 +28,7 @@ from colorama import Fore, Back, Style
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# import LUSupport
+import lyr.LUSupport as LUSupport
 
 #------------------------------------------
 # CONST
@@ -388,7 +388,7 @@ def pause2 (ADelay:int=0, Aprompt:str=''):
 #------------------------------------------------------
 def main ():
 #beginfunction
-    ...
+    print('main LUConsole.py ...')
 #endfunction
 
 #------------------------------------------
