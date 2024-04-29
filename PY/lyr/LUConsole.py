@@ -28,7 +28,7 @@ from colorama import Fore, Back, Style
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LUSupport
+# import LUSupport
 
 #------------------------------------------
 # CONST
@@ -219,7 +219,7 @@ def FormatColorStr (s, **kwargs) -> str:
     if  AESC is not None:
         LResult = LResult + AESC + s + sRESET
     else:
-        LStyles = LUSupport.GetTupleStr (AStyles)
+        LStyles = LUSupport.TupleToStr (AStyles)
         # --------------------------------------------
         if len(LStyles) > 0 \
                 or AFG8 is not None or ABG8 is not None \
@@ -268,7 +268,7 @@ def Write (s, **kwargs):
     """Write"""
 #beginfunction
     _s = s
-    if LUSupport.ISTerminal():
+    if LUSupport.IsTerminal():
         sys.stdout.write (_s)
     else:
         if len(kwargs):

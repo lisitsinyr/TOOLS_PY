@@ -35,7 +35,7 @@ from PySide6.QtWidgets import (
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LULog
+# import LULog
 
 # blocking.py
 def wait(milliseconds, /):

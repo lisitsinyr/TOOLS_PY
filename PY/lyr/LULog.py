@@ -41,14 +41,16 @@ import PySide6.QtWidgets
 #------------------------------------------
 # БИБЛИОТЕКА LU 
 #------------------------------------------
-import LUConst
-import LUFile
-import LUConsole
-import LUDateTime
-import LUos
-import LUParserINI
-import LUDict
-import LUSupport
+import lyr.LUConst
+import lyr.LUFile
+import lyr.LUConsole
+import lyr.LUDateTime
+import lyr.LUos
+import lyr.LUParserINI
+import lyr.LUDict
+import lyr.LUSupport
+
+# import lyr
 
 # ===========================================================================
 # CONST
@@ -188,17 +190,17 @@ Cbold_red_blue = Cbold+Cred+' on '+Cblue
 Cbold_green = Cbold+Cred
 
 COLORS_tls = {
-    TTypeLogString.tlsNOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
-    TTypeLogString.tlsDEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
-    TTypeLogString.tlsINFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
-    TTypeLogString.tlsWARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
-    TTypeLogString.tlsERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
-    TTypeLogString.tlsCRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
-    TTypeLogString.tlsBEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN  + LUConsole.sEND,
-    TTypeLogString.tlsEND: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-    TTypeLogString.tlsPROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-    TTypeLogString.tlsDEBUGTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLUE+LUConsole.sEND,
-    TTypeLogString.tlsTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND
+    TTypeLogString.tlsNOTSET: lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    TTypeLogString.tlsDEBUG: lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    TTypeLogString.tlsINFO: lyr.LUConsole.cFG8_WHITE+lyr.LUConsole.sEND,
+    TTypeLogString.tlsWARNING: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_YELLOW+lyr.LUConsole.sEND,
+    TTypeLogString.tlsERROR: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_RED+lyr.LUConsole.sEND,
+    TTypeLogString.tlsCRITICAL: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_BLACK + ';' + lyr.LUConsole.cBG8_RED+lyr.LUConsole.sEND,
+    TTypeLogString.tlsBEGIN: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN  + lyr.LUConsole.sEND,
+    TTypeLogString.tlsEND: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN + lyr.LUConsole.sEND,
+    TTypeLogString.tlsPROCESS: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN + lyr.LUConsole.sEND,
+    TTypeLogString.tlsDEBUGTEXT: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    TTypeLogString.tlsTEXT: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_YELLOW+lyr.LUConsole.sEND
 }
 
 COLORS_tls_rich = {
@@ -216,17 +218,17 @@ COLORS_tls_rich = {
 }
 
 COLORS = {
-    logging.NOTSET: LUConsole.cFG8_BLUE+LUConsole.sEND,
-    logging.DEBUG: LUConsole.cFG8_BLUE+LUConsole.sEND,
-    logging.INFO: LUConsole.cFG8_WHITE+LUConsole.sEND,
-    logging.WARNING: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND,
-    logging.ERROR: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_RED+LUConsole.sEND,
-    logging.CRITICAL: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLACK + ';' + LUConsole.cBG8_RED+LUConsole.sEND,
-    BEGIN: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN  + LUConsole.sEND,
-    END: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-    PROCESS: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_GREEN + LUConsole.sEND,
-    DEBUGTEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_BLUE+LUConsole.sEND,
-    TEXT: LUConsole.cS_BOLD + ';' + LUConsole.cFG8_YELLOW+LUConsole.sEND
+    logging.NOTSET: lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    logging.DEBUG: lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    logging.INFO: lyr.LUConsole.cFG8_WHITE+lyr.LUConsole.sEND,
+    logging.WARNING: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_YELLOW+lyr.LUConsole.sEND,
+    logging.ERROR: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_RED+lyr.LUConsole.sEND,
+    logging.CRITICAL: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_BLACK + ';' + lyr.LUConsole.cBG8_RED+lyr.LUConsole.sEND,
+    BEGIN: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN + lyr.LUConsole.sEND,
+    END: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN + lyr.LUConsole.sEND,
+    PROCESS: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_GREEN + lyr.LUConsole.sEND,
+    DEBUGTEXT: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_BLUE+lyr.LUConsole.sEND,
+    TEXT: lyr.LUConsole.cS_BOLD + ';' + lyr.LUConsole.cFG8_YELLOW+lyr.LUConsole.sEND
 }
 
 COLORS_rich = {
@@ -267,7 +269,7 @@ class TFileMemoLog (object):
         self.__FMemoLog = None                        #TMemo
         self.__FLogStrings: list = list()             #TStringList;
         self.__FLogSave: list = list()                #TStringList;
-        self.__FLogCODE = LUFile.cDefaultEncoding
+        self.__FLogCODE = lyr.LUFile.cDefaultEncoding
         self.__FConsoleRich = rich.console.Console()
 
         # self.__FLogger: logging.Logger = CreateLoggerFILEINI (CDefaultFileLogINI, 'root')
@@ -712,6 +714,11 @@ class TStreamHandler(logging.StreamHandler):
 
     #endfunction
 
+    # def __new__(cls, clsname, bases, attrs):
+    #     newclass = super(cls, MetaClass).__new__(cls, clsname, bases, attrs)
+    #     register(newclass)  # here is your register function
+    #     return newclass
+
     #--------------------------------------------------
     # @property widget
     #--------------------------------------------------
@@ -752,7 +759,7 @@ class TStreamHandler(logging.StreamHandler):
                     msg = self.format(record)
                     stream = self.stream
                     # issue 35046: merged two stream.writes into one.
-                    if not LUSupport.ISTerminal ():
+                    if not lyr.LUSupport.IsTerminal ():
                         stream.write(msg + self.terminator)
                         self.flush()
                     else:
@@ -893,9 +900,9 @@ class TFormatter(logging.Formatter):
         """_SetColor"""
     #beginfunction
         if self.FUseColor:
-            if not LUSupport.ISTerminal ():
+            if not lyr.LUSupport.IsTerminal ():
                 LCOLOR = COLORS.get (ALevelNo)
-                LFmt = LUConsole.sBEGIN_oct + LCOLOR + AFmt + LUConsole.sRESET
+                LFmt = lyr.LUConsole.sBEGIN_oct + LCOLOR + AFmt + lyr.LUConsole.sRESET
                 return LFmt
             else:
                 LCOLOR = COLORS_rich.get (ALevelNo)
@@ -1847,23 +1854,23 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
     LDirectoryLOG = ADirectoryLOG
 
     # читаем конфигурацию из файла INI
-    LFileNameINI = LUFile.ExpandFileName (AFileNameINI)
-    if LUFile.FileExists (LFileNameINI):
+    LFileNameINI = lyr.LUFile.ExpandFileName (AFileNameINI)
+    if lyr.LUFile.FileExists (LFileNameINI):
         # существует файл, который можно редактировать
         SetEditINI = True
         LPathINI = LUFile.ExtractFileDir (LFileNameINI)
         LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
     else:
-        LPathINI = LUos.GetCurrentDir ()
-        LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
+        LPathINI = lyr.LUos.GetCurrentDir ()
+        LFileNameINI = os.path.join (LPathINI, lyr.LUFile.ExtractFileName (AFileNameINI))
         # print ('LFileNameINI: ', LFileNameINI)
-        if LUFile.FileExists (LFileNameINI):
+        if lyr.LUFile.FileExists (LFileNameINI):
             # существует файл в текущем каталоге, который можно редактировать
             SetEditINI = True
         else:
             # берем имя файла из проекта, если оно есть
-            LPathINI = LUFile.ExtractFileDir (__file__)
-            LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
+            LPathINI = lyr.LUFile.ExtractFileDir (__file__)
+            LFileNameINI = os.path.join (LPathINI, lyr.LUFile.ExtractFileName (AFileNameINI))
             SetEditINI = False
         #endif
     #endif
@@ -1925,14 +1932,17 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         LDirectoryLOG = LUos.GetCurrentDir ()
     else:
         # log будет создан в ADirectoryLOG
-        LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
+        LDirectoryLOG = lyr.LUFile.ExpandFileName (ADirectoryLOG)
     #endif
     # print('LDirectoryLOG:',LDirectoryLOG)
-    if not LUFile.DirectoryExists (LDirectoryLOG):
-        LUFile.ForceDirectories(LDirectoryLOG)
+    if not lyr.LUFile.DirectoryExists (LDirectoryLOG):
+        lyr.LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
-    logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
+    print(LFileNameINI)
+    logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding=lyr.LUFile.cDefaultEncoding)
+    # logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding='cp1251')
+
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
     # установить форматер

@@ -30,7 +30,7 @@ import platform
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LUStrUtils
+# import LUStrUtils
 
 #------------------------------------------
 # CONST
@@ -56,7 +56,6 @@ if platform.system() == 'Linux':
     cFormatDateYYMMDD_02 = ('', r'%Y/%m/%d')
     cFormatDateYYMM_02 = ('', r'%Y/%m')
 #endif
-
 
 #---------------------------------------------------------------
 # Now

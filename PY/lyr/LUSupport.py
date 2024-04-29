@@ -66,21 +66,21 @@ end;
 """
 
 #-------------------------------------------------
-# ISTerminal
+# IsTerminal
 # Возвращает True, если текущая консоль является терминалом
 #-------------------------------------------------
-def ISTerminal () -> bool:
-    """ISTerminal"""
+def IsTerminal () -> bool:
+    """IsTerminal"""
 #beginfunction
     return sys.stdout.isatty ()
 #endfunction
 
 #-------------------------------------------------
-# GetTupleStr
+# TupleToStr
 # Возвращает кортеж в виде строки, состоящей из элементов ATuple
 #-------------------------------------------------
-def GetTupleStr (ATuple:()):
-    """GetTupleStr"""
+def TupleToStr (ATuple:()) -> str:
+    """TupleToStr"""
 #beginfunction
     LResult = ''
     i = 0
@@ -94,9 +94,14 @@ def GetTupleStr (ATuple:()):
                     LResult = LResult + r
                 else:
                     LResult = LResult + ';' + r
+                #endif
+            #endif
+        #endfor
     else:
         if len (ATuple) > 0:
             LResult = LResult + ATuple
+        #endif
+    #endif
     return LResult
 #endfunction
 

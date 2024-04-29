@@ -38,12 +38,13 @@ import pytube.exceptions
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LULog
-from LUObjects import TObjectTypeClass, TObjects
-import LUFile
-import LUStrUtils
-import LUThread
-import LUDateTime
+# import LULog
+# from LUObjects import TObjectTypeClass, TObjects
+# import LUFile
+# import LUStrUtils
+# import LUThread
+# import LUDateTime
+import lyr
 
 CYOUTUBE_COM = 'WWW.YOUTUBE.COM'
 CYOUTUBE_BE = 'YOUTU.BE'
@@ -96,7 +97,7 @@ def complete_func (AStream, AFilePath: str):
     #endif
 #endfunction
 
-class TYouTubeObject (TObjects):
+class TYouTubeObject (lyr.LUObjects.TObjects):
     """TYouTubeObject"""
     luClassName = "TYouTubeObject"
     

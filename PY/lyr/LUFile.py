@@ -46,11 +46,11 @@ import chardet
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LUErrors
-import LUStrDecode
-import LUDateTime
-import LUos
-import LULog
+import lyr.LUErrors
+import lyr.LUStrDecode
+import lyr.LUDateTime
+import lyr.LUos
+import lyr.LULog
 
 """
 #--------------------------------------------------------------------------------
@@ -687,33 +687,33 @@ def GetFileAttr (AFileName: str) -> int:
     """GetFileAttr"""
 #beginfunction
     s = f'GetFileAttr: {AFileName:s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = 0
 
     if FileExists (AFileName) or DirectoryExists (AFileName):
         LStat = os.stat (AFileName)
 
-        LOSInfo = LUos.TOSInfo ()
+        LOSInfo = lyr.LUos.TOSInfo ()
         match LOSInfo.system:
             case 'Windows':
                 Lmode = LStat.st_mode
                 s = f'Lmode: {Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {stat.filemode (Lmode):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 Lattr = LStat.st_file_attributes
 
                 # Lattr = win32api.GetFileAttributes (AFileName)
 
                 s = f'Lattr:{Lattr:d} {hex (Lattr):s} {bin (Lattr):s} {GetFileAttrStr (Lattr):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 LResult = Lattr
             case 'Linux':
                 Lmode = LStat.st_mode
                 s = f'Lmode:{Lmode:d} {hex (Lmode):s} {bin (Lmode):s} {GetFileModeStrUnix (Lmode):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 LResult = Lmode
             case _:
                 s = f'Неизвестная система ...'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                 LResult = 0
         #endmatch
     #endif
@@ -734,16 +734,16 @@ def SetFileAttr (AFileName: str, Aattr: int, AClear: bool):
         case 'Windows':
             Lattr = GetFileAttr(AFileName)
             s = f'Lattr - current: {Lattr:d} {hex (Lattr):s} {bin (Lattr):s}'
-            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
             if AClear:
                 LattrNew = Lattr & ~Aattr
                 s = f'[clear]: {bin (LattrNew):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             else:
                 LattrNew = Lattr | Aflags
                 s = f'[set]: {bin (LattrNew):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             #endif
 
             # if os.path.isdir (AFileName):
@@ -757,7 +757,7 @@ def SetFileAttr (AFileName: str, Aattr: int, AClear: bool):
             raise NotImplementedError('SetFileAttr Linux not implemented ...')
         case _:
             s = f'Неизвестная система ...'
-            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     #endmatch
 #endfunction
 
@@ -768,7 +768,7 @@ def SetFileMode (AFileName: str, Amode: int):
     """SetFileMode"""
 #beginfunction
     s = f'SetFileMode: {Amode:d} {hex (Amode):s} {bin (Amode):s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     LOSInfo = LUos.TOSInfo ()
     match LOSInfo.system:
@@ -783,16 +783,16 @@ def SetFileMode (AFileName: str, Amode: int):
             if AClear:
                 LattrNew = Lattr & ~Aflags
                 s = f'SetFileAttr [clear]: {bin (Aflags):s} {LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             else:
                 LattrNew = Lattr | Aflags
                 s = f'SetFileAttr [set]: {bin (Aflags):s}{LattrNew:d} {hex (LattrNew):s} {bin (LattrNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             #endif
             os.chflags (AFileName, Aflags)
         case _:
             s = f'Неизвестная система ...'
-            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     #endmatch
 #endfunction
 
@@ -803,9 +803,9 @@ def SetFileFlags (AFileName: str, Aflags: int):
     """SetFileMode"""
 #beginfunction
     s = f'SetFileMode: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
-    LOSInfo = LUos.TOSInfo ()
+    LOSInfo = lyr.LUos.TOSInfo ()
     match LOSInfo.system:
         case 'Windows':
             raise NotImplementedError('SetFileAttr Windows not implemented...')
@@ -819,16 +819,16 @@ def SetFileFlags (AFileName: str, Aflags: int):
             if AClear:
                 LflagsNew = Lattr & ~Aflags
                 s = f'[clear]: {bin (LflagsNew):s} {LflagsNew:d} {hex (LflagsNew):s} {bin (LflagsNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             else:
                 LflagsNew = Lflags | Aflags
                 s = f'[set]: {bin (LflagsNew):s} {LflagsNew:d} {hex (LflagsNew):s} {bin (LflagsNew):s}'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
             #endif
             os.chflags (AFileName, LflagsNew)
         case _:
             s = f'Неизвестная система ...'
-            LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+            lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     #endmatch
 #endfunction
 
@@ -839,7 +839,7 @@ def FileDelete (AFileName: str) -> bool:
     """FileDelete"""
 #beginfunction
     s = f'FileDelete: {AFileName:s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = True
 
     if FileExists (AFileName):
@@ -850,8 +850,8 @@ def FileDelete (AFileName: str) -> bool:
                     Lattr = GetFileAttr (AFileName)
                     if Lattr & stat.FILE_ATTRIBUTE_READONLY:
                         s = f'Clear ReadOnly ...'
-                        LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
-                        LUFile.SetFileAttr (AFileName, stat.FILE_ATTRIBUTE_READONLY, True)
+                        lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                        lyr.LUFile.SetFileAttr (AFileName, stat.FILE_ATTRIBUTE_READONLY, True)
 
                         # FileSetAttr (FileName, FileGetAttr(FileName) and (faReadOnly xor $FF));
                         # Change the file's permissions to writable
@@ -861,14 +861,14 @@ def FileDelete (AFileName: str) -> bool:
                     LResult = True
                 except:
                     s = f'ERROR: FileDelete ...'
-                    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                     LResult = False
                 #endtry
             case 'Linux':
                 raise NotImplementedError('FileDelete Linux not implemented...')
             case _:
                 s = f'Неизвестная система ...'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
         #endmatch
     #endif
     return LResult
@@ -881,7 +881,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
     """FileCopy"""
 #beginfunction
     s = f'FileCopy: {AFileNameSource:s} -> {AFileNameDest:s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     if FileExists (AFileNameSource):
 
@@ -890,7 +890,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
             ForceDirectories (LDestPath)
         #endif
 
-        LOSInfo = LUos.TOSInfo ()
+        LOSInfo = lyr.LUos.TOSInfo ()
         match LOSInfo.system:
             case 'Windows':
                 try:
@@ -907,7 +907,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
                     LResult = True
                 except:
                     s = f'ERROR: FileCopy ...'
-                    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
                     LResult = False
                 #endtry
             case 'Linux':
@@ -919,7 +919,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
                 raise NotImplementedError('FileCopy Linux not implemented...')
             case _:
                 s = f'Неизвестная система ...'
-                LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+                lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
         #endmatch
     #endif
     return LResult
@@ -932,7 +932,7 @@ def FileMove (AFileNameSource: str, APathNameDest: str) -> bool:
     """FileMove"""
 #beginfunction
     s = f'FileMove: {AFileNameSource:s} -> {APathNameDest:s}'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
     LResult = True
     if not LUFile.DirectoryExists(APathNameDest):
         LUFile.ForceDirectories(APathNameDest)
@@ -980,7 +980,7 @@ def CreateTextFile(AFileName: str, AText: str, AEncoding: str):
     """CreateTextFile"""
 #beginfunction
     s = f'CreateTextFile: {AFileName:s} ...'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     LEncoding = AEncoding
     if AEncoding == '':
@@ -1007,7 +1007,7 @@ def WriteStrToFile (AFileName: str, AStr: str):
     """WriteStrToFile"""
 #beginfunction
     s = f'WriteStrToFile: {AFileName:s} ...'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     # Откроет для добавления нового содержимого.
     # Создаст новый файл для чтения записи, если не найдет с указанным именем.
@@ -1032,7 +1032,7 @@ def OpenTextFile(AFileName: str, AEncoding: str) -> int:
     """OpenTextFile"""
 #beginfunction
     s = f'OpenTextFile: {AFileName:s} ...'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     LEncoding = AEncoding
     if AEncoding == '':
@@ -1060,7 +1060,7 @@ def CloseTextFile (AHandle):
     """CloseTextFile"""
 #beginfunction
     s = f'CloseTextFile ...'
-    LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
+    lyr.LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
     AHandle.flush ()
     AHandle.close ()

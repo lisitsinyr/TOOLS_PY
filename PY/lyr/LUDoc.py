@@ -26,7 +26,7 @@ import sys
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LULog
+import lyr.LULog
 
 #---------------------------------------------------------------
 # PrintInfoObject
@@ -39,7 +39,7 @@ def PrintInfoObject (AObject):
     # print (traceback.extract_stack () [-1].name, '...')
     s = f'{AObject}'
     #LULog_LoggerTOOLS_log(LULog.DEBUGTEXT, s)
-    LULog.LoggerTOOLS_AddLevel(LULog.DEBUGTEXT, s)
+    lyr.LULog.LoggerTOOLS_AddLevel(lyr.LULog.DEBUGTEXT, s)
 #endfunction
 
 #---------------------------------------------------------------

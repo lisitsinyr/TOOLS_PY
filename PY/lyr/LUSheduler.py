@@ -28,9 +28,9 @@ import threading
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LULog
-import LUStrUtils
-import LUDateTime
+# import LULog
+# import LUStrUtils
+# import LUDateTime
 
 minNN = 0
 maxNN = 59

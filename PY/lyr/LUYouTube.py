@@ -26,8 +26,9 @@ import sys
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import LUObjectsYT
-import LUFile
+# import LUObjectsYT
+# import LUFile
+import lyr
 
 # --------------------------------------------
 # TYouTubeObjectsItem
@@ -66,7 +67,7 @@ class TYouTubeObjectsItem (object):
         return self.__FYouTubeObject
     #endfunction
     @YouTubeObject.setter
-    def YouTubeObject(self, Value: LUObjectsYT.TYouTubeObject):
+    def YouTubeObject(self, Value: lyr.LUObjectsYT.TYouTubeObject):
     #beginfunction
         self.__FYouTubeObject = Value
     #endfunction

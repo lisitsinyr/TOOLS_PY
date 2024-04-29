@@ -8,10 +8,12 @@
                 "FILE_01"
             ],
             "level": "DEBUG",
-            "propagate": 1
+            "propagate": 1,
+            "qualname": "root"
         },
         "log01": {
             "handlers": [
+                "CONSOLE",
                 "FILE_01"
             ],
             "level": "DEBUG",
@@ -20,45 +22,45 @@
         },
         "log02": {
             "handlers": [
+                "CONSOLE",
                 "FILE_02"
             ],
             "level": "DEBUG",
             "propagate": 0,
-            "qualname": "log02"
+            "qualname": "log01"
         }
     },
     "handlers": {
         "CONSOLE": {
-            "class": "LULog.TStreamHandler",
+            "class": "lyr.LULog.TStreamHandler",
             "level": "DEBUG",
             "formatter": "FORMAT_01",
             "stream": "ext://sys.stdout"
         },
         "FILE_01": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG",
             "formatter": "FORMAT_01",
+            "filename": "LOGGING_FILEYAML.log",
+            "level": "INFO",
             "maxBytes": 10000000,
-            "backupCount": 5,
-            "filename": "LOGGING_FILECONFIG.log"
+            "backupCount": 5
         },
         "FILE_02": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "INFO",
             "formatter": "FORMAT_json",
-            "maxBytes": 1024,
-            "backupCount": 5,
-            "filename": "LOGGING_FILECONFIG_json.log"
+            "filename": "LOGGING_FILEYAML_json.log",
+            "level": "INFO",
+            "maxBytes": 10000000,
+            "backupCount": 5
         }
     },
     "formatters": {
         "FORMAT_01": {
-            "format": "%(asctime)s [%(name)s] [%(module)-15s] %(levelno)02d %(levelname)-10s %(lineno)04d %(message)s",
-            "datefmt": "%d/%m/%Y %H:%M:%S"
+            "format": "%(asctime)s [%(name)s] [%(module)-10s] %(levelno)02d %(levelname)-10s %(lineno)03d %(message)s"
         },
         "FORMAT_json": {
             "class": "pythonjsonlogger.jsonlogger.JsonFormatter",
-            "format": "%(asctime)s [%(name)s] [%(module)-15s] %(levelno)02d %(levelname)-10s %(lineno)04d %(message)s",
+            "format": "%(asctime)s %(name)s %(levelname)s %(message)s",
             "datefmt": "%d/%m/%Y %H:%M:%S"
         }
     }

@@ -26,7 +26,7 @@ import threading
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LULog
+# import LULog
 
 # class ScheduleThread (threading.Thread):
 #     @classmethod

@@ -1,4 +1,4 @@
-"""LUThread.py"""
+"""LUQThread.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
@@ -9,7 +9,7 @@ __annotations__ = """
      LU_PY
      Python (LU)
  Module:
-     LUTimer.py
+     LUQThread.py
 
  =======================================================
 """
@@ -17,40 +17,46 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКИ python
 #------------------------------------------
-import threading
+import psutil
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
+import PySide6.QtCore as QtCore
+from PySide6.QtCore import QObject, QThread, Signal, Slot
 
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import LULog
+# import LULog
+
+# Signals must inherit QObject
+class MySignals(QObject):
+    signal_str = Signal(str)
+    signal_int = Signal(int)
+#endclass
 
 # Create the Worker Thread
-class TTimer (threading.Timer):
-    """TQTimer"""
-    luClassName = 'TTimer'
+class TQThread (QThread):
+    """TQThread"""
+    luClassName = 'TQThread'
 
     #--------------------------------------------------
     # constructor
     #--------------------------------------------------
-    # def __init__ (self, AFuction, parent = None):
-    def __init__ (self, AInterval, AFunction, *args, **kwargs):
+    def __init__ (self, parent = None):
     #beginfunction
-        super ().__init__ (AInterval, AFunction, *args, **kwargs)
-        self.args = args
-        self.kwargs = kwargs
+        QThread.__init__ (self, parent = parent)
+        # super ().__init__ (*args, **kwargs)
+        # self.args = args
+        # self.kwargs = kwargs
 
-        self.__FFunction = AFunction
+        self.__FStopThread = False
 
-        # # Instantiate signals and connect signals to the slots
-        # self.signals = MySignals ()
-        # self.signals.signal_str.connect (parent.update_str_field)
-        # self.signals.signal_int.connect (parent.update_int_field)
-
-        self.__FStopTimer = False
+        # Instantiate signals and connect signals to the slots
+        self.signals = MySignals ()
+        self.signals.signal_str.connect (parent.update_str_field)
+        self.signals.signal_int.connect (parent.update_int_field)
 
     #endfunction
 
@@ -67,42 +73,36 @@ class TTimer (threading.Timer):
     #endfunction
 
     #--------------------------------------------------
-    # @property TQTimer
+    # @property QThread
     #--------------------------------------------------
     # getter
     @property
-    def Timer(self):
+    def QThread(self) -> QThread:
     #beginfunction
         return self
     #endfunction
-
-    # #--------------------------------------------------
-    # # start
-    # #--------------------------------------------------
-    # def start(self):
-    #     """start - Запуск таймера"""
-    # #beginfunction
-    #     s = 'Запуск таймера...'
-    #     LULog.LoggerTOOLS_AddLevel (LULog.DEBUGTEXT, s)
-    #     # self.Function ()
-    #     super ().start ()
-    # #endfunction
 
     #--------------------------------------------------
     # run
     #--------------------------------------------------
     def run(self):
-        """run - Запуск таймера"""
+        """Запуск потока"""
     #beginfunction
-        s = 'run - Запуск таймера...'
+        super ().run()
+        s = 'run - Запуск потока...'
         LULog.LoggerTOOLS_AddDebug (s)
-        # super ().run()
 
-        # self.Function()
+        # Do something on the worker thread
+        a = 1 + 1
+        # Emit signals whenever you want
+        self.signals.signal_int.emit (a)
+        self.signals.signal_str.emit ("This text comes to Main thread from our Worker thread.")
 
-        while not self.__FStopTimer:
-            s = 'Выполнение таймера...'
+        while not self.__FStopThread:
+            s = 'Выполнение потока...'
             # LULog.LoggerTOOLS_AddDebug (s)
+            Lval = psutil.cpu_percent ()
+            self.emit(QtCore.SIGNAL('CPU_VALUE'), Lval)
             continue
         #endwhile
 
@@ -111,7 +111,6 @@ class TTimer (threading.Timer):
         # # Emit signals whenever you want
         # self.signals.signal_int.emit (a)
         # self.signals.signal_str.emit ("This text comes to Main thread from our Worker thread.")
-
         # while 1:
         #     Lval = psutil.cpu_percent ()
         #     # self.emit(QtCore.SIGNAL('CPU_VALUE'), Lval)
