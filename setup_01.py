@@ -14,7 +14,7 @@ def read_pipenv_dependencies(fname):
 
 if __name__ == '__main__':
     setup(
-        name='lyr',
+        name='lyrpy',
         version=os.getenv('PACKAGE_VERSION', '0.0.dev0'),
         package_dir={'': 'src'},
         packages=find_packages('src', include=[

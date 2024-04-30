@@ -24,16 +24,16 @@ def read_readme(fname):
 
 if __name__ == '__main__':
     setup(
-        name='demo',
-        version=getenv('PACKAGE_VERSION', '0.0.dev0'),
-        author='Stefan Schenk',
-        author_email='stefan_schenk@hotmail.com',
+        name='lyrpy',
+        version=getenv('PACKAGE_VERSION', '1.0.dev0'),
+        author='Lisitsin Y.R.',
+        author_email='lisitsinyr@gmail.com',
         long_description_content_type='text/markdown',
         long_description=read_readme('README.md'),
-        description='Just a packaging example project.',
+        description='Just a packaging lyr project.',
         package_dir={'': 'src'},
         packages=find_namespace_packages('src', include=[
-            'demo*'
+            'lyr*'
         ]),
         install_requires=read_pipenv_dependencies('Pipfile.lock'),
         entry_points={
