@@ -40,3 +40,22 @@ LOGS/
 LOG/
 out/
 EXE/
+
+### ____________________________________________
+.venv/
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+dist/
+/build/
+junit/
+*.egg-info
+*.ipynb_checkpoints
+
+# Secrets
+env_file
+*.env
+*.key
+*.cer
+*.crt
+*.pfx
