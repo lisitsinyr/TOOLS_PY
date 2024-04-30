@@ -25,6 +25,9 @@ doc/**/*.txt
 ### PyCharm ###
 .idea/
 __pycache__/
+.venv/
+.mypy_cache/
+.pytest_cache/
 
 ### Исключить все файлы ###
 GIT_CONFIG*
@@ -33,26 +36,22 @@ PROJECTS_LYR*
 
 ### Исключить все файлы с расширение ###
 *.log
+*.bat
+/*.log
 /*.bat
+*.egg-info
+*.ipynb_checkpoints
 
 ### Игнорировать все файлы в каталогах ###
 LOGS/
 LOG/
-out/
+OUT/
 EXE/
+DIST/
+BUILD/
+JUNIT/
 
-### ____________________________________________
-.venv/
-.mypy_cache/
-.pytest_cache/
-__pycache__/
-dist/
-/build/
-junit/
-*.egg-info
-*.ipynb_checkpoints
-
-# Secrets
+###  Secrets ### 
 env_file
 *.env
 *.key

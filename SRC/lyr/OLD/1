@@ -1,0 +1,28 @@
+﻿                if LFile.is_file(): # and (not LFile.name.startswith('.')):
+                    #------------------------------------------------------------
+                    # class os.DirEntry - Это файл
+                    #------------------------------------------------------------
+                    LFileName = LFile.name
+                    LFullFileName = LUFile.ExpandFileName (LFile.path)
+                    LBaseName = os.path.basename (LFullFileName)
+                    # print(LFullFileName)
+                    LFileTimeSource = LUFile.GetFileDateTime (LFullFileName)[2]
+                    LFileSizeSource = LUFile.GetFileSize (LFullFileName)
+                    GFileCount = GFileCount + 1
+                    GFileSize = GFileSize + LFileSizeSource
+
+                    match _Option:
+                        case 1 | 11:
+                            s = f"{LFileTimeSource:%d.%m.%Y  %H:%M} {LFileSizeSource:-17,d} {LBaseName:s}"
+                        case 2 | 12:
+                            s = f"{LFileTimeSource:%d.%m.%Y  %H:%M} {LFileSizeSource:-17,d} {LBaseName:s}"
+                        case _:
+                            s = ''
+                    #endmatch
+                    __OUTFILE (s, _OutFile)
+
+                    if _FuncFile:
+                        # print(_FuncFile.__name__)
+                        _FuncFile (LFullFileName)
+                    #endif
+                #endif
