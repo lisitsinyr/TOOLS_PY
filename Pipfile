@@ -11,8 +11,13 @@ pytest = "*"
 bandit = "*"
 pydocstyle = "*"
 jupyter = "*"
+pytest-cov = "==3.*"
 
 [packages]
+Django = "==4.*"
+waitress = {version = "*", markers="sys_platform == 'win32'"}
+gunicorn = {version = "*", markers="sys_platform == 'linux'"}
+requests = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.12"

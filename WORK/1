@@ -1,0 +1,6 @@
+﻿pipenv install requests
+To activate this project's virtualenv, run pipenv shell
+Alternatively, run a command inside the virtualenv with pipenv run.
+
+Согласно источнику, для активации виртуального окружения проекта можно использовать команду pipenv shell.
+Альтернативный вариант — запустить команду внутри виртуального окружения с помощью pipenv run.
