@@ -1,0 +1,8 @@
+README.md
+setup_02.py
+data/text.txt
+src/demo.egg-info/PKG-INFO
+src/demo.egg-info/SOURCES.txt
+src/demo.egg-info/dependency_links.txt
+src/demo.egg-info/entry_points.txt
+src/demo.egg-info/top_level.txt

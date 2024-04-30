@@ -1,0 +1,2 @@
+[console_scripts]
+fibo = demo.main:cli
