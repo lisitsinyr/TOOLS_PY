@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ ="""
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -38,13 +38,12 @@ import pytube.exceptions
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# import LULog
-# from LUObjects import TObjectTypeClass, TObjects
-# import LUFile
-# import LUStrUtils
-# import LUThread
-# import LUDateTime
-import lyr
+import lyr.LULog as LULog
+import lyr.LUObjects as LUObjects
+import lyr.LUFile as LUFile
+import lyr.LUStrUtils as LUStrUtils
+import lyr.LUThread as LUThread
+import lyr.LUDateTime as LUDateTime
 
 CYOUTUBE_COM = 'WWW.YOUTUBE.COM'
 CYOUTUBE_BE = 'YOUTU.BE'
@@ -97,7 +96,7 @@ def complete_func (AStream, AFilePath: str):
     #endif
 #endfunction
 
-class TYouTubeObject (lyr.LUObjects.TObjects):
+class TYouTubeObject (LUObjects.TObjects):
     """TYouTubeObject"""
     luClassName = "TYouTubeObject"
     

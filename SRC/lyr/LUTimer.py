@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -26,7 +26,6 @@ import threading
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-# import lyr
 
 # Create the Worker Thread
 class TTimer (threading.Timer):

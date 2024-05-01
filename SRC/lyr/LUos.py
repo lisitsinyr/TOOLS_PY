@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023
+ Copyright (c) 2023-2024
  Author:
      Lisitsin Y.R.
  Project:
@@ -70,10 +70,10 @@ import psutil
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 if platform.system() == 'Windows':
-    import lyr.LUParserREG
+    import lyr.LUParserREG as LUParserREG
 #endif
 
-# import LUDateTime
+import lyr.LUDateTime as LUDateTime
 
 #Correspondence to tools in the os module
 #-----------------------------------------------------------------------------

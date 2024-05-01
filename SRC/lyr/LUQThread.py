@@ -28,7 +28,7 @@ from PySide6.QtCore import QObject, QThread, Signal, Slot
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-# import LULog
+import lyr.LULog as LULog
 
 # Signals must inherit QObject
 class MySignals(QObject):
