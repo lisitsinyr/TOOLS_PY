@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lyrpy"
-version = "2024.0.3"
+version = "2024.0.4"
 requires-python = ">=3.8"
 authors = [
   { name="lisitsinyr", email="lisitsinyr@gmail.com" },
