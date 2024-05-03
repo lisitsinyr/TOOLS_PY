@@ -50,6 +50,8 @@ EXE/
 DIST/
 BUILD/
 JUNIT/
+DOC/
+WORK/
 
 ###  Secrets ### 
 env_file
