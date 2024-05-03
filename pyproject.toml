@@ -1,6 +1,6 @@
 [project]
 name = "lyrpy"
-version = "0.0.2"
+version = "1.0.0.0"
 authors = [
   { name="lisitsinyr", email="lisitsinyr@gmail.com" },
 ]

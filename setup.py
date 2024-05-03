@@ -26,8 +26,8 @@ if __name__ == '__main__':
     setup(
         name='lyrpy',
 
-        version=getenv('PACKAGE_VERSION', '1.0.dev0'),
-        #version='0.3',
+        #version=getenv('PACKAGE_VERSION', '1.0.dev0'),
+        version='1.0.0.0',
 
         author='Lisitsin Y.R.',
         author_email='lisitsinyr@gmail.com',
@@ -45,6 +45,7 @@ if __name__ == '__main__':
 
         packages=find_namespace_packages('src', include=['lyr*']),
         #packages=find_packages(exclude=['tests']),
+
         #zip_safe=False,
         #setup_requires=['nose>=1.0'],
         #test_suite='nose.collector')
