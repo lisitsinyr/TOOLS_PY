@@ -28,9 +28,9 @@ import threading
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LULog as LULog
-import lyr.LUStrUtils as LUStrUtils
-import lyr.LUDateTime as LUDateTime
+import lyrpy.LULog as LULog
+import lyrpy.LUStrUtils as LUStrUtils
+import lyrpy.LUDateTime as LUDateTime
 
 minNN = 0
 maxNN = 59

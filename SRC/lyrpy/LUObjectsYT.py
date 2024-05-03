@@ -38,12 +38,12 @@ import pytube.exceptions
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LULog as LULog
-import lyr.LUObjects as LUObjects
-import lyr.LUFile as LUFile
-import lyr.LUStrUtils as LUStrUtils
-import lyr.LUThread as LUThread
-import lyr.LUDateTime as LUDateTime
+import lyrpy.LULog as LULog
+import lyrpy.LUObjects as LUObjects
+import lyrpy.LUFile as LUFile
+import lyrpy.LUStrUtils as LUStrUtils
+import lyrpy.LUThread as LUThread
+import lyrpy.LUDateTime as LUDateTime
 
 CYOUTUBE_COM = 'WWW.YOUTUBE.COM'
 CYOUTUBE_BE = 'YOUTU.BE'

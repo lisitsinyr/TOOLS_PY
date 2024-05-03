@@ -32,7 +32,7 @@
     },
     "handlers": {
         "CONSOLE": {
-            "class": "lyr.LULog.TStreamHandler",
+            "class": "lyrpy.LULog.TStreamHandler",
             "level": "DEBUG",
             "formatter": "FORMAT_01",
             "stream": "ext://sys.stdout"

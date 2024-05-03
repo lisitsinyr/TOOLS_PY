@@ -67,7 +67,7 @@ class TYouTubeObjectsItem (object):
         return self.__FYouTubeObject
     #endfunction
     @YouTubeObject.setter
-    def YouTubeObject(self, Value: lyr.LUObjectsYT.TYouTubeObject):
+    def YouTubeObject(self, Value: lyrpy.LUObjectsYT.TYouTubeObject):
     #beginfunction
         self.__FYouTubeObject = Value
     #endfunction

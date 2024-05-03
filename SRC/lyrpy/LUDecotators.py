@@ -31,7 +31,7 @@ from email.mime.text import MIMEText
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LULog as LULog
+import lyrpy.LULog as LULog
 
 #---------------------------------------------------------------
 # TIMING

@@ -38,11 +38,11 @@ import platform
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyr.LUErrors as LUErrors
-import lyr.LUFile as LUFile
-import lyr.LUStrDecode as LUStrDecode
-import lyr.LULog as LULog
-import lyr.LUDateTime as LUDateTime
+import lyrpy.LUErrors as LUErrors
+import lyrpy.LUFile as LUFile
+import lyrpy.LUStrDecode as LUStrDecode
+import lyrpy.LULog as LULog
+import lyrpy.LUDateTime as LUDateTime
 
 #------------------------------------------
 #CONST
@@ -464,7 +464,7 @@ def DelFiles (APathSource, AMask, ASubDir, _OutFile, _Option, _Older: int):
 #beginfunction
     if (APathSource != ""):
         stat = f'DelFiles: {APathSource:s} {AMask:s} ...'
-        LULog.LoggerTOOLS_AddLevel (lyr.LULog.TEXT, s)
+        LULog.LoggerTOOLS_AddLevel (lyrpy.LULog.TEXT, s)
         __ListDir (APathSource, AMask, ASubDir, '', _OutFile, _Option, None, DelFile)
     #endif
 #endfunction

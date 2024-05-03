@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lyrpy"
-version = "2024.0.4"
+version = "2024.0.5"
 requires-python = ">=3.8"
 authors = [
   { name="lisitsinyr", email="lisitsinyr@gmail.com" },
@@ -42,10 +42,10 @@ classifiers = [
 # Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 # Documentation = "https://readthedocs.org"
 
-# Homepage = "https://github.com/lisitsinyr/TOOLS_PY"
-# Issues = "https://github.com/lisitsinyr/TOOLS_PY/issues"
+Homepage = "https://github.com/lisitsinyr/TOOLS_PY"
+Issues = "https://github.com/lisitsinyr/TOOLS_PY/issues"
 Repository = "https://github.com/lisitsinyr/TOOLS_PY.git"
-# Changelog = "https://github.com/lisitsinyr/TOOLS_PY/blob/main/README.md"
+Changelog = "https://github.com/lisitsinyr/TOOLS_PY/blob/main/README.md"
 # Documentation = "https://readthedocs.org"
 
 

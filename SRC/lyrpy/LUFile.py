@@ -805,7 +805,7 @@ def SetFileFlags (AFileName: str, Aflags: int):
     s = f'SetFileMode: {Aflags:d} {hex (Aflags):s} {bin (Aflags):s}'
     LULog.LoggerTOOLS_AddLevel (logging.DEBUG, s)
 
-    LOSInfo = lyr.LUos.TOSInfo ()
+    LOSInfo = lyrpy.LUos.TOSInfo ()
     match LOSInfo.system:
         case 'Windows':
             raise NotImplementedError('SetFileAttr Windows not implemented...')
@@ -891,7 +891,7 @@ def FileCopy (AFileNameSource: str, AFileNameDest: str, Overwrite: bool) -> bool
             ForceDirectories (LDestPath)
         #endif
 
-        LOSInfo = lyr.LUos.TOSInfo ()
+        LOSInfo = lyrpy.LUos.TOSInfo ()
         match LOSInfo.system:
             case 'Windows':
                 try:

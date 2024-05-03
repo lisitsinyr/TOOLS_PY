@@ -26,7 +26,7 @@ import threading
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyr.LULog as LULog
+import lyrpy.LULog as LULog
 
 # class ScheduleThread (threading.Thread):
 #     @classmethod

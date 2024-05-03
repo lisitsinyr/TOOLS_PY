@@ -1929,7 +1929,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
     #endif
     # print('LDirectoryLOG:',LDirectoryLOG)
     if not LUFile.DirectoryExists (LDirectoryLOG):
-        lyr.LUFile.ForceDirectories(LDirectoryLOG)
+        lyrpy.LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
     print(LFileNameINI)
