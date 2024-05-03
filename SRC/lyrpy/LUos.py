@@ -70,10 +70,10 @@ import psutil
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 if platform.system() == 'Windows':
-    import lyr.LUParserREG as LUParserREG
+    import lyrpy.LUParserREG as LUParserREG
 #endif
 
-import lyr.LUDateTime as LUDateTime
+import lyrpy.LUDateTime as LUDateTime
 
 #Correspondence to tools in the os module
 #-----------------------------------------------------------------------------

@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
         package_dir={'': 'src'},
 
-        packages=find_namespace_packages('src', include=['lyr*']),
+        packages=find_namespace_packages('src', include=['lyrpy*']),
         #packages=find_packages(exclude=['tests']),
 
         #zip_safe=False,

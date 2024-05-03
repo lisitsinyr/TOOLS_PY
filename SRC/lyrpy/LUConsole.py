@@ -28,7 +28,7 @@ from colorama import Fore, Back, Style
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LUSupport as LUSupport
+import lyrpy.LUSupport as LUSupport
 
 #------------------------------------------
 # CONST

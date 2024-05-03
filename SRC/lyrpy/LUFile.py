@@ -46,11 +46,11 @@ import chardet
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyr.LUErrors as LUErrors
-import lyr.LUStrDecode as LUStrDecode
-import lyr.LUDateTime as LUDateTime
-import lyr.LUos as LUos
-import lyr.LULog as LULog
+import lyrpy.LUErrors as LUErrors
+import lyrpy.LUStrDecode as LUStrDecode
+import lyrpy.LUDateTime as LUDateTime
+import lyrpy.LUos as LUos
+import lyrpy.LULog as LULog
 
 """
 #--------------------------------------------------------------------------------

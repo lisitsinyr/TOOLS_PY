@@ -30,7 +30,7 @@ import platform
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-import lyr.LUSupport as LUSupport
+import lyrpy.LUSupport as LUSupport
 
 #------------------------------------------
 # CONST

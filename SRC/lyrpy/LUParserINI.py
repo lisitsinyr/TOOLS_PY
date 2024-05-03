@@ -27,12 +27,12 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyr.LULog as LULog
-import lyr.LUConst as LUConst
-import lyr.LUFile as LUFile
-import lyr.LUos as LUos
-import lyr.LUStrDecode as LUStrDecode
-import lyr.LUStrUtils as LUStrUtils
+import lyrpy.LULog as LULog
+import lyrpy.LUConst as LUConst
+import lyrpy.LUFile as LUFile
+import lyrpy.LUos as LUos
+import lyrpy.LUStrDecode as LUStrDecode
+import lyrpy.LUStrUtils as LUStrUtils
 
 class TINIFile (configparser.ConfigParser):
     """TINIFile"""
