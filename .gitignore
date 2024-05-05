@@ -9,9 +9,6 @@
 # Исключить файл TODO в корневом каталоге, но не файл в subdir/TODO
 /TODO
 
-# Игнорировать все файлы в каталоге build/
-build/
-
 # Игнорировать файл doc/notes.txt, но не файл doc/server/arch.txt
 doc/*.txt
 
@@ -36,13 +33,14 @@ PROJECTS_LYR*
 
 ### Исключить все файлы с расширение ###
 *.log
-*.bat
-/*.log
-/*.bat
 *.egg-info
 *.ipynb_checkpoints
 
+### Исключить все файлы с расширение в корневом каталоге ###
+/*.bat
+
 ### Игнорировать все файлы в каталогах ###
+# Игнорировать все файлы в каталоге build/
 LOGS/
 LOG/
 OUT/
@@ -50,7 +48,7 @@ EXE/
 DIST/
 BUILD/
 JUNIT/
-DOC/
+# DOC/
 WORK/
 
 ###  Secrets ### 

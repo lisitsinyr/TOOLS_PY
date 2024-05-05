@@ -1863,6 +1863,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         else:
             # берем имя файла из проекта, если оно есть
             LPathINI = LUFile.ExtractFileDir (__file__)
+            print(LPathINI)
             LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
             SetEditINI = False
         #endif
