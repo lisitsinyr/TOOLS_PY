@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "pattern-py"
-version = "0.1.0"
+name = "lyrpy"
+version = "2024.0.9"
 description = ""
 authors = ["lisitsinyr <lisitsinyr@gmail.com>"]
 readme = "README.md"
