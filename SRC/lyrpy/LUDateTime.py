@@ -31,6 +31,7 @@ import platform
 # БИБЛИОТЕКИ LU
 #------------------------------------------
 import lyrpy.LUSupport as LUSupport
+import lyrpy.LUStrUtils as LUStrUtils
 
 #------------------------------------------
 # CONST

@@ -26,9 +26,8 @@ import sys
 #------------------------------------------
 # БИБЛИОТЕКИ LU
 #------------------------------------------
-# import LUObjectsYT
-# import LUFile
-import lyr
+import lyrpy.LUObjectsYT
+import lyrpy.LUFile
 
 # --------------------------------------------
 # TYouTubeObjectsItem
