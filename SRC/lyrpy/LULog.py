@@ -1704,7 +1704,7 @@ def CreateLoggerCONFIG (AFileNameCONFIG: str, ALogerName: str,
     else:
         LFileNameLOG = LUFile.ExtractFileName (AFileNameLOG)
     #endif
-    print('LFileNameLOG:',LFileNameLOG)
+    # print('LFileNameLOG:',LFileNameLOG)
 
     if AFileNameLOGjson == '':
         LOptionValue_02 = CONFIG['handlers']['FILE_02']['filename']
@@ -1863,7 +1863,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         else:
             # берем имя файла из проекта, если оно есть
             LPathINI = LUFile.ExtractFileDir (__file__)
-            print(LPathINI)
+            # print(LPathINI)
             LFileNameINI = os.path.join (LPathINI, LUFile.ExtractFileName (AFileNameINI))
             SetEditINI = False
         #endif
@@ -1933,7 +1933,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         lyrpy.LUFile.ForceDirectories(LDirectoryLOG)
     #endif
 
-    print(LFileNameINI)
+    # print(LFileNameINI)
     logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding=LUFile.cDefaultEncoding)
     # logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding='cp1251')
 

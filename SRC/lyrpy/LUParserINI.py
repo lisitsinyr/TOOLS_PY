@@ -68,10 +68,9 @@ class TINIFile (configparser.ConfigParser):
         #endif
         if P == '':
             LWinDir = LUos.GetEnvVar (LUos.cWINDIR)
-            LPath = LUos.GetCurrentDir () + ';' + LWinDir
+            LPath = [LUos.GetCurrentDir (), LWinDir]
 
-            # LResult = LUFile.FileSearch (F, APath)
-            LList = LUFile.SearchFileDirs([LUos.GetCurrentDir (),LWinDir], F, '', '', False)
+            LList = LUFile.SearchFileDirs (LPath, F, '', '', False)
             if len(LList) > 0:
                 LResult = LList[0]
             #endif
