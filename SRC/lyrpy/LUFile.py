@@ -204,6 +204,7 @@ def DirectoryClear (ADir: str) -> bool:
 def FileExists (AFileName: str) -> bool:
     """FileExists"""
 #beginfunction
+    print(AFileName)
     return os.path.isfile(AFileName)
 #endfunction
 

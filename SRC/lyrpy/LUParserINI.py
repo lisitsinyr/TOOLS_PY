@@ -68,10 +68,13 @@ class TINIFile (configparser.ConfigParser):
         #endif
         if P == '':
             LWinDir = LUos.GetEnvVar (LUos.cWINDIR)
-            APath = LUos.GetCurrentDir () + ';' + LWinDir
+            LPath = LUos.GetCurrentDir () + ';' + LWinDir
 
-            LResult = LUFile.FileSearch (F, APath)
-
+            # LResult = LUFile.FileSearch (F, APath)
+            LList = LUFile.SearchFileDirs([LUos.GetCurrentDir (),LWinDir], F, '', '', False)
+            if len(LList) > 0:
+                LResult = LList[0]
+            #endif
             if LResult == '':
                 LResult = LUFile.IncludeTrailingBackslash (LWinDir) + F
             #endif
