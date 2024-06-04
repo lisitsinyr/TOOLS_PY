@@ -1,43 +1,7 @@
 @echo off
 rem -------------------------------------------------------------------
-rem lyrgit_push_main.bat
-rem ----------------------------------------------------------------------------
-rem ***Отправить изменения
-rem ----------------------------------------------------------------------------
-rem usage: git push [<options>] [<repository> [<refspec>...]]
-rem 
-rem     -v, --verbose         be more verbose
-rem     -q, --quiet           be more quiet
-rem     --repo <repository>   repository
-rem     --all                 push all refs
-rem     --mirror              mirror all refs
-rem     -d, --delete          delete refs
-rem     --tags                push tags (can't be used with --all or --mirror)
-rem     -n, --dry-run         dry run
-rem     --porcelain           machine-readable output
-rem     -f, --force           force updates
-rem     --force-with-lease[=<refname>:<expect>]
-rem                           require old value of ref to be at this value
-rem     --force-if-includes   require remote updates to be integrated locally
-rem     --recurse-submodules (check|on-demand|no)
-rem                           control recursive pushing of submodules
-rem     --thin                use thin pack
-rem     --receive-pack <receive-pack>
-rem                           receive pack program
-rem     --exec <receive-pack>
-rem                           receive pack program
-rem     -u, --set-upstream    set upstream for git pull/status
-rem     --progress            force progress reporting
-rem     --prune               prune locally removed refs
-rem     --no-verify           bypass pre-push hook
-rem     --follow-tags         push missing but relevant tags
-rem     --signed[=(yes|no|if-asked)]
-rem                           GPG sign the push
-rem     --atomic              request atomic transaction on remote side
-rem     -o, --push-option <server-specific>
-rem                           option to transmit
-rem     -4, --ipv4            use IPv4 addresses only
-rem     -6, --ipv6            use IPv6 addresses only
+rem P312create.bat
+rem     Создание виртуального окружения
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -157,12 +121,6 @@ rem beginfunction
     rem -------------------------------------
     rem Проверка на обязательные аргументы
 
-    set PN_CAPTION=Comment
-    set Comment="Git Bash commit update"
-    set Comment=%date:~6,4%%date:~3,2%%date:~0,2%%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%
-    call :Check_P Comment "%Comment%" || exit /b 1
-    echo Comment: %Comment%
-
     exit /b 0
 rem endfunction
 
@@ -177,40 +135,7 @@ rem beginfunction
         echo DEBUG: procedure !FUNCNAME! ...
     )
 
-    call :MAIN_GIT_RUN || exit /b 1
-
-    rem call :Pause !SLEEP! || exit /b 1
-    rem call :PressAnyKey || exit /b 1
-
-    exit /b 0
-rem endfunction
-
-rem =================================================
-rem procedure MAIN_GIT_RUN ()
-rem =================================================
-:MAIN_GIT_RUN
-rem beginfunction
-    set FUNCNAME=%0
-    set FUNCNAME=MAIN_GIT_RUN
-    if defined DEBUG (
-        echo DEBUG: procedure !FUNCNAME! ...
-    )
-
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    echo ...git add --all >> !LOG_FULLFILENAME!
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    git add --all >> !LOG_FULLFILENAME!
-    
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    echo ...git commit -m "%Comment%" >> !LOG_FULLFILENAME!
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    git commit -m "%Comment%" >> !LOG_FULLFILENAME!
-
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    echo ...git push -u origin main >> !LOG_FULLFILENAME!
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
-    git push -u origin main >> !LOG_FULLFILENAME!
-    echo --------------------------------------------------------------- >> !LOG_FULLFILENAME!
+    C:\Users\lyr\AppData\Local\Programs\Python\Python312\python.exe -m venv D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\VENV\P312
 
     exit /b 0
 rem endfunction
@@ -222,6 +147,12 @@ rem =================================================
 rem LYRConst.bat
 rem =================================================
 :SET_LIB
+%LIB_BAT%\LYRConst.bat %*
+exit /b 0
+:SET_CHECK_REPO
+%LIB_BAT%\LYRConst.bat %*
+exit /b 0
+:SET_CHECK_PROJECT
 %LIB_BAT%\LYRConst.bat %*
 exit /b 0
 :SET_KIX
