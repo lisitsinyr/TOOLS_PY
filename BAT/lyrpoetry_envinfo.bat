@@ -56,6 +56,7 @@ rem ----------------------------------------------------------------------------
     rem echo Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
+    call :SET_POETRY || exit /b 1
     rem echo CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
@@ -89,7 +90,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR (
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_BAT
+        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
     rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
@@ -108,7 +109,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_KIX (
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
-        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_KIX
+        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_SRC_KIX
     )
     rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
@@ -145,8 +146,6 @@ rem beginfunction
     if defined DEBUG (
         echo DEBUG: procedure !FUNCNAME! ...
     )
-
-    call :SET_POETRY || exit /b 1
 
     echo Displays information about the current environment ...
     set COMMAND=env info

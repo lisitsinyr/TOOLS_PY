@@ -51,9 +51,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo Read_N:!Read_N!
 
     call :SET_LIB %0 || exit /b 1
+    call :SET_POETRY || exit /b 1
     rem echo CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
@@ -137,19 +138,21 @@ rem beginfunction
         echo DEBUG: procedure !FUNCNAME! ...
     )
 
-    call :SET_POETRY || exit /b 1
-
     set CAPTION=Creates a new Python project at ^<path^> ...
     set CAPTION=Создает новый проект на Python at ^<path^> ...
     echo !CAPTION!
     set COMMAND=new
     
+    rem echo OPTION:!OPTION!
+    rem echo ARGS:!ARGS!
+
     if not defined Read_N (
         set APPRUN=!APP! !COMMAND!!OPTION!!ARGS!
     ) else (
         set APPRUN=!APP! !COMMAND!!OPTION! %*
     )
     echo APPRUN: !APPRUN!
+
     !APPRUN!
 
     exit /b 0
@@ -168,7 +171,7 @@ rem beginfunction
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
-    set name=test
+    set name=PATTERN_PY
     set PN_CAPTION=Set the resulting package name
     set PN_CAPTION=Задайте имя результирующего пакета
     call :Read_P name "" || exit /b 1
@@ -197,11 +200,11 @@ rem beginfunction
     rem ARGS
     rem -------------------------------------
     rem Проверка на обязательные аргументы
-    set folder=folder folder
+    set folder=PATTERN_PY
     set PN_CAPTION=The path to create the project at
     set PN_CAPTION=Путь для создания проекта находится по адресу
     call :Read_P folder "" || exit /b 1
-    rem echo path: !path!
+    echo folder:!folder!
     if defined folder (
         set ARGS=!ARGS! "!folder!"
         if exist "!folder!"\ (
@@ -209,6 +212,7 @@ rem beginfunction
             echo Удаление каталога "!folder!"
             rmdir "!folder!" /s
         )
+        set OK=yes
     ) else (
         set ARGS=!ARGS! "."
         echo INFO: folder not defined ...
@@ -217,6 +221,7 @@ rem beginfunction
             echo Удаление файла %tomlFile%
             del %tomlFile%
         )
+        set OK=yes
     )
 
     exit /b 0

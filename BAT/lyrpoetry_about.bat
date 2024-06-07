@@ -50,6 +50,7 @@ rem ----------------------------------------------------------------------------
     rem echo Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
+    call :SET_POETRY || exit /b 1
     rem echo CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
@@ -155,8 +156,6 @@ rem beginfunction
     if defined DEBUG (
         echo DEBUG: procedure !FUNCNAME! ...
     )
-
-    call :SET_POETRY || exit /b 1
 
     set CAPTION=Shows information about Poetry ...
     set CAPTION=Показывает информацию о Poetry ...
