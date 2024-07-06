@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """GetINI.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
@@ -34,13 +36,23 @@ GParameter = ''
 
 def CheckParameter (ASection: str, AParameter: str):
 #beginfunction
-    # print(cfg.get('Section1', 'foo', raw=False))  # -> "Python is fun!"
+    global GINIFile
+    global GParameter
     LValue = GINIFile.get(ASection, AParameter, raw=False)
-    print (AParameter+'='+LValue)
+    # print (AParameter+'='+LValue)
+    if GParameter != '':
+        print (LValue)
+    else:
+        print ('%s[%s]="%s"' % (ASection, AParameter, LValue))
+    #endif
 #endfunction
 
 def CheckSection (ASection: str):
 #beginfunction
+    global GINIFile
+
+    print ("declare -A %s" % (ASection))
+
     LParameters = GINIFile.options(ASection)
     for i in range (0,len(LParameters)):
         LParameter = LParameters[i]
@@ -51,6 +63,7 @@ def CheckSection (ASection: str):
 
 def CheckSections ():
 #beginfunction
+    global GINIFile
     LSections = GINIFile.sections()
     for i in range (0,len(LSections)):
         LSection = LSections[i]
@@ -66,24 +79,25 @@ def main ():
     # sys.argv[2] - <Section>
     # sys.argv[3] - <parameter>
     N = not (len(sys.argv) in (2,4))
-    N = False
+    # N = False
     if N:
         print ('GETINI: getini <ini_file> <Section> <parameter>')
     else:
-        # GINIFileName = sys.argv[1]
-        # GSection = sys.argv[2]
-        # GParameter = sys.argv[3]
-        GINIFileName = 'ini2arr.ini'
-        GSection = 'barfoo'
-        GSection = ''
-
-        GParameter = 'session'
-        GParameter = ''
+        GINIFileName = sys.argv[1]
+        try:
+            GSection = sys.argv[2]
+        except IndexError as ERROR:
+            GSection = ''
+        #endtry
+        try:
+            GParameter = sys.argv[3]
+        except IndexError as ERROR:
+            GParameter = ''
+        #endtry
 
         if not os.path.isfile (GINIFileName):
             print ('GETINI: ini_file '+sys.argv[1]+' not found...')
         else:
-            # GINIFile = configparser.ConfigParser()
             GINIFile.read(GINIFileName)
             if GParameter != '':
                 CheckParameter (GSection, GParameter)
