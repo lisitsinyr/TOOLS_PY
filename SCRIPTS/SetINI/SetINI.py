@@ -8,7 +8,7 @@ __annotations__ = """
  Author:
      Lisitsin Y.R.
  Project:
-     TOOLS_PY
+     TOOLS_SRC_PY
  Module:
      SetINI.py
  =======================================================
