@@ -100,6 +100,11 @@ def main ():
     GDirectory = Largs.Directory
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
 
+    GDirectory = LUFile.GetPureWindowsPath (GDirectory)
+    print (GDirectory)
+    # s = f'{LPureWindowsPath:s}'
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+
     LUFileUtils.__ListDir (GDirectory, GFileName,
                           True, '', 'CONSOLE', 0,
                            FuncDir, FuncFile)
