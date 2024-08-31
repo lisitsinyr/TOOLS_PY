@@ -89,40 +89,50 @@ def main ():
                         'COPYFILE_FILEINI_json.log')
 
     # print ('DEBUG: function ',sys._getframe (0).f_code.co_name, '...')
-    LUDoc.PrintInfoObject('-----main----')
-    LUDoc.PrintInfoObject(main)
+    # LUDoc.PrintInfoObject('-----main----')
+    # LUDoc.PrintInfoObject(main)
 
     #----------------------------------------------------------------
     global GDir
     global GMask
 
-    s = f'sys.argv = {sys.argv}'
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, s)
+    # s = f'sys.argv = {sys.argv}'
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, s)
 
     #----------------------------------------------------------------
-    GDir = LUParserARG.GetParam ('PDir', "")
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
-    GMask = LUParserARG.GetParam ('PMask', "")
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PMask = {GMask}')
+    # GDir = LUParserARG.GetParam ('PDir', "")
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
+    # GMask = LUParserARG.GetParam ('PMask', "")
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PMask = {GMask}')
     #----------------------------------------------------------------
 
     #----------------------------------------------------------------
-    Lparser = argparse.ArgumentParser (description = 'Параметры', prefix_chars = '-/')
-    Lparser.add_argument ('PDir', type = str, default = '', help = 'PDir')
-    Lparser.add_argument ('PMask', type = str, default = '', help = 'PMask')
-    # Lparser.add_argument ('-PDir', type = str, nargs = '?', default = '', dest = 'PDir', help = 'PDir')
-    # Lparser.add_argument ('-PMask', type = str, nargs = '?', default = '', dest = 'PMask', help = 'PMask')
-    Largs = Lparser.parse_args ()
+    # Lparser = argparse.ArgumentParser (description = 'Параметры', prefix_chars = '-/')
+    # Lparser.add_argument ('PDir', type = str, default = '', help = 'PDir')
+    # Lparser.add_argument ('PMask', type = str, default = '', help = 'PMask')
+    # #Lparser.add_argument ('-PDir', type = str, nargs = '?', default = '', dest = 'PDir', help = 'PDir')
+    # #Lparser.add_argument ('-PMask', type = str, nargs = '?', default = '', dest = 'PMask', help = 'PMask')
+    # Largs = Lparser.parse_args ()
+    # GDir = Largs.PDir
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
+    # GMask = Largs.PMask
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PMask = {GMask}')
+    #----------------------------------------------------------------
+
+    #----------------------------------------------------------------
+    LArgParser = LUParserARG.TArgParser (description = 'Параметры', prefix_chars = '-/')
+    LArg = LArgParser.ArgParser.add_argument ('PDir', type = str, default = '', help = 'PDir')
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, LArg)
+    LArg = LArgParser.ArgParser.add_argument ('PMask', type = str, default = '', help = 'PMask')
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, LArg)
+    Largs = LArgParser.ArgParser.parse_args ()
     GDir = Largs.PDir
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
+    s = f'Dir = {GDir}'
+    LULog.LoggerAPPS_AddLevel (LULog.TEXT, s)
     GMask = Largs.PMask
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PMask = {GMask}')
+    s = f'Mask = {GMask}'
+    LULog.LoggerAPPS_AddLevel (LULog.TEXT, s)
     #----------------------------------------------------------------
-
-    # GDir = r'D:\WORK\!!HISTORY'
-    # lyrpy.LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
-    # GMask = '.*'
-    # lyrpy.LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PMask = {GMask}')
 
     _Option = 1
     _Option = 0
@@ -131,7 +141,6 @@ def main ():
     LUFile.FileDelete (_OutFile)
 
     LULog.LoggerTOOLS.setLevel (logging.INFO)
-    # lyrpy.LULog.LoggerTOOLS.setLevel(logging.DEBUG)
 
     LUFileUtils.__ListDir (GDir, GMask, True, '', _OutFile, _Option, FuncDir, FuncFile)
 
