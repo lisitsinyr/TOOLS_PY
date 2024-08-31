@@ -71,6 +71,7 @@ def FuncFile (AFileName: str, APathDest: str):
     s = f'...{LFileDateTime[2]:%d.%m.%Y  %H:%M} {LFileDateTime[2]:%d.%m.%Y  %H:%M} {LFileSize:d}'
 
     LFileDirectory = LUFile.GetFileDir(AFileName)
+    LFileDirectory = LUFile.ExtractFileName(LFileDirectory)
     s = f'{LFileDirectory:s}'
     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
 
@@ -100,8 +101,8 @@ def main ():
     GDirectory = Largs.Directory
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
 
-    GDirectory = LUFile.GetPureWindowsPath (GDirectory)
-    print (GDirectory)
+    # GDirectory = LUFile.GetPureWindowsPath (GDirectory)
+    # print (GDirectory)
     # s = f'{LPureWindowsPath:s}'
     # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
 
