@@ -28,23 +28,31 @@ import configparser
 # БИБЛИОТЕКА LU
 #------------------------------------------
 
+config = configparser.ConfigParser()
+
 #------------------------------------------
-def main ():
+def CreateArr ():
 #beginfunction
-    config = configparser.ConfigParser()
-
-    # LFileINI = sys.argv[1]
-    # print (LFileINI)
-    # config.read(LFileINI)
-
-    config.read(sys.stdin)
-
     for sec in config.sections():
         print ("declare -A %s" % (sec))
         for key, val in config.items(sec):
             print ('%s[%s]="%s"' % (sec, key, val))
         #endfor
     #endfor
+#endfunction
+
+#------------------------------------------
+def main ():
+#beginfunction
+    LFileINI = sys.argv[1]
+    config.read(LFileINI)
+
+    # config.read(sys.stdin)
+
+    CreateArr()
+
+    # print ("test1")
+
 #endfunction
 
 #------------------------------------------
