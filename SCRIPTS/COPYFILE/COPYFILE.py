@@ -98,6 +98,7 @@ def main ():
 
     s = f'sys.argv = {sys.argv}'
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, s)
+
     #----------------------------------------------------------------
     GDir = LUParserARG.GetParam ('PDir', "")
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'PDir = {GDir}')
