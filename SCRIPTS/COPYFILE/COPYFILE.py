@@ -96,19 +96,23 @@ def main ():
     LArgParser.ArgParser.add_argument ('FileName', type = str, default = '', help = 'FileName')
     LArgParser.ArgParser.add_argument ('Directory', type = str, default = '', help = 'Directory')
     Largs = LArgParser.ArgParser.parse_args ()
+
     GFileName = Largs.FileName
+    if LUFile.FileExists(GFileName):
+
+
+
+
+    LMask = LUFile.ExtractFileName(GFileName)
+
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
+
     GDirectory = Largs.Directory
     LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
 
-    # GDirectory = LUFile.GetPureWindowsPath (GDirectory)
-    # print (GDirectory)
-    # s = f'{LPureWindowsPath:s}'
-    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-
     LUFileUtils.__ListDir (GDirectory, GFileName,
                           True, '', 'CONSOLE', 0,
-                           FuncDir, FuncFile)
+                          FuncDir, FuncFile)
 
     LULog.STOPLogging ()
 

@@ -55,7 +55,7 @@ def main ():
     N = not (len(sys.argv) in (2,4))
     # N = False
     if N:
-        print (''SETINI: setini <ini_file> <group> <parameter> <value>')
+        print ('SETINI: setini <ini_file> <group> <parameter> <value>')
     else:
         GINIFileName = sys.argv[1]
         try:

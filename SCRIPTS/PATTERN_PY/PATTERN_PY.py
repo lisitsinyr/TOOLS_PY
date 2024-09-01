@@ -39,7 +39,7 @@ def TEST_01 ():
 def main ():
 #beginfunction
     LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI,
-                        r'D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY\LOG',
+                        r'D:\PROJECTS_LYR\LOGS',
                         'LOGGING_FILEINI.log','LOGGING_FILEINI_json.log')
 
     TEST_01 ()
@@ -55,3 +55,4 @@ if __name__ == "__main__":
 #endif
 
 #endmodule
+    
