@@ -20,6 +20,7 @@ import os
 import sys
 import argparse
 import logging
+import shutil
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -34,6 +35,8 @@ import lyrpy.LULog as LULog
 import lyrpy.LUFile as LUFile
 import lyrpy.LUParserARG as LUParserARG
 import lyrpy.LUFileUtils as LUFileUtils
+from lyrpy.LUFileUtils import GMask
+
 
 #------------------------------------------
 #CONST
@@ -62,6 +65,7 @@ def FuncFile (AFileName: str, APathDest: str):
     """FuncFile"""
 #beginfunction
     # lyrpy.LUFile.SetFileAttr (AFileName, Lflags, True)
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'GFileName = {GFileName}')
 
     Lstat = os.stat(AFileName)
     # LAttr = LUFile.GetFileAttr(AFileName)
@@ -71,12 +75,18 @@ def FuncFile (AFileName: str, APathDest: str):
     s = f'...{LFileDateTime[2]:%d.%m.%Y  %H:%M} {LFileDateTime[2]:%d.%m.%Y  %H:%M} {LFileSize:d}'
 
     LFileDirectory = LUFile.GetFileDir(AFileName)
-    LFileDirectory = LUFile.ExtractFileName(LFileDirectory)
+    # LFileDirectory = LUFile.ExtractFileName(LFileDirectory)
     s = f'{LFileDirectory:s}'
-    LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    # LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
 
     # LPureWindowsPath = LUFile.GetPureWindowsPath (AFileName)
     # s = f'{LPureWindowsPath:%s}'
+    if GFileName != AFileName:
+        LFileName = os.path.join (LFileDirectory, GMask)
+        s = f'Copy {GMask:s} -> {LFileName:s} ...'
+        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+        shutil.copy2 (GFileName, LFileName)
+    #endif
 #endfunction
 
 #------------------------------------------
@@ -86,6 +96,7 @@ def main ():
 #beginfunction
     global GFileName
     global GDirectory
+    global GMask
 
     LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI,
                         r'D:\PROJECTS_LYR\LOGS',
@@ -98,18 +109,22 @@ def main ():
     Largs = LArgParser.ArgParser.parse_args ()
 
     GFileName = Largs.FileName
+    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
+
     if not LUFile.FileExists(GFileName):
         print ('COPYFILE: FileName', GFileName, 'not exist...')
     else:
-        LMask = LUFile.ExtractFileName(GFileName)
-        LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
-
+        GFileName = LUFile.ExpandFileName(Largs.FileName)
+        GMask = LUFile.ExtractFileName(GFileName)
         GDirectory = Largs.Directory
         LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
-
-        LUFileUtils.__ListDir (GDirectory, GFileName,
+        if not LUFile.DirectoryExists(GDirectory):
+            print ('COPYFILE: Directory', GDirectory, 'not exist...')
+        else:
+            LUFileUtils.__ListDir (GDirectory, GMask,
                           True, '', 'CONSOLE', 0,
                           FuncDir, FuncFile)
+        #endif
     #endif
 
     LULog.STOPLogging ()
