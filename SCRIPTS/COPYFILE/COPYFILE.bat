@@ -29,7 +29,7 @@ rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_KIX (
     set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_SRC_KIX
 )
-echo SCRIPTS_DIR_KIX:!SCRIPTS_DIR_KIX!
+rem echo SCRIPTS_DIR_KIX:!SCRIPTS_DIR_KIX!
 
 rem --------------------------------------------------------------------------------
 rem 
@@ -49,33 +49,51 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
-    set O1=O1
-    set PN_CAPTION=O1
-    call :Read_P O1 O1 || exit /b 1
-    rem echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! --O1 !O1!
-    ) else (
-        echo INFO: O1 not defined ...
-    )
+    rem set O1=O1
+    rem set PN_CAPTION=O1
+    rem call :Read_P O1 O1 || exit /b 1
+    rem rem echo O1:!O1!
+    rem if defined O1 (
+    rem     set OPTION=!OPTION! --O1 !O1!
+    rem ) else (
+    rem     echo INFO: O1 not defined ...
+    rem )
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     rem Проверка на обязательные аргументы
     set A1=
-    set PN_CAPTION=A1
+    set PN_CAPTION=FileName
     call :Read_P A1 A1 || exit /b 1
-    rem echo A1:!A1!
+    echo A1:!A1!
     if defined A1 (
         set ARGS=!ARGS! !A1!
     ) else (
         echo ERROR: A1 not defined ...
         set OK=
     )
+    set A2=
+    set PN_CAPTION=Directory
+    call :Read_P A2 A2 || exit /b 1
+    echo A2:!A2!
+    if defined A2 (
+        set ARGS=!ARGS! !A2!
+    ) else (
+        echo ERROR: A2 not defined ...
+        set OK=
+    )
+    echo ARGS:!ARGS!
 
-    rem python %~dp0\COPYFILE.py %1 "%2"
-    python %~dp0\COPYFILE.py %1 "%2"
+    rem echo %~dp0
+    rem echo !SCRIPTS_DIR_PY!
+    rem python !%~dp0!COPYFILE.py %1 "%2"
+
+    rem set RUN=!SCRIPTS_DIR_PY!\COPYFILE\COPYFILE.py
+    rem echo RUN:!RUN! 
+    rem !RUN!
+
+    python "!SCRIPTS_DIR_PY!"\COPYFILE\COPYFILE.py !ARGS!
 
     call :PressAnyKey || exit /b 1
 
@@ -110,6 +128,9 @@ rem =================================================
 rem =================================================
 rem LYRSupport.bat
 rem =================================================
+:PressAnyKey
+%LIB_BAT%\LYRSupport.bat %*
+exit /b 0
 :Read_N
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0

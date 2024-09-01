@@ -98,7 +98,9 @@ def main ():
     Largs = LArgParser.ArgParser.parse_args ()
 
     GFileName = Largs.FileName
-    if LUFile.FileExists(GFileName):
+    if not LUFile.FileExists(GFileName):
+        print ('COPYFILE: FileName', GFileName, 'not exist...')
+    else:
         LMask = LUFile.ExtractFileName(GFileName)
         LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
 
