@@ -77,15 +77,7 @@ rem ----------------------------------------------------------------------------
     rem python %~dp0\COPYFILE.py %1 "%2"
     python %~dp0\COPYFILE.py %1 "%2"
 
-    rem set APP_KIX_DIR=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_KIX\KIX
-    rem set APP_KIX=
-    rem call :SET_KIX || exit /b 1
-    rem if exist !APP_KIX_DIR!\!APP_KIX!.kix (
-    rem     echo START !APP_KIX_DIR!\!APP_KIX!.kix ... 
-    rem     kix32.exe !APP_KIX_DIR!\!APP_KIX!.kix "$A1=!A1!"
-    rem )
-
-    rem call :PressAnyKey || exit /b 1
+    call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end
