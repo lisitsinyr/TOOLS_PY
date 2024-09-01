@@ -20,16 +20,9 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR_PY - Каталог скриптов PY
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_PY (
-    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY\SRC\SCRIPTS
+    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
 )
 echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-rem -------------------------------------------------------------------
-rem SCRIPTS_DIR_KIX - Каталог скриптов KIX
-rem -------------------------------------------------------------------
-if not defined SCRIPTS_DIR_KIX (
-    set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_SRC_KIX
-)
-rem echo SCRIPTS_DIR_KIX:!SCRIPTS_DIR_KIX!
 
 rem --------------------------------------------------------------------------------
 rem 
@@ -93,7 +86,7 @@ rem ----------------------------------------------------------------------------
     rem echo RUN:!RUN! 
     rem !RUN!
 
-    python "!SCRIPTS_DIR_PY!"\COPYFILE\COPYFILE.py !ARGS!
+    python "!SCRIPTS_DIR_PY!"\SRC\SCRIPTS\COPYFILE\COPYFILE.py !ARGS!
 
     call :PressAnyKey || exit /b 1
 
