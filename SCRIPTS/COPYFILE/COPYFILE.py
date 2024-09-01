@@ -99,20 +99,16 @@ def main ():
 
     GFileName = Largs.FileName
     if LUFile.FileExists(GFileName):
+        LMask = LUFile.ExtractFileName(GFileName)
+        LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
 
+        GDirectory = Largs.Directory
+        LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
 
-
-
-    LMask = LUFile.ExtractFileName(GFileName)
-
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
-
-    GDirectory = Largs.Directory
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
-
-    LUFileUtils.__ListDir (GDirectory, GFileName,
+        LUFileUtils.__ListDir (GDirectory, GFileName,
                           True, '', 'CONSOLE', 0,
                           FuncDir, FuncFile)
+    #endif
 
     LULog.STOPLogging ()
 
