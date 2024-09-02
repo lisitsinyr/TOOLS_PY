@@ -81,12 +81,12 @@ def FuncFile (AFileName: str, APathDest: str):
 
     # LPureWindowsPath = LUFile.GetPureWindowsPath (AFileName)
     # s = f'{LPureWindowsPath:%s}'
-    if GFileName != AFileName:
-        LFileName = os.path.join (LFileDirectory, GMask)
-        s = f'Copy {GMask:s} -> {LFileName:s} ...'
-        LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
-        shutil.copy2 (GFileName, LFileName)
-    #endif
+    # if GFileName != AFileName:
+    #     LFileName = os.path.join (LFileDirectory, GMask)
+    #     s = f'Copy {GMask:s} -> {LFileName:s} ...'
+    #     LULog.LoggerTOOLS_AddLevel (LULog.TEXT, s)
+    #     shutil.copy2 (GFileName, LFileName)
+    # #endif
 #endfunction
 
 #------------------------------------------
@@ -98,10 +98,15 @@ def main ():
     global GDirectory
     global GMask
 
-    LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI,
+    # LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI,
+    #                     r'D:\PROJECTS_LYR\LOGS',
+    #                     'COPYFILE.log',
+    #                     'COPYFILE_json.log')
+
+    LULog.STARTLogging (LULog.TTypeSETUPLOG.tslCONFIG,
                         r'D:\PROJECTS_LYR\LOGS',
-                        'COPYFILE_FILEINI.log',
-                        'COPYFILE_FILEINI_json.log')
+                        'COPYFILE.log',
+                        'COPYFILE_json.log')
 
     LArgParser = LUParserARG.TArgParser (description = 'Параметры', prefix_chars = '-/')
     LArgParser.ArgParser.add_argument ('FileName', type = str, default = '', help = 'FileName')
@@ -109,7 +114,8 @@ def main ():
     Largs = LArgParser.ArgParser.parse_args ()
 
     GFileName = Largs.FileName
-    LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
+    # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'FileName = {GFileName}')
+    LULog.LoggerTOOLS_AddLevel(LULog.TEXT, f'FileName = {GFileName}')
 
     if not LUFile.FileExists(GFileName):
         print ('COPYFILE: FileName', GFileName, 'not exist...')
@@ -117,7 +123,7 @@ def main ():
         GFileName = LUFile.ExpandFileName(Largs.FileName)
         GMask = LUFile.ExtractFileName(GFileName)
         GDirectory = Largs.Directory
-        LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
+        # LULog.LoggerAPPS_AddLevel (LULog.TEXT, f'Directory = {GDirectory}')
         if not LUFile.DirectoryExists(GDirectory):
             print ('COPYFILE: Directory', GDirectory, 'not exist...')
         else:

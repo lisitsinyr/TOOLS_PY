@@ -94,7 +94,7 @@ rem beginfunction
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
-        set LIB_BAT=!SCRIPTS_DIR!\LIB
+        set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         rem echo LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
