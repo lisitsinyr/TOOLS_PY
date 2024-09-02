@@ -1,2 +1,2 @@
-rem echo %~dp0
-python %~dp0\GetINI.py "%1" "%2" "%3"
+echo %~dp0
+python "%~dp0PATTERN_PY.py"

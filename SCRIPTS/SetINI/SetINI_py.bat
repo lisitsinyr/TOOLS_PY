@@ -20,7 +20,7 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR_PY - Каталог скриптов PY
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_PY (
-    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY\SRC\SCRIPTS
+    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
 )
 echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
 
@@ -86,7 +86,7 @@ rem ----------------------------------------------------------------------------
     rem echo RUN:!RUN! 
     rem !RUN!
 
-    python "!SCRIPTS_DIR_PY!"\SetINI\SetINI.py !ARGS!
+    python "!SCRIPTS_DIR_PY!"\SRC\SCRIPTS\SetINI\SetINI.py !ARGS!
 
     call :PressAnyKey || exit /b 1
 

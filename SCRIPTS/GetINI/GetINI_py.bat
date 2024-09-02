@@ -1,2 +1,2 @@
 rem echo %~dp0
-python %~dp0\GetINI.py "%1" "%2" "%3"
+python %~dp0GetINI.py "%1" "%2" "%3"

@@ -39,7 +39,7 @@ def CheckParameter (ASection: str, AParameter: str, AValue: str):
 #beginfunction
     global GINIFile
     global GParameter
-    global GValue = GINIFile.get(ASection, AParameter, raw=False)
+    global GValue
     GValue = GINIFile.get(ASection, AParameter, raw=False)
 
     GINIFile.WriteString(GSection, GParameter, GValue);
