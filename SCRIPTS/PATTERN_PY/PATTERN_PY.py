@@ -24,7 +24,6 @@ __annotations__ = """
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyrpy.LUConst as LUConst
 import lyrpy.LUDoc as LUDoc
 import lyrpy.LULog as LULog
 

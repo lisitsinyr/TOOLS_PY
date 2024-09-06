@@ -78,6 +78,9 @@ def main ():
     # sys.argv[1] - <>.ini
     # sys.argv[2] - <Section>
     # sys.argv[3] - <parameter>
+    global GSection
+    global GParameter
+
     N = not (len(sys.argv) in (2,4))
     # N = False
     if N:

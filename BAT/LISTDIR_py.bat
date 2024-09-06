@@ -22,7 +22,7 @@ rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_PY (
     set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
 )
-echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
 
 rem --------------------------------------------------------------------------------
 rem 
@@ -58,7 +58,7 @@ rem ----------------------------------------------------------------------------
     rem Проверка на обязательные аргументы
     set A1=D:\PROJECTS_LYR\CHECK_LIST\01_OS\03_UNIX\PROJECTS_UNIX\COMMANDS_SH\SRC\TOOLS
     set PN_CAPTION=Directory
-    call :Read_P A1 || exit /b 1
+    call :Read_P A1 !A1! || exit /b 1
     echo A1:!A1!
     if defined A1 (
         set ARGS=!ARGS! !A1!
@@ -66,7 +66,7 @@ rem ----------------------------------------------------------------------------
         echo ERROR: A1 not defined ...
         set OK=
     )
-    echo ARGS:!ARGS!
+    rem echo ARGS:!ARGS!
 
     rem echo %~dp0
     rem echo !SCRIPTS_DIR_PY!
@@ -76,9 +76,10 @@ rem ----------------------------------------------------------------------------
     rem echo RUN:!RUN! 
     rem !RUN!
 
-    python "!SCRIPTS_DIR_PY!"\SRC\SCRIPTS\LISTDIR\LISTDIR.py !ARGS!
+    rem python "!SCRIPTS_DIR_PY!"\SRC\SCRIPTS\LISTDIR\LISTDIR.py !ARGS!
+    python LISTDIR.py !ARGS!
 
-    call :PressAnyKey || exit /b 1
+    rem call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end

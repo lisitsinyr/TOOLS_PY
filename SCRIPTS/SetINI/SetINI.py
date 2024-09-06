@@ -52,6 +52,9 @@ def main ():
     # sys.argv[2] - <Section>
     # sys.argv[3] - <parameter>
     # sys.argv[4] - <value>
+    global GSection
+    global GParameter
+    global GValue
     N = not (len(sys.argv) in (2,4))
     # N = False
     if N:
