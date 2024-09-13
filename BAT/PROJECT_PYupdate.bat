@@ -71,7 +71,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR (
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_BAT
+        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_BAT
     )
     rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
@@ -90,7 +90,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_KIX (
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
-        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_KIX
+        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_KIX
     )
     rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
@@ -293,7 +293,7 @@ rem beginfunction
     set DIR_TO=!CurrentDir!
     rem echo DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
-    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\07_GIT\PROJECTS_GIT\TOOLS_GIT\BAT\A.WORK
+    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\GIT\PROJECTS_GIT\TOOLS_GIT\BAT\A.WORK
     rem echo DIR_FROM: !DIR_FROM!
     set LFileName=lyrgit_push_main.bat
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
@@ -302,7 +302,7 @@ rem beginfunction
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
 
-    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY
+    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY
     rem echo DIR_FROM: !DIR_FROM!
     set LFileName=.gitignore
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
@@ -318,7 +318,7 @@ rem beginfunction
     set DIR_TO=!CurrentDir!\SRC\!ProjectName!
     rem echo DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
-    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY\SRC\PATTERN_PY
+    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY\SRC\PATTERN_PY
     rem echo DIR_FROM: !DIR_FROM!
     set LFileName=PATTERN_PY.py
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
@@ -328,12 +328,12 @@ rem beginfunction
     set DIR_TO=!CurrentDir!\SRC
     rem echo DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
-    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY\SRC
+    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\PROJECTS_PY\PATTERN_PY\SRC
     rem echo DIR_FROM: !DIR_FROM!
     set LFileName=README.md
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
-    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\BATPY
+    set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\BATPY
     rem echo DIR_FROM: !DIR_FROM!
     set LFileName=PROJECT_PYupdate.bat
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1

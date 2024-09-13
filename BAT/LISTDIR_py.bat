@@ -10,7 +10,7 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR - Каталог скриптов
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR (
-    set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\03_SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_SRC_BAT
+    set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_SRC_BAT
 )
 rem -------------------------------------------------------------------
 rem LIB_BAT - каталог библиотеки скриптов
@@ -20,7 +20,7 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR_PY - Каталог скриптов PY
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_PY (
-    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\05_DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
+    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
 )
 rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
 
@@ -56,7 +56,7 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     rem Проверка на обязательные аргументы
-    set A1=D:\PROJECTS_LYR\CHECK_LIST\01_OS\03_UNIX\PROJECTS_UNIX\COMMANDS_SH\SRC\TOOLS
+    set A1=D:\PROJECTS_LYR\CHECK_LIST\OS\03_UNIX\PROJECTS_UNIX\COMMANDS_SH\SRC\TOOLS
     set PN_CAPTION=Directory
     call :Read_P A1 !A1! || exit /b 1
     echo A1:!A1!
