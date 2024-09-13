@@ -10,7 +10,7 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR - Каталог скриптов
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR (
-    set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_SRC_BAT
+    set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
 )
 rem -------------------------------------------------------------------
 rem LIB_BAT - каталог библиотеки скриптов
@@ -20,7 +20,7 @@ rem -------------------------------------------------------------------
 rem SCRIPTS_DIR_PY - Каталог скриптов PY
 rem -------------------------------------------------------------------
 if not defined SCRIPTS_DIR_PY (
-    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\02_Python\PROJECTS_PY\TOOLS_SRC_PY
+    set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\TOOLS_SRC_PY
 )
 echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
 

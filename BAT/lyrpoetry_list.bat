@@ -95,7 +95,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR (
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\04_BAT\PROJECTS_BAT\TOOLS_BAT
+        set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
     )
     rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
@@ -114,7 +114,7 @@ rem beginfunction
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_KIX (
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
-        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\01_KIX\PROJECTS_KIX\TOOLS_KIX
+        set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
     rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
