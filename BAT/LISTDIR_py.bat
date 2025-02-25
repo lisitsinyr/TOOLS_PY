@@ -34,6 +34,18 @@ rem ----------------------------------------------------------------------------
     set DEBUG=
     set /a LOG_FILE_ADD=0
 
+    set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+
+    set PY_ENVNAME=%PY_ENVNAME%
+    if not defined PY_ENVNAME (
+        set PY_ENVNAME=P313
+    )
+    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
+        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+        exit /b 1
+    )
+
     rem Количество аргументов
     call :Read_N %* || exit /b 1
 
@@ -76,8 +88,12 @@ rem ----------------------------------------------------------------------------
     rem echo RUN:!RUN! 
     rem !RUN!
 
+    call :PY_ENV_START || exit /b 1
+
     rem python "!SCRIPTS_DIR_PY!"\SRC\SCRIPTS\LISTDIR\LISTDIR.py !ARGS!
     python LISTDIR.py !ARGS!
+
+    call :PY_ENV_STOP || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
@@ -88,6 +104,18 @@ rem ----------------------------------------------------------------------------
 rem =================================================
 rem ФУНКЦИИ LIB
 rem =================================================
+
+rem =================================================
+rem LYRPY.bat
+rem =================================================
+:PY_ENV_START
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+rem =================================================
+
 rem =================================================
 rem LYRConst.bat
 rem =================================================

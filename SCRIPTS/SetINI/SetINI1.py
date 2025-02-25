@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-
-"""GetINI.py"""
+"""SetINI1.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
@@ -8,9 +7,9 @@ __annotations__ = """
  Author:
      Lisitsin Y.R.
  Project:
-     TOOLS_SRC_PY
+     SCRIPTS_PY
  Module:
-     GetINI.py
+     SetINI.py
  =======================================================
 """
 
@@ -33,43 +32,16 @@ GINIFile = configparser.ConfigParser()
 GIniFileName = ''
 GSection = ''
 GParameter = ''
+GValue = ''
 
-def CheckParameter (ASection: str, AParameter: str):
+def CheckParameter (ASection: str, AParameter: str, AValue: str):
 #beginfunction
     global GINIFile
     global GParameter
-    LValue = GINIFile.get(ASection, AParameter, raw=False)
-    # print (AParameter+'='+LValue)
-    if GParameter != '':
-        print (LValue)
-    else:
-        print ('%s[%s]="%s"' % (ASection, AParameter, LValue))
-    #endif
-#endfunction
+    global GValue
+    GValue = GINIFile.get(ASection, AParameter, raw=False)
 
-def CheckSection (ASection: str):
-#beginfunction
-    global GINIFile
-
-    print ("declare -A %s" % (ASection))
-
-    LParameters = GINIFile.options(ASection)
-    for i in range (0,len(LParameters)):
-        LParameter = LParameters[i]
-        CheckParameter (ASection, LParameter)
-    #endfor
-    pass
-#endfunction
-
-def CheckSections ():
-#beginfunction
-    global GINIFile
-    LSections = GINIFile.sections()
-    for i in range (0,len(LSections)):
-        LSection = LSections[i]
-        CheckSection (LSection)
-    #endfor
-    pass
+    GINIFile.WriteString(GSection, GParameter, GValue);
 #endfunction
 
 #------------------------------------------
@@ -78,13 +50,14 @@ def main ():
     # sys.argv[1] - <>.ini
     # sys.argv[2] - <Section>
     # sys.argv[3] - <parameter>
+    # sys.argv[4] - <value>
     global GSection
     global GParameter
-
+    global GValue
     N = not (len(sys.argv) in (2,4))
     # N = False
     if N:
-        print ('GETINI: getini <ini_file> <Section> <parameter>')
+        print ('SETINI: setini <ini_file> <group> <parameter> <value>')
     else:
         GINIFileName = sys.argv[1]
         try:
@@ -97,19 +70,18 @@ def main ():
         except IndexError as ERROR:
             GParameter = ''
         #endtry
+        try:
+            GValue = sys.argv[4]
+        except IndexError as ERROR:
+            GValue = ''
+        #endtry
 
         if not os.path.isfile (GINIFileName):
-            print ('GETINI: ini_file '+sys.argv[1]+' not found...')
+            print ('SETINI: ini_file '+sys.argv[1]+' not found...')
         else:
             GINIFile.read(GINIFileName)
             if GParameter != '':
-                CheckParameter (GSection, GParameter)
-            else:
-                if GSection != '':
-                    CheckSection (GSection)
-                else:
-                    CheckSections ()
-                #endif
+                CheckParameter (GSection, GParameter, GValue)
             #endif
         #endif
     #endif

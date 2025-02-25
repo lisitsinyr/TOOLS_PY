@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem COPYFILE_py.bat
+rem ftFormatTXT.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -60,12 +60,11 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    set O1_Name=O1
-    set O1_Caption=O1_Caption
-    set O1_Default=O1_Default
+    set O1_Name=fp
+    set O1_Caption=FilePath
+    set O1_Default=%1
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
-
     call :Read_P O1 !O1! || exit /b 1
     rem echo O1:!O1!
     if defined O1 (
@@ -74,44 +73,53 @@ rem ----------------------------------------------------------------------------
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
     
-    echo OPTION:!OPTION!
-    
+    set O2_Name=fm
+    set O2_Caption=FileMask
+    set O2_Default=%2
+    set O2=!O2_Default!
+    set PN_CAPTION=!O2_Caption!
+    call :Read_P O2 !O2! || exit /b 1
+    rem echo O2:!O2!
+    if defined O2 (
+        set OPTION=!OPTION! -!O2_Name! "!O2!"
+    ) else (
+        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+    )
+
+    set O3_Name=w
+    set O3_Caption=width
+    set O3_Default=%3
+    set O3=!O3_Default!
+    set PN_CAPTION=!O3_Caption!
+    call :Read_P O3 !O3! || exit /b 1
+    rem echo O3:!O3!
+    if defined O3 (
+        set OPTION=!OPTION! -!O3_Name! !O3!
+    ) else (
+        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
+    )
+    rem echo OPTION:!OPTION!
+
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    set A1_Name=FileName
-    set A1_Caption=FileName
-    set A1_Default=%1
+    set A1_Name=
+    set A1_Caption=
+    set A1_Default=
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
+    rem call :Read_P A1 !A1! || exit /b 1
     rem echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-
-    set A2_Name=Directory
-    set A2_Caption=Directory
-    set A2_Default=%2
-    set A2=!A1_Default!
-    set PN_CAPTION=!A2_Caption!
-    call :Read_P A2 !A2! || exit /b 1
-    rem echo A2:!A2!
-    if defined A2 (
-        set ARGS=!ARGS! "!A2!"
-    ) else (
-        echo ERROR: A2 [A2_Name:!A2_Name! A2_Caption:!A2_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-
-    echo ARGS:!ARGS!
+    rem if defined A1 (
+    rem     set ARGS=!ARGS! "!A1!"
+    rem ) else (
+    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+    rem     set OK=
+    rem     exit /b 1
+    rem )
+    rem echo ARGS:!ARGS!
 
     rem echo %~dp0
     rem echo !SCRIPTS_DIR_PY!
@@ -123,7 +131,7 @@ rem ----------------------------------------------------------------------------
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPTS_DIR_PY!"\SRC\COPYFILE\COPYFILE.py !OPTION! !ARGS!
+    python "!SCRIPTS_DIR_PY!"\SRC\ftFormatTXT\ftFormatTXT.py !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 

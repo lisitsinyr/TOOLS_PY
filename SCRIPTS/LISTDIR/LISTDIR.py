@@ -6,10 +6,9 @@ __annotations__ = """
  Author:
      Lisitsin Y.R.
  Project:
-     TOOLS_SRC_PY
+     SCRIPTS_PY
  Module:
-     COPYFILE.py
-
+     LISTDIR.py
  =======================================================
 """
 
@@ -25,6 +24,7 @@ import logging
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
+import lyrpy.LUConst as LUConst
 import lyrpy.LULog as LULog
 import lyrpy.LUFile as LUFile
 import lyrpy.LUParserARG as LUParserARG
@@ -77,20 +77,16 @@ def FuncFile (AFileName: str, APathDest: str):
 #------------------------------------------
 def main ():
 #beginfunction
-    # global GDirectory
+    # LUConst.SET_CONST(__file__)
+    LUConst.SET_LIB(__file__)
 
-    LULog.STARTLogging (LULog.TTypeSETUPLOG.tslCONFIG,
-                        r'D:\PROJECTS_LYR\LOGS',
-                        'LISTDIR.log',
-                        'LISTDIR_json.log')
+    LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI, 'console', LUConst.GDirectoryLOG, LUConst.GFileNameLOG,
+                        LUConst.GFileNameLOGjson)
+    LULog.LoggerTOOLS.level = logging.INFO
 
     LArgParser = LUParserARG.TArgParser (description = 'Параметры', prefix_chars = '-/')
     LArg = LArgParser.ArgParser.add_argument ('Directory', type = str, default='', help = 'Directory')
-
     Largs = LArgParser.ArgParser.parse_args ()
-
-    LULog.LoggerTOOLS.level = logging.INFO
-
     LDirectory = Largs.Directory
     # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'Directory = {LDirectory}')
     if not LUFile.DirectoryExists(LDirectory):

@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem COPYFILE_py.bat
+rem GetINI2_py.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -74,15 +74,15 @@ rem ----------------------------------------------------------------------------
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
     
-    echo OPTION:!OPTION!
+    rem echo OPTION:!OPTION!
     
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    set A1_Name=FileName
-    set A1_Caption=FileName
+    set A1_Name=FileINI
+    set A1_Caption=FileINI
     set A1_Default=%1
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
@@ -93,11 +93,11 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
         set OK=
-        exit /b 1
+        rem exit /b 1
     )
 
-    set A2_Name=Directory
-    set A2_Caption=Directory
+    set A2_Name=Section
+    set A2_Caption=Section
     set A2_Default=%2
     set A2=!A1_Default!
     set PN_CAPTION=!A2_Caption!
@@ -108,22 +108,29 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo ERROR: A2 [A2_Name:!A2_Name! A2_Caption:!A2_Caption!] not defined ... 
         set OK=
-        exit /b 1
+        rem exit /b 1
     )
 
-    echo ARGS:!ARGS!
+    set A3_Name=Parameter
+    set A3_Caption=Parameter
+    set A3_Default=%3
+    set A3=!A3_Default!
+    set PN_CAPTION=!A3_Caption!
+    call :Read_P A3 !A3! || exit /b 1
+    rem echo A3:!A3!
+    if defined A3 (
+        set ARGS=!ARGS! "!A3!"
+    ) else (
+        echo ERROR: A3 [A3_Name:!A3_Name! A3_Caption:!A3_Caption!] not defined ... 
+        set OK=
+        rem exit /b 1
+    )
 
-    rem echo %~dp0
-    rem echo !SCRIPTS_DIR_PY!
-    rem python !%~dp0!COPYFILE.py %1 "%2"
-
-    rem set RUN=!SCRIPTS_DIR_PY!\COPYFILE\COPYFILE.py
-    rem echo RUN:!RUN! 
-    rem !RUN!
+    rem echo ARGS:!ARGS!
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPTS_DIR_PY!"\SRC\COPYFILE\COPYFILE.py !OPTION! !ARGS!
+    python "!SCRIPTS_DIR_PY!"\SRC\GetINI\GetINI.py !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 
