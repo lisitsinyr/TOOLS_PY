@@ -48,7 +48,7 @@ from lyrpy.LUFileUtils import GMask
 cDefaultwidth = 80
 cDefaultEncoding = 'utf8'
 cExt = ['.ini', '.mhtml', '.py', '.html', '.htm', '.toml',
-        '.sh', '.bat', '.cmd', '.out', '.log',
+        '.sh', '.bat', '.cmd', '.out', '.log', '.qwen',
         '.ht', '.json', '.svg', '.as'
         ]
 Gwidth = cDefaultwidth
