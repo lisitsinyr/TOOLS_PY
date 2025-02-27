@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem PATTERN_PY.bat
+rem COPYFILE_py.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -26,19 +26,20 @@ setlocal enabledelayedexpansion
     )
 
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_SRC - Каталог скриптов BAT
+    rem SCRIPTS_DIR - Каталог скриптов BAT
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_SRC (
+    if not defined SCRIPTS_DIR (
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        set SCRIPTS_DIR=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
+    rem echo SCRIPTS_DIR:!SCRIPTS_DIR!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
-        set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
+        set LIB_BAT=!SCRIPTS_DIR!\LIB
     )
     rem echo LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
@@ -56,12 +57,30 @@ rem ----------------------------------------------------------------------------
     set DEBUG=
     set /a LOG_FILE_ADD=0
 
-    call :SET_LIB %0 || exit /b 1
+    rem -------------------------------------------------------------------
+    rem SCRIPTS_DIR_PY - Каталог скриптов PY
+    rem -------------------------------------------------------------------
+    if not defined SCRIPTS_DIR_PY (
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\01.DEPLOY
+    )
+    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    set PY_ENVNAME=%PY_ENVNAME%
+    if not defined PY_ENVNAME (
+        set PY_ENVNAME=P313
+    )
+    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
+        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+        exit /b 1
+    )
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
 
-    rem call :CurrentDir
+    call :SET_LIB %0 || exit /b 1
+
+    call :CurrentDir
     rem echo CurrentDir:!CurrentDir!
 
     rem -------------------------------------
@@ -81,14 +100,14 @@ rem ----------------------------------------------------------------------------
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
     echo OPTION:!OPTION!
- 
+    
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=A1
-    set A1_Caption=A1_Caption
-    set A1_Default=A1_Default
+    set A1_Name=FileName
+    set A1_Caption=FileName
+    set A1_Default=%1
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
     call :Read_P A1 !A1! || exit /b 1
@@ -100,37 +119,28 @@ rem ----------------------------------------------------------------------------
         set OK=
         exit /b 1
     )
-    echo ARGS:!ARGS!
-
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
-    )
-    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+    set A2_Name=Directory
+    set A2_Caption=Directory
+    set A2_Default=%2
+    set A2=!A1_Default!
+    set PN_CAPTION=!A2_Caption!
+    call :Read_P A2 !A2! || exit /b 1
+    rem echo A2:!A2!
+    if defined A2 (
+        set ARGS=!ARGS! "!A2!"
+    ) else (
+        echo ERROR: A2 [A2_Name:!A2_Name! A2_Caption:!A2_Caption!] not defined ... 
+        set OK=
         exit /b 1
     )
+    echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
-    rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\01.DEPLOY
-    )
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-    rem -------------------------------------------------------------------
-    rem SCRIPT - 
-    rem -------------------------------------------------------------------
     set SCRIPT_DIR=!SCRIPTS_DIR_PY!\PATTERN
     set SCRIPT_NAME=PATTERN_PY.py
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPT_DIR!"\!SCRIPT_NAME! !OPTION! !ARGS!
+    python "!SCRIPTS_DIR_PY!"\SRC\COPYFILE\COPYFILE.py !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 

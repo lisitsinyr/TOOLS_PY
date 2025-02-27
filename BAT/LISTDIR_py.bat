@@ -1,20 +1,20 @@
 @echo off
 rem -------------------------------------------------------------------
-rem PATTERN_PY.bat
+rem 
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
 setlocal enabledelayedexpansion
 
     rem -------------------------------------------------------------------
-    rem PROJECTS_LYR_ROOT - Каталог ROOT
+    rem PROJECTS_LYR_ROOT - РљР°С‚Р°Р»РѕРі ROOT
     rem -------------------------------------------------------------------
     rem set PROJECTS_LYR_ROOT=D:\WORK\WIN
     set PROJECTS_LYR_ROOT=D:
     rem echo PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
 
     rem -------------------------------------------------------------------
-    rem PROJECTS_LYR_DIR - Каталог проектов LYR
+    rem PROJECTS_LYR_DIR - РљР°С‚Р°Р»РѕРі РїСЂРѕРµРєС‚РѕРІ LYR
     rem -------------------------------------------------------------------
     set PROJECTS_LYR_DIR=!PROJECTS_LYR_ROOT!\PROJECTS_LYR
     rem echo PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
@@ -26,23 +26,24 @@ setlocal enabledelayedexpansion
     )
 
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_SRC - Каталог скриптов BAT
+    rem SCRIPTS_DIR - РљР°С‚Р°Р»РѕРі СЃРєСЂРёРїС‚РѕРІ BAT
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_SRC (
+    if not defined SCRIPTS_DIR (
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        set SCRIPTS_DIR=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
+    rem echo SCRIPTS_DIR:!SCRIPTS_DIR!
 
     rem -------------------------------------------------------------------
-    rem LIB_BAT - каталог библиотеки скриптов BAT
+    rem LIB_BAT - РєР°С‚Р°Р»РѕРі Р±РёР±Р»РёРѕС‚РµРєРё СЃРєСЂРёРїС‚РѕРІ BAT
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
-        set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
+        set LIB_BAT=!SCRIPTS_DIR!\LIB
     )
     rem echo LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
-        echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
+        echo ERROR: РљР°С‚Р°Р»РѕРі Р±РёР±Р»РёРѕС‚РµРєРё LYR !LIB_BAT! РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚...
         exit /b 1
     )
 
@@ -56,55 +57,14 @@ rem ----------------------------------------------------------------------------
     set DEBUG=
     set /a LOG_FILE_ADD=0
 
-    call :SET_LIB %0 || exit /b 1
-
-    rem Количество аргументов
-    call :Read_N %* || exit /b 1
-
-    rem call :CurrentDir
-    rem echo CurrentDir:!CurrentDir!
-
-    rem -------------------------------------
-    rem OPTION
-    rem -------------------------------------
-    set OPTION=
-    set O1_Name=O1
-    set O1_Caption=O1_Caption
-    set O1_Default=O1_Default
-    set O1=!O1_Default!
-    set PN_CAPTION=!O1_Caption!
-    call :Read_P O1 !O1! || exit /b 1
-    rem echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! -!O1_Name! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
-    echo OPTION:!OPTION!
- 
-    rem -------------------------------------
-    rem ARGS
-    rem -------------------------------------
-    set ARGS=
-    set A1_Name=A1
-    set A1_Caption=A1_Caption
-    set A1_Default=A1_Default
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
-    rem echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-    echo ARGS:!ARGS!
-
     rem -------------------------------------------------------------------
-    rem ENV - 
+    rem SCRIPTS_DIR_PY - РљР°С‚Р°Р»РѕРі СЃРєСЂРёРїС‚РѕРІ PY
     rem -------------------------------------------------------------------
+    if not defined SCRIPTS_DIR_PY (
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\01.DEPLOY
+    )
+    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
     set PY_ENVNAME=%PY_ENVNAME%
     if not defined PY_ENVNAME (
@@ -115,18 +75,47 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
-    rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\01.DEPLOY
+    rem РљРѕР»РёС‡РµСЃС‚РІРѕ Р°СЂРіСѓРјРµРЅС‚РѕРІ
+    call :Read_N %* || exit /b 1
+
+    call :SET_LIB %0 || exit /b 1
+
+    rem -------------------------------------
+    rem OPTION
+    rem -------------------------------------
+    set OPTION=
+    set O1_Name=O1
+    set O1_Caption=O1_Caption
+    set O1_Default=
+    set O1=!O1_Default!
+    set PN_CAPTION=!O1_Caption!
+    call :Read_P O1 !O1! || exit /b 1
+    rem echo O1:!O1!
+    if defined O1 (
+        set OPTION=!OPTION! -!O1_Name! "!O1!"
+    ) else (
+        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-    rem -------------------------------------------------------------------
-    rem SCRIPT - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPTS_DIR_PY!\PATTERN
-    set SCRIPT_NAME=PATTERN_PY.py
+    rem echo OPTION:!OPTION!
+
+    rem -------------------------------------
+    rem ARGS
+    rem -------------------------------------
+    rem РџСЂРѕРІРµСЂРєР° РЅР° РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рµ Р°СЂРіСѓРјРµРЅС‚С‹
+    set A1=D:\PROJECTS_LYR\CHECK_LIST\OS\UNIX\PROJECTS_UNIX\COMMANDS_SH\SRC\TOOLS
+    set PN_CAPTION=Directory
+    call :Read_P A1 !A1! || exit /b 1
+    echo A1:!A1!
+    if defined A1 (
+        set ARGS=!ARGS! !A1!
+    ) else (
+        echo ERROR: A1 not defined ...
+        set OK=
+    )
+    echo ARGS:!ARGS!
+
+    set SCRIPT_DIR=!SCRIPTS_DIR_PY!\LISTDIR
+    set SCRIPT_NAME=LISTDIR.py
 
     call :PY_ENV_START || exit /b 1
 
@@ -141,7 +130,7 @@ rem ----------------------------------------------------------------------------
 rem --------------------------------------------------------------------------------
 
 rem =================================================
-rem ФУНКЦИИ LIB
+rem Р¤РЈРќРљР¦РР LIB
 rem =================================================
 
 rem =================================================
@@ -170,8 +159,6 @@ rem =================================================
 rem =================================================
 rem LYRFileUtils.bat
 rem =================================================
-:CurrentDir
-%LIB_BAT%\LYRFileUtils.bat %*
 rem =================================================
 rem LYRLog.bat
 rem =================================================
