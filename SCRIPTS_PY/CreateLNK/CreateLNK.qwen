@@ -1,0 +1,68 @@
+﻿Для создания ярлыков (`.lnk` файлов) в Windows с помощью Python можно использовать библиотеку `pywin32`, которая предоставляет доступ к функциям Windows API. Вот пример скрипта, который создает ярлык для указанного файла или программы.
+
+### Шаги:
+1. Установите библиотеку `pywin32`:
+   ```bash
+   pip install pywin32
+   ```
+
+2. Используйте следующий код для создания ярлыка:
+
+```python
+import os
+import sys
+from pathlib import Path
+from win32com.client import Dispatch
+
+def create_shortcut(target_path, shortcut_path, icon_path=None, arguments=None, working_directory=None):
+    """
+    Создает ярлык (.lnk) для указанного пути.
+
+    :param target_path: Путь к целевому файлу/программе.
+    :param shortcut_path: Путь для сохранения ярлыка.
+    :param icon_path: Путь к иконке (необязательно).
+    :param arguments: Аргументы командной строки (необязательно).
+    :param working_directory: Рабочая директория (необязательно).
+    """
+    # Создаем объект ярлыка
+    shell = Dispatch('WScript.Shell')
+    shortcut = shell.CreateShortcut(str(shortcut_path))
+
+    # Задаем параметры ярлыка
+    shortcut.Targetpath = str(target_path)
+    if icon_path:
+        shortcut.IconLocation = str(icon_path)
+    if arguments:
+        shortcut.Arguments = arguments
+    if working_directory:
+        shortcut.WorkingDirectory = str(working_directory)
+
+    # Сохраняем ярлык
+    shortcut.Save()
+    print(f"Ярлык успешно создан: {shortcut_path}")
+
+if __name__ == "__main__":
+    # Пример использования
+    target = r"C:\Program Files\Notepad++\notepad++.exe"  # Целевой файл
+    shortcut = Path.home() / "Desktop" / "Notepad++.lnk"  # Путь к ярлыку на рабочем столе
+    icon = r"C:\Program Files\Notepad++\notepad++.exe"    # Иконка (можно оставить None)
+    args = "--multiInst"                                 # Аргументы (можно оставить None)
+    work_dir = r"C:\Program Files\Notepad++"             # Рабочая директория (можно оставить None)
+
+    create_shortcut(target, shortcut, icon, args, work_dir)
+```
+
+### Объяснение параметров:
+- `target_path`: Путь к файлу или программе, для которой создается ярлык.
+- `shortcut_path`: Путь, где будет сохранен ярлык (обычно на рабочем столе или в меню "Пуск").
+- `icon_path`: Путь к иконке для ярлыка. Если не указано, используется стандартная иконка.
+- `arguments`: Дополнительные аргументы командной строки для запуска программы.
+- `working_directory`: Рабочая директория, из которой будет запущена программа.
+
+### Пример результата:
+Скрипт создаст ярлык для Notepad++ на рабочем столе пользователя с указанными параметрами.
+
+### Примечания:
+- Убедитесь, что путь к целевому файлу (`target_path`) существует.
+- Если вы хотите создать ярлык для другого приложения, измените значение переменной `target`.
+- Для создания ярлыков в системных папках (например, в меню "Пуск") может потребоваться административные права.
