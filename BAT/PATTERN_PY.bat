@@ -58,10 +58,9 @@ rem ----------------------------------------------------------------------------
 
     call :SET_LIB %0 || exit /b 1
 
-    rem Количество аргументов
     call :Read_N %* || exit /b 1
 
-    rem call :CurrentDir
+    call :CurrentDir
     rem echo CurrentDir:!CurrentDir!
 
     rem -------------------------------------
@@ -119,7 +118,7 @@ rem ----------------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\01.DEPLOY
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
     )
     rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
     rem -------------------------------------------------------------------
@@ -153,31 +152,35 @@ exit /b 0
 :PY_ENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-rem =================================================
 
 rem =================================================
-rem LYRConst.bat
+rem LYRLIB.bat
 rem =================================================
 :SET_LIB
-%LIB_BAT%\LYRConst.bat %*
+%LIB_BAT%\LYRLIB.bat %*
 exit /b 0
 :SET_KIX
-%LIB_BAT%\LYRConst.bat %*
+%LIB_BAT%\LYRLIB.bat %*
 exit /b 0
+
 rem =================================================
 rem LYRDateTime.bat
 rem =================================================
+
 rem =================================================
 rem LYRFileUtils.bat
 rem =================================================
 :CurrentDir
 %LIB_BAT%\LYRFileUtils.bat %*
+
 rem =================================================
 rem LYRLog.bat
 rem =================================================
+
 rem =================================================
 rem LYRStrUtils.bat
 rem =================================================
+
 rem =================================================
 rem LYRSupport.bat
 rem =================================================
@@ -190,4 +193,5 @@ exit /b 0
 :Read_P
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
+
 rem =================================================

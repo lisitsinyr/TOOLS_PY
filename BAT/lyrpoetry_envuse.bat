@@ -206,13 +206,13 @@ rem =================================================
 rem LYRConst.bat
 rem =================================================
 :SET_LIB
-%LIB_BAT%\LYRConst.bat %*
+%LIB_BAT%\LYRLIB.bat %*
 exit /b 0
 :SET_POETRY
-%LIB_BAT%\LYRConst.bat %*
+%LIB_BAT%\LYRLIB.bat %*
 exit /b 0
 :SET_KIX
-%LIB_BAT%\LYRConst.bat %*
+%LIB_BAT%\LYRLIB.bat %*
 exit /b 0
 rem =================================================
 rem LYRDateTime.bat
