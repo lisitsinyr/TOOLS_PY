@@ -6,6 +6,9 @@ chcp 1251>NUL
 
 setlocal enabledelayedexpansion
 
+rem --------------------------------------------------------------------------------
+rem 
+rem --------------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     rem PROJECTS_LYR_ROOT - Каталог ROOT
     rem -------------------------------------------------------------------
@@ -136,25 +139,32 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
+        rem -------------------------------------------------------------------
+    rem TEST - 
+    rem -------------------------------------------------------------------
+    set TEST=
+    rem -------------------------------------------------------------------
+    rem SCRIPT_NAME - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=EXIFread
+    rem -------------------------------------------------------------------
+    rem SCRIPT_DIR - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_DIR=!SCRIPT_NAME!
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_PY (
         set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
     )
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=EXIFread.py
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=EXIFread
+    set FULL_SCRIPT_NAME=!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!.py
+    if defined TEST (
+        set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
+    )
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!" !OPTION! !ARGS!
+    python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 
