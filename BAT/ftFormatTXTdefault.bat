@@ -150,12 +150,17 @@ rem ----------------------------------------------------------------------------
     rem )
     rem echo ARGS:!ARGS!
 
-    set SCRIPT_DIR=!SCRIPTS_DIR_PY!\ftFormatTXT
+    rem -------------------------------------------------------------------
+    rem SCRIPT - 
+    rem -------------------------------------------------------------------
     set SCRIPT_NAME=ftFormatTXT.py
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPT_DIR!"\!SCRIPT_NAME! !OPTION! !ARGS!
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!" !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 

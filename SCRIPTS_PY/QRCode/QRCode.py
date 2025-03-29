@@ -81,7 +81,7 @@ def main ():
     img.save(LPath+r'\QRCode.png')    
 
     # Отображение QR-кода
-    # img.show()  # Показывает QR-код в стандартном просмотрщике изображений
+    img.show()  # Показывает QR-код в стандартном просмотрщике изображений
 
     LULog.STOPLogging ()
 #endfunction

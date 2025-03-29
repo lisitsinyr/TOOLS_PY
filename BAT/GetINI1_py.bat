@@ -38,12 +38,21 @@ setlocal enabledelayedexpansion
         exit /b 1
     )
     
+    rem -------------------------------------------------------------------
+    rem SCRIPT - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=GetINI.py
+
     call :PY_ENV_START || exit /b 1
 
-    rem echo %~dp0
-    python %~dp0GetINI.py "!FileINI!" "!Section!" "!Parameter!"
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
 
     call :PY_ENV_STOP || exit /b 1
+
+    rem call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end

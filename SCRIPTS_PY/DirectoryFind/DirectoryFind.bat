@@ -116,19 +116,21 @@ rem ----------------------------------------------------------------------------
     
     echo ARGS:!ARGS!
 
-    rem echo %~dp0
-    rem echo !SCRIPTS_DIR_PY!
-    rem python !%~dp0!COPYFILE.py %1 "%2"
-
-    rem set RUN=!SCRIPTS_DIR_PY!\COPYFILE\COPYFILE.py
-    rem echo RUN:!RUN! 
-    rem !RUN!
+    rem -------------------------------------------------------------------
+    rem SCRIPT - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=DirectoryFind.py
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPTS_DIR_PY!"\SRC\DirectoryFind\DirectoryFind.py !OPTION! !ARGS!
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!" !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
+
+    rem call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end
@@ -137,6 +139,19 @@ rem =================================================
 rem =================================================
 rem ‘”Õ ÷»» LIB
 rem =================================================
+
+rem =================================================
+rem LYRPY.bat
+rem =================================================
+:LYRPY
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_START
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRDEPLOY.bat

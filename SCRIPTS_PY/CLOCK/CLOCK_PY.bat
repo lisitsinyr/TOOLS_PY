@@ -22,11 +22,21 @@ setlocal enabledelayedexpansion
         exit /b 1
     )
 
+    rem -------------------------------------------------------------------
+    rem SCRIPT - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=CLOCK_PY.py
+
     call :PY_ENV_START || exit /b 1
 
-    python %~dp0CLOCK_PY.py "!A1!" "!A2!" "!A3!"
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!"
 
     call :PY_ENV_STOP || exit /b 1
+
+    rem call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end

@@ -43,12 +43,21 @@ setlocal enabledelayedexpansion
         exit /b 1
     )
     
+    rem -------------------------------------------------------------------
+    rem SCRIPT - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=SetINI.py
+
     call :PY_ENV_START || exit /b 1
 
-    rem echo %~dp0
-    python %~dp0SetINI.py "!FileINI!" "!Section!" "!Parameter!" "!Value!"
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!" "!Value!"
 
     call :PY_ENV_STOP || exit /b 1
+
+    rem call :PressAnyKey || exit /b 1
 
     exit /b 0
 :end
@@ -57,6 +66,19 @@ rem =================================================
 rem =================================================
 rem ‘”Õ ÷»» LIB
 rem =================================================
+
+rem =================================================
+rem LYRPY.bat
+rem =================================================
+:LYRPY
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_START
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRDEPLOY.bat

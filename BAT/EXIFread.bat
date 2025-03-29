@@ -137,23 +137,16 @@ rem ----------------------------------------------------------------------------
     )
 
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
-    rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
-    )
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-    rem -------------------------------------------------------------------
     rem SCRIPT - 
     rem -------------------------------------------------------------------
-    rem set SCRIPT_DIR=!SCRIPTS_DIR_PY!\PATTERN
-    set SCRIPT_DIR=.
-    set SCRIPT_NAME=steganography.py
-    rem set SCRIPT_NAME=r'D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\00.TEST\badjpg - Этот скрипт Python позволяет скрыть полезную нагрузку внутри изображения JPG, используя методы стеганографии\steganography.py'
+    set SCRIPT_NAME=EXIFread.py
 
     call :PY_ENV_START || exit /b 1
 
-    python "!SCRIPT_DIR!"\!SCRIPT_NAME! !OPTION! !ARGS!
+    set SCRIPT_DIR=.\
+    set SCRIPT_DIR=%~dp0
+    rem echo SCRIPT_DIR:!SCRIPT_DIR!
+    python "!SCRIPT_DIR!!SCRIPT_NAME!" !OPTION! !ARGS!
 
     call :PY_ENV_STOP || exit /b 1
 
