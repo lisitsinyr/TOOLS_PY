@@ -8,7 +8,7 @@ setlocal enabledelayedexpansion
 
 :begin
     set BATNAME=%~nx0
-    echo Старт !BATNAME! ...
+    echo Start !BATNAME! ...
 
     set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
@@ -44,16 +44,24 @@ setlocal enabledelayedexpansion
     )
     
     rem -------------------------------------------------------------------
-    rem SCRIPT - 
+    rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=SetINI.py
+    if not defined SCRIPTS_DIR_PY (
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
+    )
+    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+    rem -------------------------------------------------------------------
+    rem SCRIPT_NAME - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=SetINI1.py
+    rem -------------------------------------------------------------------
+    rem SCRIPT_DIR - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_DIR=SetINI
 
     call :PY_ENV_START || exit /b 1
 
-    set SCRIPT_DIR=.\
-    set SCRIPT_DIR=%~dp0
-    rem echo SCRIPT_DIR:!SCRIPT_DIR!
-    python "!SCRIPT_DIR!!SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!" "!Value!"
+    python "!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!" "!Section!" "!Parameter!" "!Value!"
 
     call :PY_ENV_STOP || exit /b 1
 
@@ -64,7 +72,7 @@ setlocal enabledelayedexpansion
 rem =================================================
 
 rem =================================================
-rem ФУНКЦИИ LIB
+rem LIB
 rem =================================================
 
 rem =================================================

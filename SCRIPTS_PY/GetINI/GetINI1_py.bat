@@ -39,16 +39,24 @@ setlocal enabledelayedexpansion
     )
     
     rem -------------------------------------------------------------------
-    rem SCRIPT - 
+    rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=GetINI.py
+    if not defined SCRIPTS_DIR_PY (
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
+    )
+    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+    rem -------------------------------------------------------------------
+    rem SCRIPT_NAME - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=GetINI1.py
+    rem -------------------------------------------------------------------
+    rem SCRIPT_DIR - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_DIR=GetINI
 
     call :PY_ENV_START || exit /b 1
 
-    set SCRIPT_DIR=.\
-    set SCRIPT_DIR=%~dp0
-    rem echo SCRIPT_DIR:!SCRIPT_DIR!
-    python "!SCRIPT_DIR!!SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
+    python "!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
 
     call :PY_ENV_STOP || exit /b 1
 
