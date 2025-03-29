@@ -2125,21 +2125,25 @@ def STARTLogging (T: TTypeSETUPLOG, ALogerName, ADirectoryLOG: str, AFileNameLOG
     logger.setLevel(logging.INFO)
     logger = logging.getLogger('chardet.universaldetector')
     logger.setLevel(logging.INFO)
+
     #-------------------------------------------------
     # Отключить журнал 'pytube.extract'
     #-------------------------------------------------
     logger = logging.getLogger('pytube.extract')
     logger.setLevel(logging.INFO)
+    
     #-------------------------------------------------
     # Отключить журнал 'pytube.streams'
     #-------------------------------------------------
     logger = logging.getLogger('pytube.streams')
     logger.setLevel(logging.INFO)
+    
     #-------------------------------------------------
     # Отключить журнал 'pytube.cipher'
     #-------------------------------------------------
     logger = logging.getLogger('pytube.cipher')
     logger.setLevel(logging.INFO)
+    
     #-------------------------------------------------
     # Отключить журнал 'pytube.helpers'
     #-------------------------------------------------

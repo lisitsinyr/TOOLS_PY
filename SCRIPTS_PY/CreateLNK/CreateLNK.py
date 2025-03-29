@@ -120,6 +120,7 @@ if __name__ == "__main__":
 # sys.argv[2] - <width>
 #------------------------------------------
 def main ():
+    """main"""
 #beginfunction
     LUConst.SET_LIB(__file__)
 

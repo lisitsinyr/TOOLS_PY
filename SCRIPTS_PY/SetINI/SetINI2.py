@@ -9,7 +9,7 @@ __annotations__ = """
  Project:
      SCRIPTS_PY
  Module:
-     SetINI.py
+     SetINI2.py
  =======================================================
 """
 
@@ -43,6 +43,7 @@ GSection = ''
 GParameter = ''
 
 def CheckParameter (ASection: str, AParameter: str):
+    """CheckParameter"""
 #beginfunction
     global GINIFile
     global GParameter
@@ -56,6 +57,7 @@ def CheckParameter (ASection: str, AParameter: str):
 #endfunction
 
 def CheckSection (ASection: str):
+    """CheckSection"""
 #beginfunction
     global GINIFile
 
@@ -66,10 +68,10 @@ def CheckSection (ASection: str):
         LParameter = LParameters[i]
         CheckParameter (ASection, LParameter)
     #endfor
-    pass
 #endfunction
 
 def CheckSections ():
+    """CheckSections"""
 #beginfunction
     global GINIFile
     LSections = GINIFile.sections()
@@ -77,11 +79,11 @@ def CheckSections ():
         LSection = LSections[i]
         CheckSection (LSection)
     #endfor
-    pass
 #endfunction
 
 #------------------------------------------
 def main ():
+    """main"""
 #beginfunction
     global GFileINI
     global GSection

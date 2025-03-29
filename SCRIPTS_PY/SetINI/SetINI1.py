@@ -9,7 +9,7 @@ __annotations__ = """
  Project:
      SCRIPTS_PY
  Module:
-     SetINI.py
+     SetINI1.py
  =======================================================
 """
 
@@ -35,6 +35,7 @@ GParameter = ''
 GValue = ''
 
 def CheckParameter (ASection: str, AParameter: str, AValue: str):
+    """CheckParameter"""
 #beginfunction
     global GINIFile
     global GParameter
@@ -46,6 +47,7 @@ def CheckParameter (ASection: str, AParameter: str, AValue: str):
 
 #------------------------------------------
 def main ():
+    """main"""
 #beginfunction
     # sys.argv[1] - <>.ini
     # sys.argv[2] - <Section>

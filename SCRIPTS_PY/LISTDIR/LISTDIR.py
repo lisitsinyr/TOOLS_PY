@@ -76,6 +76,7 @@ def FuncFile (AFileName: str, APathDest: str):
 # MAIN
 #------------------------------------------
 def main ():
+    """main"""
 #beginfunction
     # LUConst.SET_CONST(__file__)
     LUConst.SET_LIB(__file__)
