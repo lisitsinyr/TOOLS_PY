@@ -1,13 +1,13 @@
 import os
 
-from typing import IO, TYPE_CHECKING, Any, Callable, Optional, Union
+print("import lyrpy")
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 def main ():
 #beginfunction
-    print("Hello, **World**")
+    print("Hello, **lyrpy**")
 #endfunction
 
 #------------------------------------------
