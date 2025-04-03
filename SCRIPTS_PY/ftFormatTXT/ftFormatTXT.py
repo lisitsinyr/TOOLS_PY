@@ -221,7 +221,7 @@ def main ():
     LUConst.SET_LIB(__file__)
 
     LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI,
-'console', LUConst.GDirectoryLOG, LUConst.GFileNameLOG,
+                        'console', LUConst.GDirectoryLOG, LUConst.GFileNameLOG,
                         LUConst.GFileNameLOGjson)
     LULog.LoggerTOOLS.level = logging.INFO
 
