@@ -96,15 +96,16 @@ rem ----------------------------------------------------------------------------
     set O1_Name=fp
     set O1_Caption=FilePath
     set O1_Default=!CurrentDir!
+    set O1_Default=
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
-    call :Read_P O1 !O1! || exit /b 1
+    rem call :Read_P O1 !O1! || exit /b 1
     rem echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! -!O1_Name! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    rem if defined O1 (
+    rem     set OPTION=!OPTION! -!O1_Name! "!O1!"
+    rem ) else (
+    rem     echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
+    rem )
     set O2_Name=fm
     set O2_Caption=FileMask
     set O2_Default="^.*..*$"

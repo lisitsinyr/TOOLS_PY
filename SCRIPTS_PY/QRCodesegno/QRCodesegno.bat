@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem ftFormatTXT.bat
+rem QRCodesegno.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -26,20 +26,19 @@ setlocal enabledelayedexpansion
     )
 
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR - Каталог скриптов BAT
+    rem SCRIPTS_DIR_SRC - Каталог скриптов BAT
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR (
+    if not defined SCRIPTS_DIR_SRC (
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
-        set SCRIPTS_DIR=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR:!SCRIPTS_DIR!
+    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
-        set LIB_BAT=!SCRIPTS_DIR!\LIB
+        set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
     )
     rem echo LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
@@ -73,7 +72,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_PY (
         set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
-    )                       
+    )
     rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
 
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
@@ -86,71 +85,56 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
-    set O1_Name=fp
-    set O1_Caption=FilePath
-    set O1_Default=!CurrentDir!
-    set O1_Default=
+    set O1_Name=O1
+    set O1_Caption=O1_Caption
+    set O1_Default=O1_Default
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
-    rem call :Read_P O1 !O1! || exit /b 1
+    call :Read_P O1 !O1! || exit /b 1
     rem echo O1:!O1!
-    rem if defined O1 (
-    rem     set OPTION=!OPTION! -!O1_Name! "!O1!"
-    rem ) else (
-    rem     echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    rem )
-    set O2_Name=fm
-    set O2_Caption=FileMask
-    set O2_Default="^.*..*$"
-    set O2=!O2_Default!
-    set PN_CAPTION=!O2_Caption!
-    call :Read_P O2 !O2! || exit /b 1
-    rem echo O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! -!O2_Name! "!O2!"
+    if defined O1 (
+        set OPTION=!OPTION! -!O1_Name! "!O1!"
     ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
-    set O3_Name=w
-    set O3_Caption=width
-    set O3_Default=60
-    set O3=!O3_Default!
-    set PN_CAPTION=!O3_Caption!
-    call :Read_P O3 !O3! || exit /b 1
-    rem echo O3:!O3!
-    if defined O3 (
-        set OPTION=!OPTION! -!O3_Name! !O3!
-    ) else (
-        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
-    )
-    rem echo OPTION:!OPTION!
-
+    echo OPTION:!OPTION!
+ 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=
-    set A1_Caption=
-    set A1_Default=
+    set A1_Name=A1
+    set A1_Caption=A1_Caption
+    set A1_Default=A1_Default
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
+    call :Read_P A1 !A1! || exit /b 1
     rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-    rem echo ARGS:!ARGS!
+    if defined A1 (
+        set ARGS=!ARGS! "!A1!"
+    ) else (
+        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+        set OK=
+        exit /b 1
+    )
+    echo ARGS:!ARGS!
+
+    rem -------------------------------------------------------------------
+    rem ENV - 
+    rem -------------------------------------------------------------------
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    set PY_ENVNAME=%PY_ENVNAME%
+    if not defined PY_ENVNAME (
+        set PY_ENVNAME=P313
+    )
+    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
+        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+        exit /b 1
+    )
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -159,7 +143,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     rem SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=ftFormatTXT
+    set SCRIPT_NAME=QRCodesegno
     rem -------------------------------------------------------------------
     rem SCRIPT_DIR - 
     rem -------------------------------------------------------------------
@@ -174,7 +158,6 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 
@@ -191,13 +174,6 @@ rem =================================================
 rem =================================================
 rem ФУНКЦИИ LIB
 rem =================================================
-
-rem =================================================
-rem LYRConst.bat
-rem =================================================
-:LYRConst
-%LIB_BAT%\LYRConst.bat %*
-exit /b 0
 
 rem =================================================
 rem LYRPY.bat

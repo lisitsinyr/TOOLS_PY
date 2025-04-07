@@ -272,7 +272,8 @@ def main ():
     # print(f'{current_directory}')
     # print(LFilePath == '')
     # print(LFilePath == current_directory)
-    if LFilePath == '' or LFilePath == current_directory:
+    # if LFilePath == '' or LFilePath == current_directory:
+    if LFilePath == '':
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, 'это текущий каталог ...')
         LDirectory = current_directory
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'Каталог = {LDirectory}')
