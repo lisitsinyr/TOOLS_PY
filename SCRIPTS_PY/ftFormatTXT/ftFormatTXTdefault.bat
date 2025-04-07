@@ -87,6 +87,7 @@ rem ----------------------------------------------------------------------------
     )
 
     call :CurrentDir || exit /b 1
+    rem echo CurrentDir:!CurrentDir!
 
     rem -------------------------------------
     rem OPTION
@@ -172,6 +173,7 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
+    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 

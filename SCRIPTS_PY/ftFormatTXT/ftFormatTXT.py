@@ -186,6 +186,7 @@ def WorkFileName (AFilePath: str, Awidth: int):
                     # Подстрока не найдена
                     s = textwrap.fill (paragraph, width = Awidth)
                 #endif
+                # print(s)
                 formatted_paragraphs.append (s)
             #endfor
 
@@ -267,8 +268,12 @@ def main ():
     #-------------------------------------------------------
     # LFilePath - это текущий каталог
     #-------------------------------------------------------
+    # print(f'{LFilePath}')
+    # print(f'{current_directory}')
+    # print(LFilePath == '')
+    # print(LFilePath == current_directory)
     if LFilePath == '' or LFilePath == current_directory:
-        # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, 'это текущий каталог ...')
+        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, 'это текущий каталог ...')
         LDirectory = current_directory
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'Каталог = {LDirectory}')
         os.chdir (LDirectory)
