@@ -118,7 +118,8 @@ def WorkFileName (AFilePath: str):
 
         if LFormat.lower() in ('png', 'jpg', 'jpeg', 'bmp'):
             # Конвертация картинки в текст
-            LText = pytesseract.image_to_string (AFilePath, timeout=2)
+            # LText = pytesseract.image_to_string (AFilePath, timeout=2)
+            LText = pytesseract.image_to_string (Image.open (AFilePath), timeout=2)
             print (LText)
 
             # Открываем файл в режиме записи ('w')

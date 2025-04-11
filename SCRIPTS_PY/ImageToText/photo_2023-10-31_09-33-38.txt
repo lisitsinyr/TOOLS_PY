@@ -1,4 +1,4 @@
-NonyyueHne TeKcTa C KAPTUHKU
+NonyyeHue TeKcTa C KAPTMHKN
 
 from PIL import Image
 import pytesseract
@@ -6,16 +6,16 @@ import pytesseract
 # KoHBepTauMA KapTMHKU B TeKCT
 print(pytesseract.image_to_string(Image.open('test.png')))
 
-# Yka3biBaeM pyCCKUN ABbIK B aprymeHTax
+# Yka3bIBaeM pyCCKUN ABbIK B aprymeHTax
 print(pytesseract.image_to_string('test-russian.jpg', lang='rus'))
 
-hy:
-# 3anaem MakCuManbHoe BpeMA OxUgaHUA
+try:
+# 3anaem MakCuManbHoe BpeMA OxKUsaHUA
 print(pytesseract.image_to_string('test.jpg', timeout=2))
 except RuntimeError as timeout_error:
 pass
 
 Cuctema Tesseract oT Google no3BonseT NapcuTb TeKCT C KAPTMHOK C
 
-NOMOLLUbIO ONTNYECKOLO pacno3sHaBaHUs CUMBOJIOB.
+NOMOLLUbIO ONTNYECKOLO pacno3sHaBaHUNs CUMBOJIOB.
 
