@@ -22,6 +22,7 @@ import sys
 import enum
 import ctypes
 import datetime
+import subprocess
 
 """
 Кроссплатформенные функции:
@@ -770,6 +771,16 @@ def PrintGeneralTitle ():
     # print ('DomainUser    = ' + @LDomain)
     # print ('LServer       = ' + @LServer)
     print ('===========================================')
+#endfunction
+
+#------------------------------------------
+# Exec_dir ():
+#------------------------------------------
+def Exec_dir ():
+#beginfunction
+    # Пример: Выполнение команды dir и получение вывода
+    result = subprocess.run(["dir"], shell=True, capture_output=True, text=True)
+    print(result.stdout)  # Вывод команды
 #endfunction
 
 #------------------------------------------------------
