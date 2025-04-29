@@ -113,13 +113,13 @@ def main ():
     GParameter = Largs.Parameter
     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'Parameter = {GParameter}')
 
-    N = not (len(sys.argv) in (2,4))
+    N = not (len(sys.argv) in (1,4))
     # N = False
     if N:
-        print ('GETINI: getini <ini_file> <Section> <parameter>')
+        print ('GETINI2: getini2 <ini_file> <Section> <parameter>')
     else:
         if not os.path.isfile (GFileINI):
-            print ('GETINI: ini_file '+GFileINI+' not found...')
+            print ('GETINI2: ini_file '+GFileINI+' not found...')
         else:
             GINIFile.read(GFileINI)
             if GParameter != '':

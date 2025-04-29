@@ -83,10 +83,10 @@ def main ():
     global GSection
     global GParameter
 
-    N = not (len(sys.argv) in (2,4))
+    N = not (len(sys.argv) in (1,4))
     # N = False
     if N:
-        print ('GETINI: getini <ini_file> <Section> <parameter>')
+        print ('GETINI1: getini1 <ini_file> <Section> <parameter>')
     else:
         GINIFileName = sys.argv[1]
         try:
@@ -101,7 +101,7 @@ def main ():
         #endtry
 
         if not os.path.isfile (GINIFileName):
-            print ('GETINI: ini_file '+sys.argv[1]+' not found...')
+            print ('GETINI1: ini_file '+sys.argv[1]+' not found...')
         else:
             GINIFile.read(GINIFileName)
             if GParameter != '':
