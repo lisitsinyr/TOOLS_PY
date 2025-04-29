@@ -68,7 +68,8 @@ def CheckSections ():
     LSections = GINIFile.sections()
     for i in range (0,len(LSections)):
         LSection = LSections[i]
-        CheckSection (LSection)
+        # CheckSection (LSection)
+        print (LSection)
     #endfor
 #endfunction
 

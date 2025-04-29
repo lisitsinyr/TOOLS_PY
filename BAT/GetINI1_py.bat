@@ -240,6 +240,9 @@ exit /b 0
 :SetINI
 %LIB_BAT%\LYRParserINI.bat %*
 exit /b 0
+:GetINIPY
+%LIB_BAT%\LYRParserINI.bat %*
+exit /b 0
 :GetINIParametr
 %LIB_BAT%\LYRParserINI.bat %*
 exit /b 0
