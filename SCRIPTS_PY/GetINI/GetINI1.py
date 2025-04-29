@@ -84,36 +84,36 @@ def main ():
     global GParameter
 
     N = not (len(sys.argv) in (1,4))
-    # if N:
-    #     print ('GETINI1: getini1 <ini_file> <Section> <parameter>')
-    # else:
-    #     GINIFileName = sys.argv[1]
-    #     try:
-    #         GSection = sys.argv[2]
-    #     except IndexError as ERROR:
-    #         GSection = ''
-    #     #endtry
-    #     try:
-    #         GParameter = sys.argv[3]
-    #     except IndexError as ERROR:
-    #         GParameter = ''
-    #     #endtry
-    #
-    #     if not os.path.isfile (GINIFileName):
-    #         print ('GETINI1: ini_file '+sys.argv[1]+' not found...')
-    #     else:
-    #         GINIFile.read(GINIFileName)
-    #         if GParameter != '':
-    #             CheckParameter (GSection, GParameter)
-    #         else:
-    #             if GSection != '':
-    #                 CheckSection (GSection)
-    #             else:
-    #                 CheckSections ()
-    #             #endif
-    #         #endif
-    #     #endif
-    # #endif
+    if N:
+        print ('GETINI1: getini1 <ini_file> <Section> <parameter>')
+    else:
+        GINIFileName = sys.argv[1]
+        try:
+            GSection = sys.argv[2]
+        except IndexError as ERROR:
+            GSection = ''
+        #endtry
+        try:
+            GParameter = sys.argv[3]
+        except IndexError as ERROR:
+            GParameter = ''
+        #endtry
+
+        if not os.path.isfile (GINIFileName):
+            print ('GETINI1: ini_file '+sys.argv[1]+' not found...')
+        else:
+            GINIFile.read(GINIFileName)
+            if GParameter != '':
+                CheckParameter (GSection, GParameter)
+            else:
+                if GSection != '':
+                    CheckSection (GSection)
+                else:
+                    CheckSections ()
+                #endif
+            #endif
+        #endif
+    #endif
 #endfunction
 
 #------------------------------------------

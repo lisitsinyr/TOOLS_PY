@@ -30,12 +30,12 @@ setlocal enabledelayedexpansion
     set Section=%2
     if not defined Section (
         echo INFO: Section empty ...
-        exit /b 1
+        rem exit /b 1
     )
     set Parameter=%3
     if not defined Parameter (
         echo INFO: Parameter empty ...
-        exit /b 1
+        rem exit /b 1
     )
     
     rem -------------------------------------------------------------------
