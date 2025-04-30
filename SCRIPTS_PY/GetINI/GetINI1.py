@@ -121,7 +121,6 @@ def main ():
 #------------------------------------------
 #beginmodule
 if __name__ == "__main__":
-    print ('GETINI1')
     main()
 #endif
 

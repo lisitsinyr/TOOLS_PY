@@ -63,7 +63,11 @@ setlocal enabledelayedexpansion
 
     call :PY_ENV_START || exit /b 1
 
-    python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
+    if defined __GetINI (
+        python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!" > !__GetINI!
+    ) else (
+        python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
+    )
 
     call :PY_ENV_STOP || exit /b 1
 
