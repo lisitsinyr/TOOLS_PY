@@ -2,15 +2,15 @@
 """GetINI1.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ = """
- =======================================================
- Copyright (c) 2024
- Author:
-     Lisitsin Y.R.
- Project:
-     SCRIPTS_PY
- Module:
-     GetINI1.py
- =======================================================
+=======================================================
+Copyright (c) 2024
+Author:
+    Lisitsin Y.R.
+Project:
+    SCRIPTS_PY
+Module:
+    GetINI1.py
+=======================================================
 """
 
 #------------------------------------------
@@ -87,7 +87,11 @@ def main ():
     if N:
         print ('GETINI1: getini1 <ini_file> <Section> <parameter>')
     else:
-        GINIFileName = sys.argv[1]
+        try:
+            GINIFileName = sys.argv[1]
+        except IndexError as ERROR:
+            GINIFileName = ''
+        #endtry
         try:
             GSection = sys.argv[2]
         except IndexError as ERROR:
@@ -100,7 +104,7 @@ def main ():
         #endtry
 
         if not os.path.isfile (GINIFileName):
-            print ('GETINI1: ini_file '+sys.argv[1]+' not found...')
+            print ('GETINI1: ini_file '+GINIFileName+' not found...')
         else:
             GINIFile.read(GINIFileName)
             if GParameter != '':
