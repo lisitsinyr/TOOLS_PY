@@ -1,0 +1,158 @@
+﻿{
+    "_": "Message",
+
+    "id": 13311,
+
+    "sender_chat": {
+        "_": "Chat",
+        "id": -1001521571437,
+        "type": "ChatType.CHANNEL",
+        "is_verified": false,
+        "is_restricted": false,
+        "is_creator": false,
+        "is_scam": false,
+        "is_fake": false,
+        "title": "ШЕЙНИН",
+        "username": "GardeZ66",
+        "photo": {
+            "_": "ChatPhoto",
+            "small_file_id": "AQADAgADPbkxG59q4EkAEAIAA5OZqdAW____EH5D3vV23CcABB4E",
+            "small_photo_unique_id": "AgADPbkxG59q4Ek",
+            "big_file_id": "AQADAgADPbkxG59q4EkAEAMAA5OZqdAW____EH5D3vV23CcABB4E",
+            "big_photo_unique_id": "AgADPbkxG59q4Ek"
+        },
+        "dc_id": 2,
+        "has_protected_content": false
+    },
+
+    "date": "2025-05-19 08:50:15",
+    
+    "chat": {
+        "_": "Chat",
+        "id": -1001521571437,
+        "type": "ChatType.CHANNEL",
+        "is_verified": false,
+        "is_restricted": false,
+        "is_creator": false,
+        "is_scam": false,
+        "is_fake": false,
+        "title": "ШЕЙНИН",
+        "username": "GardeZ66",
+        "photo": {
+            "_": "ChatPhoto",
+            "small_file_id": "AQADAgADPbkxG59q4EkAEAIAA5OZqdAW____EH5D3vV23CcABB4E",
+            "small_photo_unique_id": "AgADPbkxG59q4Ek",
+            "big_file_id": "AQADAgADPbkxG59q4EkAEAMAA5OZqdAW____EH5D3vV23CcABB4E",
+            "big_photo_unique_id": "AgADPbkxG59q4Ek"
+        },
+        "dc_id": 2,
+        "has_protected_content": false
+    },
+    
+    "mentioned": false,
+    
+    "scheduled": false,
+    
+    "from_scheduled": false,
+    
+    "media": "MessageMediaType.VIDEO",
+    
+    "edit_date": "2025-05-19 10:31:42",
+    "has_protected_content": false,
+    "has_media_spoiler": false,
+    
+    "caption_entities": [
+        {
+            "_": "MessageEntity",
+            "type": "MessageEntityType.TEXT_LINK",
+            "offset": 69,
+            "length": 21,
+            "url": "https://t.me/GardeZ66/13310"
+        }
+    ],
+    
+    "video": {
+        "_": "Video",
+        "file_id": "BAACAgIAAx0CWrFWbQACM_9oKy5mgiMKhxBGCliD7xXuO15RgwACOXIAAhvcWUl0qrq---4HmR4E",
+        "file_unique_id": "AgADOXIAAhvcWUk",
+        "width": 848,
+        "height": 384,
+        "duration": 80,
+        "file_name": "IMG_5622.MP4",
+        "mime_type": "video/mp4",
+        "file_size": 29963721,
+        "supports_streaming": true,
+        "date": "2025-05-19 01:53:45",
+        "thumbs": [
+            {
+                "_": "Thumbnail",
+                "file_id": "AAMCAgADHQJasVZtAAIz_2grLmaCIwqHEEYKWIPvFe47XlGDAAI5cgACG9xZSXSqur777geZAAgBAAdtAAceBA",
+                "file_unique_id": "AgADOXIAAhvcWUk",
+                "width": 320,
+                "height": 148,
+                "file_size": 9851
+            }
+        ]
+    },
+    
+    "caption": "Небольшая 'путевая зарисовка' в ожидании саратовских парней, которым привезли гуманитарку.\n\nНемного реалий, как говорится, про те самые активничающие здесь fpv противника.\n\nТёма в теме.",
+    
+    "views": 68900,
+    "forwards": 25,
+    "outgoing": false,
+    "reactions": {
+        "_": "MessageReactions",
+        "reactions": [
+            {
+                "_": "Reaction",
+                "emoji": "🙏",
+                "count": 2546
+            },
+            {
+                "_": "Reaction",
+                "emoji": "👍",
+                "count": 311
+            },
+            {
+                "_": "Reaction",
+                "emoji": "❤",
+                "count": 102
+            },
+            {
+                "_": "Reaction",
+                "emoji": "🔥",
+                "count": 38
+            },
+            {
+                "_": "Reaction",
+                "emoji": "👌",
+                "count": 11
+            },
+            {
+                "_": "Reaction",
+                "emoji": "😱",
+                "count": 6
+            },
+            {
+                "_": "Reaction",
+                "emoji": "👏",
+                "count": 5
+            },
+            {
+                "_": "Reaction",
+                "emoji": "🎉",
+                "count": 5
+            },
+            {
+                "_": "Reaction",
+                "emoji": "👎",
+                "count": 4
+            },
+            {
+                "_": "Reaction",
+                "emoji": "🕊",
+                "count": 1
+            }
+        ]
+    }
+}

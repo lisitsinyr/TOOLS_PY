@@ -68,24 +68,6 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
-    rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
-    )                       
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
-
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
-    )
-    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
-        exit /b 1
-    )
-
     call :CurrentDir || exit /b 1
     rem echo CurrentDir:!CurrentDir!
 
@@ -153,6 +135,27 @@ rem ----------------------------------------------------------------------------
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
+    rem ENV - 
+    rem -------------------------------------------------------------------
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    set PY_ENVNAME=%PY_ENVNAME%
+    if not defined PY_ENVNAME (
+        set PY_ENVNAME=P313
+    )
+    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
+        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+        exit /b 1
+    )
+
+    rem -------------------------------------------------------------------
+    rem SCRIPTS_DIR_PY - Каталог скриптов PY
+    rem -------------------------------------------------------------------
+    if not defined SCRIPTS_DIR_PY (
+        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
+    )
+    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+
+    rem -------------------------------------------------------------------
     rem TEST - 
     rem -------------------------------------------------------------------
     set TEST=
@@ -165,16 +168,12 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     set SCRIPT_DIR=!SCRIPT_NAME!
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
+    rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
-    )
     set FULL_SCRIPT_NAME=!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!.py
     if defined TEST (
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 

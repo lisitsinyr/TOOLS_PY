@@ -1914,7 +1914,6 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
             LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
         #endif
         # print('LFileNameLOGjson:',LFileNameLOGjson)
-
         # установить имена log файлов в ini
         LOptionValue_01 = "('" + os.path.join (LDirectoryLOG, LFileNameLOG) + "',)"
         if LUos.GOSInfo.system == 'Windows':
@@ -1924,10 +1923,8 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
             raise 'ERROR: Linux не поддерживается'
         #endif
         # print('LOptionValue_01:',LOptionValue_01)
-
         LINIFile.SetOption ('handler_FILE_01', LOptionName, LOptionValue_01)
         LOptionValue_02 = "('" + os.path.join (LDirectoryLOG, LFileNameLOGjson) + "',)"
-
         if LUos.GOSInfo.system == 'Windows':
             LOptionValue_02 = LOptionValue_02.replace ("\\", "\\\\")
         #endif
@@ -1940,8 +1937,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         LINIFile.UpdateFileINI ()
     #endif
 
-    # print ('INI:ADirectoryLOG:',ADirectoryLOG)
-
+    print ('INI:ADirectoryLOG:',ADirectoryLOG)
     if ADirectoryLOG == '':
         # log будет создан в текущем каталоге (по умолчанию)
         LDirectoryLOG = LUos.GetCurrentDir ()
@@ -1949,13 +1945,12 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         # log будет создан в ADirectoryLOG
         LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
     #endif
-    # print('...LDirectoryLOG:',LDirectoryLOG)
+    print('...LDirectoryLOG:',LDirectoryLOG)
 
     if not LUFile.DirectoryExists (LDirectoryLOG):
         LUFile.ForceDirectories(LDirectoryLOG)
     #endif
-
-    os.chdir (LDirectoryLOG)
+    # os.chdir (LDirectoryLOG)
 
     print(LFileNameINI)
     logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True,
@@ -1964,6 +1959,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
 
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
+
     # установить форматер
     SetFormatterForLogger (LResult)
 
@@ -2028,20 +2024,20 @@ FileMemoLog = TFileMemoLog
 def STARTLogging (T: TTypeSETUPLOG, ALogerName, ADirectoryLOG: str, AFileNameLOG: str, AFileNameLOGjson: str) -> None:
     """STARTLogging"""
 #beginfunction
-    global STATLogging
-    STATLogging = False
-
-    # print (sys._getframe (0).f_code.co_name, '...')
-    # print (inspect.currentframe().f_code.co_name, '...')
-    # print (inspect.stack () [0] [3], '...')
-    # print (traceback.extract_stack () [-1].name, '...')
-
     global GLoggerFILEINI
     global GLoggerCONFIG
     global LoggerTOOLS
     global LoggerAPPS
     global LoggerTLogger
     global FileMemoLog
+    global STATLogging
+
+    STATLogging = False
+
+    # print (sys._getframe (0).f_code.co_name, '...')
+    # print (inspect.currentframe().f_code.co_name, '...')
+    # print (inspect.stack () [0] [3], '...')
+    # print (traceback.extract_stack () [-1].name, '...')
 
     LLogerNames = ['root','log01','log01', 'console']
 
@@ -2075,7 +2071,7 @@ def STARTLogging (T: TTypeSETUPLOG, ALogerName, ADirectoryLOG: str, AFileNameLOG
                                                       ADirectoryLOG, AFileNameLOG,
                                                       AFileNameLOGjson)
             case _:
-                ...
+                pass
         #endmatch
     else:
         exit()
@@ -2164,9 +2160,6 @@ def STOPLogging () -> None:
     STATLogging = False
     # LoggerTOOLS.disabled = True# Выключить систему logging для логгирования
 #endfunction
-
-
-
 
 #-------------------------------------------------
 # LoggerAdd

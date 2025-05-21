@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem SetINI2_PY.bat
+rem GetMessage.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -26,20 +26,19 @@ setlocal enabledelayedexpansion
     )
 
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR - Каталог скриптов BAT
+    rem SCRIPTS_DIR_SRC - Каталог скриптов BAT
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR (
+    if not defined SCRIPTS_DIR_SRC (
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
-        rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
-        set SCRIPTS_DIR=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
+        set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR:!SCRIPTS_DIR!
+    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
-        set LIB_BAT=!SCRIPTS_DIR!\LIB
+        set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
     )
     rem echo LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
@@ -72,9 +71,10 @@ rem ----------------------------------------------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
+
     set O1_Name=O1
-    set O1_Caption=O1_Caption
-    set O1_Default=O1_Default
+    set O1_Caption=Ссылка на сообщение
+    set O1_Default=
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
     call :Read_P O1 !O1! || exit /b 1
@@ -84,71 +84,55 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
-    rem echo OPTION:!OPTION!
-    
+    set O2_Name=O2
+    set O2_Caption=Каталог загрузки
+    set O2_Default=G:\___РАЗБОР\YOUTUBE\TELEGRAM
+    set O2=!O2_Default!
+    set PN_CAPTION=!O2_Caption!
+    call :Read_P O2 !O2! || exit /b 1
+    rem echo O2:!O2!
+    if defined O2 (
+        set OPTION=!OPTION! -!O2_Name! "!O2!"
+    ) else (
+        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+    )
+    set O3_Name=O3
+    set O3_Caption=LIB
+    set O3_Default=pyrogram
+    set O3=!O2_Default!
+    set PN_CAPTION=!O3_Caption!
+    call :Read_P O3 !O3! || exit /b 1
+    rem echo O3:!O3!
+    if defined O3 (
+        set OPTION=!OPTION! -!O3_Name! "!O3!"
+    ) else (
+        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
+    )
+
+    echo OPTION:!OPTION!
+ 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=FileINI
-    set A1_Caption=FileINI
-    set A1_Default=%1
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
+    rem set A1_Name=Link
+    rem set A1_Caption=Ссылка на сообщение
+    rem set A1_Default=https://t.me/GardeZ66/13278
+    rem set A1=!A1_Default!
+    rem set PN_CAPTION=!A1_Caption!
+    rem call :Read_P A1 !A1! || exit /b 1
     rem echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        rem exit /b 1
-    )
-    set A2_Name=Section
-    set A2_Caption=Section
-    set A2_Default=%2
-    set A2=!A1_Default!
-    set PN_CAPTION=!A2_Caption!
-    call :Read_P A2 !A2! || exit /b 1
-    rem echo A2:!A2!
-    if defined A2 (
-        set ARGS=!ARGS! "!A2!"
-    ) else (
-        echo ERROR: A2 [A2_Name:!A2_Name! A2_Caption:!A2_Caption!] not defined ... 
-        set OK=
-        rem exit /b 1
-    )
-    set A3_Name=Parameter
-    set A3_Caption=Parameter
-    set A3_Default=%3
-    set A3=!A3_Default!
-    set PN_CAPTION=!A3_Caption!
-    call :Read_P A3 !A3! || exit /b 1
-    rem echo A3:!A3!
-    if defined A3 (
-        set ARGS=!ARGS! "!A3!"
-    ) else (
-        echo ERROR: A3 [A3_Name:!A3_Name! A3_Caption:!A3_Caption!] not defined ... 
-        set OK=
-        rem exit /b 1
-    )
-    set A4_Name=Value
-    set A4_Caption=Value
-    set A4_Default=%4
-    set A4=!A4_Default!
-    set PN_CAPTION=!A4_Caption!
-    call :Read_P A4 "!A4!" || exit /b 1
-    rem echo A4:!A4!
-    if defined A4 (
-        set ARGS=!ARGS! "!A4!"
-    ) else (
-        echo ERROR: A4 [A4_Name:!A4_Name! A4_Caption:!A4_Caption!] not defined ... 
-        set OK=
-        rem exit /b 1
-    )
-    rem echo ARGS:!ARGS!
+    rem if defined A1 (
+    rem     set ARGS=!ARGS! "!A1!"
+    rem ) else (
+    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+    rem     set OK=
+    rem     exit /b 1
+    rem )
 
-        rem -------------------------------------------------------------------
+    echo ARGS:!ARGS!
+
+    rem -------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
@@ -172,15 +156,15 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     rem TEST - 
     rem -------------------------------------------------------------------
-    set TEST=
+    set TEST=yes
     rem -------------------------------------------------------------------
     rem SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=SetINI2
+    set SCRIPT_NAME=GetMessage
     rem -------------------------------------------------------------------
     rem SCRIPT_DIR - 
     rem -------------------------------------------------------------------
-    set SCRIPT_DIR=SetINI
+    set SCRIPT_DIR=!SCRIPT_NAME!
     rem -------------------------------------------------------------------
     rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
@@ -196,7 +180,7 @@ rem ----------------------------------------------------------------------------
     call :PY_ENV_STOP || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
-
+    
     exit /b 0
 :end
 rem =================================================

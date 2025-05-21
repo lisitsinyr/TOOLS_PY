@@ -1,0 +1,208 @@
+﻿Message(
+    id=13311, 
+    peer_id=PeerChannel(channel_id=1521571437), 
+
+    date=datetime.datetime(2025, 5, 19, 4, 50, 15, tzinfo=datetime.timezone.utc), 
+    
+    message="Небольшая 'путевая зарисовка' в ожидании саратовских парней, которым привезли гуманитарку.\n\n
+            Немного реалий, как говорится, про те самые активничающие здесь fpv противника.\n\nТёма в теме.", 
+
+    out=False, 
+    mentioned=False, 
+    media_unread=False, 
+    silent=False, 
+    post=True, 
+    from_scheduled=False, 
+    legacy=False, 
+    edit_hide=False, 
+    pinned=False, 
+    noforwards=False, 
+    invert_media=False, 
+    offline=False, 
+    video_processing_pending=False, 
+    from_id=None, 
+    from_boosts_applied=None, 
+    saved_peer_id=None, 
+    fwd_from=None, 
+    via_bot_id=None, 
+    via_business_bot_id=None, 
+    reply_to=None, 
+
+    media=MessageMediaDocument(
+        nopremium=False, 
+        spoiler=False, 
+        video=True, 
+        round=False, 
+        voice=False, 
+
+        document=Document(
+            id=5285497646218244665, 
+            access_hash=-7419699096065496460, 
+            file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\xca|\xaf\xa7\xf0\x86\xc5\xab\x16\xbb\x11R\xd1!\xb48', 
+            date=datetime.datetime(2025, 5, 18, 21, 53, 45, tzinfo=datetime.timezone.utc), 
+            mime_type='video/mp4', 
+            size=29963721, dc_id=2, 
+            attributes=[
+                DocumentAttributeVideo(
+                    duration=79.250663757324, 
+                    w=848, 
+                    h=384, 
+                    round_message=False, 
+                    supports_streaming=True, 
+                    nosound=False, 
+                    preload_prefix_size=None, 
+                    video_start_ts=None, 
+                    video_codec=None
+                ), 
+                DocumentAttributeFilename(
+                    file_name='IMG_5622.MP4'
+                )
+            ], 
+            thumbs=[
+                PhotoStrippedSize(type='i',
+                bytes=b"\x01\x12(\xad\xc6T\x1e{\xd6\x92\x10P\x10s\xefYhq\x96'\xafJ\xbfo 1\xf2y\xcd(=D\xc9\xe9)7\xaf\xad&\xf5\xf5\xad\x05a\xd4Sw\xaf\xad\x14\x01\x90zU\xbb_\xb9E\x15\x92(\x94\xf5\xa7d\x81\xc1\xc5\x14S`\x80\xb1\xf54QEH\xcf"),
+                PhotoSize(
+                    type='m', 
+                    w=320, 
+                    h=148, 
+                    size=9851
+                )
+            ], 
+            video_thumbs=[]
+        ),
+    
+        alt_documents=[
+
+            Document(
+                id=5285174346850005455, 
+                access_hash=-58764271995931817,
+                file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8dx\x1b\x0c2~\x1d:L\xa5p\xdf\xe4E\x9b\xb7\xc6',
+                date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), 
+                mime_type='video/mp4',
+                size=6285144, 
+                dc_id=2, 
+                attributes=[
+                    DocumentAttributeVideo(duration=74.967, w=1280, h=592,
+                    round_message=False, 
+                    supports_streaming=True, 
+                    nosound=False, 
+                    preload_prefix_size=None,
+                    video_start_ts=None, 
+                    video_codec='av01'), 
+                    DocumentAttributeFilename(
+                        file_name='IMG_5622.MP4'
+                    )
+                ],
+                thumbs=[
+                    PhotoStrippedSize(
+                        type='i', 
+                        bytes=b"\x01\x12(\xad\xc6T\x1e{\xd6\x92\x10P\x10s\xefYhq\x96'\xafJ\xbfo 1\xf2y\xcd(=D\xc9\xe9)7\xaf\xad&\xf5\xf5\xad\x05a\xd4Sw\xaf\xad\x14\x01\x90zU\xbb_\xb9E\x15\x92(\x94\xf5\xa7d\x81\xc1\xc5\x14S`\x80\xb1\xf54QEH\xcf"
+                    ),
+                    PhotoSize(
+                        type='m', 
+                        w=320, 
+                        h=148, 
+                        size=9853
+                    )
+                ], 
+                video_thumbs=[]
+             ),
+             
+             Document(
+                id=5282802580009812261, 
+                access_hash=62514228790460535,
+                file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\xb1\x0e\xc2~\x94S\x8e\xb6\xb9\x06\x93:\xed\xf3!\x91',
+                date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc),
+                mime_type='application/x-mpegurl', 
+                size=1296, 
+                dc_id=2, 
+                attributes=[
+                    DocumentAttributeFilename(
+                        file_name='mtproto:5285174346850005455'
+                    )
+                 ], 
+                 thumbs=[], 
+                 video_thumbs=[]
+             ), 
+    
+             Document(
+                id=5283034151761510665, 
+                access_hash=-1779591145724693449, 
+                file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\nD5\xdb\r\xbaK\xc1\xa6\xe7J\x96\xe4\x94\xe0\xd4', date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), mime_type='video/mp4', size=8608248, dc_id=2, attributes=[DocumentAttributeVideo(duration=72.334, w=1280, h=592, round_message=False, supports_streaming=True, nosound=False, preload_prefix_size=None, video_start_ts=None, video_codec='h264'), DocumentAttributeFilename(file_name='IMG_5622.MP4')], thumbs=[PhotoStrippedSize(type='i', bytes=b'\x01\x12(\xaf\xc6\xe0\x0f=\xebE\x08*\x089\xac\xc48\xcb\x13\xd7\xa5^\xb7\x90\x18\xf9<\xe6\x94\x1e\xa2d\xd4Sw\xaf\xad\x1b\xd7\xd6\xb4\x15\x87QM\xde\xbe\xb4P\x069$\x8e\xb5r\xd7\xeeQEd\x8a%\xefN\x04\x81\xc14QM\x82\x10\xb3z\x9f\xce\x8a(\xa9\x19'), PhotoSize(type='m', w=320, h=148, size=9611)], video_thumbs=[]), Document(id=5283051675228075663, access_hash=-8273196452053376812, file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d1\x82\xedL\x03,\x13\xdaI\xcdz\x9f\x9f\x80[7', date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), mime_type='application/x-mpegurl', size=1297, dc_id=2, attributes=[DocumentAttributeFilename(file_name='mtproto:5283034151761510665')], thumbs=[], video_thumbs=[]), Document(id=5282916559851912257, access_hash=8469994677314563848, file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\xa9\xf6\xff\xe6\xf9m\xc4g\x81:m\xc0a\x87KI', date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), mime_type='video/mp4', size=3151747, dc_id=2, attributes=[DocumentAttributeVideo(duration=72.334, w=856, h=392, round_message=False, supports_streaming=True, nosound=False, preload_prefix_size=None, video_start_ts=None, video_codec='av01'), DocumentAttributeFilename(file_name='IMG_5622.MP4')], thumbs=[PhotoStrippedSize(type='i', bytes=b"\x01\x12(\xad\xc6T\x1e{\xd6\x92\x10P\x10s\xefYhq\x96'\xafJ\xbfo 1\xf2y\xcd(=D\xc9\xe9)7\xaf\xad&\xf5\xf5\xad\x05a\xd4Sw\xaf\xad\x14\x01\x90zU\xbb_\xb9E\x15\x92(\x94\xf5\xa7d\x81\xc1\xc5\x14S`\x80\xb1\xf54QEH\xcf"), PhotoSize(type='m', w=320, h=148, size=9853)], video_thumbs=[]), Document(id=5283139387050196713, access_hash=-3173008138917463135, file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\xf5\x0ek\x1a\xc7\xb8\x19X\\w\x138W\xb4I\xd5', date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), mime_type='application/x-mpegurl', size=1294, dc_id=2, attributes=[DocumentAttributeFilename(file_name='mtproto:5282916559851912257')], thumbs=[], video_thumbs=[]), Document(id=5285491916731871074, access_hash=-137161297422814281, file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\x941T\x94c\xd9\x87\xb4k\xd0\x95@7\x04\x99\xae', date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc), mime_type='video/mp4', size=4095317, dc_id=2, attributes=[DocumentAttributeVideo(duration=72.334, w=856, h=392, round_message=False, supports_streaming=True, nosound=False, preload_prefix_size=None, video_start_ts=None, video_codec='h264'), DocumentAttributeFilename(file_name='IMG_5622.MP4')], thumbs=[PhotoStrippedSize(type='i', bytes=b'\x01\x12(\xaf\xc6\xe5\x07\x9e\xf5\xa2\x84\x15\x04\x1c\xd6Z\x1ce\x89\xeb\xd2\xaf\xdb\xc8\x0c|\x9esJ\x0fQ2j)\xbb\xd7\xd6\x8d\xeb\xebZ\n\xc3\xa8\xa6\xef_Z(\x03 \xf2*\xdd\xaf\xdc\xa2\x8a\xc5\x14K\xde\x9d\x92\x07\x07\x14QT\xc1\x01c\xea\x7f:(\xa2\xa4g'), 
+                PhotoSize(
+                    type='m', 
+                    w=320, 
+                    h=147, 
+                    size=9454
+                )
+                ],
+                video_thumbs=[]
+             ),
+
+             Document(
+                id=5283009966800662433, 
+                access_hash=207267909483896777,
+                file_reference=b'\x02Z\xb1Vm\x00\x003\xffh*\xe2\x8d\xf9\x85\xf4\x80\xe1\xd5\x08\x8f6\x87\x07\xc2\xa9\xfc6\x9b',
+                date=datetime.datetime(2025, 5, 18, 21, 54, 49, tzinfo=datetime.timezone.utc),
+                mime_type='application/x-mpegurl', 
+                size=1295, 
+                dc_id=2,
+                attributes=[
+                    DocumentAttributeFilename(
+                        file_name='mtproto:5285491916731871074'
+                    )
+                ],
+                thumbs=[], 
+                video_thumbs=[]
+            )
+        ], 
+        video_cover=None, 
+        video_timestamp=None, 
+        ttl_seconds=None
+    ), 
+    
+    reply_markup=None,
+
+    entities=[
+        MessageEntityTextUrl(
+            offset=69, 
+            length=21, 
+            url='https://t.me/GardeZ66/13310'
+        )
+    ], 
+    
+    views=47460, 
+    forwards=11, 
+    replies=None, 
+    edit_date=datetime.datetime(2025, 5, 19, 6, 31, 42, tzinfo=datetime.timezone.utc),
+    post_author=None,
+    grouped_id=None,
+
+    reactions=MessageReactions(
+        results=[
+            ReactionCount(reaction=ReactionEmoji(emoticon='🙏'), count=1843, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='👍'), count=228, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='❤'), count=72, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='🔥'), count=32, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='👌'), count=9, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='😱'), count=4, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='👏'), count=3, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='🎉'), count=3, chosen_order=None),
+            ReactionCount(reaction=ReactionEmoji(emoticon='👎'), count=1, chosen_order=None)
+        ],
+        min=False, 
+        can_see_list=False,
+        reactions_as_tags=False,
+        recent_reactions=[],
+        top_reactors=[]
+    ),
+    
+    restriction_reason=[],
+    ttl_period=None,
+    quick_reply_shortcut_id=None,
+    effect=None, 
+    factcheck=None,
+    report_delivery_until_date=None,
+    paid_message_stars=None
+
+)
