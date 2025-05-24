@@ -81,6 +81,7 @@ import lyrpy.LUTelegram as LUTelegram
 Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
 Gwidth = 60
 
+
 # ----------------------------------------------
 # func_telethon ():
 # ----------------------------------------------
@@ -258,6 +259,97 @@ def get_telethon_chats ():
     me = LUTelegram.get_telethon_me (Tclient)
 
     LUTelegram.get_telethon_chats (Tclient)
+
+    Tclient.disconnect ()
+# endfunction
+
+# ----------------------------------------------
+# get_telethon_groups ():
+# ----------------------------------------------
+def get_telethon_groups ():
+    """get_telethon_groups"""
+# beginfunction
+    LIB_name = 'LIB:telethon'
+    LUTelegram.LIB_name = LIB_name
+
+    print (f'{LIB_name:{'_'}<{60}}')
+    # -------------------------------------------
+    # Авторизация в Telegram
+    # -------------------------------------------
+    # Имя сессии (может быть любым)
+    session_name = 'lyr60_TELEGRAM'
+    print (f'{LIB_name}_session_name={session_name}')
+    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
+                                              Gphone, Gpassword)
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    # LUTelegram.get_telethon_mygroups (Tclient)
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    # LUTelegram.get_telethon_chats (Tclient)
+    # -------------------------------------------
+    # Getting information about yourself
+    # -------------------------------------------
+    me = LUTelegram.get_telethon_me (Tclient)
+
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    groups = LUTelegram.get_telethon_groups (Tclient)
+    for group in groups:
+        print (f"{LIB_name}_group={group}")
+
+    Tclient.disconnect ()
+# endfunction
+
+# ----------------------------------------------
+# get_telethon_users_group ():
+# ----------------------------------------------
+def get_telethon_users_group ():
+    """get_telethon_users_group"""
+# beginfunction
+    LIB_name = 'LIB:telethon'
+    LUTelegram.LIB_name = LIB_name
+
+    print (f'{LIB_name:{'_'}<{60}}')
+    # -------------------------------------------
+    # Авторизация в Telegram
+    # -------------------------------------------
+    # Имя сессии (может быть любым)
+    session_name = 'lyr60_TELEGRAM'
+    print (f'{LIB_name}_session_name={session_name}')
+    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
+                                              Gphone, Gpassword)
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    # LUTelegram.get_telethon_mygroups (Tclient)
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    # LUTelegram.get_telethon_chats (Tclient)
+    # -------------------------------------------
+    # Getting information about yourself
+    # -------------------------------------------
+    me = LUTelegram.get_telethon_me (Tclient)
+
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    groups = LUTelegram.get_telethon_groups (Tclient)
+
+    # print (groups[0])
+    # users = LUTelegram.get_telethon_users_group (Tclient, groups[0])
+    # for user in users:
+    #     print (f"{LIB_name}_user={user}")
+
+    for group in groups:
+        print (f"{LIB_name}_group={group}")
+        users = LUTelegram.get_telethon_users_group (Tclient, group)
+        for user in users:
+            print (f"{LIB_name}_user={user}")
 
     Tclient.disconnect ()
 # endfunction
@@ -510,15 +602,15 @@ def main ():
     #----------------------------------------------
     os.makedirs (GO2, exist_ok=True)
     stop_file = os.path.join (GO2, 'stop')
-    print(stop_file)
+    # print(stop_file)
     if Path (stop_file).is_file():
         os.remove (stop_file)
     pyperclip.copy ('')
     # ---------------------------------------------------------------
     # Ссылка на сообщение
-    # message_url = "https://t.me/_канал_/_id_"
     # ---------------------------------------------------------------
     Gmessage_url = GO1
+    # Gmessage_url = "https://t.me/_канал_/_id_"
     # Gmessage_url = 'https://t.me/GardeZ66/13311'
     # Gmessage_url = 'https://t.me/GardeZ66/13285'
     # Gmessage_url = 'https://t.me/Selectel/5813'
@@ -540,17 +632,21 @@ def main ():
     Gpassword = config ('password')
     # print(Gpassword)
 
-    get_telethon_mygroups ()
-    get_telethon_chats ()
+    # get_telethon_mygroups ()
+    # get_telethon_chats ()
+    # get_telethon_groups ()
+    # get_telethon_users_group ()
 
-    # if not Gmessage_url == '':
-    #     check_link(Gmessage_url)
-    # else:
-    #     while True and not Path (stop_file).is_file ():
-    #         Gmessage_url = pyperclip.paste()
-    #         check_link(Gmessage_url)
-    #     #endwhile
-    # #endif
+    if not Gmessage_url == '':
+        check_link(Gmessage_url)
+    else:
+        while True and not Path (stop_file).is_file ():
+            Gmessage_url = pyperclip.paste()
+            check_link(Gmessage_url)
+        #endwhile
+    #endif
+    if Path (stop_file).is_file():
+        os.remove (stop_file)
 
     LULog.STOPLogging ()
 #endfunction

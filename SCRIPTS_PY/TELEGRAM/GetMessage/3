@@ -1,0 +1,20 @@
+﻿from telethon.sync import TelegramClient
+from telethon.tl.types import MessageMediaPhoto
+
+# Входные данные
+api_id = 1234567  # Заменить на свой
+api_hash = 'abcdef1234567890abcdef1234567890'  # Заменить на свой
+chat = 'https://t.me/username_or_chat_link '  # Или ID чата
+message_id = 123456  # ID сообщения, откуда скачивать фото
+
+# Авторизация клиента
+with TelegramClient('my_session', api_id, api_hash) as client:
+    # Получаем сообщение по ссылке или ID
+    message = client.get_messages(chat, ids=message_id)
+
+    if message and message.media and isinstance(message.media, MessageMediaPhoto):
+        print("Сообщение содержит фото. Начинаю загрузку...")
+        message.download_media(file='./photo.jpg')  # Сохранит как photo.jpg
+        print("Фото успешно загружено.")
+    else:
+        print("Сообщение не содержит фото.")
