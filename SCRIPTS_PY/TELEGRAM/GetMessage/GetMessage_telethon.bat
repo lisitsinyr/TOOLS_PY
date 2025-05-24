@@ -78,7 +78,7 @@ rem ----------------------------------------------------------------------------
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
     call :Read_P O1 !O1! || exit /b 1
-    rem echo O1:!O1!
+    echo O1:!O1!
     if defined O1 (
         set OPTION=!OPTION! -!O1_Name! "!O1!"
     ) else (
@@ -90,7 +90,7 @@ rem ----------------------------------------------------------------------------
     set O2=!O2_Default!
     set PN_CAPTION=!O2_Caption!
     call :Read_P O2 !O2! || exit /b 1
-    rem echo O2:!O2!
+    echo O2:!O2!
     if defined O2 (
         set OPTION=!OPTION! -!O2_Name! "!O2!"
     ) else (
@@ -99,10 +99,10 @@ rem ----------------------------------------------------------------------------
     set O3_Name=O3
     set O3_Caption=LIB
     set O3_Default=telethon
-    set O3=!O2_Default!
+    set O3=!O3_Default!
     set PN_CAPTION=!O3_Caption!
     call :Read_P O3 !O3! || exit /b 1
-    rem echo O3:!O3!
+    echo O3:!O3!
     if defined O3 (
         set OPTION=!OPTION! -!O3_Name! "!O3!"
     ) else (

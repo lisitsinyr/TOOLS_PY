@@ -107,6 +107,7 @@ def AddLevelName():
 #endfunction
 
 CDefaultFileLogINI = 'logging.ini'
+CDefaultFileLogINI_CONSOLE = 'logging_CONSOLE.INI'
 CDefaultFileLogCONFIG = 'logging.CONFIG'
 CDefaultFileLogYAML = 'logging.YAML'
 
@@ -1802,7 +1803,7 @@ def CreateLoggerYAML (AFileNameYAML: str, ALogerName: str, ADirectoryLOG: str, A
     else:
         LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
     #endif
-    print ('LFileNameLOGjson:', LFileNameLOGjson)
+    # print ('LFileNameLOGjson:', LFileNameLOGjson)
 
     if ADirectoryLOG == '':
         # log будет создан в текущем каталоге (по умолчанию)
@@ -1881,10 +1882,10 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         #endif
     #endif
 
-    print ('LFileNameINI:', LFileNameINI)
+    # print ('LFileNameINI:', LFileNameINI)
 
     if not SetEditINI:
-        print ('ALogerName:',ALogerName)
+        # print ('ALogerName:',ALogerName)
         pass
     else:
         # print ('AFileNameLOG:', AFileNameLOG)
@@ -1902,7 +1903,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
             LFileNameLOG = LUFile.ExtractFileName (AFileNameLOG)
         #endif
         # print('LFileNameLOG:',LFileNameLOG)
-        # print('AFileNameLOGjson:',AFileNameLOGjson)
+
         if AFileNameLOGjson == '':
             LSectionName_02 = 'handler_FILE_02'
             LOptionValue_02 = LINIFile.GetOption(LSectionName_02, LOptionName, '')
@@ -1913,7 +1914,9 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         else:
             LFileNameLOGjson = LUFile.ExtractFileName (AFileNameLOGjson)
         #endif
-        # print('LFileNameLOGjson:',LFileNameLOGjson)
+        print('AFileNameLOGjson:',AFileNameLOGjson)
+        print('LFileNameLOGjson:',LFileNameLOGjson)
+
         # установить имена log файлов в ini
         LOptionValue_01 = "('" + os.path.join (LDirectoryLOG, LFileNameLOG) + "',)"
         if LUos.GOSInfo.system == 'Windows':
@@ -1937,7 +1940,7 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         LINIFile.UpdateFileINI ()
     #endif
 
-    print ('INI:ADirectoryLOG:',ADirectoryLOG)
+    # print ('INI:ADirectoryLOG:',ADirectoryLOG)
     if ADirectoryLOG == '':
         # log будет создан в текущем каталоге (по умолчанию)
         LDirectoryLOG = LUos.GetCurrentDir ()
@@ -1945,21 +1948,24 @@ def CreateLoggerFILEINI (AFileNameINI: str, ALogerName: str,
         # log будет создан в ADirectoryLOG
         LDirectoryLOG = LUFile.ExpandFileName (ADirectoryLOG)
     #endif
-    print('...LDirectoryLOG:',LDirectoryLOG)
+    # print('...LDirectoryLOG:',LDirectoryLOG)
 
     if not LUFile.DirectoryExists (LDirectoryLOG):
         LUFile.ForceDirectories(LDirectoryLOG)
     #endif
+
     # os.chdir (LDirectoryLOG)
 
-    print(LFileNameINI)
+    # print(LFileNameINI)
+
     logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True,
                                encoding=LUFile.cDefaultEncoding)
     # logging.config.fileConfig (LFileNameINI, disable_existing_loggers=True, encoding='cp1251')
 
     # создаем регистратор
     LResult = logging.getLogger (ALogerName)
-
+    # print(f'{LResult.name=}')
+    # print(f'{LResult.handlers=}')
     # установить форматер
     SetFormatterForLogger (LResult)
 
@@ -2063,7 +2069,9 @@ def STARTLogging (T: TTypeSETUPLOG, ALogerName, ADirectoryLOG: str, AFileNameLOG
                                                 AFileNameLOGjson)
             case TTypeSETUPLOG.tslINI:
                 if ALogerName == 'console' or LUConst.GAPPName is None:
+                    # 'logging_CONSOLE.INI'
                     LFileLogINI = CDefaultFileLogINI
+                    LFileLogINI = CDefaultFileLogINI_CONSOLE
                 else:
                     LFileLogINI = LUConst.GAPPName+'.ini'
                 #endif
@@ -2100,7 +2108,7 @@ def STARTLogging (T: TTypeSETUPLOG, ALogerName, ADirectoryLOG: str, AFileNameLOG
     #-------------------------------------------------
     # LoggerAPPS
     #-------------------------------------------------
-    CLoggerAPPS = 'APPS___'
+    CLoggerAPPS = 'APPS__'
     LoggerAPPS = logging.getLogger(CLoggerAPPS)
 
     #-------------------------------------------------

@@ -99,7 +99,7 @@ rem ----------------------------------------------------------------------------
     set O3_Name=O3
     set O3_Caption=LIB
     set O3_Default=pyrogram
-    set O3=!O2_Default!
+    set O3=!O3_Default!
     set PN_CAPTION=!O3_Caption!
     call :Read_P O3 !O3! || exit /b 1
     rem echo O3:!O3!
