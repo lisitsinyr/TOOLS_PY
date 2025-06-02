@@ -97,7 +97,7 @@ def func_telethon ():
     #-------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
-    print (f'{LIB_name}_session_name={session_name}')
+    # print (f'{LIB_name}_session_name={session_name}')
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
     #-------------------------------------------
     #
@@ -145,15 +145,16 @@ def func_telethon ():
     if message.media:
         # print (message.media)
         grouped_id = message.grouped_id
-        print (f'{LIB_name}_message.grouped_id={grouped_id}')
+        # print (f'{LIB_name}_message.grouped_id={grouped_id}')
         # if message.audio:
         #     print (message.audio)
         if message.video:
             # print (message.video)
             try:
-                print (message.video.attributes [1].file_name)
+                # print (message.video.attributes [1].file_name)
                 # print (message.media.document.attributes [1].file_name)
                 # print (message.document.attributes [1].file_name)
+                pass
             except:
                 pass
             if type (Gchannel_name_id) is int:
@@ -278,7 +279,7 @@ def get_telethon_groups ():
     # -------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
-    print (f'{LIB_name}_session_name={session_name}')
+    # print (f'{LIB_name}_session_name={session_name}')
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
                                               Gphone, Gpassword)
     # -------------------------------------------
@@ -319,7 +320,7 @@ def get_telethon_users_group ():
     # -------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
-    print (f'{LIB_name}_session_name={session_name}')
+    # print (f'{LIB_name}_session_name={session_name}')
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
                                               Gphone, Gpassword)
     # -------------------------------------------
@@ -346,7 +347,7 @@ def get_telethon_users_group ():
     #     print (f"{LIB_name}_user={user}")
 
     for group in groups:
-        print (f"{LIB_name}_group={group}")
+        # print (f"{LIB_name}_group={group}")
         users = LUTelegram.get_telethon_users_group (Tclient, group)
         for user in users:
             print (f"{LIB_name}_user={user}")
@@ -360,7 +361,7 @@ def get_telethon_users_group ():
 def func_pyrogram ():
     """func_pyrogram"""
 #beginfunction
-    LIB_name = 'LIB:telethon'
+    LIB_name = 'LIB:pyrogram'
     LUTelegram.LIB_name = LIB_name
 
     print (f'{LIB_name:{'_'}<{60}}')
@@ -373,14 +374,15 @@ def func_pyrogram ():
     # bot.start ()
     # # bot.run ()
 
-    print (f'Gchannel_name={Gchannel_name}')
-    print (f'Gmessage_id={Gmessage_id}')
+    # print (f'Gchannel_name={Gchannel_name}')
+    # print (f'Gmessage_id={Gmessage_id}')
+
     #-------------------------------------------
     # Авторизация в Telegram
     #-------------------------------------------
     # # Имя сессии (может быть любым)
     session_name = 'lyr60'
-    print (f'{LIB_name}_session_name={session_name}')
+    # print (f'{LIB_name}_session_name={session_name}')
     Tclient:pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
     # -------------------------------------------
     # Getting information about yourself
@@ -394,9 +396,11 @@ def func_pyrogram ():
     if type(Gchannel_name_id) is str:
         chat = Tclient.get_chat (Gchannel_name_id)
         # print(f'chat={chat}')
-        print(f'{LIB_name}_chat.title={chat.title}')
         # print(f'chat.description={chat.description}')
-        print(f'{LIB_name}_chat.username={chat.username}')
+
+        # print(f'{LIB_name}_chat.title={chat.title}')
+        # print(f'{LIB_name}_chat.username={chat.username}')
+
         message = Tclient.get_messages(chat.id, Gmessage_id)
 
     if not message is None:
@@ -437,7 +441,7 @@ def func_pyrogram ():
 
         if message.video:
             if type (Gchannel_name_id) is str:
-                print (message.video.file_name)
+                # print (message.video.file_name)
                 # file_path = bot.download_media (message, download_path)
                 file_media = os.path.join (Gmessage_directory, message.video.file_name)
                 if Path (file_media).is_file ():
@@ -538,8 +542,8 @@ def check_link (link:str) -> None:
         #     func_pyrogram ()
         func_telethon ()
         func_pyrogram ()
-
         pyperclip.copy ('')
+        print (f'Wait ...')
     return None
 #endfunction
 
@@ -640,6 +644,7 @@ def main ():
     if not Gmessage_url == '':
         check_link(Gmessage_url)
     else:
+        print (f'Wait ...')
         while True and not Path (stop_file).is_file ():
             Gmessage_url = pyperclip.paste()
             check_link(Gmessage_url)

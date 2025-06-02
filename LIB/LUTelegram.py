@@ -79,7 +79,7 @@ def get_telethon_client (session_name, api_id, api_hash, phone, password) -> tel
     # Tclient.start (phone=Gphone, password=Gpassword)
     result.start (phone=phone, password=password)
     result.connect ()
-    print (f'{LIB_name}_user_authorized={result.is_user_authorized()}')
+    # print (f'{LIB_name}_user_authorized={result.is_user_authorized()}')
     return result
 # endfunction
 
@@ -91,8 +91,10 @@ def get_telethon_me (client:telethon.sync.TelegramClient) -> telethon.tl.types.U
     """get_telethon_me"""
 # beginfunction
     result:User = client.get_me ()
-    print (f'{LIB_name}_username={result.username}')
-    print (f'{LIB_name}_phone={result.phone}')
+
+    # print (f'{LIB_name}_username={result.username}')
+    # print (f'{LIB_name}_phone={result.phone}')
+
     # print (f'{LIB_name}_stringify={result.stringify()}')
     return result
 # endfunction
@@ -106,9 +108,9 @@ def get_telethon_channel (client:telethon.sync.TelegramClient, channel_name_id) 
 # beginfunction
     result = client.get_entity (channel_name_id)
     # print (result)
-    print(f'{LIB_name}_Channel.title={result.title}')
-    print(f'{LIB_name}_Channel.id={result.id}')
-    print(f'{LIB_name}_Channel.username={result.id}')
+    # print(f'{LIB_name}_Channel.title={result.title}')
+    # print(f'{LIB_name}_Channel.id={result.id}')
+    # print(f'{LIB_name}_Channel.username={result.id}')
     return result
 # endfunction
 
@@ -319,7 +321,8 @@ def get_pyrogram_client (api_id, api_hash, login, phone) -> pyrogram.Client:
     result = pyrogram.Client (login, api_id=api_id, api_hash=api_hash, phone_number=phone)
     result.start ()
     # result.connect ()
-    print (f'{LIB_name}_is_connected={result.is_connected}')
+    # print (f'{LIB_name}_is_connected={result.is_connected}')
+
     # print(Tclient.export_session_string())
     # print(result.workdir)
 
@@ -335,8 +338,8 @@ def get_pyrogram_me (client:pyrogram.Client) -> pyrogram.types.User:
     """get_pyrogram_me"""
 # beginfunction
     result = client.get_me()
-    print (f'{LIB_name}_username={result.username}')
-    print (f'{LIB_name}_phone_number={result.phone_number}')
+    # print (f'{LIB_name}_username={result.username}')
+    # print (f'{LIB_name}_phone_number={result.phone_number}')
     # print (f'pyrogram:stringify={result.stringify()}')
     return result
 # endfunction
