@@ -24,6 +24,7 @@ import shutil
 import textwrap
 import logging
 import collections
+import datetime
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -78,9 +79,19 @@ import lyrpy.LUTelegram as LUTelegram
 #------------------------------------------
 #
 #------------------------------------------
+Gapi_id = ''
+Gapi_hash = ''
+Gphone = ''
+Glogin = ''
+Gpassword = ''
+
+Gchannel_name = ''
+Gchannel_name_id = 0
+Gmessage_id = 0
+Gmessage_directory = ''
+
 Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
 Gwidth = 60
-
 
 # ----------------------------------------------
 # func_telethon ():
@@ -123,7 +134,7 @@ def func_telethon ():
     # message_file
     # -------------------------------------------
     message_file:str = Gchannel_name + '_' + str (Gmessage_id) + '_' + message.date.strftime ("%Y%m%d") + '.md'
-    message_file = os.path.join (Gmessage_directory, message_file)
+    message_file:str = os.path.join (Gmessage_directory, message_file)
     # print (message_file)
     if Path (message_file).is_file ():
         os.remove (message_file)
@@ -154,16 +165,18 @@ def func_telethon ():
                 # print (message.video.attributes [1].file_name)
                 # print (message.media.document.attributes [1].file_name)
                 # print (message.document.attributes [1].file_name)
-                pass
+                if type (Gchannel_name_id) is int:
+                    file_path = Tclient.download_media (message, Gmessage_directory)
+                    print (f"{LIB_name}_message.video: {file_path}")
             except:
-                pass
-            if type (Gchannel_name_id) is int:
-                file_path = Tclient.download_media (message, Gmessage_directory)
-                print (f"{LIB_name}_message.video: {file_path}")
+                print (f"{LIB_name}_message.video: ERROR")
+
         if message.photo:
             # print (message.photo)
-            file_path = Tclient.download_media(message, Gmessage_directory)
-            print(f"{LIB_name}_message.photo: {file_path}")
+            try:
+                file_path = Tclient.download_media(message, Gmessage_directory)
+            except:
+                print(f"{LIB_name}_message.photo: ERROR")
 
             # Чтобы объединить сгруппированные фотографии по параметру grouped_id в Telethon,
             # можно использовать метод client.send_message с параметром file.
@@ -439,15 +452,34 @@ def func_pyrogram ():
         #             write_message_file ('<'+e.url+'>', message_file)
         #
 
+        # today = datetime.datetime.utcnow()
+        today = datetime.datetime.now (datetime.UTC)
+
         if message.video:
             if type (Gchannel_name_id) is str:
                 # print (message.video.file_name)
-                # file_path = bot.download_media (message, download_path)
-                file_media = os.path.join (Gmessage_directory, message.video.file_name)
-                if Path (file_media).is_file ():
-                    os.remove (file_media)
-                file_path = Tclient.download_media (message, file_media)
-                print(f"{LIB_name}_message.video: {file_path}")
+
+                if message.video.file_name is None:
+                    # file_media = 'video_2025-06-06_18-57-19.mp4'
+                    file_media = 'video_'+f'{today:%Y-%m-%d_%H-%M-%S}'+'.mp4'
+                    file_media_path = os.path.join (Gmessage_directory, file_media)
+                    print (file_media_path)
+                    if Path (file_media_path).is_file ():
+                        os.remove (file_media_path)
+                    file_media_path = Tclient.download_media (message, file_media_path)
+                    print (f"{LIB_name}_message.video: {file_media_path}")
+
+                else:
+                    try:
+                        file_media_path = os.path.join (Gmessage_directory, message.video.file_name)
+                        if Path (file_media_path).is_file ():
+                            os.remove (file_media_path)
+                        file_media_path = Tclient.download_media (message, file_media_path)
+                        print(f"{LIB_name}_message.video: {file_media_path}")
+                    except:
+                        print (f"{LIB_name}_message.video: ERROR")
+        else:
+            print (f"{LIB_name}_В сообщении нет медиафайлов.")
 
         # if message.photo:
         #     # file_media = os.path.join (Gmessage_directory, message.photo.file_id)
@@ -661,6 +693,11 @@ def main ():
 #------------------------------------------
 #beginmodule
 if __name__ == "__main__":
+    # today = datetime.datetime.utcnow()
+    # today = datetime.datetime.now (datetime.UTC)
+    # file_media = 'video_' + f'{today:%Y-%m-%d_%H-%M-%S}' + '.mp4'
+    # print (file_media)
+
     main()
 #endif
 
