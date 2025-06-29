@@ -102,7 +102,8 @@ def func_telethon ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     #-------------------------------------------
     # Авторизация в Telegram
     #-------------------------------------------
@@ -138,18 +139,23 @@ def func_telethon ():
     # print (message_file)
     if Path (message_file).is_file ():
         os.remove (message_file)
+    #endif
+
     # -------------------------------------------
     #
     # -------------------------------------------
     write_message_file ('Link: ' + Gmessage_url, message_file)
     write_message_file ('Дата: ' + str (message.date), message_file)
     write_message_file ('Title: ' + message.chat.title, message_file)
+
     # -------------------------------------------
     # Выводим текст сообщения
     # -------------------------------------------
     if message.text:
         # write_message_file (message.message, message_file)
         write_message_file (message.text, message_file)
+    #endif
+
     # -------------------------------------------
     # Если есть медиа (фото, видео, документ)
     # -------------------------------------------
@@ -167,17 +173,20 @@ def func_telethon ():
                 # print (message.document.attributes [1].file_name)
                 if type (Gchannel_name_id) is int:
                     file_path = Tclient.download_media (message, Gmessage_directory)
-                    print (f"{LIB_name}_message.video: {file_path}")
+                    # print (f"{LIB_name}_message.video: {file_path}")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_message.video: {file_path}")
             except:
-                print (f"{LIB_name}_message.video: ERROR")
+                # print (f"{LIB_name}_message.video: ERROR")
+                LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
+        #endif
 
         if message.photo:
             # print (message.photo)
             try:
                 file_path = Tclient.download_media(message, Gmessage_directory)
             except:
-                print(f"{LIB_name}_message.photo: ERROR")
-
+                # print(f"{LIB_name}_message.photo: ERROR")
+                LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.photo: ERROR")
             # Чтобы объединить сгруппированные фотографии по параметру grouped_id в Telethon,
             # можно использовать метод client.send_message с параметром file.
             # Этот метод позволяет отправить группу фотографий как одно сообщение,
@@ -199,8 +208,11 @@ def func_telethon ():
             # for group_id, media_messages in grouped_media.items ():
             #     for msg in media_messages:
             #         Tclient.download_media (msg.media, Gmessage_directory)
+        #endif
+
     else:
-        print (f"{LIB_name}_В сообщении нет медиафайлов.")
+        # print (f"{LIB_name}_В сообщении нет медиафайлов.")
+        LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_В сообщении нет медиафайлов.")
 
     Tclient.disconnect ()
 #endfunction
@@ -214,7 +226,8 @@ def get_telethon_mygroups ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     # -------------------------------------------
     # Авторизация в Telegram
     # -------------------------------------------
@@ -250,7 +263,8 @@ def get_telethon_chats ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     # -------------------------------------------
     # Авторизация в Telegram
     # -------------------------------------------
@@ -286,7 +300,8 @@ def get_telethon_groups ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     # -------------------------------------------
     # Авторизация в Telegram
     # -------------------------------------------
@@ -327,7 +342,8 @@ def get_telethon_users_group ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     # -------------------------------------------
     # Авторизация в Telegram
     # -------------------------------------------
@@ -377,7 +393,8 @@ def func_pyrogram ():
     LIB_name = 'LIB:pyrogram'
     LUTelegram.LIB_name = LIB_name
 
-    print (f'{LIB_name:{'_'}<{60}}')
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     # #-------------------------------------------
     # # Авторизация в Telegram
     # #-------------------------------------------
@@ -410,11 +427,10 @@ def func_pyrogram ():
         chat = Tclient.get_chat (Gchannel_name_id)
         # print(f'chat={chat}')
         # print(f'chat.description={chat.description}')
-
         # print(f'{LIB_name}_chat.title={chat.title}')
         # print(f'{LIB_name}_chat.username={chat.username}')
-
         message = Tclient.get_messages(chat.id, Gmessage_id)
+    #endif
 
     if not message is None:
         # print (message)
@@ -454,11 +470,10 @@ def func_pyrogram ():
 
         # today = datetime.datetime.utcnow()
         today = datetime.datetime.now (datetime.UTC)
-
         if message.video:
+            print (message.video)
             if type (Gchannel_name_id) is str:
                 # print (message.video.file_name)
-
                 if message.video.file_name is None:
                     # file_media = 'video_2025-06-06_18-57-19.mp4'
                     file_media = 'video_'+f'{today:%Y-%m-%d_%H-%M-%S}'+'.mp4'
@@ -467,7 +482,8 @@ def func_pyrogram ():
                     if Path (file_media_path).is_file ():
                         os.remove (file_media_path)
                     file_media_path = Tclient.download_media (message, file_media_path)
-                    print (f"{LIB_name}_message.video: {file_media_path}")
+                    # print (f"{LIB_name}_message.video: {file_media_path}")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, file_media_path)
 
                 else:
                     try:
@@ -475,11 +491,19 @@ def func_pyrogram ():
                         if Path (file_media_path).is_file ():
                             os.remove (file_media_path)
                         file_media_path = Tclient.download_media (message, file_media_path)
-                        print(f"{LIB_name}_message.video: {file_media_path}")
+
+                        # print(f"{LIB_name}_message.video: {file_media_path}")
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{file_media_path}')
+
                     except:
-                        print (f"{LIB_name}_message.video: ERROR")
+                        # print (f"{LIB_name}_message.video: ERROR")
+                        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
+                #endif
+            #endif
         else:
-            print (f"{LIB_name}_В сообщении нет медиафайлов.")
+            # print (f"{LIB_name}_В сообщении нет видеофайлов")
+            LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_В сообщении нет видеофайлов")
+        #endif
 
         # if message.photo:
         #     # file_media = os.path.join (Gmessage_directory, message.photo.file_id)
@@ -565,8 +589,9 @@ def check_link (link:str) -> None:
     root = parsed_url.netloc
     if root == 't.me':
         GlinkT = link
-        print (f'{GlinkT=}')
+        # print (f'{GlinkT=}')
         # print (f'{parsed_url=}')
+        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{GlinkT}')
         set_message (parsed_url)
         # if GO3 == 'telethon':
         #     func_telethon ()
@@ -603,7 +628,8 @@ def main ():
 
     LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI, 'console', '',
                         '', '')
-    LULog.LoggerAPPS.level = logging.INFO
+    # LULog.LoggerAPPS.level = logging.INFO
+    LULog.LoggerAPPS.level = 0
 
     #-------------------------------------------------
     # Отключить журнал 'telethon'
@@ -615,6 +641,8 @@ def main ():
     logger = logging.getLogger('telethon.network.mtprotostate')
     logger.setLevel(logging.ERROR)
     logger = logging.getLogger('telethon.client.telegrambaseclient')
+    logger.setLevel(logging.ERROR)
+    logger = logging.getLogger('telethon.client.downloads')
     logger.setLevel(logging.ERROR)
 
     LArgParser = LUParserARG.TArgParser (description = 'Параметры', prefix_chars = '-/')

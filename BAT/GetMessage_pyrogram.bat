@@ -77,7 +77,7 @@ rem ----------------------------------------------------------------------------
     set O1_Default=
     set O1=!O1_Default!
     set PN_CAPTION=!O1_Caption!
-    call :Read_P O1 !O1! || exit /b 1
+    rem call :Read_P O1 !O1! || exit /b 1
     rem echo O1:!O1!
     if defined O1 (
         set OPTION=!OPTION! -!O1_Name! "!O1!"

@@ -30,8 +30,7 @@ from typing import BinaryIO
 #------------------------------------------
 from urllib.parse import urlparse
 
-from pytube import YouTube, request
-from pytube import Playlist
+from pytube import YouTube, request, Playlist, Stream
 import pytube
 import pytube.exceptions
 
@@ -107,7 +106,7 @@ class TYouTubeObject (LUObjects.TObjects):
         """Constructor"""
     #beginfunction
         super ().__init__ ()
-        self.__FObjectType: TObjectTypeClass = TObjectTypeClass.otYouTubeObject
+        self.__FObjectType: LUObjects.TObjectTypeClass = LUObjects.TObjectTypeClass.otYouTubeObject
         #----------------------------------------------
         self.__FYouTube: YouTube = None
         self.__FStream: pytube.Stream = None
@@ -198,7 +197,8 @@ class TYouTubeObject (LUObjects.TObjects):
     #     prog.update (task, completed = stream.filesize - bytes_remaining)
     #     #this show the bytes_remaining, use rich to display a progress bar
     #--------------------------------------------------
-    def ONprogressObject (self, AStream: pytube.Stream, AChunk: bytes, Abytes_remaining: int):
+    # def ONprogressObject (self, AStream: pytube.Stream, AChunk: bytes, Abytes_remaining: int):
+    def ONprogressObject (self, AStream: Stream, AChunk: bytes, Abytes_remaining: int):
     #beginfunction
         s = 'TYouTubeObject.ONprogressObject...'
         LULog.LoggerTOOLS_AddDebug (s)
@@ -222,7 +222,8 @@ class TYouTubeObject (LUObjects.TObjects):
     #     prog.stop ()
     #     print ('[green] Downloaded ', file_path.split ('/') [-1], '\n')
     #--------------------------------------------------
-    def ONcompleteObject (self, AStream: pytube.Stream, AFilePath: str):
+    # def ONcompleteObject (self, AStream: pytube.Stream, AFilePath: str):
+    def ONcompleteObject (self, AStream: Stream, AFilePath: str):
     #beginfunction
         s = 'TYouTubeObject.ONcompleteObject...'
         LULog.LoggerTOOLS_AddDebug (s)
@@ -242,21 +243,25 @@ class TYouTubeObject (LUObjects.TObjects):
     #endfunction
 
     @staticmethod
-    def GetURLInfo (AYouTube: YouTube) -> {}:
-        """__GetURLInfo"""
+    def GetURLInfo (AYouTube) -> {}:
+        """GetURLInfo"""
     #beginfunction
+        print (f'{AYouTube=}')
+
         LURLInfo = dict ()
+
         #Get the video author.
-        LURLInfo['author'] = AYouTube.author
+        LURLInfo['author'] = 'AYouTube.author'
         #Get the video description.
-        LURLInfo['description'] = AYouTube.description
+        LURLInfo['description'] = 'AYouTube.description'
         #Get the thumbnail url image.
-        LURLInfo['thumbnail_url'] = AYouTube.thumbnail_url
+        LURLInfo['thumbnail_url'] = 'AYouTube.thumbnail_url'
         # Заголовок [Get the video title]
-        s = AYouTube.title
-        LURLInfo['title'] = LUStrUtils.PrintableStr(s)
+        # s = AYouTube.title
+        LURLInfo['title'] = 'LUStrUtils.PrintableStr(s)'
         # продолжительность видео [Get the video length in seconds]
-        LURLInfo['length'] = AYouTube.length
+        LURLInfo['length'] = 'AYouTube.length'
+        LURLInfo['length'] = 0
 
         # #Get a list of Caption.
         # LURLInfo['caption_tracks'] = AYouTube.caption_tracks
@@ -290,11 +295,13 @@ class TYouTubeObject (LUObjects.TObjects):
     def __SetURLInfo (self):
         """__SetURLInfo"""
     #beginfunction
+        print ("""__SetURLInfo""")
         self.__FURLInfo = self.GetURLInfo (self.__FYouTube)
     #endfunction
 
     @staticmethod
-    def GetStreamInfo (AStream: pytube.Stream) -> {}:
+    # def GetStreamInfo (AStream: pytube.Stream) -> {}:
+    def GetStreamInfo (AStream: Stream) -> {}:
         """GetStreamInfo"""
     #beginfunction
         LStreamInfo = dict ()
@@ -339,7 +346,8 @@ class TYouTubeObject (LUObjects.TObjects):
         return LStreamInfo
     #endfunction
 
-    def __SetStreamInfo (self, AStream: pytube.Stream):
+    # def __SetStreamInfo (self, AStream: pytube.Stream):
+    def __SetStreamInfo (self, AStream: Stream):
         """SetStreamInfo"""
     #beginfunction
         self.__FStreamInfo = self.GetStreamInfo(AStream)
@@ -394,9 +402,18 @@ class TYouTubeObject (LUObjects.TObjects):
     def SetURL(self, AURL: str, AMaxRes: (), APlayList: str, ANumber: int, ACount: int):
     #beginfunction
         self.__FURL = AURL
+
+        print(f'{AURL=}')
+        print(f'{APlayList=}')
+        print(f'{ANumber=}')
+        print(f'{ACount=}')
+
         self.__FYouTube: YouTube = YouTube(AURL)
+        # self.__FYouTube = Playlist(AURL)
         # self.SetStream(AMaxRes)
+        
         self.__SetURLInfo()
+        
         self.PlayList = APlayList
         self.Number = ANumber
         self.Count = ACount
@@ -609,7 +626,7 @@ class TYouTubeObject (LUObjects.TObjects):
     #endfunction
 
     def __DownloadURL_chunk (self, APATH: str, AFileName:str, AFileSize: int):
-        """DownloadURL_chunk"""
+        """__DownloadURL_chunk"""
     #beginfunction
         self.FFileNamechunk = AFileName
         LFileSize = AFileSize
