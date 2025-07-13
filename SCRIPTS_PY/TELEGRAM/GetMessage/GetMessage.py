@@ -25,6 +25,7 @@ import textwrap
 import logging
 import collections
 import datetime
+import re
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -43,6 +44,7 @@ from pyrogram.raw.functions.help import GetDeepLinkInfo
 # import telethon
 import telethon.sync
 import telethon.tl.types
+from telethon.tl.types import PeerUser, PeerChat, PeerChannel
 
 # # класс, позволяющий нам подключаться к клиенту мессенджера и работать с ним;
 # from telethon.sync import TelegramClient
@@ -93,129 +95,41 @@ Gmessage_directory = ''
 Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
 Gwidth = 60
 
-# ----------------------------------------------
-# func_telethon ():
-# ----------------------------------------------
-def func_telethon ():
-    """func_telethon"""
-#beginfunction
-    LIB_name = 'LIB:telethon'
-    LUTelegram.LIB_name = LIB_name
+def sanitize_filename (filename, replacement = '_', platform = None):
+    """
+    Очищает строку, оставляя только допустимые символы для имени файла.
 
-    # print (f'{LIB_name:{'_'}<{60}}')
-    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
-    #-------------------------------------------
-    # Авторизация в Telegram
-    #-------------------------------------------
-    # Имя сессии (может быть любым)
-    session_name = 'lyr60_TELEGRAM'
-    # print (f'{LIB_name}_session_name={session_name}')
-    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-    #-------------------------------------------
-    #
-    #-------------------------------------------
-    # LUTelegram.get_telethon_mygroups (Tclient)
-    # -------------------------------------------
-    #
-    # -------------------------------------------
-    # LUTelegram.get_telethon_chats (Tclient)
-    # -------------------------------------------
-    # Getting information about yourself
-    # -------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
-    # -------------------------------------------
-    # channel
-    # -------------------------------------------
-    channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
-    # -------------------------------------------
-    # Получаем сообщение
-    # -------------------------------------------
-    message:telethon.tl.types.Message = LUTelegram.get_telethon_message (Tclient, channel, Gmessage_id)
-    # -------------------------------------------
-    # message_file
-    # -------------------------------------------
-    message_file:str = Gchannel_name + '_' + str (Gmessage_id) + '_' + message.date.strftime ("%Y%m%d") + '.md'
-    message_file:str = os.path.join (Gmessage_directory, message_file)
-    # print (message_file)
-    if Path (message_file).is_file ():
-        os.remove (message_file)
-    #endif
+    :param filename: исходное имя файла
+    :param replacement: символ для замены недопустимых символов
+    :param platform: целевая платформа ('windows', 'linux', 'darwin' и т.д.), по умолчанию используется текущая ОС
+    :return: корректное имя файла
+    """
+    if not platform:
+        platform = os.name
 
-    # -------------------------------------------
-    #
-    # -------------------------------------------
-    write_message_file ('Link: ' + Gmessage_url, message_file)
-    write_message_file ('Дата: ' + str (message.date), message_file)
-    write_message_file ('Title: ' + message.chat.title, message_file)
+    # Обрезаем до разумной длины (обычно максимум 255 байт)
+    max_length = 255
 
-    # -------------------------------------------
-    # Выводим текст сообщения
-    # -------------------------------------------
-    if message.text:
-        # write_message_file (message.message, message_file)
-        write_message_file (message.text, message_file)
-    #endif
+    # Удаление начальных и конечные пробелы
+    filename = filename.strip ()
 
-    # -------------------------------------------
-    # Если есть медиа (фото, видео, документ)
-    # -------------------------------------------
-    if message.media:
-        # print (message.media)
-        grouped_id = message.grouped_id
-        # print (f'{LIB_name}_message.grouped_id={grouped_id}')
-        # if message.audio:
-        #     print (message.audio)
-        if message.video:
-            # print (message.video)
-            try:
-                # print (message.video.attributes [1].file_name)
-                # print (message.media.document.attributes [1].file_name)
-                # print (message.document.attributes [1].file_name)
-                if type (Gchannel_name_id) is int:
-                    file_path = Tclient.download_media (message, Gmessage_directory)
-                    # print (f"{LIB_name}_message.video: {file_path}")
-                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_message.video: {file_path}")
-            except:
-                # print (f"{LIB_name}_message.video: ERROR")
-                LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
-        #endif
+    # Замена недопустимых символов
+    if platform == 'nt':  # Windows
+        invalid_chars = r'[<>:"/\\|?*\x00-\x1F]'
+    else:  # Linux/macOS
+        invalid_chars = r'[/\x00]'
 
-        if message.photo:
-            # print (message.photo)
-            try:
-                file_path = Tclient.download_media(message, Gmessage_directory)
-            except:
-                # print(f"{LIB_name}_message.photo: ERROR")
-                LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.photo: ERROR")
-            # Чтобы объединить сгруппированные фотографии по параметру grouped_id в Telethon,
-            # можно использовать метод client.send_message с параметром file.
-            # Этот метод позволяет отправить группу фотографий как одно сообщение,
-            # если передать ему список файлов, соответствующих одному grouped_id
+    filename = re.sub (invalid_chars, replacement, filename)
 
-            # Словарь для хранения медиа
-            # grouped_media = collections.defaultdict (list)
-            # messages = Tclient.get_messages (Gchannel.id)
-            # print(messages)
-            # # Пройти по сообщениям
-            # for message in messages:
-            #     print (message)
-            #     if isinstance (message.media,
-            #                    (MessageMediaPhoto, MessageMediaDocument)):
-            #         grouped_id = message.grouped_id or message.id
-            #         print(grouped_id)
-            #         # grouped_media [grouped_id].append (message)
-            # # Сохранить медиа
-            # for group_id, media_messages in grouped_media.items ():
-            #     for msg in media_messages:
-            #         Tclient.download_media (msg.media, Gmessage_directory)
-        #endif
+    # Удаление лишних точек и подряд идущих заменителей
+    filename = re.sub (r'(\.' + re.escape (replacement) + r')+', '.', filename)
+    filename = re.sub (re.escape (replacement) + r'{2,}', replacement, filename)
 
-    else:
-        # print (f"{LIB_name}_В сообщении нет медиафайлов.")
-        LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_В сообщении нет медиафайлов.")
+    # Если имя стало пустым — вернуть дефолт
+    if not filename:
+        filename = f"unnamed_file{replacement}"
 
-    Tclient.disconnect ()
-#endfunction
+    return filename [:max_length]
 
 # ----------------------------------------------
 # get_telethon_mygroups ():
@@ -329,7 +243,7 @@ def get_telethon_groups ():
     groups = LUTelegram.get_telethon_groups (Tclient)
     for group in groups:
         print (f"{LIB_name}_group={group}")
-
+    #endfor
     Tclient.disconnect ()
 # endfunction
 
@@ -380,9 +294,168 @@ def get_telethon_users_group ():
         users = LUTelegram.get_telethon_users_group (Tclient, group)
         for user in users:
             print (f"{LIB_name}_user={user}")
-
+        #endfor
+    #endfor
     Tclient.disconnect ()
 # endfunction
+
+# ----------------------------------------------
+# func_telethon ():
+# ----------------------------------------------
+def func_telethon ():
+    """func_telethon"""
+#beginfunction
+    LIB_name = 'LIB:telethon'
+    LUTelegram.LIB_name = LIB_name
+
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
+    #-------------------------------------------
+    # Авторизация в Telegram
+    #-------------------------------------------
+    # Имя сессии (может быть любым)
+    session_name = 'lyr60_TELEGRAM'
+    # print (f'{LIB_name}_session_name={session_name}')
+    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    #-------------------------------------------
+    #
+    #-------------------------------------------
+    # LUTelegram.get_telethon_mygroups (Tclient)
+
+    #-------------------------------------------
+    #
+    #-------------------------------------------
+    # LUTelegram.get_telethon_chats (Tclient)
+
+    #-------------------------------------------
+    # Getting information about yourself
+    #-------------------------------------------
+    me = LUTelegram.get_telethon_me (Tclient)
+
+    #-------------------------------------------
+    # channel
+    #-------------------------------------------
+    try:
+        # channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
+        channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name)
+    except:
+        channel:telethon.tl.types.Channel = None
+    #endtry
+    # -------------------------------------------
+    # Получаем сообщение
+    # -------------------------------------------
+    message:telethon.tl.types.Message = LUTelegram.get_telethon_message (Tclient, channel, Gmessage_id)
+    if not message:
+        Tclient.disconnect ()
+        return 1
+    #endif
+    # -------------------------------------------
+    # message_file
+    # -------------------------------------------
+    Gchannel_name_s = sanitize_filename (Gchannel_name, replacement = '_', platform = None)
+    try:
+        message_file:str = Gchannel_name_s + '_' + str (Gmessage_id) + '_' + message.date.strftime ("%Y%m%d") + '.md'
+        message_file:str = os.path.join (Gmessage_directory, message_file)
+        # print (message_file)
+    except:
+        print ('ERROR: message_file')
+        message_file:str = 'message_file.md'
+    #endtry
+    if Path (message_file).is_file ():
+        os.remove (message_file)
+    #endif
+
+    # -------------------------------------------
+    #
+    # -------------------------------------------
+    write_message_file ('Link: ' + Gmessage_url, message_file)
+    try:
+        write_message_file ('Дата: ' + str (message.date), message_file)
+    except:
+        pass
+    try:
+        write_message_file ('Title: ' + message.chat.title, message_file)
+    except:
+        pass
+
+    # -------------------------------------------
+    # Выводим текст сообщения
+    # -------------------------------------------
+    if hasattr(message, 'text'):
+        if message.text:
+            # write_message_file (message.message, message_file)
+            write_message_file (message.text, message_file)
+    #endif
+
+    # -------------------------------------------
+    # Если есть медиа (фото, видео, документ)
+    # -------------------------------------------
+    if hasattr(message, 'media'):
+        if message.media:
+            # print (message.media)
+            grouped_id = message.grouped_id
+            # print (f'{LIB_name}_message.grouped_id={grouped_id}')
+            # if message.audio:
+            #     print (message.audio)
+            if message.video:
+                # print (message.video)
+                try:
+                    # print (message.video.attributes [1].file_name)
+                    # print (message.media.document.attributes [1].file_name)
+                    # print (message.document.attributes [1].file_name)
+                    if Gchannel_name_id is None:
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО пропущена ...')
+                    else:
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО ...')
+                        file_path = Tclient.download_media (message, Gmessage_directory)
+                        # print (f"{LIB_name}_message.video: {file_path}")
+                        # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.video: {file_path}")
+                except:
+                    # print (f"{LIB_name}_message.video: ERROR")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
+                #endtry
+            #endif
+
+            if message.photo:
+                # print (message.photo)
+                try:
+                    file_path = Tclient.download_media(message, Gmessage_directory)
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.photo: {file_path}")
+                except:
+                    # print(f"{LIB_name}_message.photo: ERROR")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.photo: ERROR")
+                # Чтобы объединить сгруппированные фотографии по параметру grouped_id в Telethon,
+                # можно использовать метод client.send_message с параметром file.
+                # Этот метод позволяет отправить группу фотографий как одно сообщение,
+                # если передать ему список файлов, соответствующих одному grouped_id
+
+                # Словарь для хранения медиа
+                # grouped_media = collections.defaultdict (list)
+                # messages = Tclient.get_messages (Gchannel.id)
+                # print(messages)
+                # # Пройти по сообщениям
+                # for message in messages:
+                #     print (message)
+                #     if isinstance (message.media,
+                #                    (MessageMediaPhoto, MessageMediaDocument)):
+                #         grouped_id = message.grouped_id or message.id
+                #         print(grouped_id)
+                #         # grouped_media [grouped_id].append (message)
+                # # Сохранить медиа
+                # for group_id, media_messages in grouped_media.items ():
+                #     for msg in media_messages:
+                #         Tclient.download_media (msg.media, Gmessage_directory)
+            #endif
+
+        else:
+            # print (f"{LIB_name}_В сообщении нет медиафайлов.")
+            # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_В сообщении нет медиафайлов.")
+            pass
+        #endif
+
+    Tclient.disconnect ()
+    return 0
+#endfunction
 
 # ----------------------------------------------
 # func_pyrogram ():
@@ -395,17 +468,6 @@ def func_pyrogram ():
 
     # print (f'{LIB_name:{'_'}<{60}}')
     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
-    # #-------------------------------------------
-    # # Авторизация в Telegram
-    # #-------------------------------------------
-    # bot = pyrogram.Client (name=Glogin, api_id=Gapi_id, api_hash=Gapi_hash, phone_number=Gphone)
-    # print (f'{bot.name=}')
-    # print (f'{bot.phone_number=}')
-    # bot.start ()
-    # # bot.run ()
-
-    # print (f'Gchannel_name={Gchannel_name}')
-    # print (f'Gmessage_id={Gmessage_id}')
 
     #-------------------------------------------
     # Авторизация в Telegram
@@ -414,23 +476,27 @@ def func_pyrogram ():
     session_name = 'lyr60'
     # print (f'{LIB_name}_session_name={session_name}')
     Tclient:pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
+
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
     me:pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
+    # print (f"{me=}")
 
     #-------------------------------------------
     # Получаем сообщение
     #-------------------------------------------
     message = None
-    if type(Gchannel_name_id) is str:
-        chat = Tclient.get_chat (Gchannel_name_id)
+    try:
+        chat = Tclient.get_chat (Gchannel_name)
         # print(f'chat={chat}')
         # print(f'chat.description={chat.description}')
         # print(f'{LIB_name}_chat.title={chat.title}')
         # print(f'{LIB_name}_chat.username={chat.username}')
         message = Tclient.get_messages(chat.id, Gmessage_id)
-    #endif
+    except:
+        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name=}")
+    #endtry
 
     if not message is None:
         # print (message)
@@ -471,38 +537,39 @@ def func_pyrogram ():
         # today = datetime.datetime.utcnow()
         today = datetime.datetime.now (datetime.UTC)
         if message.video:
-            print (message.video)
-            if type (Gchannel_name_id) is str:
-                # print (message.video.file_name)
+            # print (message.video)
+            if Gchannel_name_id is None:
                 if message.video.file_name is None:
-                    # file_media = 'video_2025-06-06_18-57-19.mp4'
                     file_media = 'video_'+f'{today:%Y-%m-%d_%H-%M-%S}'+'.mp4'
                     file_media_path = os.path.join (Gmessage_directory, file_media)
-                    print (file_media_path)
+                    # print (file_media_path)
                     if Path (file_media_path).is_file ():
                         os.remove (file_media_path)
+                    #endif
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО {file_media_path} ...')
                     file_media_path = Tclient.download_media (message, file_media_path)
                     # print (f"{LIB_name}_message.video: {file_media_path}")
-                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, file_media_path)
-
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, file_media_path)
                 else:
+                    file_media_path = os.path.join (Gmessage_directory, message.video.file_name)
+                    if Path (file_media_path).is_file ():
+                        os.remove (file_media_path)
+                    #endif
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО {message.video.file_name} ...')
                     try:
-                        file_media_path = os.path.join (Gmessage_directory, message.video.file_name)
-                        if Path (file_media_path).is_file ():
-                            os.remove (file_media_path)
                         file_media_path = Tclient.download_media (message, file_media_path)
-
                         # print(f"{LIB_name}_message.video: {file_media_path}")
                         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{file_media_path}')
-
                     except:
                         # print (f"{LIB_name}_message.video: ERROR")
                         LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
+                    #endtry
                 #endif
             #endif
         else:
             # print (f"{LIB_name}_В сообщении нет видеофайлов")
-            LULog.LoggerAdd (LULog.LoggerAPPS, logging.INFO, f"{LIB_name}_В сообщении нет видеофайлов")
+            # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_В сообщении нет видеофайлов")
+            pass
         #endif
 
         # if message.photo:
@@ -512,9 +579,12 @@ def func_pyrogram ():
         #     # print ("file_id: " + str (message.photo.file_id))
         #     file_path = bot.download_media (message.photo)
         #     print(f"{LIB_name}_download_file: {file_path}")
+    else:
+        Tclient.stop ()
+        return 1
 
     Tclient.stop ()
-
+    return 0
 #endfunction
 
 #----------------------------------------------
@@ -533,15 +603,33 @@ def write_message_file (content:str, filepath:str) -> None:
         else:
             # Подстрока не найдена
             s = textwrap.fill (paragraph, width=Gwidth)
-        # endif
+        #endif
         formatted_paragraphs.append (s)
     # endfor
     formatted_paragraphs.append ('\n')
 
     with open (filepath, 'a', encoding='utf-8') as file:
         file.write ('\n'.join (formatted_paragraphs))
-    # endwith
+    #endwith
     return None
+#endfunction
+
+# ----------------------------------------------
+#
+# ----------------------------------------------
+def get_channel_name_ (channel_id):
+    """get_channel_name_"""
+#beginfunction
+    #-------------------------------------------
+    # Авторизация в Telegram
+    #-------------------------------------------
+    # Имя сессии (может быть любым)
+    session_name = 'lyr60_TELEGRAM'
+    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    entity = Tclient.get_entity (PeerChannel (channel_id))
+    Tclient.disconnect ()
+
+    return entity.title
 #endfunction
 
 #------------------------------------------
@@ -556,23 +644,26 @@ def set_message (url) -> None:
     global Gmessage_directory
 
     if url.path.split('/')[1] == 'c':
-        Gchannel_name = url.path.split('/')[2]              # Получаем "9999999999999"
-        # print(f'{Gchannel_name=}')
-        Gchannel_name_id = int (Gchannel_name)              # Получаем 9999999999999
-        # print(f'{Gchannel_name_id=}')
         Gmessage_id = int(url.path.split('/')[3])           # Получаем 9999
         # print(f'{Gmessage_id=}')
+        Gchannel_name_id = int(url.path.split('/')[2])      # Получаем 9999999999999
+        print(f'{Gchannel_name_id=}')
+        # Gchannel_name = LUTelegram.get_channel_name (GlinkT,'lyr60_TELEGRAM', Gapi_id, Gapi_hash, Gphone)
+        Gchannel_name = get_channel_name_ (Gchannel_name_id)
     else:
-        Gchannel_name = url.path.split('/')[1]              # Получаем "xxxx" "9999999999999"
-        # print(f'{Gchannel_name=}')
-        Gchannel_name_id = Gchannel_name                    # Получаем "xxxx" "9999999999999"
-        # print(f'{Gchannel_name_id=}')
         Gmessage_id = int(url.path.split('/')[2])           # Получаем 9999
         # print(f'{Gmessage_id=}')
+        Gchannel_name_id = None
+        Gchannel_name = url.path.split('/')[1]              # Получаем "xx...xx"
 
-    Gmessage_directory = os.path.join (GO2, Gchannel_name+'_'+str(Gmessage_id))
+    print (f'{Gchannel_name=}')
+    # s = re.sub (r'[^a-zA-Z0-9]', '', Gchannel_name)
+    Gchannel_name_s = sanitize_filename (Gchannel_name, replacement = '_', platform = None)
+
+    Gmessage_directory = os.path.join (GO2, Gchannel_name_s+'_'+str(Gmessage_id))
     # print(f'{Gmessage_directory=}')
     os.makedirs (Gmessage_directory, exist_ok=True)
+
     return None
 #endfunction
 
@@ -593,12 +684,14 @@ def check_link (link:str) -> None:
         # print (f'{parsed_url=}')
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{GlinkT}')
         set_message (parsed_url)
-        # if GO3 == 'telethon':
-        #     func_telethon ()
-        # if GO3 == 'pyrogram':
-        #     func_pyrogram ()
-        func_telethon ()
-        func_pyrogram ()
+        error = func_telethon ()
+        if error > 0:
+            # print(f'{error=}')
+            LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+        error = func_pyrogram ()
+        if error > 0:
+            # print(f'{error=}')
+            LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
         pyperclip.copy ('')
         print (f'Wait ...')
     return None
@@ -675,8 +768,13 @@ def main ():
     # ---------------------------------------------------------------
     Gmessage_url = GO1
     # Gmessage_url = "https://t.me/_канал_/_id_"
+    # 🔗 Пример ссылки:
+    # Telegram-сообщение может выглядеть так:
+    # https://t.me/channelname/1234
+    # или
+    # https://t.me/c/123456789/1234
+    # ---------------------------------------------------------------
     # Gmessage_url = 'https://t.me/GardeZ66/13311'
-    # Gmessage_url = 'https://t.me/GardeZ66/13285'
     # Gmessage_url = 'https://t.me/Selectel/5813'
     # Gmessage_url = 'https://t.me/+MnXPMuA95QdlMTYy/5765'
     # Gmessage_url = 'https://t.me/1471170142/7606'

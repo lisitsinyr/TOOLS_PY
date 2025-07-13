@@ -1,0 +1,53 @@
+﻿#-----------------------------------------------------------
+# WorkFileName ()
+#-----------------------------------------------------------
+def WorkFileName (AFilePath: str):
+    """WorkFileName"""
+#beginfunction
+    LFileName = LUFile.ExtractFileName (AFilePath)
+    LExt = LUFile.ExtractFileExt (AFilePath)
+    if (LExt not in cExt):
+        if is_text_file_by_content (AFilePath):
+            # Это текстовый файл
+            LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, '... '+LFileName)
+            with open (AFilePath, 'r', encoding = 'utf-8') as file:
+                line = file.readline ()
+
+                while line:
+                    s = line.rstrip ()
+                    if 'Ульяновск' in s:
+                        Npp = 0
+                        # Заголовок чека
+                        title = s
+                        print (title)
+                        address = ''.join(title.split (' ')[1:6])
+                        date = title.split (' ')[-2]
+                        DDMMYYYY = date.split ('.')
+                        YYYYMMDD = ''.join(DDMMYYYY [::-1])
+                        line = file.readline ()
+                    #endif
+                    # item
+                    Npp += 1
+                    s = line.rstrip ()
+                    item = s
+                    # Количество
+                    line = file.readline ()
+                    s = line.rstrip ()
+                    count = s.replace ('.', ',')
+                    # Стоимость
+                    line = file.readline ()
+                    s = line.rstrip ()
+                    coast = s.replace ('.', ',')
+                    d = YYYYMMDD+cseparator+address+cseparator+str(Npp)+cseparator+item+cseparator+str(count)+cseparator+str(coast)
+                    LUFile.WriteStrToFile(cOutputFile, d)
+                    line = file.readline ()
+                    s = line.rstrip ()
+                    if 'руб.' in s:
+                        # Итог
+                        line = file.readline ()
+                    #endif
+                #endwhile
+            #endwith
+        #endif
+    #endif
+#endfunction

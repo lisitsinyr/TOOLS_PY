@@ -30,6 +30,11 @@ from fontTools.misc.cython import returns
 import telethon.sync
 import telethon.tl.types
 
+from telethon.sync import TelegramClient
+from telethon.tl.types import PeerUser, PeerChat, PeerChannel
+import re
+import asyncio
+
 # from telethon.tl.functions.messages import GetDialogsRequest
 # from telethon.tl.types import InputPeerEmpty
 # from telethon.tl.types import User
@@ -121,8 +126,12 @@ def get_telethon_channel (client:telethon.sync.TelegramClient, channel_name_id) 
 def get_telethon_message (client:telethon.sync.TelegramClient, channel:telethon.tl.types.Channel, message_id) -> telethon.tl.types.Message:
     """get_telethon_message"""
 # beginfunction
-    result = client.get_messages (channel.id, ids=message_id)
-    # print(f'{LIB_name}_Message={result}')
+    try:
+        result = client.get_messages (channel.id, ids=message_id)
+        # print(f'{LIB_name}_Message={result}')
+    except:
+        result = None
+
     return result
 # endfunction
 
@@ -299,13 +308,69 @@ def get_telethon_CHANNELs (client:telethon.sync.TelegramClient):
 # Получаем последние 10 сообщений из указанного чата
 # ----------------------------------------------
 def get_telethon_chat (client:telethon.sync.TelegramClient, chat_id):
-    """func_02"""
+    """get_telethon_chat"""
 #beginfunction
     # ID чата/канала/пользователя, откуда читать сообщения
     # chat_id = '@GardeZ66'  # или ID (число), или юзернейм (например, '@telegram')
     for message in client.iter_messages (chat_id, limit=10):
         print (f"{LIB_name}_message.sender_id:{message.sender_id}: {message.text}")
 #endfunction
+
+
+
+# ----------------------------------------------
+# Функция для парсинга ссылки
+# ----------------------------------------------
+def parse_message_link (link):
+    """parse_message_link"""
+#beginfunction
+    pattern = r'https?://t\.me/([a-zA-Z0-9\_]+|c/(\d+))/(\d+)/(\d+)'
+    match = re.match (pattern, link)
+    if not match:
+        raise ValueError ("Invalid link")
+
+    # print(f'{match.group (1)=}')
+    # print(f'{match.group (2)=}')
+    # print(f'{match.group (3)=}')
+    # print(f'{match.group (4)=}')
+
+    if match.group (1).startswith ('c'):
+        channel_id = int (match.group (3))
+        msg_id = int (match.group (3))
+        return {'channel_id': channel_id, 'msg_id': msg_id}
+    else:
+        username = match.group (1)
+        msg_id = int (match.group (3))
+        return {'username': username, 'msg_id': msg_id}
+#endfunction
+
+# ----------------------------------------------
+# async def get_channel_name (link, TelegramClient):
+# ----------------------------------------------
+def get_channel_name (link, session_name, api_id, api_hash, phone):
+    """get_channel_name"""
+#beginfunction
+    with TelegramClient (session_name, api_id, api_hash) as client:
+        client.start (phone)
+        # print (f'{link=}')
+        parsed = parse_message_link (link)
+        print (f'{parsed=}')
+
+        if 'username' in parsed:
+            entity = client.get_entity (parsed ['username'])
+            # entity = client.get_entity (parsed ['msg_id'])
+        elif 'channel_id' in parsed:
+            entity = client.get_entity (PeerChannel (parsed ['channel_id']))
+        else:
+            raise ValueError ("Could not resolve entity")
+        print (f"Название канала: {entity.title}")
+
+    # client.disconnect ()
+
+    return entity.title
+#endfunction
+
+
 
 
 
