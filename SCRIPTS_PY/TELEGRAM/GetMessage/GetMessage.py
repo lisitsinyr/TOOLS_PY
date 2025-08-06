@@ -88,6 +88,7 @@ Glogin = ''
 Gpassword = ''
 
 Gchannel_name = ''
+Gchannel_name_raw = ''
 Gchannel_name_id = 0
 Gmessage_id = 0
 Gmessage_directory = ''
@@ -337,7 +338,7 @@ def func_telethon ():
     #-------------------------------------------
     try:
         # channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
-        channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name)
+        channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except:
         channel:telethon.tl.types.Channel = None
     #endtry
@@ -487,15 +488,16 @@ def func_pyrogram ():
     # Получаем сообщение
     #-------------------------------------------
     message = None
+    print (Gchannel_name_raw)
     try:
-        chat = Tclient.get_chat (Gchannel_name)
+        chat = Tclient.get_chat (Gchannel_name_raw)
         # print(f'chat={chat}')
         # print(f'chat.description={chat.description}')
         # print(f'{LIB_name}_chat.title={chat.title}')
         # print(f'{LIB_name}_chat.username={chat.username}')
         message = Tclient.get_messages(chat.id, Gmessage_id)
     except:
-        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name=}")
+        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name_raw=}")
     #endtry
 
     if not message is None:
@@ -542,7 +544,9 @@ def func_pyrogram ():
                 if message.video.file_name is None:
                     file_media = 'video_'+f'{today:%Y-%m-%d_%H-%M-%S}'+'.mp4'
                     file_media_path = os.path.join (Gmessage_directory, file_media)
+
                     # print (file_media_path)
+
                     if Path (file_media_path).is_file ():
                         os.remove (file_media_path)
                     #endif
@@ -552,6 +556,9 @@ def func_pyrogram ():
                     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, file_media_path)
                 else:
                     file_media_path = os.path.join (Gmessage_directory, message.video.file_name)
+
+                    # print (file_media_path)
+
                     if Path (file_media_path).is_file ():
                         os.remove (file_media_path)
                     #endif
@@ -639,6 +646,7 @@ def set_message (url) -> None:
     """set_message"""
 #beginfunction
     global Gchannel_name
+    global Gchannel_name_raw
     global Gchannel_name_id
     global Gmessage_id
     global Gmessage_directory
@@ -649,18 +657,21 @@ def set_message (url) -> None:
         Gchannel_name_id = int(url.path.split('/')[2])      # Получаем 9999999999999
         print(f'{Gchannel_name_id=}')
         # Gchannel_name = LUTelegram.get_channel_name (GlinkT,'lyr60_TELEGRAM', Gapi_id, Gapi_hash, Gphone)
-        Gchannel_name = get_channel_name_ (Gchannel_name_id)
+        Gchannel_name_raw = get_channel_name_ (Gchannel_name_id)
     else:
         Gmessage_id = int(url.path.split('/')[2])           # Получаем 9999
         # print(f'{Gmessage_id=}')
         Gchannel_name_id = None
-        Gchannel_name = url.path.split('/')[1]              # Получаем "xx...xx"
+        Gchannel_name_raw = url.path.split('/')[1]              # Получаем "xx...xx"
+    # print (f'{Gchannel_name_raw=}')
 
-    print (f'{Gchannel_name=}')
+    Gchannel_name = sanitize_filename (Gchannel_name_raw, replacement = '_', platform = None)
+    # print(Gchannel_name)
+
     # s = re.sub (r'[^a-zA-Z0-9]', '', Gchannel_name)
-    Gchannel_name_s = sanitize_filename (Gchannel_name, replacement = '_', platform = None)
+    # Gchannel_name_s = sanitize_filename (Gchannel_name_raw, replacement = '_', platform = None)
 
-    Gmessage_directory = os.path.join (GO2, Gchannel_name_s+'_'+str(Gmessage_id))
+    Gmessage_directory = os.path.join (GO2, Gchannel_name+'_'+str(Gmessage_id))
     # print(f'{Gmessage_directory=}')
     os.makedirs (Gmessage_directory, exist_ok=True)
 
