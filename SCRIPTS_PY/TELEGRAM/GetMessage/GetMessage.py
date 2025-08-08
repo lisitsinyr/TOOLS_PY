@@ -16,14 +16,9 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-import sys
-import tracemalloc
 from pathlib import Path
-import argparse
-import shutil
 import textwrap
 import logging
-import collections
 import datetime
 import re
 
@@ -34,9 +29,6 @@ import asyncio
 from urllib.parse import urlparse
 from decouple import config
 import pyperclip
-import requests
-from pymsgbox import password
-from pyrogram.raw.functions.help import GetDeepLinkInfo
 
 #------------------------------------------
 # БИБЛИОТЕКА telethon
@@ -71,12 +63,9 @@ import pyrogram
 # БИБЛИОТЕКА lyrpy
 #------------------------------------------
 import lyrpy.LUConst as LUConst
-# import lyrpy.LUDoc as LUDoc
 import lyrpy.LULog as LULog
-# import lyrpy.LUFile as LUFile
 import lyrpy.LUParserARG as LUParserARG
 import lyrpy.LUTelegram as LUTelegram
-# from lyrpy.LUTelegram import LIB_name
 
 #------------------------------------------
 #

@@ -1,0 +1,8 @@
+pyperclip==1.9.0
+Telethon==1.40.0
+Pyrogram==2.0.106
+
+lyrpy.LUConst
+lyrpy.LULog
+lyrpy.LUParserARG
+lyrpy.LUTelegram
