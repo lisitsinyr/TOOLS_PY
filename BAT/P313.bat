@@ -1,7 +1,7 @@
 @echo off
 rem -------------------------------------------------------------------
-rem P311.bat
-rem     Активация виртуального окружения P311
+rem P312.bat
+rem     Активация виртуального окружения P312
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -136,7 +136,7 @@ rem beginfunction
         echo DEBUG: procedure !FUNCNAME! ...
     )
 
-    cmd /k "d:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P311\Scripts\activate.bat"
+    cmd /k "d:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\Scripts\activate.bat"
 
     exit /b 0
 rem endfunction
