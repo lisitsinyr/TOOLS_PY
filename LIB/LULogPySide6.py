@@ -1,4 +1,4 @@
-"""LULog.py"""
+"""LULogLULogPySide6.py"""
 # -*- coding: UTF-8 -*-
 __annotations__ ="""
  =======================================================
@@ -9,7 +9,7 @@ __annotations__ ="""
      LU_PY
      Python (LU)
  Module:
-     LULog.py
+     LULogPySide6.py
 
  =======================================================
 """
@@ -37,6 +37,7 @@ import traceback
 import pythonjsonlogger
 import pythonjsonlogger.jsonlogger
 #------------------------------------------
+import PySide6.QtWidgets
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
