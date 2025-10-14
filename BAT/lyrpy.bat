@@ -114,7 +114,7 @@ rem ----------------------------------------------------------------------------
     set ARGS=
     set A1_Name=script
     set A1_Caption=script
-    set A1_Default=%*
+    set A1_Default=%1
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
     call :Read_P A1 !A1! || exit /b 1
@@ -151,7 +151,7 @@ rem ----------------------------------------------------------------------------
 
     call :PY_ENV_START || exit /b 1
 
-    python "!FULL_SCRIPT_NAME!"
+    python "!FULL_SCRIPT_NAME!" "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
 
     call :PY_ENV_STOP || exit /b 1
 
