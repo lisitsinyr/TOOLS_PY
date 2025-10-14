@@ -65,6 +65,13 @@ setlocal enabledelayedexpansion
     if defined TEST (
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo PY_ENVDIR:!PY_ENVDIR!
+
+    if not exist !PY_ENVDIR! (
+        echo INFO: Dir !PY_ENVDIR! not exist ...
+        exit /b 1
+    )
 
     call :PY_ENV_START || exit /b 1
 

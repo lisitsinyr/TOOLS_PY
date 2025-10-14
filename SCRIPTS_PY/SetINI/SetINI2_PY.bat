@@ -148,16 +148,24 @@ rem ----------------------------------------------------------------------------
     )
     rem echo ARGS:!ARGS!
 
-        rem -------------------------------------------------------------------
+    rem -------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
+
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+
     set PY_ENVNAME=%PY_ENVNAME%
     if not defined PY_ENVNAME (
         set PY_ENVNAME=P313
     )
-    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+    set PY_ENVDIR=!PY_ENVDIR!\!PY_ENVNAME!
+    rem echo PY_ENVDIR:!PY_ENVDIR!
+
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo PY_ENVDIR:!PY_ENVDIR!
+
+    if not exist !PY_ENVDIR! (
+        echo INFO: Dir !PY_ENVDIR! not exist ...
         exit /b 1
     )
 
