@@ -114,7 +114,7 @@ rem ----------------------------------------------------------------------------
     set ARGS=
     set A1_Name=script
     set A1_Caption=script
-    set A1_Default=%1
+    set A1_Default=%1 %2 %3
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
     call :Read_P A1 !A1! || exit /b 1
