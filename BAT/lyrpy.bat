@@ -148,10 +148,11 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=!SCRIPT_NAME!
     )
+    echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 
-    python "!FULL_SCRIPT_NAME!" "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
+    python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
 
     call :PY_ENV_STOP || exit /b 1
 
