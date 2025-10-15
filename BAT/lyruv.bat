@@ -153,7 +153,7 @@ rem ----------------------------------------------------------------------------
 
     call :PY_ENV_START || exit /b 1
 
-    python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
+    uv run "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
 
     call :PY_ENV_STOP || exit /b 1
 
