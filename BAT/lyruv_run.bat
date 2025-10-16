@@ -72,26 +72,27 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    set O1_Name=O1
-    set O1_Caption=VENV
-    set O1_Default=P313
-    set O1=!O1_Default!
-    set PN_CAPTION=!O1_Caption!
-    call :Read_P O1 !O1! || exit /b 1
-    echo O1:!O1!
+    if not defined O1 (
+        set O1_Name=O1
+        set O1_Caption=VENV
+        set O1_Default=
+        set O1=!O1_Default!
+        set PN_CAPTION=!O1_Caption!
+        call :Read_P O1 !O1! || exit /b 1
+    )
+    rem echo O1:!O1!
     if defined O1 (
         set OPTION=!OPTION! -!O1_Name! "!O1!"
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
-    echo OPTION:!OPTION!
+    rem echo OPTION:!OPTION!
 
     rem -------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp\.venv
-    echo !O1!
+    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp\.venv
     if exist !O1! (
        set PY_ENVDIR=!O1!
     ) else (
@@ -113,13 +114,16 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=%1
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
-    echo A1:!A1!
+
+    if not defined A1 (
+        set A1_Name=script
+        set A1_Caption=script
+        set A1_Default=
+        set A1=!A1_Default!
+        set PN_CAPTION=!A1_Caption!
+        call :Read_P A1 !A1! || exit /b 1
+    )
+    rem echo A1:!A1!
     if defined A1 (
         set ARGS=!ARGS! "!A1!"
     ) else (
@@ -128,7 +132,7 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
     
-    echo ARGS:!ARGS!
+    rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -149,11 +153,11 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=!SCRIPT_NAME!
     )
-    echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
+    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 
-    uv run "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
+    uv run --active "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
 
     call :PY_ENV_STOP || exit /b 1
 
