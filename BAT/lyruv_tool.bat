@@ -1,3 +1,11 @@
+@echo off
+rem -------------------------------------------------------------------
+rem lyrpy.bat
+rem -------------------------------------------------------------------
+chcp 1251>NUL
+
+setlocal enabledelayedexpansion
+
 rem Устанавливает Python CLI-инструмент как глобальный тул
 rem     uv tool install tool_name
 rem     Пример: uv tool install ruff
