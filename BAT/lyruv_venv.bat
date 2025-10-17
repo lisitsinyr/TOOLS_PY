@@ -8,4 +8,7 @@ setlocal enabledelayedexpansion
 
 rem Создаёт новое виртуальное окружение в текущем проекте
 
-uv venv                   
+rem uv venv                   
+rem uv venv --python 3.14
+
+uv venv --python 3.14
