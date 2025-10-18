@@ -90,8 +90,6 @@ rem ----------------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp\.venv
-    echo !O1!
     if exist !O1! (
        set PY_ENVDIR=!O1!
     ) else (
@@ -113,6 +111,7 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
+
     set A1_Name=package_name
     set A1_Caption=package_name
     set A1_Default=%1
@@ -127,34 +126,12 @@ rem ----------------------------------------------------------------------------
         set OK=
         exit /b 1
     )
+
     echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    )
-    echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     call :PY_ENV_START || exit /b 1
 
-    rem Устанавливает package_name
-    rem uv pip install package_name
-    rem uv pip install flask
     uv pip install !A1!
 
     call :PY_ENV_STOP || exit /b 1

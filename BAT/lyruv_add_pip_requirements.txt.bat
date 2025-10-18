@@ -113,42 +113,23 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
+
     set A1_Name=package_name
     set A1_Caption=package_name
     set A1_Default=%1
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
-    echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-    echo ARGS:!ARGS!
+    rem call :Read_P A1 !A1! || exit /b 1
+    rem echo A1:!A1!
+    rem if defined A1 (
+    rem     set ARGS=!ARGS! "!A1!"
+    rem ) else (
+    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+    rem     set OK=
+    rem     exit /b 1
+    rem )
 
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    )
-    echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
+    echo ARGS:!ARGS!
 
     call :PY_ENV_START || exit /b 1
 
