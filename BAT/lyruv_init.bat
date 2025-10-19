@@ -100,7 +100,7 @@ rem ----------------------------------------------------------------------------
 
     set O3_Name=O3
     set O3_Caption=[no-workspace]
-    set O3_Default=no-workspace
+    set O3_Default=
     set O3=!O3_Default!
     set PN_CAPTION=!O3_Caption!
     call :Read_P O3 !O3! || exit /b 1
@@ -110,6 +110,62 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
     )
+
+    set O4_Name=O4
+    set O4_Caption=python
+    set O4_Default=3.14
+    set O4=!O4_Default!
+    set PN_CAPTION=!O4_Caption!
+    call :Read_P O4 || exit /b 1
+    echo O4:!O4!
+    if defined O4 (
+        set OPTION=!OPTION! --python !O4!
+    ) else (
+        echo INFO: O4 [O4_Name:!O4_Name! O4_Caption:!O4_Caption!] not defined ...
+    )
+
+    set O5_Name=O5
+    set O5_Caption=projects_dir
+    set O5_Default=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY
+    set O5=!O5_Default!
+    set PN_CAPTION=!O5_Caption!
+    rem call :Read_P O5 !O5! || exit /b 1
+    call :Read_P O5 || exit /b 1
+    echo O5:!O5!
+    if defined O5 (
+        set OPTION=!OPTION! !O5!
+    ) else (
+        echo INFO: O5 [O5_Name:!O5_Name! O5_Caption:!O5_Caption!] not defined ...
+    )
+    set O6_Name=O6
+    set O6_Caption=project_name
+    set O6_Default=
+    set O6=!O6_Default!
+    set PN_CAPTION=!O6_Caption!
+    call :Read_P O6 !O6! || exit /b 1
+    echo O6:!O6!
+    if defined O6 (
+        set OPTION=!OPTION!\!O6!
+    ) else (
+        echo INFO: O6 [O6_Name:!O6_Name! O6_Caption:!O6_Caption!] not defined ...
+    )
+
+    rem AND
+    if not defined O5 (
+        if not defined O6 (
+            echo AND ...
+            set OPTION=!OPTION! ...
+        )
+    )
+
+    rem OR
+    set res=F
+    if defined O5 set res=T
+    if defined O6 set res=T
+    if "%res%"=="T" (
+        set state=T
+        echo OR ...
+    )    
 
     echo OPTION:!OPTION!
 
@@ -133,25 +189,29 @@ rem ----------------------------------------------------------------------------
     rem )
     rem echo ARGS:!ARGS!
 
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] 
+
+
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] 
+
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] 
+
     set APP=uv init !OPTION!
 
-    set APP=!APP! ...
+    set APP=!APP!
     
     echo APP:!APP!
 
-    rem start !APP!
-
-    rem uv init [--app] [...] [--no-workspace] [--python 3.13.1]
-
-    rem uv init [--app] [...] [--no-workspace] project_name
-
-    rem uv init [--app] [...] [--no-workspace] project_dir
-
-    rem uv init [--app] --package [...] [--no-workspace]
-
-    rem uv init --lib [--package] [...] [--no-workspace]
-
-    rem uv init --bare [...] [--no-workspace]
+    start !APP!
 
     rem call :PressAnyKey || exit /b 1
     
