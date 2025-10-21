@@ -72,15 +72,18 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
+    rem set O1=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    rem set O1=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp\.venv
+
+    if not defined O1
         set O1_Name=O1
-        set O1_Caption=VENV
-        set O1_Default=
+        set O1_Caption=venv_dir
+        set O1_Default=P313
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
         call :Read_P O1 !O1! || exit /b 1
     )
-    rem echo O1:!O1!
+    echo O1:!O1!
     if defined O1 (
         set OPTION=!OPTION! -!O1_Name! "!O1!"
     ) else (
@@ -88,13 +91,33 @@ rem ----------------------------------------------------------------------------
     )
     rem echo OPTION:!OPTION!
 
+    rem -------------------------------------
+    rem ARGS
+    rem -------------------------------------
+    set ARGS=
+
+    set A1_Name=A1
+    set A1_Caption=script
+    set A1_Default=%1
+    set A1=!A1_Default!
+    set PN_CAPTION=!A1_Caption!
+    call :Read_P A1 !A1! || exit /b 1
+    echo A1:!A1!
+    if defined A1 (
+        set ARGS=!ARGS! "!A1!"
+    ) else (
+        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+        set OK=
+        exit /b 1
+    )
+    
+    rem echo ARGS:!ARGS!
+
     rem -------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
-    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp\.venv
     if exist !O1! (
-       set PY_ENVDIR=!O1!
+        set PY_ENVDIR=!O1!
     ) else (
         if !01!==P313 (
             set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
@@ -109,30 +132,6 @@ rem ----------------------------------------------------------------------------
         echo INFO: Dir !PY_ENVDIR! not exist ...
         exit /b 1
     )
-
-    rem -------------------------------------
-    rem ARGS
-    rem -------------------------------------
-    set ARGS=
-
-    if not defined A1 (
-        set A1_Name=script
-        set A1_Caption=script
-        set A1_Default=
-        set A1=!A1_Default!
-        set PN_CAPTION=!A1_Caption!
-        call :Read_P A1 !A1! || exit /b 1
-    )
-    rem echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-    
-    rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -157,7 +156,11 @@ rem ----------------------------------------------------------------------------
 
     call :PY_ENV_START || exit /b 1
 
-    uv run --active "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
+    set APP=uv run --active "!FULL_SCRIPT_NAME!"
+    
+    echo APP:!APP!
+
+    start !APP!
 
     call :PY_ENV_STOP || exit /b 1
 

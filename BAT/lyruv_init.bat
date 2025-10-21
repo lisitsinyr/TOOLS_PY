@@ -72,12 +72,14 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    set O1_Name=O1
-    set O1_Caption=Type project{app,lib,bare}
-    set O1_Default=app
-    set O1=!O1_Default!
-    set PN_CAPTION=!O1_Caption!
-    call :Read_P O1 !O1! || exit /b 1
+    if not defined !O1! (
+        set O1_Name=O1
+        set O1_Caption=Type project{app,lib,bare,script}
+        set O1_Default=app
+        set O1=!O1_Default!
+        set PN_CAPTION=!O1_Caption!
+        call :Read_P O1 || exit /b 1
+    )
     echo O1:!O1!
     if defined O1 (
         set OPTION=!OPTION! --!O1!
@@ -85,38 +87,14 @@ rem ----------------------------------------------------------------------------
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
 
-    set O2_Name=O2
-    set O2_Caption=[package]
-    set O2_Default=package
-    set O2=!O2_Default!
-    set PN_CAPTION=!O2_Caption!
-    call :Read_P O2 !O2! || exit /b 1
-    echo O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! --!O2!
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+    if not defined !O4! (
+        set O4_Name=O4
+        set O4_Caption=python
+        set O4_Default=3.13
+        set O4=!O4_Default!
+        set PN_CAPTION=!O4_Caption!
+        call :Read_P O4 || exit /b 1
     )
-
-    set O3_Name=O3
-    set O3_Caption=[no-workspace]
-    set O3_Default=
-    set O3=!O3_Default!
-    set PN_CAPTION=!O3_Caption!
-    call :Read_P O3 !O3! || exit /b 1
-    echo O3:!O3!
-    if defined O3 (
-        set OPTION=!OPTION! --!O3!
-    ) else (
-        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
-    )
-
-    set O4_Name=O4
-    set O4_Caption=python
-    set O4_Default=3.14
-    set O4=!O4_Default!
-    set PN_CAPTION=!O4_Caption!
-    call :Read_P O4 || exit /b 1
     echo O4:!O4!
     if defined O4 (
         set OPTION=!OPTION! --python !O4!
@@ -124,25 +102,68 @@ rem ----------------------------------------------------------------------------
         echo INFO: O4 [O4_Name:!O4_Name! O4_Caption:!O4_Caption!] not defined ...
     )
 
-    set O5_Name=O5
-    set O5_Caption=projects_dir
-    set O5_Default=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY
-    set O5=!O5_Default!
-    set PN_CAPTION=!O5_Caption!
-    rem call :Read_P O5 !O5! || exit /b 1
-    call :Read_P O5 || exit /b 1
+    if not !O1!==script (
+        if not defined !O2! (
+            set O2_Name=O2
+            set O2_Caption=[package]
+            set O2_Default=package
+            set O2=!O2_Default!
+            set PN_CAPTION=!O2_Caption!
+            call :Read_P O2 !O2! || exit /b 1
+        )
+        echo O2:!O2!
+        if defined O2 (
+            set OPTION=!OPTION! --!O2!
+        ) else (
+            echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+        )
+        if not defined !O3! (
+            set O3_Name=O3
+            set O3_Caption=[no-workspace]
+            set O3_Default=
+            set O3=!O3_Default!
+            set PN_CAPTION=!O3_Caption!
+            call :Read_P O3 !O3! || exit /b 1
+        )
+        echo O3:!O3!
+        if defined O3 (
+            set OPTION=!OPTION! --!O3!
+        ) else (
+            echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
+        )
+
+        set O5_Caption=projects_dir
+        set O5_Default=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY
+        set O6_Caption=project_name
+    ) else (
+        set O5_Caption=script_dir
+        set O5_Default=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY
+        set O6_Caption=script.py
+    )
+
+    if not defined !O5! (
+        set O5_Name=O5
+        rem set O5_Caption=projects_dir
+        rem set O5_Default=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY
+        set O5=!O5_Default!
+        set PN_CAPTION=!O5_Caption!
+        rem call :Read_P O5 !O5! || exit /b 1
+        call :Read_P O5 || exit /b 1
+    )
     echo O5:!O5!
     if defined O5 (
         set OPTION=!OPTION! !O5!
     ) else (
         echo INFO: O5 [O5_Name:!O5_Name! O5_Caption:!O5_Caption!] not defined ...
     )
-    set O6_Name=O6
-    set O6_Caption=project_name
-    set O6_Default=
-    set O6=!O6_Default!
-    set PN_CAPTION=!O6_Caption!
-    call :Read_P O6 !O6! || exit /b 1
+    if not defined !O6! (
+        set O6_Name=O6
+        rem set O6_Caption={project_name, script.py}
+        set O6_Default=
+        set O6=!O6_Default!
+        set PN_CAPTION=!O6_Caption!
+        call :Read_P O6 !O6! || exit /b 1
+    )
     echo O6:!O6!
     if defined O6 (
         set OPTION=!OPTION!\!O6!
@@ -205,10 +226,12 @@ rem ----------------------------------------------------------------------------
     rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] ...
     rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] 
 
+    rem uv init --script [--python 3.13.1] myscript.py
+    rem uv init --script [--python 3.13.1] project_dir\myscript.py
+
     set APP=uv init !OPTION!
 
     set APP=!APP!
-    
     echo APP:!APP!
 
     start !APP!

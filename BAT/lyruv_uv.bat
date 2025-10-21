@@ -67,9 +67,6 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
- 
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -77,11 +74,11 @@ rem ----------------------------------------------------------------------------
 
     if not defined O1 (
         set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
+        set O1_Caption=python version
+        set O1_Default=3.13.9
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
+        rem call :Read_P O1 || exit /b 1
     )
     echo O1:!O1!
     if defined O1 (
@@ -97,7 +94,7 @@ rem ----------------------------------------------------------------------------
     set ARGS=
     set A1_Name=script
     set A1_Caption=script
-    set A1_Default=%1
+    set A1_Default=
     set A1=!A1_Default!
     set PN_CAPTION=!A1_Caption!
     rem call :Read_P A1 !A1! || exit /b 1
@@ -111,26 +108,23 @@ rem ----------------------------------------------------------------------------
     rem )
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        )
-        cd /D !project_dir!
-    )
 
-    if not exist .venv\ (
-        echo ERROR: Dir !project_dir!\.venv not exist ...
-        exit /b 1
-    ) else (
-        uv tree
-    )
-   
+    call :UV_help !O1! || exit /b 1
+
+    call :UV_help_cmd !O1! || exit /b 1
+    
+    call :UV_version !O1! || exit /b 1
+    
+    call :UV_self !O1! || exit /b 1
+    
+    call :UV_self_version !O1! || exit /b 1
+
+    call :UV_install_self !O1! || exit /b 1
+
+    call :UV_install_other !O1! || exit /b 1
+
+    call :UV_update_self !O1! || exit /b 1
+
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
@@ -138,8 +132,52 @@ rem ----------------------------------------------------------------------------
 rem =================================================
 
 rem =================================================
-rem ‘”Õ ÷»» LIB
+rem LIB
 rem =================================================
+
+rem =================================================
+rem LYRUV.bat
+rem =================================================
+:LYRUV
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_list
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_install
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_uninstall
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_run
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_upgrade
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_find
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_dir
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_
+%LIB_BAT%\LYRUV.bat %*
+:UV_python_pin
+%LIB_BAT%\LYRUV.bat %*
+
+:UV_help
+%LIB_BAT%\LYRUV.bat %*
+:UV_help_cmd
+%LIB_BAT%\LYRUV.bat %*
+:UV_version
+%LIB_BAT%\LYRUV.bat %*
+:UV_self
+%LIB_BAT%\LYRUV.bat %*
+:UV_self_version
+%LIB_BAT%\LYRUV.bat %*
+:UV_install_self
+%LIB_BAT%\LYRUV.bat %*
+:UV_install_other
+%LIB_BAT%\LYRUV.bat %*
+:UV_update_self
+%LIB_BAT%\LYRUV.bat %*
+
+
+
 
 rem =================================================
 rem LYRPY.bat

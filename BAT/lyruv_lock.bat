@@ -69,7 +69,7 @@ rem ----------------------------------------------------------------------------
 
     call :CurrentDir || exit /b 1
     rem echo CurrentDir:!CurrentDir!
- 
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -95,12 +95,15 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=%1
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
+
+    rem if not defined O1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=%1
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
     rem echo A1:!A1!
     rem if defined A1 (
     rem     set ARGS=!ARGS! "!A1!"
@@ -109,7 +112,8 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    rem echo ARGS:!ARGS!
+    
+    echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem project_dir - 
@@ -128,9 +132,9 @@ rem ----------------------------------------------------------------------------
         echo ERROR: Dir !project_dir!\.venv not exist ...
         exit /b 1
     ) else (
-        uv tree
+        uv lock --upgrade
     )
-   
+
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0

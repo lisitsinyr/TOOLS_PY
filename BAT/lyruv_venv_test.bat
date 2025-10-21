@@ -6,8 +6,10 @@ chcp 1251>NUL
 
 setlocal enabledelayedexpansion
 
-rem Обновление uv
+rem python
+set O4=3.13
 
-rem Если uv был установлен через автономный установщик, обновить его можно следующим образом:
+rem project_dir
+set O5=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\YOUTUBE_yt-dlp
 
-uv self update
+call D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\UV\SRC\BAT\lyruv_venv.bat
