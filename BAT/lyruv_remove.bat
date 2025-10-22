@@ -67,6 +67,9 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+    rem echo CurrentDir:!CurrentDir!
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -74,45 +77,45 @@ rem ----------------------------------------------------------------------------
 
     if not defined O1 (
         set O1_Name=O1
-        set O1_Caption=VENV
-        set O1_Default=P313
+        set O1_Caption=project_dir
+        set O1_Default=!CurrentDir!
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 !O1! || exit /b 1
+        call :Read_P O1 || exit /b 1
     )
     echo O1:!O1!
     if defined O1 (
-        rem set OPTION=!OPTION! -!O1_Name! "!O1!"
+        rem set OPTION=!OPTION! !O1!
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
 
     if not defined O2 (
         set O2_Name=O2
-        set O2_Caption=script
+        set O2_Caption=packeges[A B C] requests
         set O2_Default=
-        set O2=!O2_Default!
+        set O2=!O3_Default!
         set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 !O2! || exit /b 1
+        call :Read_P O2 || exit /b 1
     )
     echo O2:!O2!
     if defined O2 (
-        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
+        set OPTION=!OPTION! !O2!
     ) else (
         echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
     )
 
-    rem echo OPTION:!OPTION!
+    echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined O1 (
+    rem if not defined A1 (
     rem     set A1_Name=script
     rem     set A1_Caption=script
-    rem     set A1_Default=
+    rem     set A1_Default=%1
     rem     set A1=!A1_Default!
     rem     set PN_CAPTION=!A1_Caption!
     rem     call :Read_P A1 !A1! || exit /b 1
@@ -125,59 +128,38 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    
+
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
-    rem ENV - 
+    rem project_dir - 
     rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O1!
-    if exist !O1! (
-       set PY_ENVDIR=!O1!
-    ) else (
-        if !01!==P313 (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        ) else (
-            if !01!==P314 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
-            )
+    set project_dir=!O1!
+    echo project_dir:!project_dir!
+    if defined project_dir (
+        if not exist !project_dir!\ (
+            echo ERROR: Dir !project_dir! not exist ...
+            exit /b 1
         )
+        cd /D !project_dir!
     )
-    echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
+
+    if not exist .venv\ (
+        echo ERROR: Dir !project_dir!\.venv not exist ...
         exit /b 1
     )
 
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
+    set APP=uv remove !OPTION!
+    echo APP:!APP!
+   
+    uv remove !OPTION!
+    rem start !APP!
+    
+    rem uv remove requests          Remove requests as a dependency
+    rem uv remove A B C             Remove A, B, C, and their transitive dependencies
 
-    call :PY_ENV_START || exit /b 1
-
-    rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
-
-    python %1 %2 %3 %4 %5 %6 %7 %8 %9
-
-    call :PY_ENV_STOP || exit /b 1
+    rem uv pip compile pyproject.toml --quiet --output-file requirements.txt
+    rem uv pip freeze > requirements.txt
 
     rem call :PressAnyKey || exit /b 1
     

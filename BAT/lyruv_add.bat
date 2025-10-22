@@ -130,9 +130,9 @@ rem ----------------------------------------------------------------------------
     set ARGS=
 
     rem if not defined A1 (
-    rem     set A1_Name=A1
-    rem     set A1_Caption=
-    rem     set A1_Default=
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=%1
     rem     set A1=!A1_Default!
     rem     set PN_CAPTION=!A1_Caption!
     rem     call :Read_P A1 !A1! || exit /b 1
@@ -145,7 +145,7 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    
+
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -167,11 +167,12 @@ rem ----------------------------------------------------------------------------
     ) else (
         set APP=uv add --dev !OPTION!
         echo APP:!APP!
-        start !APP!
+
+        uv add --dev !OPTION!
+        rem start !APP!
     )
     
     rem uv.exe add <PACKAGES|--requirements <REQUIREMENTS>>
-
 
     rem uv add requests             Add requests as a dependency
     rem uv add A B C                Add A, B, and C as dependencies
@@ -180,12 +181,9 @@ rem ----------------------------------------------------------------------------
 
     rem uv remove requests          Remove requests as a dependency
     rem uv remove A B C             Remove A, B, C, and their transitive dependencies
-    rem uv lock --upgrade           Upgrade the dependencies' versions
-
 
     rem uv pip compile pyproject.toml --quiet --output-file requirements.txt
     rem uv pip freeze > requirements.txt
-
 
     rem call :PressAnyKey || exit /b 1
     

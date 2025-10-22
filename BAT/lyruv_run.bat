@@ -89,6 +89,7 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
+
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
@@ -96,21 +97,23 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    set A1_Name=A1
-    set A1_Caption=script
-    set A1_Default=%1
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    call :Read_P A1 !A1! || exit /b 1
-    echo A1:!A1!
-    if defined A1 (
-        set ARGS=!ARGS! "!A1!"
-    ) else (
-        echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-        set OK=
-        exit /b 1
-    )
-    
+    rem if not defined A1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=%1
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
+    rem echo A1:!A1!
+    rem if defined A1 (
+    rem     set ARGS=!ARGS! "!A1!"
+    rem ) else (
+    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+    rem     set OK=
+    rem     exit /b 1
+    rem )
+
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -157,10 +160,10 @@ rem ----------------------------------------------------------------------------
     call :PY_ENV_START || exit /b 1
 
     set APP=uv run --active "!FULL_SCRIPT_NAME!"
-    
     echo APP:!APP!
 
-    start !APP!
+    uv run --active "!FULL_SCRIPT_NAME!"
+    rem start !APP!
 
     call :PY_ENV_STOP || exit /b 1
 

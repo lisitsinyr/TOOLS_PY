@@ -1,7 +1,7 @@
 @echo off
 rem -------------------------------------------------------------------
-rem P311.bat
-rem     Активация виртуального окружения P311
+rem python312.bat
+rem     Запуск python 3.12 с глобальным виртуалным окружением
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -136,7 +136,7 @@ rem beginfunction
         echo DEBUG: procedure !FUNCNAME! ...
     )
 
-    cmd /k "d:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P311\Scripts\activate.bat"
+    C:\Users\lyr\AppData\Local\Programs\Python\Python314\python.exe %1 %2 %3 %4 %5 %6 %7 %8 %9
 
     exit /b 0
 rem endfunction

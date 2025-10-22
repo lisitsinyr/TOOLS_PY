@@ -67,10 +67,29 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+    rem echo CurrentDir:!CurrentDir!
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
+
+    if not defined !O5! (
+        set O5_Name=O5
+        set O5_Caption=project_dir
+        set O5_Default=!CurrentDir!
+        set O5=!O5_Default!
+        set PN_CAPTION=!O5_Caption!
+        call :Read_P O5 || exit /b 1
+    )
+    rem echo O5:!O5!
+    if defined O5 (
+        set project_dir=!O5!
+        echo project_dir:!project_dir!
+    ) else (
+        echo INFO: O5 [O5_Name:!O5_Name! O5_Caption:!O5_Caption!] not defined ...
+    )
 
     if not defined !O4! (
         set O4_Name=O4
@@ -80,28 +99,12 @@ rem ----------------------------------------------------------------------------
         set PN_CAPTION=!O4_Caption!
         call :Read_P O4 || exit /b 1
     )
-    echo O4:!O4!
+    rem echo O4:!O4!
     if defined O4 (
         set OPTION=!OPTION!--python !O4!
+        set python=--python !O4!
     ) else (
         echo INFO: O4 [O4_Name:!O4_Name! O4_Caption:!O4_Caption!] not defined ...
-    )
-
-    if not defined !O5! (
-        call :CurrentDir || exit /b 1
-        set O5_Name=O5
-        set O5_Caption=project_dir
-        set O5_Default=!CurrentDir!
-        set O5=!O5_Default!
-        set PN_CAPTION=!O5_Caption!
-        call :Read_P O5 || exit /b 1
-    )
-    echo O5:!O5!
-    if defined O5 (
-        rem set OPTION=!OPTION! !O5!
-        set project_dir=!O5!
-    ) else (
-        echo INFO: O5 [O5_Name:!O5_Name! O5_Caption:!O5_Caption!] not defined ...
     )
 
     echo OPTION:!OPTION!
@@ -110,11 +113,12 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
+
+    rem set A1_Name=script
+    rem set A1_Caption=script
+    rem set A1_Default=
+    rem set A1=!A1_Default!
+    rem set PN_CAPTION=!A1_Caption!
     rem call :Read_P A1 !A1! || exit /b 1
     rem echo A1:!A1!
     rem if defined A1 (
@@ -124,42 +128,35 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    rem echo ARGS:!ARGS!
 
+    rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem project_dir - 
     rem -------------------------------------------------------------------
-    set project_dir=!O5!
-    echo project_dir:!project_dir!
-
     if defined project_dir (
         if exist !project_dir!\ (
-            rem # For old timers who don't learn new tricks
-            rem uv venv path/to/.venv       Create a virtual environment at path/to/.venv
-            rem uv pip                      pip's interface with uv's speed
-
-            rem uv venv [project_dir\.venv]
-            rem uv venv --python 3.14 [project_dir\.venv]
-
-            rem cd /D !05!
-            rem set APP=uv venv !OPTION!
-
             if exist !project_dir!\.venv (
+                echo ERROR: Dir !project_dir!\.venv exist ...
                 rem set APP=uv venv !OPTION! --clear !project_dir!\.venv
+                exit /b 1
             ) else (
                 set APP=uv venv !OPTION! !project_dir!\.venv
             )
         ) else (
             echo INFO: Dir !project_dir! not exist ...
+            set APP=uv venv !OPTION! !project_dir!\.venv
         )
     
     ) else (
-        set APP=uv venv !OPTION!
+        echo ERROR: project_dir not defined ... 
+        rem set APP=uv venv !OPTION! .venv
+        exit /b 1
     )
-
     echo APP:!APP!
-    start !APP!
+
+    uv venv !OPTION! !project_dir!\.venv
+    rem start !APP!
 
     rem call :PressAnyKey || exit /b 1
     

@@ -72,32 +72,36 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=python version
-        set O1_Default=3.13.9
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        rem call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    rem if not defined O1 (
+    rem     set O1_Name=O1
+    rem     set O1_Caption=python version
+    rem     set O1_Default=3.13
+    rem     set O1=!O1_Default!
+    rem     set PN_CAPTION=!O1_Caption!
+    rem     call :Read_P O1 || exit /b 1
+    rem )
+    rem echo O1:!O1!
+    rem if defined O1 (
+    rem     set OPTION=!OPTION! !O1!
+    rem ) else (
+    rem     echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
+    rem )
+
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
+
+    rem if not defined A1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
     rem echo A1:!A1!
     rem if defined A1 (
     rem     set ARGS=!ARGS! "!A1!"
@@ -106,6 +110,7 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
+    
     rem echo ARGS:!ARGS!
 
 

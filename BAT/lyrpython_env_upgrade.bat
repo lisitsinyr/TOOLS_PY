@@ -74,22 +74,22 @@ rem ----------------------------------------------------------------------------
 
     if not defined O1 (
         set O1_Name=O1
-        set O1_Caption=VENV
-        set O1_Default=P313
+        set O1_Caption=python_dir ! python_version
+        set O1_Default=3.14
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 !O1! || exit /b 1
+        rem call :Read_P O1 || exit /b 1
     )
     echo O1:!O1!
     if defined O1 (
-        rem set OPTION=!OPTION! -!O1_Name! "!O1!"
+        set OPTION=!OPTION! "!O1!"
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
 
     if not defined O2 (
         set O2_Name=O2
-        set O2_Caption=script
+        set O2_Caption=VENV_dir
         set O2_Default=
         set O2=!O2_Default!
         set PN_CAPTION=!O2_Caption!
@@ -97,11 +97,11 @@ rem ----------------------------------------------------------------------------
     )
     echo O2:!O2!
     if defined O2 (
-        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
+        set OPTION=!OPTION! "!O2!"
     ) else (
         echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
     )
-
+    
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
@@ -129,55 +129,71 @@ rem ----------------------------------------------------------------------------
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
+    rem PYTHON - 
+    rem -------------------------------------------------------------------
+    if defined O1 (
+        if exist !O1! (
+           set PYTHONDIR=!O1!
+        ) else (
+            echo O1:!O1!
+            if !O1!==3.13 (
+                set PYTHONDIR=C:\Users\lyr\AppData\Local\Programs\Python\Python313
+            ) else (
+                if !O1!==3.14 (
+                    set PYTHONDIR=C:\Users\lyr\AppData\Local\Programs\Python\Python314
+                )
+            )
+        )
+    ) else (
+        echo ERROR: PYTHONDIR not defined ... 
+        exit /b 1
+    )
+    echo PYTHONDIR:!PYTHONDIR!
+
+    rem -------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O1!
-    if exist !O1! (
-       set PY_ENVDIR=!O1!
+    if exist !O2!\ (
+       set PY_ENVDIR=!O2!
     ) else (
-        if !01!==P313 (
+        if !02!==P313 (
             set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
         ) else (
-            if !01!==P314 (
+            if !02!==P314 (
                 set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
+            ) else (
+                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\!O2!
             )
         )
     )
     echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
+    if not exist !PY_ENVDIR!\ (
         echo INFO: Dir !PY_ENVDIR! not exist ...
         exit /b 1
     )
 
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
+    set PYTHON=!PYTHONDIR!\python.exe
+    echo PYTHON:!PYTHON!
+    if not exist !PYTHON! (
+        echo ERROR: PYTHON not exist ... 
+        exit /b 1
     )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
-    call :PY_ENV_START || exit /b 1
+    rem C:\Users\lyr\AppData\Local\Programs\Python\Python313\python.exe -m --upgrade venv D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\test
 
-    rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
+    rem python -m venv C:\path\to\new\virtual\environment
+    rem The command, if run with -h, will show the available options:
 
-    python %1 %2 %3 %4 %5 %6 %7 %8 %9
+    rem usage: venv [-h] [--system-site-packages] [--symlinks | --copies] [--clear]
+    rem             [--upgrade] [--without-pip] [--prompt PROMPT] [--upgrade-deps]
+    rem             [--without-scm-ignore-files]
+    rem             ENV_DIR [ENV_DIR ...
 
-    call :PY_ENV_STOP || exit /b 1
+    set APP=!PYTHON! -m venv --upgrade !PY_ENVDIR!
+    echo APP:!APP!
+
+    !PYTHON! -m venv --upgrade !PY_ENVDIR!
 
     rem call :PressAnyKey || exit /b 1
     

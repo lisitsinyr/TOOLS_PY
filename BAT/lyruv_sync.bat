@@ -75,7 +75,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1
+    if not defined O1 (
         set O1_Name=O1
         set O1_Caption=project_dir
         set O1_Default=!CurrentDir!
@@ -89,18 +89,22 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
+
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=%1
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
+
+    rem if not defined A1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=%1
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
     rem echo A1:!A1!
     rem if defined A1 (
     rem     set ARGS=!ARGS! "!A1!"
@@ -109,6 +113,7 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
+
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -120,16 +125,17 @@ rem ----------------------------------------------------------------------------
         if not exist !project_dir!\ (
             echo ERROR: Dir !project_dir! not exist ...
             exit /b 1
+        ) else (
+            cd /D !project_dir!
         )
-        cd /D !project_dir!
     )
 
     if not exist .venv\ (
-        echo ERROR: Dir !project_dir!\.venv not exist ...
+        echo ERROR: Dir .venv not exist ...
         exit /b 1
-    ) else (
-        uv sync
     )
+
+    uv sync
 
     rem call :PressAnyKey || exit /b 1
     

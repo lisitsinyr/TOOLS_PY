@@ -96,7 +96,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined O1 (
+    rem if not defined A1 (
     rem     set A1_Name=script
     rem     set A1_Caption=script
     rem     set A1_Default=%1
@@ -112,8 +112,8 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    
-    echo ARGS:!ARGS!
+
+    rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem project_dir - 
@@ -131,9 +131,13 @@ rem ----------------------------------------------------------------------------
     if not exist .venv\ (
         echo ERROR: Dir !project_dir!\.venv not exist ...
         exit /b 1
-    ) else (
-        uv lock --upgrade
     )
+
+    set APP=uv init !OPTION!
+    echo APP:!APP!
+
+    uv lock --upgrade
+    rem start !APP!
 
     rem call :PressAnyKey || exit /b 1
     

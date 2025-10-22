@@ -194,12 +194,15 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=script
-    set A1_Caption=script
-    set A1_Default=
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
+
+    rem if not defined A1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=%1
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
     rem echo A1:!A1!
     rem if defined A1 (
     rem     set ARGS=!ARGS! "!A1!"
@@ -208,6 +211,7 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
+
     rem echo ARGS:!ARGS!
 
     rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] project_name
@@ -230,11 +234,10 @@ rem ----------------------------------------------------------------------------
     rem uv init --script [--python 3.13.1] project_dir\myscript.py
 
     set APP=uv init !OPTION!
-
-    set APP=!APP!
     echo APP:!APP!
 
-    start !APP!
+    uv init !OPTION!
+    rem start !APP!
 
     rem call :PressAnyKey || exit /b 1
     

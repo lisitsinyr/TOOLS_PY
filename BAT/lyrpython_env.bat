@@ -87,21 +87,6 @@ rem ----------------------------------------------------------------------------
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
 
-    if not defined O2 (
-        set O2_Name=O2
-        set O2_Caption=script
-        set O2_Default=
-        set O2=!O2_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 !O2! || exit /b 1
-    )
-    echo O2:!O2!
-    if defined O2 (
-        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
-
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
@@ -150,34 +135,7 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
-
-    call :PY_ENV_START || exit /b 1
-
-    rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
-
-    python %1 %2 %3 %4 %5 %6 %7 %8 %9
-
-    call :PY_ENV_STOP || exit /b 1
+    cmd /k "!PY_ENVDIR!\Scripts\activate.bat"
 
     rem call :PressAnyKey || exit /b 1
     
