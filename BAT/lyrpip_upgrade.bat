@@ -114,14 +114,15 @@ rem ----------------------------------------------------------------------------
     rem echo ARGS:!ARGS!
 
     call :VENV_DIR !O1! || exit /b 1
-    rem set venv_dir=!O1!
-    rem call :VENV_dir !venv_dir! || exit /b 1
 
-    call :PY_ENV_START || exit /b 1
+    call :PY_ENV_START !O1! || exit /b 1
 
-    python.exe -m ensurepip --upgrade
+    set APP=python.exe -m ensurepip --upgrade
+    echo APP:!APP!
 
-    call :PY_ENV_STOP || exit /b 1
+    !APP!
+
+    call :PY_ENV_STOP !O1! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     

@@ -158,11 +158,6 @@ rem beginfunction
     )
     set !FUNCNAME!=
 
-    set project_dir=%~1
-    rem echo project_dir:!project_dir!
-    set venv_dir=%~2
-    rem echo venv_dir:!venv_dir!
-
     rem Usage:   
     rem   pip <command> [options]
     rem Commands:
@@ -227,15 +222,15 @@ rem beginfunction
         set APP=pip install   
         echo APP:!APP!
 
-        call :PROJECT_DIR !project_dir! || exit /b 1
+        call :PROJECT_DIR !O1! || exit /b 1
 
-        call :VENV_DIR !venv_dir! || exit /b 1
+        call :VENV_DIR !O2! || exit /b 1
 
-        call :PY_ENV_START || exit /b 1
+        call :PY_ENV_START !O2! || exit /b 1
         
         rem !APP!
 
-        call :PY_ENV_STOP || exit /b 1
+        call :PY_ENV_STOP !O2! || exit /b 1
 
         exit /b 0
     )
@@ -369,14 +364,13 @@ rem beginfunction
         set APP=pip help
         echo APP:!APP!
         
-        call :VENV_dir !venv_dir! || exit /b 1
+        call :VENV_DIR !O2! || exit /b 1
 
-        call :PY_ENV_START || exit /b 1
+        call :PY_ENV_START !O2! || exit /b 1
 
-        rem pip help
         !APP!
 
-        call :PY_ENV_STOP || exit /b 1
+        call :PY_ENV_STOP !O2! || exit /b 1
 
         exit /b 0
     )

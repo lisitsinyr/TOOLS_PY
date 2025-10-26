@@ -128,27 +128,8 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O1!
-    if exist !O1! (
-       set PY_ENVDIR=!O1!
-    ) else (
-        if !O1!==P313 (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        ) else (
-            if !O1!==P314 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
-            )
-        )
-    )
-    echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
-        exit /b 1
-    )
+
+      
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -171,13 +152,18 @@ rem ----------------------------------------------------------------------------
     )
     rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
-    call :PY_ENV_START || exit /b 1
+    call :VENV_DIR !O1! || exit /b 1
+
+    call :PY_ENV_START !O1! || exit /b 1
 
     rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
+    
+    set APP=python %1 %2 %3 %4 %5 %6 %7 %8 %9
+    echo APP:!APP!
 
-    python %1 %2 %3 %4 %5 %6 %7 %8 %9
+    rem !APP!
 
-    call :PY_ENV_STOP || exit /b 1
+    call :PY_ENV_STOP !O1! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
