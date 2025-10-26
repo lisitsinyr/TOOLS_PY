@@ -136,10 +136,10 @@ rem ----------------------------------------------------------------------------
     if exist !O1! (
        set PY_ENVDIR=!O1!
     ) else (
-        if !01!==P313 (
+        if !O1!==P313 (
             set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
         ) else (
-            if !01!==P314 (
+            if !O1!==P314 (
                 set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
             )
         )

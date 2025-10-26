@@ -74,11 +74,11 @@ rem ----------------------------------------------------------------------------
 
     if not defined O1 (
         set O1_Name=O1
-        set O1_Caption=VENV
+        set O1_Caption=VENV_dir
         set O1_Default=P313
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 !O1! || exit /b 1
+        call :Read_P O1 || exit /b 1
     )
     echo O1:!O1!
     if defined O1 (
@@ -86,21 +86,6 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
-
-    rem if not defined O2 (
-    rem     set O2_Name=O2
-    rem     set O2_Caption=script
-    rem     set O2_Default=
-    rem     set O2=!O2_Default!
-    rem     set PN_CAPTION=!O2_Caption!
-    rem     call :Read_P O2 !O2! || exit /b 1
-    rem )
-    rem echo O2:!O2!
-    rem if defined O2 (
-    rem     rem set OPTION=!OPTION! -!O2_Name! "!O2!"
-    rem ) else (
-    rem     echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    rem )
 
     rem echo OPTION:!OPTION!
 
@@ -128,27 +113,9 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O1!
-    if exist !O1! (
-       set PY_ENVDIR=!O1!
-    ) else (
-        if !01!==P313 (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        ) else (
-            if !01!==P314 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
-            )
-        )
-    )
-    echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
-        exit /b 1
-    )
+    call :VENV_DIR !O1! || exit /b 1
+    rem set venv_dir=!O1!
+    rem call :VENV_dir !venv_dir! || exit /b 1
 
     call :PY_ENV_START || exit /b 1
 
@@ -176,6 +143,12 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

@@ -67,6 +67,9 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+    rem echo CurrentDir:!CurrentDir!
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -74,33 +77,33 @@ rem ----------------------------------------------------------------------------
 
     if not defined O1 (
         set O1_Name=O1
-        set O1_Caption=VENV
-        set O1_Default=P313
+        set O1_Caption=project_dir
+        set O1_Default=!CurrentDir!
         set O1=!O1_Default!
         set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 !O1! || exit /b 1
+        call :Read_P O1 || exit /b 1
     )
     echo O1:!O1!
     if defined O1 (
-        rem set OPTION=!OPTION! -!O1_Name! "!O1!"
+        rem set OPTION=!OPTION! "!O1!"
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
 
-    rem if not defined O2 (
-    rem     set O2_Name=O2
-    rem     set O2_Caption=script
-    rem     set O2_Default=
-    rem     set O2=!O2_Default!
-    rem     set PN_CAPTION=!O2_Caption!
-    rem     call :Read_P O2 !O2! || exit /b 1
-    rem )
-    rem echo O2:!O2!
-    rem if defined O2 (
-    rem     rem set OPTION=!OPTION! -!O2_Name! "!O2!"
-    rem ) else (
-    rem     echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    rem )
+    if not defined O2 (
+        set O2_Name=O2
+        set O2_Caption=VENV_dir
+        set O2_Default=P313
+        set O2=!O2_Default!
+        set PN_CAPTION=!O2_Caption!
+        call :Read_P O2 || exit /b 1
+    )
+    echo O2:!O2!
+    if defined O2 (
+        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
+    ) else (
+        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+    )
 
     rem echo OPTION:!OPTION!
 
@@ -128,41 +131,262 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O1!
-    if exist !O1! (
-       set PY_ENVDIR=!O1!
-    ) else (
-        if !01!==P313 (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        ) else (
-            if !01!==P314 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
-            )
-        )
+    set ChoiceOperation=
+    rem ------------------------------------------
+    :WHILE
+    rem ------------------------------------------
+    if not !ChoiceOperation!==19 (
+        call :ChoiceOperation !O1! !O2! || exit /b 1
+        goto :WHILE
     )
-    echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
-        exit /b 1
-    )
-
-    call :PY_ENV_START || exit /b 1
-
-    rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
-
-    pip %1 %2 %3 %4 %5 %6 %7 %8 %9
-
-    call :PY_ENV_STOP || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
 :end
 rem =================================================
+
+rem --------------------------------------------------------------------------------
+rem function ChoiceOperation () -> Read_N
+rem --------------------------------------------------------------------------------
+:ChoiceOperation
+rem beginfunction
+    set FUNCNAME=%0
+    set FUNCNAME=ChoiceOperation
+    if defined DEBUG (
+        echo DEBUG: procedure !FUNCNAME! ...
+    )
+    set !FUNCNAME!=
+
+    set project_dir=%~1
+    rem echo project_dir:!project_dir!
+    set venv_dir=%~2
+    rem echo venv_dir:!venv_dir!
+
+    rem Usage:   
+    rem   pip <command> [options]
+    rem Commands:
+    rem   install                     Install packages.
+    rem   lock                        Generate a lock file.
+    rem   download                    Download packages.
+    rem   uninstall                   Uninstall packages.
+    rem   freeze                      Output installed packages in requirements format.
+    rem   inspect                     Inspect the python environment.
+    rem   list                        List installed packages.
+    rem   show                        Show information about installed packages.
+    rem   check                       Verify installed packages have compatible dependencies.
+    rem   config                      Manage local and global configuration.
+    rem   search                      Search PyPI for packages.
+    rem   cache                       Inspect and manage pip's wheel cache.
+    rem   index                       Inspect information available from package indexes.
+    rem   wheel                       Build wheels from your requirements.
+    rem   hash                        Compute hashes of package archives.
+    rem   completion                  A helper command used for command completion.
+    rem   debug                       Show information useful for debugging.
+    rem   help                        Show help for commands.
+    rem     pip %1 %2 %3 %4 %5 %6 %7 %8 %9 > pip.out
+
+    rem ------------------------------------------
+    rem ÃÂÌ˛
+    rem ------------------------------------------
+    echo 1.pip install
+    echo 2.pip lock
+    echo 3.pip download
+    echo 4.pip uninstall
+    echo 5.pip freeze
+    echo 6.pip inspect
+    echo 7.pip list
+    echo 8.pip show
+    echo 9.pip check
+    echo A.pip config
+    echo B.pip search
+    echo C.pip cache
+    echo D.pip index
+    echo E.pip wheel
+    echo F.pip hash
+    echo G.pip completion
+    echo H.pip debug
+    echo I.pip help
+    echo Q.Quit
+
+    set C1_Name=C1
+    set C1_List=123456789ABCDEFGHIQ
+    set C1_Caption=operation
+    set C1_Default=Q
+    rem set C1=!O1_Default!
+    set PN_CAPTION=!C1_Caption!
+    rem procedure Read_F (P_Name, P_List, ADefault, ACaption, Atimeout)
+    call :Read_F C1 !C1_List! !C1_Default! !C1_Caption! 10 || exit /b 1
+    echo C1:!C1!
+    set ChoiceOperation=!C1!
+
+    rem ------------------------------------------
+    rem CASE
+    rem ------------------------------------------
+    if !C1!==1 (
+        set APP=pip install   
+        echo APP:!APP!
+
+        call :PROJECT_DIR !project_dir! || exit /b 1
+
+        call :VENV_DIR !venv_dir! || exit /b 1
+
+        call :PY_ENV_START || exit /b 1
+        
+        rem !APP!
+
+        call :PY_ENV_STOP || exit /b 1
+
+        exit /b 0
+    )
+    if !C1!==2 (
+        set APP=pip lock
+        echo APP:!APP!
+
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==3 (
+        set APP=pip download
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==4 (
+        set APP=pip uninstall
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==5 (
+        set APP=pip freeze
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==6 (
+        set APP=pip inspect
+        echo APP:!APP!
+        
+        exit /b 0
+    )
+    if !C1!==7 (
+        set APP=pip list
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==8 (
+        set APP=pip show
+        echo APP:!APP!
+
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==9 (
+        set APP=pip check
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==10 (
+        set APP=pip config
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==11 (
+        set APP=pip search
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==12 (
+        set APP=pip cache
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==13 (
+        set APP=pip index
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==14 (
+        set APP=pip wheel
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==15 (
+        set APP=pip hash
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==16 (
+        set APP=pip completion
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==17 (
+        set APP=pip debug
+        echo APP:!APP!
+        
+        !APP!
+
+        exit /b 0
+    )
+    if !C1!==18 (
+        set APP=pip help
+        echo APP:!APP!
+        
+        call :VENV_dir !venv_dir! || exit /b 1
+
+        call :PY_ENV_START || exit /b 1
+
+        rem pip help
+        !APP!
+
+        call :PY_ENV_STOP || exit /b 1
+
+        exit /b 0
+    )
+    if !C1!==19 (
+        exit /b 0
+    )
+
+    exit /b 0
+
+rem endfunction
 
 rem =================================================
 rem ‘”Õ ÷»» LIB
@@ -178,6 +402,12 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

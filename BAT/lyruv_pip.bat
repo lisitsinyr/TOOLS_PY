@@ -94,7 +94,7 @@ rem ----------------------------------------------------------------------------
         set O2_Name=O2
         set O2_Caption=VENV
         set O2_Default=P313
-        set O2=!O1_Default!
+        set O2=!O2_Default!
         set PN_CAPTION=!O2_Caption!
         call :Read_P O2 !O2! || exit /b 1
     )
@@ -160,7 +160,7 @@ rem ----------------------------------------------------------------------------
         if !02!==P313 (
             set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
         ) else (
-            if !01!==P314 (
+            if !02!==P314 (
                 set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
             )
         )
@@ -215,7 +215,7 @@ rem beginfunction
     set C1_Name=C1
     set C1_List=123456789Q
     set C1_Caption=operation
-    set C1_Default=Q
+    set C1_Default=1
     rem set C1=!O1_Default!
     set PN_CAPTION=!C1_Caption!
     rem procedure Read_F (P_Name, P_List, ADefault, ACaption, Atimeout)
