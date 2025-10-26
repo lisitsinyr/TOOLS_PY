@@ -135,6 +135,8 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
+    set APP=uv sync
+    echo APP:!APP!
     uv sync
 
     rem call :PressAnyKey || exit /b 1

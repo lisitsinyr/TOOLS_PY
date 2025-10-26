@@ -113,29 +113,104 @@ rem ----------------------------------------------------------------------------
 
     rem echo ARGS:!ARGS!
 
-    rem call :UV_python_list !O1! || exit /b 1
+    set ChoiceOperation=
 
-    rem call :UV_python_install !O1! || exit /b 1
-
-    rem call :UV_python_uninstall !O1! || exit /b 1
-
-    rem call :UV_python_run !O1! || exit /b 1
-
-    rem         call :UV_python_upgrade !O1! || exit /b 1
-
-    call :UV_python_find !O1! || exit /b 1
-
-    call :UV_python_dir !O1! || exit /b 1
-
-    rem call :UV_python_ !O1! || exit /b 1
-
-    rem call :UV_python_pin !O1! || exit /b 1
+    rem ------------------------------------------
+    :WHILE
+    rem ------------------------------------------
+    if not !ChoiceOperation!==10 (
+        call :ChoiceOperation || exit /b 1
+        goto :WHILE
+    )
 
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
 :end
 rem =================================================
+
+rem --------------------------------------------------------------------------------
+rem function ChoiceOperation () -> Read_N
+rem --------------------------------------------------------------------------------
+:ChoiceOperation
+rem beginfunction
+    set FUNCNAME=%0
+    set FUNCNAME=ChoiceOperation
+    if defined DEBUG (
+        echo DEBUG: procedure !FUNCNAME! ...
+    )
+    set !FUNCNAME!=
+
+    rem ------------------------------------------
+    rem Μενώ
+    rem ------------------------------------------
+    echo 1.UV_python_list
+    echo 2.UV_python_install
+    echo 3.UV_python_uninstall
+    echo 4.UV_python_run
+    echo 5.UV_python_upgrade
+    echo 6.UV_python_find
+    echo 7.UV_python_dir
+    echo 8.UV_python_
+    echo 9.UV_python_pin
+    echo Q.Quit
+
+    set C1_Name=C1
+    set C1_List=123456789Q
+    set C1_Caption=operation
+    set C1_Default=Q
+    rem set C1=!O1_Default!
+    set PN_CAPTION=!C1_Caption!
+    rem procedure Read_F (P_Name, P_List, ADefault, ACaption, Atimeout)
+    call :Read_F C1 !C1_List! !C1_Default! !C1_Caption! 10 || exit /b 1
+    echo C1:!C1!
+    set ChoiceOperation=!C1!
+
+    rem ------------------------------------------
+    rem CASE
+    rem ------------------------------------------
+    if !C1!==1 (
+        call :UV_python_list || exit /b 1
+        exit /b 0
+    )
+    if !C1!==2 (
+        call :UV_python_install !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==3 (
+        call :UV_python_uninstall !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==4 (
+        call :UV_python_run || exit /b 1
+        exit /b 0
+    )
+    if !C1!==5 (
+        call :UV_python_upgrade || exit /b 1
+        exit /b 0
+    )
+    if !C1!==6 (
+        call :UV_python_find !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==7 (
+        call :UV_python_dir !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==8 (
+        call :UV_python_ !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==9 (
+        call :UV_python_pin !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==10 (
+        exit /b 0
+    )
+
+    exit /b 0
+rem endfunction
 
 rem =================================================
 rem LIB

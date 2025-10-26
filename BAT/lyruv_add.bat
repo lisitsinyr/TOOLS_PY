@@ -161,6 +161,13 @@ rem ----------------------------------------------------------------------------
         cd /D !project_dir!
     )
 
+    rem uv.exe add <PACKAGES|--requirements <REQUIREMENTS>>
+
+    rem uv add requests             Add requests as a dependency
+    rem uv add A B C                Add A, B, and C as dependencies
+    rem uv add -r requirements.txt  Add dependencies from the file requirements.txt
+    rem uv add --dev pytest         Add pytest as a development dependency
+
     if not exist .venv\ (
         echo ERROR: Dir !project_dir!\.venv not exist ...
         exit /b 1
@@ -171,19 +178,6 @@ rem ----------------------------------------------------------------------------
         uv add --dev !OPTION!
         rem start !APP!
     )
-    
-    rem uv.exe add <PACKAGES|--requirements <REQUIREMENTS>>
-
-    rem uv add requests             Add requests as a dependency
-    rem uv add A B C                Add A, B, and C as dependencies
-    rem uv add -r requirements.txt  Add dependencies from the file requirements.txt
-    rem uv add --dev pytest         Add pytest as a development dependency
-
-    rem uv remove requests          Remove requests as a dependency
-    rem uv remove A B C             Remove A, B, C, and their transitive dependencies
-
-    rem uv pip compile pyproject.toml --quiet --output-file requirements.txt
-    rem uv pip freeze > requirements.txt
 
     rem call :PressAnyKey || exit /b 1
     

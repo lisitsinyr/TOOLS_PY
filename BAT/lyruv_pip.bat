@@ -85,9 +85,24 @@ rem ----------------------------------------------------------------------------
     )
     echo O1:!O1!
     if defined O1 (
-        set OPTION=!OPTION! "!O1!"
+        rem set OPTION=!OPTION! "!O1!"
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
+    )
+
+    if not defined O2 (
+        set O2_Name=O2
+        set O2_Caption=VENV
+        set O2_Default=P313
+        set O2=!O1_Default!
+        set PN_CAPTION=!O2_Caption!
+        call :Read_P O2 !O2! || exit /b 1
+    )
+    echo O2:!O2!
+    if defined O2 (
+        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
+    ) else (
+        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
     )
 
     rem echo OPTION:!OPTION!
@@ -129,36 +144,187 @@ rem ----------------------------------------------------------------------------
             cd /D !project_dir!
         )
     )
-
     if not exist .venv\ (
         echo ERROR: Dir .venv not exist ...
         exit /b 1
     )
 
-rem Usage: uv pip [OPTIONS] <COMMAND>
-rem Commands:
-rem   compile    Compile a `requirements.in` file to a `requirements.txt` or `pylock.toml` file
-rem   sync       Sync an environment with a `requirements.txt` or `pylock.toml` file
-rem   install    Install packages into an environment
-rem   uninstall  Uninstall packages from an environment
-rem   freeze     List, in requirements format, packages installed in an environment
-rem   list       List, in tabular format, packages installed in an environment
-rem   show       Show information about one or more installed packages
-rem   tree       Display the dependency tree for an environment
-rem   check      Verify installed packages have compatible dependencies
-
-
-    set APP=uv pip list
-    echo APP:!APP!
-
-    uv pip list
-    rem start !APP!
+    rem -------------------------------------------------------------------
+    rem ENV - 
+    rem -------------------------------------------------------------------
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo !O2!
+    if exist !O2! (
+       set PY_ENVDIR=!O2!
+    ) else (
+        if !02!==P313 (
+            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+        ) else (
+            if !01!==P314 (
+                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
+            )
+        )
+    )
+    echo PY_ENVDIR:!PY_ENVDIR!
+    if not exist !PY_ENVDIR! (
+        echo INFO: Dir !PY_ENVDIR! not exist ...
+        exit /b 1
+    )
+    
+    set ChoiceOperation=
+    rem ------------------------------------------
+    :WHILE
+    rem ------------------------------------------
+    if not !ChoiceOperation!==10 (
+        call :ChoiceOperation || exit /b 1
+        goto :WHILE
+    )
 
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
 :end
 rem =================================================
+
+rem --------------------------------------------------------------------------------
+rem function ChoiceOperation () -> Read_N
+rem --------------------------------------------------------------------------------
+:ChoiceOperation
+rem beginfunction
+    set FUNCNAME=%0
+    set FUNCNAME=ChoiceOperation
+    if defined DEBUG (
+        echo DEBUG: procedure !FUNCNAME! ...
+    )
+    set !FUNCNAME!=
+
+    rem ------------------------------------------
+    rem ÃÂÌ˛
+    rem ------------------------------------------
+    echo 1.UV_pip list
+    echo 2.UV_pip tree
+    echo 3.UV_pip check
+    echo 4.UV_pip show
+    echo 5.UV_pip compile
+    echo 6.UV_pip sync
+    echo 7.UV_pip freeze
+    echo 8.UV_pip install
+    echo 9.UV_pip uninstall
+    echo Q.Quit
+
+    set C1_Name=C1
+    set C1_List=123456789Q
+    set C1_Caption=operation
+    set C1_Default=Q
+    rem set C1=!O1_Default!
+    set PN_CAPTION=!C1_Caption!
+    rem procedure Read_F (P_Name, P_List, ADefault, ACaption, Atimeout)
+    call :Read_F C1 !C1_List! !C1_Default! !C1_Caption! 10 || exit /b 1
+    echo C1:!C1!
+    set ChoiceOperation=!C1!
+
+    rem Usage: uv pip [OPTIONS] <COMMAND>
+
+    rem ------------------------------------------
+    rem CASE
+    rem ------------------------------------------
+    if !C1!==1 (
+        echo list - List, in tabular format, packages installed in an environment
+        set APP=uv pip list
+        echo APP:!APP!
+
+        uv pip list
+        
+        exit /b 0
+    )
+    if !C1!==2 (
+        echo tree - Display the dependency tree for an environment
+        set APP=uv pip tree
+        echo APP:!APP!
+        
+        uv pip tree
+        
+        exit /b 0
+    )
+    if !C1!==3 (
+        echo check - Verify installed packages have compatible dependencies
+        set APP=uv pip check
+        echo APP:!APP!
+
+        uv pip check
+        
+        exit /b 0
+    )
+    if !C1!==4 (
+        echo show - Show information about one or more installed packages
+        set APP=uv pip show
+        echo APP:!APP!
+
+        uv pip show
+        
+        exit /b 0
+    )
+    if !C1!==5 (
+        echo compile - Compile a requirements.in file to a requirements.txt or pylock.toml file
+        set APP=uv pip compile pyproject.toml --quiet --output-file requirements.txt
+        echo APP:!APP!
+        
+        uv pip compile pyproject.toml --quiet --output-file requirements.txt
+        
+        exit /b 0
+    )
+    if !C1!==6 (
+        echo sync - Sync an environment with a `requirements.txt` or `pylock.toml` file
+        set APP=uv pip sync
+        echo APP:!APP!
+        
+        uv pip sync
+        
+        exit /b 0
+    )
+    if !C1!==7 (
+        echo freeze - List, in requirements format, packages installed in an environment
+        rem uv pip freeze > requirements.txt
+        set APP=uv pip freeze
+        echo APP:!APP!
+        
+        uv pip freeze > requirements.txt
+        
+        exit /b 0
+    )
+    if !C1!==8 (
+        echo install - Install packages into an environment
+        set APP=uv pip install A B C
+        echo APP:!APP!
+
+        rem call :PY_ENV_START || exit /b 1
+
+        uv pip install A B C
+
+        rem call :PY_ENV_STOP || exit /b 1
+
+        exit /b 0
+    )
+    if !C1!==9 (
+        echo uninstall - Uninstall packages from an environment
+        set APP=uv pip uninstall A B C
+        echo APP:!APP!
+
+        rem call :PY_ENV_START || exit /b 1
+
+        uv pip uninstall A B C
+
+        rem call :PY_ENV_STOP || exit /b 1
+        
+        exit /b 0
+    )
+    if !C1!==10 (
+        exit /b 0
+    )
+
+    exit /b 0
+
+rem endfunction
 
 rem =================================================
 rem ‘”Õ ÷»» LIB

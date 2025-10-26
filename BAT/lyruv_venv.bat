@@ -153,6 +153,7 @@ rem ----------------------------------------------------------------------------
         rem set APP=uv venv !OPTION! .venv
         exit /b 1
     )
+
     echo APP:!APP!
 
     uv venv !OPTION! !project_dir!\.venv

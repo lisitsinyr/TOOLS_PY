@@ -149,18 +149,15 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
+    rem uv remove requests          Remove requests as a dependency
+    rem uv remove A B C             Remove A, B, C, and their transitive dependencies
+
     set APP=uv remove !OPTION!
     echo APP:!APP!
    
     uv remove !OPTION!
     rem start !APP!
     
-    rem uv remove requests          Remove requests as a dependency
-    rem uv remove A B C             Remove A, B, C, and their transitive dependencies
-
-    rem uv pip compile pyproject.toml --quiet --output-file requirements.txt
-    rem uv pip freeze > requirements.txt
-
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0

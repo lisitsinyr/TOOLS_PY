@@ -135,6 +135,8 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
+    set APP=uv tree
+    echo APP:!APP!
     uv tree
    
     rem call :PressAnyKey || exit /b 1
