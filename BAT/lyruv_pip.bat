@@ -149,27 +149,9 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
     set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo !O2!
-    if exist !O2! (
-       set PY_ENVDIR=!O2!
-    ) else (
-        if !02!==P313 (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        ) else (
-            if !02!==P314 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314
-            )
-        )
-    )
     echo PY_ENVDIR:!PY_ENVDIR!
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
-        exit /b 1
-    )
+    call :VENV_DIR !PY_ENVDIR! || exit /b 1
     
     set ChoiceOperation=
     rem ------------------------------------------
