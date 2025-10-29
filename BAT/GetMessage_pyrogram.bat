@@ -133,37 +133,6 @@ rem ----------------------------------------------------------------------------
     echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-
-    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-    rem set PY_ENVNAME=%PY_ENVNAME%
-    rem if not defined PY_ENVNAME (
-    rem     set PY_ENVNAME=P313
-    rem )
-    rem if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-    rem     echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
-    rem     exit /b 1
-    rem )
-
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
-    )
-    set PY_ENVDIR=!PY_ENVDIR!\!PY_ENVNAME!
-    rem echo PY_ENVDIR:!PY_ENVDIR!
-
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
-
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
-        exit /b 1
-    )
-
-    rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
     if not defined SCRIPTS_DIR_PY (
@@ -190,6 +159,10 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
+
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo PY_ENVDIR:!PY_ENVDIR!
+    call :VENV_DIR !PY_ENVDIR! || exit /b 1
 
     call :PY_ENV_START || exit /b 1
 

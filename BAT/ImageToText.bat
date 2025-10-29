@@ -206,6 +206,12 @@ exit /b 0
 :PY_ENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRDEPLOY.bat

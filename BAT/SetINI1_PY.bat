@@ -11,16 +11,6 @@ setlocal enabledelayedexpansion
     echo Start !BATNAME! ...
 
     set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
-    )
-    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
-        exit /b 1
-    )
 
     set FileINI=%1
     if not defined FileINI (
@@ -43,6 +33,10 @@ setlocal enabledelayedexpansion
         exit /b 1
     )
     
+    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo PY_ENVDIR:!PY_ENVDIR!
+    call :VENV_DIR !PY_ENVDIR! || exit /b 1
+
     rem -------------------------------------------------------------------
     rem TEST - 
     rem -------------------------------------------------------------------
@@ -99,6 +93,12 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
