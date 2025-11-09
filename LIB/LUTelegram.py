@@ -26,14 +26,12 @@ from fontTools.misc.cython import returns
 #------------------------------------------
 # БИБЛИОТЕКА telethon
 #------------------------------------------
-# import telethon
 import telethon.sync
 import telethon.tl.types
 
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerUser, PeerChat, PeerChannel
 import re
-import asyncio
 
 # from telethon.tl.functions.messages import GetDialogsRequest
 # from telethon.tl.types import InputPeerEmpty
@@ -51,10 +49,10 @@ import asyncio
 # from telethon import TelegramClient, events, sync
 # import telethon.errors
 # import telethon.client.messages as messages
+
 #------------------------------------------
 # БИБЛИОТЕКА pyrogram
 #------------------------------------------
-# from pyrogram import Client
 import pyrogram
 
 #------------------------------------------

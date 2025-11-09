@@ -19,14 +19,12 @@ import errno
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-import platform
 import stat
 import datetime
 import logging
 import tempfile
 import re
 import ctypes
-import copy
 import pathlib
 
 # if platform.system() == 'Windows':
@@ -47,12 +45,10 @@ import chardet
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyrpy.LUErrors as LUErrors
 import lyrpy.LUStrDecode as LUStrDecode
 import lyrpy.LUDateTime as LUDateTime
 import lyrpy.LUos as LUos
 import lyrpy.LULog as LULog
-# import lyrpy.LUFile as LUFile
 
 """
 #--------------------------------------------------------------------------------

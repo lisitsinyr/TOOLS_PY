@@ -27,17 +27,19 @@ import logging.config
 import yaml
 import json
 import shutil
-
-import inspect
-import traceback
+import rich
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import pythonjsonlogger
 import pythonjsonlogger.jsonlogger
+
 #------------------------------------------
 import PySide6.QtWidgets
+
+import rich
+import rich.console
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
@@ -51,13 +53,11 @@ import lyrpy.LUParserINI as LUParserINI
 import lyrpy.LUDict as LUDict
 import lyrpy.LUSupport as LUSupport
 
-import rich
-import rich.console as console
-GConsoleRich = rich.console.Console ()
-
 # ===========================================================================
 # CONST
 # ===========================================================================
+GConsoleRich = rich.console.Console ()
+
 """CONST"""
 ctlsNOTSET = ' '
 ctlsDEBUG = 'D'

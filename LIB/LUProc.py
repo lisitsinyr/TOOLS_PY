@@ -65,7 +65,7 @@ CStatApplication = {
     TStatApplication.saRunning:  'saRunning',
     TStatApplication.saBreak:    'saBreak',
     TStatApplication.saMain:     'saMain',
-    TStatApplication.saDeleteAll:     'saDelteAll'
+    TStatApplication.saDeleteAll:     'saDeleteAll'
     # TStatApplication.saTest: 'saTest',
     # TStatApplication.saSheduler: 'saSheduler',
     # TStatApplication.saSetup: 'saSetup',

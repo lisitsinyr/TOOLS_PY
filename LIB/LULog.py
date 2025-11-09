@@ -34,9 +34,13 @@ import traceback
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
+import PySide6
 import pythonjsonlogger
-import pythonjsonlogger.jsonlogger
-#------------------------------------------
+# import pythonjsonlogger.jsonlogger
+
+import rich
+import rich.console
+GConsoleRich = rich.console.Console ()
 
 #------------------------------------------
 # БИБЛИОТЕКА LU 
@@ -49,10 +53,6 @@ import lyrpy.LUos as LUos
 import lyrpy.LUParserINI as LUParserINI
 import lyrpy.LUDict as LUDict
 import lyrpy.LUSupport as LUSupport
-
-import rich
-import rich.console as console
-GConsoleRich = rich.console.Console ()
 
 # ===========================================================================
 # CONST

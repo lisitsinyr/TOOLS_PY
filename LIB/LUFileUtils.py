@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ = """
  =======================================================
- Copyright (c) 2023-2024
+ Copyright (c) 2023-2025
  Author:
      Lisitsin Y.R.
  Project:
@@ -18,29 +18,17 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-import stat
 import sys
-import time
-import chardet
 import logging
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-import datetime
-import shutil
-import platform
-# if platform.system() == 'Windows':
-#     import win32api
-#     import win32con
-# #endif
 
 #------------------------------------------
 # БИБЛИОТЕКА LU
 #------------------------------------------
-import lyrpy.LUErrors as LUErrors
 import lyrpy.LUFile as LUFile
-import lyrpy.LUStrDecode as LUStrDecode
 import lyrpy.LULog as LULog
 import lyrpy.LUDateTime as LUDateTime
 

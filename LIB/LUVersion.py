@@ -17,15 +17,13 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import os
-import platform
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 import datetime
 
-import win32api
-
+# import win32api
 
 # if platform.system() == 'Windows':
 #     import win32api

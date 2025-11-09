@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 __annotations__ ="""
  =======================================================
- Copyright (c) 2023-2024
+ Copyright (c) 2023-2025
  Author:
      Lisitsin Y.R.
  Project:
@@ -20,19 +20,14 @@ __annotations__ ="""
 import os
 import io
 import datetime
-import logging
-import string
-import time
-from typing import BinaryIO
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 from urllib.parse import urlparse
-
-from pytube import YouTube, request, Playlist, Stream
-import pytube
-import pytube.exceptions
+# from pytube import YouTube, request, Playlist, Stream
+# import pytube
+# import pytube.exceptions
 
 #------------------------------------------
 # БИБЛИОТЕКИ LU
@@ -42,7 +37,6 @@ import lyrpy.LUObjects as LUObjects
 import lyrpy.LUFile as LUFile
 import lyrpy.LUStrUtils as LUStrUtils
 import lyrpy.LUThread as LUThread
-import lyrpy.LUDateTime as LUDateTime
 
 CYOUTUBE_COM = 'WWW.YOUTUBE.COM'
 CYOUTUBE_BE = 'YOUTU.BE'
