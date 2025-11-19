@@ -126,8 +126,8 @@ rem ----------------------------------------------------------------------------
 
     call !VENV!\Scripts\activate.bat
 
-    rem python -m pip install --upgrade pip
-    python -m ensurepip --upgrade
+    python.exe -m pip install --upgrade pip
+    rem python -m ensurepip --upgrade
 
     rem Команда pip install -U <имя пакета> в Python означает «обновить библиотеку до актуальной версии»
     rem pip install -U D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\lyrpy2
@@ -140,7 +140,8 @@ rem ----------------------------------------------------------------------------
     set requirements=requirements.txt
     if exist !project_dir!!requirements! (
         echo !requirements!
-        pip install -r !requirements! > LOG\install.log
+        rem pip install -r !requirements! > LOG\install.log
+        pip install -r !requirements!
     ) else (
         rem !PYTHON! -m pip freeze > !project_dir!!requirements!
     )
