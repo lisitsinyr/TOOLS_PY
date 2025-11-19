@@ -67,25 +67,32 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=VENV_dir
-        set O1_Default=P313
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        rem set OPTION=!OPTION! -!O1_Name! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
+
+    rem set OPTION=!OPTION! -project_dir "!project_dir!"
+
+    call :GET_python_dir !python_dir! || exit /b 1
+    rem echo GET_python_dir:!GET_python_dir!
+    echo python_dir:!python_dir!
+
+    rem set OPTION=!OPTION! -python_dir "!python_dir!"
+
+    set venv_dir=
+
+    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+    rem echo GET_venv_dir:!GET_venv_dir!
+    echo venv_dir:!venv_dir!
+
+    rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
 
     rem echo OPTION:!OPTION!
 
@@ -113,16 +120,36 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-    call :VENV_DIR !O1! || exit /b 1
+    set VENV=!project_dir!.venv
+    set VENV=!venv_dir!
+    echo VENV:!VENV!
 
-    call :PY_ENV_START !O1! || exit /b 1
+    call !VENV!\Scripts\activate.bat
 
-    set APP=python.exe -m ensurepip --upgrade
-    echo APP:!APP!
+    rem python -m pip install --upgrade pip
+    python -m ensurepip --upgrade
 
-    !APP!
+    rem Команда pip install -U <имя пакета> в Python означает «обновить библиотеку до актуальной версии»
+    rem pip install -U D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\lyrpy2
 
-    call :PY_ENV_STOP !O1! || exit /b 1
+    echo Install packeges requirements.txt ...
+
+    rem pip freeze > !requirements!
+    rem pip freeze > requirements.txt
+
+    set requirements=requirements.txt
+    if exist !project_dir!!requirements! (
+        echo !requirements!
+        pip install -r !requirements! > LOG\install.log
+    ) else (
+        rem !PYTHON! -m pip freeze > !project_dir!!requirements!
+    )
+
+    rem pip install --upgrade !project_dir!
+    
+    pip list >> LOG\list.log
+
+    call !VENV!\Scripts\deactivate.bat
 
     rem call :PressAnyKey || exit /b 1
     
@@ -146,10 +173,22 @@ exit /b 0
 :PY_ENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 :PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

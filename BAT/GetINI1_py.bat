@@ -107,6 +107,12 @@ exit /b 0
 :VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRDEPLOY.bat

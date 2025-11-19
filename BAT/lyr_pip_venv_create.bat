@@ -67,40 +67,24 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=VENV
-        set O1_Default=P313
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 !O1! || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        rem set OPTION=!OPTION! -!O1_Name! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
 
-    if not defined O2 (
-        set O2_Name=O2
-        set O2_Caption=script
-        set O2_Default=
-        set O2=!O2_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 !O2! || exit /b 1
-    )
-    echo O2:!O2!
-    if defined O2 (
-        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
+    rem set OPTION=!OPTION! -project_dir "!project_dir!"
+
+    call :GET_python_dir !python_dir! || exit /b 1
+    rem echo GET_python_dir:!GET_python_dir!
+    echo python_dir:!python_dir!
+
+    rem set OPTION=!OPTION! -python_dir "!python_dir!"
 
     rem echo OPTION:!OPTION!
 
@@ -128,42 +112,30 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-
-      
-
-    rem -------------------------------------------------------------------
-    rem TEST - 
-    rem -------------------------------------------------------------------
-    set TEST=yes
-    rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!A1!
-    rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
-    rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
-    rem -------------------------------------------------------------------
-    rem FULL_SCRIPT_NAME - 
-    rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
-    if defined TEST (
-        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
+    echo Создание каталога !Directory! ...
+    set Directory=!project_dir!.venv
+    echo Directory:!Directory!
+    if exist !Directory!\ (
+        echo Удаление каталога !Directory! ...
+        rmdir /s /q !Directory!
     )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
-    call :VENV_DIR !O1! || exit /b 1
+    set PYTHON=py
+    set PYTHON=!python_dir!python.exe
+    echo PYTHON:!PYTHON!
 
-    call :PY_ENV_START !O1! || exit /b 1
+    !PYTHON! -m venv .venv
 
-    rem python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
-    
-    set APP=python %1 %2 %3 %4 %5 %6 %7 %8 %9
-    echo APP:!APP!
+    set requirements=requirements.txt
+    if exist !project_dir!!requirements! (
+        echo !requirements!
+    ) else (
+        !PYTHON! -m pip freeze > !project_dir!!requirements!
+    )
 
-    rem !APP!
+    !PYTHON! -m pip install --upgrade pip
 
-    call :PY_ENV_STOP !O1! || exit /b 1
+    rem !PYTHON! -m ensurepip --upgrade
 
     rem call :PressAnyKey || exit /b 1
     
@@ -185,6 +157,24 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
