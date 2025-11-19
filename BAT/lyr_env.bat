@@ -74,77 +74,17 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    rem -------------------------------------------------------------------
-    rem O1 - project_dir
-    rem -------------------------------------------------------------------
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!scriptdir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    ) else (
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    set project_dir=!O1!\
-    if defined O1 (
-        set OPTION=!OPTION! -!O1_Name! "!O1!"
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
 
-        if not exist !project_dir! (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        ) else (
-            set scriptdir=!project_dir!
-            cd /D !project_dir!
-        )
-    ) else (
-        echo ERROR: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-        exit /b 1
-    )
+    rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-    rem -------------------------------------------------------------------
-    rem O2 - PY_ENVDIR
-    rem -------------------------------------------------------------------
-    if not defined O2 (
-        if exist .venv\ (
-            set PY_ENVDIR=!project_dir!.venv
-        ) else (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        )
-        set O2_Name=O2
-        set O2_Caption=VENV
-        set O2_Default=!PY_ENVDIR!
-        set O2=!O2_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 || exit /b 1
-    )
-    echo O2:!O2!
-    set PY_ENVDIR=!O2!
-    if defined O2 (
-        set OPTION=!OPTION! -!O2_Name! "!O2!"
+    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+    rem echo GET_venv_dir:!GET_venv_dir!
+    echo venv_dir:!venv_dir!
 
-        if exist !O2!\ (
-           set PY_ENVDIR=!O2!
-        ) else (
-            if !02!==P313 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
-            ) else (
-                if !02!==P314 (
-                    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314\
-                )
-            )
-        )
-        echo PY_ENVDIR:!PY_ENVDIR!
-        if not exist !PY_ENVDIR! (
-            echo ERROR: Dir !PY_ENVDIR! not exist ...
-            exit /b 1
-        )
-    ) else (
-        echo ERROR: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-        exit /b 1
-    )
+    rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
 
     rem echo OPTION:!OPTION!
 
@@ -172,7 +112,7 @@ rem ----------------------------------------------------------------------------
     
     rem echo ARGS:!ARGS!
 
-    cmd /k "!PY_ENVDIR!\Scripts\activate.bat"
+    cmd /k "!venv_dir!\Scripts\activate.bat"
 
     rem call :PressAnyKey || exit /b 1
     
@@ -203,6 +143,15 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

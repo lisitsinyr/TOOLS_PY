@@ -67,113 +67,29 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    rem -------------------------------------------------------------------
-    rem O0 - script
-    rem -------------------------------------------------------------------
-    if not defined O0 (
-        set O0_Name=O0
-        set O0_Caption=script
-        set PN_CAPTION=!O0_Caption!
-        set O0_Default=%1
-        set O0=!O0_Default!
-        call :Read_P O0 !O0! || exit /b 1
-    ) else (
-        call :Read_P O0 || exit /b 1
-    )
-    echo O0:!O0!
-    set script=!O0!
-    if defined O0 (
-        set OPTION=!OPTION! -!O0_Name! "!O0!"
+    call :GET_script %1 !project_dir! || exit /b 1
+    rem echo GET_script:!GET_script!
+    echo script:!script!
     
-        call :ExtractFileDir !script! || exit /b 1
-        set scriptdir=!ExtractFileDir!
-        call :ExtractFileName !script! || exit /b 1
-        set scriptname=!ExtractFileName!
-        call :ExtractFileExt !script! || exit /b 1
-        set scriptext=!ExtractFileExt!
-    ) else (
-        echo ERROR: O0 [O0_Name:!O0_Name! O0_Caption:!O0_Caption!] not defined ...
-        exit /b 1
-    )
+    rem set OPTION=!OPTION! -script "!script!"
 
-    rem -------------------------------------------------------------------
-    rem O1 - project_dir
-    rem -------------------------------------------------------------------
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!scriptdir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    ) else (
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    set project_dir=!O1!\
-    if defined O1 (
-        set OPTION=!OPTION! -!O1_Name! "!O1!"
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
+    set scriptdir=!project_dir!
 
-        if not exist !project_dir! (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        ) else (
-            set scriptdir=!project_dir!
-            cd /D !project_dir!
-        )
-    ) else (
-        echo ERROR: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-        exit /b 1
-    )
+    rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-    rem -------------------------------------------------------------------
-    rem O2 - PY_ENVDIR
-    rem -------------------------------------------------------------------
-    if not defined O2 (
-        if exist .venv\ (
-            set PY_ENVDIR=!project_dir!.venv
-        ) else (
-            set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-        )
-        set O2_Name=O2
-        set O2_Caption=VENV
-        set O2_Default=!PY_ENVDIR!
-        set O2=!O2_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 || exit /b 1
-    )
-    echo O2:!O2!
-    set PY_ENVDIR=!O2!
-    if defined O2 (
-        set OPTION=!OPTION! -!O2_Name! "!O2!"
+    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+    rem echo GET_venv_dir:!GET_venv_dir!
+    echo venv_dir:!venv_dir!
 
-        if exist !O2!\ (
-           set PY_ENVDIR=!O2!
-        ) else (
-            if !02!==P313 (
-                set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
-            ) else (
-                if !02!==P314 (
-                    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P314\
-                )
-            )
-        )
-        echo PY_ENVDIR:!PY_ENVDIR!
-        if not exist !PY_ENVDIR! (
-            echo ERROR: Dir !PY_ENVDIR! not exist ...
-            exit /b 1
-        )
-    ) else (
-        echo ERROR: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-        exit /b 1
-    )
+    rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
 
     rem echo OPTION:!OPTION!
 
@@ -181,7 +97,24 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-   
+
+    rem if not defined O1 (
+    rem     set A1_Name=script
+    rem     set A1_Caption=script
+    rem     set A1_Default=
+    rem     set A1=!A1_Default!
+    rem     set PN_CAPTION=!A1_Caption!
+    rem     call :Read_P A1 !A1! || exit /b 1
+    rem )
+    rem echo A1:!A1!
+    rem if defined A1 (
+    rem     set ARGS=!ARGS! "!A1!"
+    rem ) else (
+    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
+    rem     set OK=
+    rem     exit /b 1
+    rem )
+    
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -191,7 +124,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     rem SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!scriptname!
+    set SCRIPT_NAME=!script!
     rem -------------------------------------------------------------------
     rem SCRIPT_DIR - 
     rem -------------------------------------------------------------------
@@ -209,11 +142,11 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    call :VENV_DIR !PY_ENVDIR! || exit /b 1
+    call :VENV_DIR !venv_dir! || exit /b 1
 
-    call :PY_ENV_START !PY_ENVDIR! || exit /b 1
+    call :PY_ENV_START !venv_dir! || exit /b 1
 
-    call :PY_ENV_UPDATE !PY_ENVDIR! || exit /b 1
+    call :PY_ENV_UPDATE !venv_dir! || exit /b 1
 
     set APP=python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
     
@@ -223,7 +156,7 @@ rem ----------------------------------------------------------------------------
 
     !APP!
 
-    call :PY_ENV_STOP !PY_ENVDIR! || exit /b 1
+    call :PY_ENV_STOP !venv_dir! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
@@ -254,6 +187,15 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

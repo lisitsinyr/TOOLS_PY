@@ -238,6 +238,38 @@ rem endfunction
 rem =================================================
 rem ‘”Õ ÷»» LIB
 rem =================================================
+
+rem =================================================
+rem LYRPY.bat
+rem =================================================
+:LYRPY
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_START
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+
 rem =================================================
 rem LYRConst.bat
 rem =================================================
@@ -250,6 +282,7 @@ exit /b 0
 :SET_KIX
 %LIB_BAT%\LYRLIB.bat %*
 exit /b 0
+
 rem =================================================
 rem LYRDateTime.bat
 rem =================================================
@@ -259,6 +292,7 @@ exit /b 0
 :DateTime
 %LIB_BAT%\LYRDateTime.bat %*
 exit /b 0
+
 rem =================================================
 rem LYRFileUtils.bat
 rem =================================================
@@ -295,6 +329,7 @@ exit /b 0
 :CurrentDir
 %LIB_BAT%\LYRFileUtils.bat %*
 exit /b 0
+
 rem =================================================
 rem LYRLog.bat
 rem =================================================
@@ -313,9 +348,11 @@ exit /b 0
 :StopLogFile
 %LIB_BAT%\LYRLog.bat %*
 exit /b 0
+
 rem =================================================
 rem LYRStrUtils.bat
 rem =================================================
+
 rem =================================================
 rem LYRSupport.bat
 rem =================================================
