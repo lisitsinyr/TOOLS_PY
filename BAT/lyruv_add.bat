@@ -89,6 +89,22 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
+    rem -------------------------------------------------------------------
+    rem project_dir - 
+    rem -------------------------------------------------------------------
+    set project_dir=!O1!
+    echo project_dir:!project_dir!
+    if defined project_dir (
+        if not exist !project_dir!\ (
+            echo ERROR: Dir !project_dir! not exist ...
+            exit /b 1
+        )
+        cd /D !project_dir!
+    )
+
+
+
+
 
     if not defined O2 (
         set O2_Name=O2
@@ -148,18 +164,6 @@ rem ----------------------------------------------------------------------------
 
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        )
-        cd /D !project_dir!
-    )
 
     rem uv.exe add <PACKAGES|--requirements <REQUIREMENTS>>
 
@@ -190,6 +194,70 @@ rem ‘”Õ ÷»» LIB
 rem =================================================
 
 rem =================================================
+rem LYRUV.bat
+rem =================================================
+:LYRUV
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_list
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_install
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_uninstall
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_run
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_upgrade
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_find
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_dir
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_pin
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help_cmd
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_other
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_update_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_upgrade_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+
+rem =================================================
 rem LYRPY.bat
 rem =================================================
 :LYRPY
@@ -199,6 +267,24 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

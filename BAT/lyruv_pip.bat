@@ -313,6 +313,70 @@ rem ‘”Õ ÷»» LIB
 rem =================================================
 
 rem =================================================
+rem LYRUV.bat
+rem =================================================
+:LYRUV
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_list
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_install
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_uninstall
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_run
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_upgrade
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_find
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_dir
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_pin
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help_cmd
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_other
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_update_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_upgrade_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+
+rem =================================================
 rem LYRPY.bat
 rem =================================================
 :LYRPY
@@ -322,6 +386,24 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

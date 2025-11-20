@@ -72,23 +72,36 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    rem if not defined O1 (
-    rem     set O1_Name=O1
-    rem     set O1_Caption=python version
-    rem     set O1_Default=3.13
-    rem     set O1=!O1_Default!
-    rem     set PN_CAPTION=!O1_Caption!
-    rem     call :Read_P O1 || exit /b 1
-    rem )
-    rem echo O1:!O1!
-    rem if defined O1 (
-    rem     set OPTION=!OPTION! !O1!
-    rem ) else (
-    rem     echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    rem )
+    call :GET_python !python! || exit /b 1
+    set OPTION=!OPTION! --python !python!
 
-    rem echo OPTION:!OPTION!
+    call :GET_project_type !project_type! || exit /b 1
+    set OPTION=!OPTION! !project_type!
 
+    if not !project_type!==script (
+        call :GET_package !package! || exit /b 1
+        set OPTION=!OPTION! !package!
+
+        call :GET_no-workspace !no-workspace! || exit /b 1
+        set OPTION=!OPTION! !no-workspace!
+
+        call :GET_projects_dir !projects_dir! || exit /b 1
+        set OPTION=!OPTION! !projects_dir!
+
+        call :GET_project_name !project_name! || exit /b 1
+        set OPTION=!OPTION! !project_name!
+    )
+
+    if !project_type!==script (
+        call :GET_script_dir !script_dir! || exit /b 1
+        set OPTION=!OPTION! !script_dir!
+
+        call :GET_script_name !script_name! || exit /b 1
+        set OPTION=!OPTION! !script_name!
+    )
+
+    echo OPTION:!OPTION!
+pause
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
@@ -97,7 +110,7 @@ rem ----------------------------------------------------------------------------
     rem if not defined A1 (
     rem     set A1_Name=script
     rem     set A1_Caption=script
-    rem     set A1_Default=
+    rem     set A1_Default=%1
     rem     set A1=!A1_Default!
     rem     set PN_CAPTION=!A1_Caption!
     rem     call :Read_P A1 !A1! || exit /b 1
@@ -110,24 +123,33 @@ rem ----------------------------------------------------------------------------
     rem     set OK=
     rem     exit /b 1
     rem )
-    
+
     rem echo ARGS:!ARGS!
 
-    call :UV_help !O1! || exit /b 1
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--app] [--package] [--python 3.13.1] [--no-workspace] 
 
-    call :UV_help_cmd !O1! || exit /b 1
-    
-    call :UV_version !O1! || exit /b 1
-    
-    call :UV_self !O1! || exit /b 1
-    
-    call :UV_self_version !O1! || exit /b 1
 
-    call :UV_install_self !O1! || exit /b 1
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--lib] [--package] [--python 3.13.1] [--no-workspace] 
 
-    call :UV_install_other !O1! || exit /b 1
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] project_name
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] project_dir\project_name
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] ...
+    rem uv init [--bare] [--package] [--python 3.13.1] [--no-workspace] 
 
-    call :UV_update_self !O1! || exit /b 1
+    rem uv init --script [--python 3.13.1] myscript.py
+    rem uv init --script [--python 3.13.1] project_dir\myscript.py
+
+    set APP=uv init !OPTION!
+    echo APP:!APP!
+
+    uv init !OPTION!
+    rem start !APP!
 
     rem call :PressAnyKey || exit /b 1
     
@@ -136,7 +158,7 @@ rem ----------------------------------------------------------------------------
 rem =================================================
 
 rem =================================================
-rem LIB
+rem ‘”Õ ÷»» LIB
 rem =================================================
 
 rem =================================================
@@ -144,44 +166,84 @@ rem LYRUV.bat
 rem =================================================
 :LYRUV
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_list
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_install
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_uninstall
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_run
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_upgrade
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_find
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_dir
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_python_pin
 %LIB_BAT%\LYRUV.bat %*
-
+exit /b 0
 :UV_help
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_help_cmd
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_version
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_self
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_self_version
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_install_self
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_install_other
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
 :UV_update_self
 %LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_upgrade_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
 
+:GET_O
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_project_type
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
 
-
+:GET_python
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_no-workspace
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRPY.bat
@@ -193,6 +255,36 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :PY_ENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PY_ENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_name
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
