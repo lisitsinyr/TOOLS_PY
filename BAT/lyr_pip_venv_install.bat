@@ -87,7 +87,6 @@ rem ----------------------------------------------------------------------------
     rem set OPTION=!OPTION! -python_dir "!python_dir!"
 
     set venv_dir=
-
     call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
     rem echo GET_venv_dir:!GET_venv_dir!
     echo venv_dir:!venv_dir!
@@ -168,19 +167,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir

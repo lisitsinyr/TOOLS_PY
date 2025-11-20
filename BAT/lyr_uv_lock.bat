@@ -89,6 +89,11 @@ rem ----------------------------------------------------------------------------
     ) else (
         echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
     )
+
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
+
     rem echo OPTION:!OPTION!
 
     rem -------------------------------------
@@ -96,40 +101,11 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        )
-        cd /D !project_dir!
-    )
-
-    if not exist .venv\ (
-        echo ERROR: Dir !project_dir!\.venv not exist ...
+    cd /D !project_dir!
+    if not exist !project_dir!.venv (
+        echo ERROR: Dir !project_dir!.venv not exist ...
         exit /b 1
     )
 
@@ -219,19 +195,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir

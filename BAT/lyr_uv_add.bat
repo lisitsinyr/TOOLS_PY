@@ -67,77 +67,25 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        rem set OPTION=!OPTION! !O1!
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        )
-        cd /D !project_dir!
+
+    call :GET_package_name !package_name! || exit /b 1
+    rem echo GET_package_name:!GET_package_name!
+    echo package_name:!package_name!
+    set OPTION=!OPTION!add !package_name!
+
+    if not defined package_name (
+        call :GET_requirements_file !requirements_file! || exit /b 1
+        set OPTION=!OPTION!!requirements_file!
     )
-
-
-
-
-
-    if not defined O2 (
-        set O2_Name=O2
-        set O2_Caption=packeges[A B C] requests
-        set O2_Default=
-        set O2=!O3_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 || exit /b 1
-    )
-    echo O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! !O2!
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
-
-    if not defined O2 (
-        if not defined O3 (
-            set O3_Name=O3
-            set O3_Caption=requirements.txt
-            set O3_Default=
-            set O3=!O3_Default!
-            set PN_CAPTION=!O3_Caption!
-            call :Read_P O3 || exit /b 1
-        )
-        echo O3:!O3!
-        if defined O3 (
-            set OPTION=!OPTION!-r requirements.txt
-        ) else (
-            echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
-        )
-    )
-
+  
     echo OPTION:!OPTION!
 
     rem -------------------------------------
@@ -145,41 +93,24 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
-
 
     rem uv.exe add <PACKAGES|--requirements <REQUIREMENTS>>
 
-    rem uv add requests             Add requests as a dependency
+    rem ? uv add requests             Add requests as a dependency
     rem uv add A B C                Add A, B, and C as dependencies
     rem uv add -r requirements.txt  Add dependencies from the file requirements.txt
-    rem uv add --dev pytest         Add pytest as a development dependency
+    rem ? uv add --dev pytest         Add pytest as a development dependency
 
-    if not exist .venv\ (
-        echo ERROR: Dir !project_dir!\.venv not exist ...
+    cd /D !project_dir!
+    if not exist !project_dir!.venv (
+        echo ERROR: Dir !project_dir!.venv not exist ...
         exit /b 1
     ) else (
         set APP=uv add --dev !OPTION!
         echo APP:!APP!
 
-        uv add --dev !OPTION!
+        rem uv add --dev !OPTION!
         rem start !APP!
     )
 
@@ -256,6 +187,24 @@ exit /b 0
 :UV_upgrade_pip
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
+:GET_O
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_project_type
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_python
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_no-workspace
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRPY.bat
@@ -263,19 +212,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir
@@ -285,6 +234,24 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_name
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

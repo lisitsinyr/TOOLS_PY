@@ -75,35 +75,14 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        rem set OPTION=!OPTION! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
 
-    if not defined O2 (
-        set O2_Name=O2
-        set O2_Caption=VENV
-        set O2_Default=P313
-        set O2=!O2_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 !O2! || exit /b 1
-    )
-    echo O2:!O2!
-    if defined O2 (
-        rem set OPTION=!OPTION! -!O2_Name! "!O2!"
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
+    set venv_dir=
+    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+    rem echo GET_venv_dir:!GET_venv_dir!
+    echo venv_dir:!venv_dir!
 
     rem echo OPTION:!OPTION!
 
@@ -112,46 +91,13 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        ) else (
-            cd /D !project_dir!
-        )
-    )
-    if not exist .venv\ (
+    cd /D !project_dir!
+    if not exist !project_dir!.venv (
         echo ERROR: Dir .venv not exist ...
         exit /b 1
     )
-
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
-    call :VENV_DIR !PY_ENVDIR! || exit /b 1
     
     set ChoiceOperation=
     rem ------------------------------------------
@@ -279,11 +225,11 @@ rem beginfunction
         set APP=uv pip install A B C
         echo APP:!APP!
 
-        rem call :PY_ENV_START || exit /b 1
+        rem call :VENV_START !venv_dir! || exit /b 1
 
         uv pip install A B C
 
-        rem call :PY_ENV_STOP || exit /b 1
+        rem call :VENV_STOP !venv_dir! || exit /b 1
 
         exit /b 0
     )
@@ -292,11 +238,11 @@ rem beginfunction
         set APP=uv pip uninstall A B C
         echo APP:!APP!
 
-        rem call :PY_ENV_START || exit /b 1
+        rem call :VENV_START !venv_dir! || exit /b 1
 
         uv pip uninstall A B C
 
-        rem call :PY_ENV_STOP || exit /b 1
+        rem call :VENV_STOP !venv_dir! || exit /b 1
         
         exit /b 0
     )
@@ -382,19 +328,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir

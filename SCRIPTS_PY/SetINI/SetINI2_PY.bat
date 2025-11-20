@@ -148,9 +148,9 @@ rem ----------------------------------------------------------------------------
     )
     rem echo ARGS:!ARGS!
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
-    call :VENV_DIR !PY_ENVDIR! || exit /b 1
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
+    call :SET_VENV_DIR !VENV_DIR! || exit /b 1
 
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
@@ -180,11 +180,11 @@ rem ----------------------------------------------------------------------------
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
-    call :PY_ENV_START || exit /b 1
+    call :VENV_START !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
-    call :PY_ENV_STOP || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
@@ -202,16 +202,16 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

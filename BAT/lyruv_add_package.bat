@@ -109,15 +109,15 @@ rem ----------------------------------------------------------------------------
 
     echo ARGS:!ARGS!
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
-    call :VENV_DIR !PY_ENVDIR! || exit /b 1
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
+    call :SET_VENV_DIR !VENV_DIR! || exit /b 1
 
-    call :PY_ENV_START !PY_ENVDIR! || exit /b 1
+    call :VENV_START !VENV_DIR! || exit /b 1
 
     uv add !A1!
 
-    call :PY_ENV_STOP !PY_ENVDIR! || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
@@ -135,10 +135,10 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

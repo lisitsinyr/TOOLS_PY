@@ -97,23 +97,6 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -137,11 +120,11 @@ rem ----------------------------------------------------------------------------
     )
     rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
-    call :VENV_DIR !PY_ENVDIR! || exit /b 1
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
+    call :SET_VENV_DIR !VENV_DIR! || exit /b 1
 
-    call :PY_ENV_START !PY_ENVDIR! || exit /b 1
+    call :VENV_START !VENV_DIR! || exit /b 1
 
     set APP=uv run --active "!FULL_SCRIPT_NAME!"
     echo APP:!APP!
@@ -149,7 +132,7 @@ rem ----------------------------------------------------------------------------
     uv run --active "!FULL_SCRIPT_NAME!"
     rem start !APP!
 
-    call :PY_ENV_STOP !PY_ENVDIR! || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
@@ -231,19 +214,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir

@@ -11,14 +11,14 @@ setlocal enabledelayedexpansion
     echo Старт !BATNAME! ...
 
     set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
 
     set PY_ENVNAME=%PY_ENVNAME%
     if not defined PY_ENVNAME (
         set PY_ENVNAME=P313
     )
-    if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-        echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+    if not exist !VENV_DIR!\!PY_ENVNAME! (
+        echo INFO: Dir !VENV_DIR!\!PY_ENVNAME! not exist ...
         exit /b 1
     )
 
@@ -61,15 +61,15 @@ setlocal enabledelayedexpansion
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
 
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
+    if not exist !VENV_DIR! (
+        echo INFO: Dir !VENV_DIR! not exist ...
         exit /b 1
     )
 
-    call :PY_ENV_START || exit /b 1
+    call :VENV_START || exit /b 1
 
     if defined __GetINI (
         python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!" > !__GetINI!
@@ -77,7 +77,7 @@ setlocal enabledelayedexpansion
         python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
     )
 
-    call :PY_ENV_STOP || exit /b 1
+    call :VENV_STOP || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
@@ -95,16 +95,16 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir
@@ -294,9 +294,9 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0

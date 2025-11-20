@@ -138,30 +138,30 @@ rem ----------------------------------------------------------------------------
     rem ENV - 
     rem -------------------------------------------------------------------
 
-    rem set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    rem set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
     rem set PY_ENVNAME=%PY_ENVNAME%
     rem if not defined PY_ENVNAME (
     rem     set PY_ENVNAME=P313
     rem )
-    rem if not exist !PY_ENVDIR!\!PY_ENVNAME! (
-    rem     echo INFO: Dir !PY_ENVDIR!\!PY_ENVNAME! not exist ...
+    rem if not exist !VENV_DIR!\!PY_ENVNAME! (
+    rem     echo INFO: Dir !VENV_DIR!\!PY_ENVNAME! not exist ...
     rem     exit /b 1
     rem )
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
 
     set PY_ENVNAME=%PY_ENVNAME%
     if not defined PY_ENVNAME (
         set PY_ENVNAME=P313
     )
-    set PY_ENVDIR=!PY_ENVDIR!\!PY_ENVNAME!
-    rem echo PY_ENVDIR:!PY_ENVDIR!
+    set VENV_DIR=!VENV_DIR!\!PY_ENVNAME!
+    rem echo VENV_DIR:!VENV_DIR!
 
-    set PY_ENVDIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo PY_ENVDIR:!PY_ENVDIR!
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
 
-    if not exist !PY_ENVDIR! (
-        echo INFO: Dir !PY_ENVDIR! not exist ...
+    if not exist !VENV_DIR! (
+        echo INFO: Dir !VENV_DIR! not exist ...
         exit /b 1
     )
 
@@ -193,11 +193,11 @@ rem ----------------------------------------------------------------------------
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
-    call :PY_ENV_START || exit /b 1
+    call :VENV_START || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
-    call :PY_ENV_STOP || exit /b 1
+    call :VENV_STOP || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
@@ -222,10 +222,10 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
@@ -254,10 +254,10 @@ exit /b 0
 :SET_KIX
 %LIB_BAT%\LYRLIB.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

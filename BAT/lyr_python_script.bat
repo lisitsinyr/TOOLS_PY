@@ -98,23 +98,6 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined O1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-    
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
@@ -142,11 +125,11 @@ rem ----------------------------------------------------------------------------
         exit /b 1
     )
 
-    call :VENV_DIR !venv_dir! || exit /b 1
+    call :SET_VENV_DIR !venv_dir! || exit /b 1
 
-    call :PY_ENV_START !venv_dir! || exit /b 1
+    call :VENV_START !venv_dir! || exit /b 1
 
-    call :PY_ENV_UPDATE !venv_dir! || exit /b 1
+    call :VENV_UPDATE !venv_dir! || exit /b 1
 
     set APP=python "!FULL_SCRIPT_NAME!" %2 %3 %4 %5 %6 %7 %8 %9
     
@@ -156,7 +139,7 @@ rem ----------------------------------------------------------------------------
 
     !APP!
 
-    call :PY_ENV_STOP !venv_dir! || exit /b 1
+    call :VENV_STOP !venv_dir! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     
@@ -174,19 +157,19 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_START
+:VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_STOP
+:VENV_STOP
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PY_ENV_UPDATE
+:VENV_UPDATE
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:PROJECT_DIR
+:SET_PROJECT_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:VENV_DIR
+:SET_VENV_DIR
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :GET_project_dir
