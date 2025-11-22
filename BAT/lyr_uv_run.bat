@@ -67,97 +67,63 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined !O5! (
-        set O5_Name=O5
-        set O5_Caption=project_dir
-        set O5_Default=!CurrentDir!
-        set O5=!O5_Default!
-        set PN_CAPTION=!O5_Caption!
-        call :Read_P O5 || exit /b 1
-    )
-    rem echo O5:!O5!
-    if defined O5 (
-        set project_dir=!O5!
-        echo project_dir:!project_dir!
-    ) else (
-        echo INFO: O5 [O5_Name:!O5_Name! O5_Caption:!O5_Caption!] not defined ...
-    )
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
 
-    if not defined !O4! (
-        set O4_Name=O4
-        set O4_Caption=python
-        set O4_Default=3.13
-        set O4=!O4_Default!
-        set PN_CAPTION=!O4_Caption!
-        call :Read_P O4 || exit /b 1
-    )
-    rem echo O4:!O4!
-    if defined O4 (
-        set OPTION=!OPTION!--python !O4!
-        set python=--python !O4!
-    ) else (
-        echo INFO: O4 [O4_Name:!O4_Name! O4_Caption:!O4_Caption!] not defined ...
-    )
+    set venv_dir=
+    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+    rem echo GET_venv_dir:!GET_venv_dir!
+    echo venv_dir:!venv_dir!
 
-    echo OPTION:!OPTION!
+    rem echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    rem set A1_Name=script
-    rem set A1_Caption=script
-    rem set A1_Default=
-    rem set A1=!A1_Default!
-    rem set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
-    rem project_dir - 
+    rem TEST - 
     rem -------------------------------------------------------------------
-    if defined project_dir (
-        if exist !project_dir!\ (
-            if exist !project_dir!\.venv (
-                echo ERROR: Dir !project_dir!\.venv exist ...
-                rem set APP=uv venv !OPTION! --clear !project_dir!\.venv
-                exit /b 1
-            ) else (
-                set APP=uv venv !OPTION! !project_dir!\.venv
-            )
-        ) else (
-            echo INFO: Dir !project_dir! not exist ...
-            set APP=uv venv !OPTION! !project_dir!\.venv
-        )
-    
-    ) else (
-        echo ERROR: project_dir not defined ... 
-        rem set APP=uv venv !OPTION! .venv
-        exit /b 1
+    set TEST=yes
+    rem -------------------------------------------------------------------
+    rem SCRIPT_NAME - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_NAME=!A1!
+    rem -------------------------------------------------------------------
+    rem SCRIPT_DIR - 
+    rem -------------------------------------------------------------------
+    set SCRIPT_DIR=!SCRIPT_NAME!
+    rem -------------------------------------------------------------------
+    rem FULL_SCRIPT_NAME - 
+    rem -------------------------------------------------------------------
+    set FULL_SCRIPT_NAME=!SCRIPT_NAME!
+    if defined TEST (
+        set FULL_SCRIPT_NAME=!SCRIPT_NAME!
     )
+    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    echo VENV_DIR:!VENV_DIR!
+    call :SET_VENV_DIR !VENV_DIR! || exit /b 1
+
+    call :VENV_START !VENV_DIR! || exit /b 1
+
+    set APP=uv run --active "!FULL_SCRIPT_NAME!"
     echo APP:!APP!
 
-    uv venv !OPTION! !project_dir!\.venv
+    uv run --active "!FULL_SCRIPT_NAME!"
     rem start !APP!
+
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
     

@@ -67,105 +67,124 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        rem set OPTION=!OPTION! !O1!
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    call :GET_python !python! || exit /b 1
+    set OPTION=!OPTION! --python !python!
 
-    if not defined O2 (
-        set O2_Name=O2
-        set O2_Caption=packeges[A B C] requests
-        set O2_Default=
-        set O2=!O3_Default!
-        set PN_CAPTION=!O2_Caption!
-        call :Read_P O2 || exit /b 1
-    )
-    echo O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! !O2!
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
-
-    echo OPTION:!OPTION!
+    rem echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        )
-        cd /D !project_dir!
+    set ChoiceOperation=
+
+    rem ------------------------------------------
+    :WHILE
+    rem ------------------------------------------
+    if not !ChoiceOperation!==10 (
+        call :ChoiceOperation || exit /b 1
+        goto :WHILE
     )
 
-    if not exist .venv\ (
-        echo ERROR: Dir !project_dir!\.venv not exist ...
-        exit /b 1
-    )
-
-    rem uv remove requests          Remove requests as a dependency
-    rem uv remove A B C             Remove A, B, C, and their transitive dependencies
-
-    set APP=uv remove !OPTION!
-    echo APP:!APP!
-   
-    uv remove !OPTION!
-    rem start !APP!
-    
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
 :end
 rem =================================================
 
+rem --------------------------------------------------------------------------------
+rem function ChoiceOperation () -> Read_N
+rem --------------------------------------------------------------------------------
+:ChoiceOperation
+rem beginfunction
+    set FUNCNAME=%0
+    set FUNCNAME=ChoiceOperation
+    if defined DEBUG (
+        echo DEBUG: procedure !FUNCNAME! ...
+    )
+    set !FUNCNAME!=
+
+    rem ------------------------------------------
+    rem ÃÂÌ˛
+    rem ------------------------------------------
+    echo 1.UV_python_list
+    echo 2.UV_python_install
+    echo 3.UV_python_uninstall
+    echo 4.UV_python_run
+    echo 5.UV_python_upgrade
+    echo 6.UV_python_find
+    echo 7.UV_python_dir
+    echo 8.UV_python_
+    echo 9.UV_python_pin
+    echo Q.Quit
+
+    set C1_Name=C1
+    set C1_List=123456789Q
+    set C1_Caption=operation
+    set C1_Default=Q
+    rem set C1=!O1_Default!
+    set PN_CAPTION=!C1_Caption!
+    rem procedure Read_F (P_Name, P_List, ADefault, ACaption, Atimeout)
+    call :Read_F C1 !C1_List! !C1_Default! !C1_Caption! 10 || exit /b 1
+    echo C1:!C1!
+    set ChoiceOperation=!C1!
+
+    rem ------------------------------------------
+    rem CASE
+    rem ------------------------------------------
+    if !C1!==1 (
+        call :UV_python_list || exit /b 1
+        exit /b 0
+    )
+    if !C1!==2 (
+        call :UV_python_install !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==3 (
+        call :UV_python_uninstall !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==4 (
+        call :UV_python_run || exit /b 1
+        exit /b 0
+    )
+    if !C1!==5 (
+        call :UV_python_upgrade || exit /b 1
+        exit /b 0
+    )
+    if !C1!==6 (
+        call :UV_python_find !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==7 (
+        call :UV_python_dir !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==8 (
+        call :UV_python_ !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==9 (
+        call :UV_python_pin !O1! || exit /b 1
+        exit /b 0
+    )
+    if !C1!==10 (
+        exit /b 0
+    )
+
+    exit /b 0
+rem endfunction
+
 rem =================================================
-rem ‘”Õ ÷»» LIB
+rem LIB
 rem =================================================
 
 rem =================================================

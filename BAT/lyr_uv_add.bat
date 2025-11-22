@@ -76,12 +76,12 @@ rem ----------------------------------------------------------------------------
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
 
-    call :GET_package_name !package_name! || exit /b 1
-    rem echo GET_package_name:!GET_package_name!
-    echo package_name:!package_name!
-    set OPTION=!OPTION!add !package_name!
+    call :GET_package_names !package_names! || exit /b 1
+    rem echo GET_package_names:!GET_package_names!
+    echo package_names:!package_names!
+    set OPTION=!OPTION!add !package_names!
 
-    if not defined package_name (
+    if not defined package_names (
         call :GET_requirements_file !requirements_file! || exit /b 1
         set OPTION=!OPTION!!requirements_file!
     )
@@ -251,7 +251,7 @@ exit /b 0
 :GET_requirements_file
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
-:GET_package_name
+:GET_package_names
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
@@ -269,7 +269,7 @@ exit /b 0
 exit /b 0
 
 rem =================================================
-rem LYRConst.bat
+rem LYRConst.bat          /
 rem =================================================
 :SET_LIB
 %LIB_BAT%\LYRLIB.bat %*

@@ -69,26 +69,15 @@ rem ----------------------------------------------------------------------------
 
     call :CurrentDir || exit /b 1
     rem echo CurrentDir:!CurrentDir!
-
+ 
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
+    call :GET_project_dir !project_dir! || exit /b 1
+    rem echo GET_project_dir:!GET_project_dir!
+    echo project_dir:!project_dir!
 
     rem echo OPTION:!OPTION!
 
@@ -97,48 +86,12 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem if not defined A1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=%1
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-
     rem echo ARGS:!ARGS!
 
-    rem -------------------------------------------------------------------
-    rem project_dir - 
-    rem -------------------------------------------------------------------
-    set project_dir=!O1!
-    echo project_dir:!project_dir!
-    if defined project_dir (
-        if not exist !project_dir!\ (
-            echo ERROR: Dir !project_dir! not exist ...
-            exit /b 1
-        ) else (
-            cd /D !project_dir!
-        )
-    )
-
-    if not exist .venv\ (
-        echo ERROR: Dir .venv not exist ...
-        exit /b 1
-    )
-
-    set APP=uv sync
+    set APP=uv tree
     echo APP:!APP!
-    uv sync
-
+    uv tree
+   
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
