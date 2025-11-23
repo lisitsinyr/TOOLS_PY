@@ -121,8 +121,6 @@ rem ----------------------------------------------------------------------------
     call :CurrentDir || exit /b 1
     echo CurrentDir:!CurrentDir!
 
-    set project_dir=!CurrentDir!
-
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
     rem -------------------------------------------------------------------
@@ -151,9 +149,12 @@ rem ----------------------------------------------------------------------------
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
+    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY
+    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\TELEGRAM\GetMessage
+
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
     echo VENV_DIR:!VENV_DIR!
-    call :SET_VENV_DIR !VENV_DIR! || exit /b 1
+    call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
     call :VENV_START !VENV_DIR! || exit /b 1
 
@@ -181,6 +182,42 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_PROJECT_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_VENV_DIR
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_name
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

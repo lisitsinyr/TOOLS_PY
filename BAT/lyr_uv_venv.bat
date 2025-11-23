@@ -91,9 +91,11 @@ rem ----------------------------------------------------------------------------
 
     rem echo ARGS:!ARGS!
 
-    uv venv !OPTION! !project_dir!\.venv
-    rem start !APP!
-
+    if not exist !project_dir!\.venv\ (
+        uv venv !OPTION! !project_dir!\.venv
+    ) else (
+        echo ERROR: Каталог !project_dir!\.venv существует ...
+    )
     rem call :PressAnyKey || exit /b 1
     
     exit /b 0
@@ -165,6 +167,24 @@ exit /b 0
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :UV_upgrade_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_O
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_project_type
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_python
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_no-workspace
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 

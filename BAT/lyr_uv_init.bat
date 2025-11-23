@@ -128,21 +128,19 @@ rem ----------------------------------------------------------------------------
     rem uv init --script [--python 3.13.1] myscript.py
     rem uv init --script [--python 3.13.1] project_dir\myscript.py
 
-    set APP=uv init !OPTION!
-    echo APP:!APP!
-
+    echo python:      !python!
+    echo project_type:!project_type!
+    echo package:     !package!
+    echo no-workspace:!no-workspace!
+    echo projects_dir:!projects_dir!
+    echo project_name:!project_name!
+    echo script_dir:  !script_dir!
+    echo script_name: !script_name!
     if exist pyproject.toml (
         echo project is exist in !projects_dir!
     ) else (
-        echo python:      !python!
-        echo project_type:!project_type!
-        echo package:     !package!
-        echo no-workspace:!no-workspace!
-        echo projects_dir:!projects_dir!
-        echo project_name:!project_name!
-        echo script_dir:  !script_dir!
-        echo script_name: !script_name!
-
+        set APP=uv init !OPTION!
+        echo APP:!APP!
         uv init !OPTION!
         rem start !APP!
     )
@@ -220,7 +218,6 @@ exit /b 0
 :UV_upgrade_pip
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-
 :GET_O
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
@@ -230,7 +227,6 @@ exit /b 0
 :GET_package
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-
 :GET_python
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
