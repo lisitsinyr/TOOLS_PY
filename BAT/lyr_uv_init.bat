@@ -96,8 +96,8 @@ rem ----------------------------------------------------------------------------
         call :GET_script_dir !script_dir! || exit /b 1
         set OPTION=!OPTION! !script_dir!
 
-        call :GET_script_name !script_name! || exit /b 1
-        set OPTION=!OPTION! !script_name!
+        call :GET_script !script! || exit /b 1
+        set OPTION=!OPTION! !script!
     )
 
     echo OPTION:!OPTION!

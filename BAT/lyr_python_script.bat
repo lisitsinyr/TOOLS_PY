@@ -67,29 +67,34 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
+    call :CurrentDir || exit /b 1
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
 
-    call :GET_script %1 !project_dir! || exit /b 1
+    rem set project_dir=!CurrentDir!
+
+    call :GET_script %1 || exit /b 1
     rem echo GET_script:!GET_script!
-    echo script:!script!
-    
+    rem echo script:!script!
     rem set OPTION=!OPTION! -script "!script!"
 
-    call :GET_project_dir !project_dir! || exit /b 1
-    rem echo GET_project_dir:!GET_project_dir!
-    echo project_dir:!project_dir!
-    set scriptdir=!project_dir!
+    if defined script (
+        call :GET_project_dir !project_dir! || exit /b 1
+        rem echo GET_project_dir:!GET_project_dir!
+        rem echo project_dir:!project_dir!
+        rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-    rem set OPTION=!OPTION! -project_dir "!project_dir!"
-
-    call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
-    rem echo GET_venv_dir:!GET_venv_dir!
-    echo venv_dir:!venv_dir!
-
-    rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
+        call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+        rem echo GET_venv_dir:!GET_venv_dir!
+        rem echo venv_dir:!venv_dir!
+        rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
+    ) else (
+        echo ERROR: script not defined ...
+        exit /b 3
+    )
 
     rem echo OPTION:!OPTION!
 
@@ -107,11 +112,11 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     rem SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=!script!
+    set SCRIPT_NAME=!script_name!
     rem -------------------------------------------------------------------
     rem SCRIPT_DIR - 
     rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!scriptdir!\
+    set SCRIPT_DIR=!script_dir!\
     rem -------------------------------------------------------------------
     rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
@@ -157,6 +162,62 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:SET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+
+:GET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_names
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 :VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
@@ -164,21 +225,6 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_UPDATE
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_PROJECT_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_VENV_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_venv_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_python_dir
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 

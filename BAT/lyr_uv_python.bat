@@ -124,7 +124,7 @@ rem beginfunction
     echo 7.UV_python_dir
     echo 8.UV_python_
     echo 9.UV_python_pin
-    echo Q.Quit
+    echo 10.Quit
 
     set C1_Name=C1
     set C1_List=123456789Q
@@ -186,6 +186,76 @@ rem endfunction
 rem =================================================
 rem LIB
 rem =================================================
+
+rem =================================================
+rem LYRPY.bat
+rem =================================================
+:LYRPY
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_names
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_START
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_STOP
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:VENV_UPDATE
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 
 rem =================================================
 rem LYRUV.bat
@@ -250,38 +320,106 @@ exit /b 0
 :UV_upgrade_pip
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-
-rem =================================================
-rem LYRPY.bat
-rem =================================================
-:LYRPY
-%LIB_BAT%\LYRPY.bat %*
+:GET_O
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:VENV_START
-%LIB_BAT%\LYRPY.bat %*
+:GET_project_type
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:VENV_STOP
-%LIB_BAT%\LYRPY.bat %*
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:VENV_UPDATE
-%LIB_BAT%\LYRPY.bat %*
+:GET_python
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:SET_PROJECT_DIR
-%LIB_BAT%\LYRPY.bat %*
+:GET_no-workspace
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:SET_VENV_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_venv_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_python_dir
-%LIB_BAT%\LYRPY.bat %*
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
 exit /b 0
 
+rem =================================================
+rem LYRUV.bat
+rem =================================================
+:LYRUV
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_list
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_install
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_uninstall
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_run
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_upgrade
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_find
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_dir
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_python_pin
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_help_cmd
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_self_version
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_other
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_update_self
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_install_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:UV_upgrade_pip
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_O
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_project_type
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_python
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_no-workspace
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
+:GET_package
+%LIB_BAT%\LYRUV.bat %*
+exit /b 0
 rem =================================================
 rem LYRDEPLOY.bat
 rem =================================================

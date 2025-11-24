@@ -67,7 +67,6 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -75,13 +74,13 @@ rem ----------------------------------------------------------------------------
 
     call :GET_project_dir !project_dir! || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
-    echo project_dir:!project_dir!
+    rem echo project_dir:!project_dir!
 
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
     call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
     rem echo GET_venv_dir:!GET_venv_dir!
-    echo venv_dir:!venv_dir!
+    rem echo venv_dir:!venv_dir!
 
     rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
 
@@ -94,11 +93,13 @@ rem ----------------------------------------------------------------------------
 
     rem echo ARGS:!ARGS!
 
-    call :SET_VENV_DIR !venv_dir! || exit /b 1
+    call :SET_VENV_DIR !project_dir! !venv_dir! || exit /b 1
 
     call :VENV_START !venv_dir! || exit /b 1
 
     call :VENV_UPDATE !venv_dir! || exit /b 1
+
+pause
 
     set APP=python %1 %2 %3 %4 %5 %6 %7 %8 %9
 

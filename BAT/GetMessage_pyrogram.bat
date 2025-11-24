@@ -149,10 +149,10 @@ rem ----------------------------------------------------------------------------
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
-    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY
-    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\TELEGRAM\GetMessage
+    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
+    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\TELEGRAM\GetMessage\
 
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
     echo VENV_DIR:!VENV_DIR!
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
