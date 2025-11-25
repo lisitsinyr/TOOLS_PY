@@ -145,11 +145,11 @@ rem beginfunction
         exit /b 0
     )
     if !C1!==2 (
-        call :UV_python_install !O1! || exit /b 1
+        call :UV_python_install !python! || exit /b 1
         exit /b 0
     )
     if !C1!==3 (
-        call :UV_python_uninstall !O1! || exit /b 1
+        call :UV_python_uninstall !python! || exit /b 1
         exit /b 0
     )
     if !C1!==4 (
@@ -161,19 +161,19 @@ rem beginfunction
         exit /b 0
     )
     if !C1!==6 (
-        call :UV_python_find !O1! || exit /b 1
+        call :UV_python_find !python! || exit /b 1
         exit /b 0
     )
     if !C1!==7 (
-        call :UV_python_dir !O1! || exit /b 1
+        call :UV_python_dir !python! || exit /b 1
         exit /b 0
     )
     if !C1!==8 (
-        call :UV_python_ !O1! || exit /b 1
+        call :UV_python_ !python! || exit /b 1
         exit /b 0
     )
     if !C1!==9 (
-        call :UV_python_pin !O1! || exit /b 1
+        call :UV_python_pin !python! || exit /b 1
         exit /b 0
     )
     if !C1!==10 (
@@ -318,9 +318,6 @@ exit /b 0
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :UV_upgrade_pip
-%LIB_BAT%\LYRUV.bat %*
-exit /b 0
-:GET_O
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :GET_project_type

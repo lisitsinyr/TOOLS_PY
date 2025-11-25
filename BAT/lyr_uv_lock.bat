@@ -75,21 +75,6 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    if not defined O1 (
-        set O1_Name=O1
-        set O1_Caption=project_dir
-        set O1_Default=!CurrentDir!
-        set O1=!O1_Default!
-        set PN_CAPTION=!O1_Caption!
-        call :Read_P O1 || exit /b 1
-    )
-    echo O1:!O1!
-    if defined O1 (
-        set OPTION=!OPTION! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
-
     call :GET_project_dir !project_dir! || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!

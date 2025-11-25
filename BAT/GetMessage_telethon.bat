@@ -129,34 +129,37 @@ rem ----------------------------------------------------------------------------
     call :CurrentDir || exit /b 1
     echo CurrentDir:!CurrentDir!
 
+    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
+
     rem -------------------------------------------------------------------
     rem TEST - 
     rem -------------------------------------------------------------------
     set TEST=yes
     rem -------------------------------------------------------------------
-    rem SCRIPT_NAME - 
+    rem script_name - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=GetMessage
+    set script_name=GetMessage
     rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
+    rem script_dir - 
     rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
+    rem set script_dir=!SCRIPT_NAME!
+    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\TELEGRAM\GetMessage\
     rem -------------------------------------------------------------------
     rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!.py
+    set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     if defined TEST (
-        set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
+        set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     )
 
-    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
-    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\TELEGRAM\GetMessage\
-
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
     echo VENV_DIR:!VENV_DIR!
+
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
     call :VENV_START !VENV_DIR! || exit /b 1
+
+    call :VENV_UPDATE !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 

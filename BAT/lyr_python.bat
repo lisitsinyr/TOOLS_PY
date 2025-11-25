@@ -74,14 +74,12 @@ rem ----------------------------------------------------------------------------
 
     call :GET_project_dir !project_dir! || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
-    rem echo project_dir:!project_dir!
-
+    echo project_dir:!project_dir!
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
     call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
     rem echo GET_venv_dir:!GET_venv_dir!
-    rem echo venv_dir:!venv_dir!
-
+    echo venv_dir:!venv_dir!
     rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
 
     rem echo OPTION:!OPTION!
@@ -99,12 +97,8 @@ rem ----------------------------------------------------------------------------
 
     call :VENV_UPDATE !venv_dir! || exit /b 1
 
-pause
-
     set APP=python %1 %2 %3 %4 %5 %6 %7 %8 %9
-
     echo APP:!APP!
-
     !APP!
 
     call :VENV_STOP !venv_dir! || exit /b 1

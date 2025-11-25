@@ -218,9 +218,6 @@ exit /b 0
 :UV_upgrade_pip
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:GET_O
-%LIB_BAT%\LYRUV.bat %*
-exit /b 0
 :GET_project_type
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0

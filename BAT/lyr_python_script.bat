@@ -78,18 +78,18 @@ rem ----------------------------------------------------------------------------
 
     call :GET_script %1 || exit /b 1
     rem echo GET_script:!GET_script!
-    rem echo script:!script!
+    echo script:!script!
     rem set OPTION=!OPTION! -script "!script!"
 
     if defined script (
         call :GET_project_dir !project_dir! || exit /b 1
         rem echo GET_project_dir:!GET_project_dir!
-        rem echo project_dir:!project_dir!
+        echo project_dir:!project_dir!
         rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
         call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
         rem echo GET_venv_dir:!GET_venv_dir!
-        rem echo venv_dir:!venv_dir!
+        echo venv_dir:!venv_dir!
         rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
     ) else (
         echo ERROR: script not defined ...

@@ -74,7 +74,7 @@ rem ----------------------------------------------------------------------------
 
     call :GET_project_dir !project_dir! || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
-    echo project_dir:!project_dir!
+    rem echo project_dir:!project_dir!
 
     call :GET_package_names !package_names! || exit /b 1
     rem echo GET_package_names:!GET_package_names!
@@ -86,7 +86,7 @@ rem ----------------------------------------------------------------------------
         set OPTION=!OPTION!!requirements_file!
     )
   
-    echo OPTION:!OPTION!
+    rem echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
@@ -185,9 +185,6 @@ exit /b 0
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :UV_upgrade_pip
-%LIB_BAT%\LYRUV.bat %*
-exit /b 0
-:GET_O
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :GET_project_type

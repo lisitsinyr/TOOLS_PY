@@ -67,8 +67,6 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -77,13 +75,11 @@ rem ----------------------------------------------------------------------------
     call :GET_project_dir !project_dir! || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
-
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
     call :GET_python_dir !python_dir! || exit /b 1
     rem echo GET_python_dir:!GET_python_dir!
     echo python_dir:!python_dir!
-
     rem set OPTION=!OPTION! -python_dir "!python_dir!"
 
     rem echo OPTION:!OPTION!
