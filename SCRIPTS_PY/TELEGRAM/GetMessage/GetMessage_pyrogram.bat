@@ -173,6 +173,66 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:SET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_names
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 :VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
@@ -180,39 +240,6 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_UPDATE
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_PROJECT_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_VENV_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_venv_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_python_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_projects_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_name
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_script_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_script_name
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_requirements_file
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_package_name
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
@@ -367,6 +394,9 @@ exit /b 0
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 :GetCMD
+%LIB_BAT%\LYRSupport.bat %*
+exit /b 0
+:GET_Ox
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 

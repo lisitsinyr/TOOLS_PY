@@ -72,8 +72,8 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    call :GET_python !python! || exit /b 1
-    set OPTION=!OPTION! --python !python!
+    call :GET_python_version !python_version! || exit /b 1
+    set OPTION=!OPTION! --python !python_version!
 
     call :GET_project_type !project_type! || exit /b 1
     set OPTION=!OPTION! !project_type!
@@ -224,7 +224,7 @@ exit /b 0
 :GET_package
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:GET_python
+:GET_python_version
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :GET_no-workspace

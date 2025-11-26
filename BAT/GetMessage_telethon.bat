@@ -72,51 +72,32 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    set O1_Name=O1
-    set O1_Caption=Ссылка на сообщение
-    set O1_Default=
-    set O1=!O1_Default!
-    set PN_CAPTION=!O1_Caption!
-    rem call :Read_P O1 !O1! || exit /b 1
-    echo O1:!O1!
+    rem set O1=hhhhhhhhhhhh
+    call :GET_Ox "O1" "Ссылка на сообщение" "" || exit /b 1
     if defined O1 (
-        set OPTION=!OPTION! -!O1_Name! "!O1!"
-    ) else (
-        echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    )
-    set O2_Name=O2
-    set O2_Caption=Каталог загрузки
-    set O2_Default=G:\___РАЗБОР\YOUTUBE\TELEGRAM
-    set O2=!O2_Default!
-    set PN_CAPTION=!O2_Caption!
-    call :Read_P O2 !O2! || exit /b 1
-    echo O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! -!O2_Name! "!O2!"
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
-    )
-    set O3_Name=O3
-    set O3_Caption=LIB
-    set O3_Default=telethon
-    set O3=!O3_Default!
-    set PN_CAPTION=!O3_Caption!
-    call :Read_P O3 !O3! || exit /b 1
-    echo O3:!O3!
-    if defined O3 (
-        set OPTION=!OPTION! -!O3_Name! "!O3!"
-    ) else (
-        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
+        set OPTION=!OPTION! -!Ox_Name! "!O1!"
     )
 
-    echo OPTION:!OPTION!
+    set O2="G:\___РАЗБОР\YOUTUBE"
+    call :GET_Ox "O2" "Каталог загрузки" "G:\___РАЗБОР\YOUTUBE\TELEGRAM" || exit /b 1
+    if defined O2 (
+        set OPTION=!OPTION! -!Ox_Name! !O2!
+    )
+
+    set O3=telethon
+    call :GET_Ox "O3" "LIB" "telethon" || exit /b 1
+    if defined O3 (
+        set OPTION=!OPTION! -!Ox_Name! !O3!
+    )
+
+    rem echo OPTION:!OPTION!
  
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    echo ARGS:!ARGS!
+    rem echo ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
@@ -153,13 +134,13 @@ rem ----------------------------------------------------------------------------
     )
 
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
-    echo VENV_DIR:!VENV_DIR!
+    rem echo VENV_DIR:!VENV_DIR!
 
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
     call :VENV_START !VENV_DIR! || exit /b 1
 
-    call :VENV_UPDATE !VENV_DIR! || exit /b 1
+    rem call :VENV_UPDATE !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
@@ -181,6 +162,66 @@ rem =================================================
 :LYRPY
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
+:SET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_projects_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_project_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script_name
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_venv_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_python_dir
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:SET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_script
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_requirements_file
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
+:GET_package_names
+%LIB_BAT%\LYRPY.bat %*
+exit /b 0
 :VENV_START
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
@@ -188,39 +229,6 @@ exit /b 0
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :VENV_UPDATE
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_PROJECT_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:SET_VENV_DIR
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_venv_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_python_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_projects_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_project_name
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_script_dir
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_script_name
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_requirements_file
-%LIB_BAT%\LYRPY.bat %*
-exit /b 0
-:GET_package_name
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 
@@ -375,6 +383,9 @@ exit /b 0
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 :GetCMD
+%LIB_BAT%\LYRSupport.bat %*
+exit /b 0
+:GET_Ox
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 

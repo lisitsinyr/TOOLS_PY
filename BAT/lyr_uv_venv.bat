@@ -79,8 +79,8 @@ rem ----------------------------------------------------------------------------
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
 
-    call :GET_python !python! || exit /b 1
-    set OPTION=!OPTION! --python !python!
+    call :GET_python_version !python_version! || exit /b 1
+    set OPTION=!OPTION! --python !python_version!
 
     echo OPTION:!OPTION!
 
@@ -175,7 +175,7 @@ exit /b 0
 :GET_package
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
-:GET_python
+:GET_python_version
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :GET_no-workspace
