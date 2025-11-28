@@ -190,7 +190,7 @@ rem =================================================
 rem =================================================
 rem LYRPY.bat
 rem =================================================
-:LYRPY
+:LYRPYINIT
 %LIB_BAT%\LYRPY.bat %*
 exit /b 0
 :SET_project_dir
@@ -260,7 +260,7 @@ exit /b 0
 rem =================================================
 rem LYRUV.bat
 rem =================================================
-:LYRUV
+:LYRUVINIT
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :UV_python_list
@@ -339,7 +339,7 @@ exit /b 0
 rem =================================================
 rem LYRUV.bat
 rem =================================================
-:LYRUV
+:LYRUVINIT
 %LIB_BAT%\LYRUV.bat %*
 exit /b 0
 :UV_python_list
