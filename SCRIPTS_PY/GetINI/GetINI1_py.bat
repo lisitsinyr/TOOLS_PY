@@ -10,17 +10,22 @@ setlocal enabledelayedexpansion
     set BATNAME=%~nx0
     echo Старт !BATNAME! ...
 
-    set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
+    rem -------------------------------------------------------------------
+    rem LIB_BAT - каталог библиотеки скриптов BAT
+    rem -------------------------------------------------------------------
+    if not defined LIB_BAT (
+        set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
     )
-    if not exist !VENV_DIR!\!PY_ENVNAME! (
-        echo INFO: Dir !VENV_DIR!\!PY_ENVNAME! not exist ...
+    rem echo LIB_BAT:!LIB_BAT!
+    if not exist !LIB_BAT!\ (
+        echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
         exit /b 1
     )
+
+    rem -------------------------------------------------------------------
+    rem Настройка среды
+    rem -------------------------------------------------------------------
+    call :SET_LIB %~f0 || exit /b 1
 
     set FileINI=%1
     if not defined FileINI (
@@ -38,6 +43,11 @@ setlocal enabledelayedexpansion
         rem exit /b 1
     )
     
+    rem call :CurrentDir || exit /b 1
+    rem echo CurrentDir:!CurrentDir!
+
+    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
+
     rem -------------------------------------------------------------------
     rem TEST - 
     rem -------------------------------------------------------------------
@@ -45,39 +55,34 @@ setlocal enabledelayedexpansion
     rem -------------------------------------------------------------------
     rem SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set SCRIPT_NAME=GetINI1
+    set script_name=GetINI1
     rem -------------------------------------------------------------------
     rem SCRIPT_DIR - 
     rem -------------------------------------------------------------------
-    set SCRIPT_DIR=GetINI
+    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\GetINI\
     rem -------------------------------------------------------------------
-    rem SCRIPTS_DIR_PY - Каталог скриптов PY
+    rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    if not defined SCRIPTS_DIR_PY (
-        set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
-    )
-    set FULL_SCRIPT_NAME=!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!.py
+    set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     if defined TEST (
-        set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
+        set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     )
 
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo VENV_DIR:!VENV_DIR!
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
+    rem echo VENV_DIR:!VENV_DIR!
 
-    if not exist !VENV_DIR! (
-        echo INFO: Dir !VENV_DIR! not exist ...
-        exit /b 1
-    )
+    call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
-    call :VENV_START || exit /b 1
-
+    call :VENV_START !VENV_DIR! || exit /b 1
+ 
     if defined __GetINI (
         python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!" > !__GetINI!
     ) else (
         python "!FULL_SCRIPT_NAME!" "!FileINI!" "!Section!" "!Parameter!"
     )
 
-    call :VENV_STOP || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
