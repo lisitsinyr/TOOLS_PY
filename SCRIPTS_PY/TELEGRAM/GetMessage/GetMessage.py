@@ -326,11 +326,18 @@ def func_telethon ():
     # channel
     #-------------------------------------------
     try:
-        # channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
-        channel:telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
+        channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except:
-        channel:telethon.tl.types.Channel = None
+        channel: telethon.tl.types.Channel = None
     #endtry
+    if not channel:
+        try:
+            channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
+        except:
+            channel: telethon.tl.types.Channel = None
+        #endtry
+    #endif
+
     # -------------------------------------------
     # Получаем сообщение
     # -------------------------------------------
@@ -465,29 +472,41 @@ def func_pyrogram ():
     # # Имя сессии (может быть любым)
     session_name = 'lyr60'
     # print (f'{LIB_name}_session_name={session_name}')
-    Tclient:pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
+    Tclient: pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
 
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
-    me:pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
+    me: pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
     # print (f"{me=}")
 
     #-------------------------------------------
     # Получаем сообщение
     #-------------------------------------------
-    message = None
-    print (Gchannel_name_raw)
+    print (f"{Gchannel_name_raw=}")
+    print (f"{Gchannel_name_id=}")
     try:
         chat = Tclient.get_chat (Gchannel_name_raw)
         # print(f'chat={chat}')
         # print(f'chat.description={chat.description}')
         # print(f'{LIB_name}_chat.title={chat.title}')
         # print(f'{LIB_name}_chat.username={chat.username}')
-        message = Tclient.get_messages(chat.id, Gmessage_id)
     except:
-        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name_raw=}")
+        chat = None
+        # LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name_raw=}")
     #endtry
+    if not chat:
+        try:
+            chat = Tclient.get_chat (Gchannel_name_id)
+        except:
+            chat = None
+            # LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name_id=}")
+        #endtry
+
+    try:
+        message = Tclient.get_messages (chat.id, Gmessage_id)
+    except:
+        message = None
 
     if not message is None:
         # print (message)
@@ -577,7 +596,7 @@ def func_pyrogram ():
         #     print(f"{LIB_name}_download_file: {file_path}")
     else:
         Tclient.stop ()
-        return 1
+        return 0
 
     Tclient.stop ()
     return 0
