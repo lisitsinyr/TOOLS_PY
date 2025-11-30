@@ -41,7 +41,8 @@ def CheckParameter (ASection: str, AParameter: str):
     LValue = GINIFile.get(ASection, AParameter, raw=False)
     # print (AParameter+'='+LValue)
     if GParameter != '':
-        print (LValue)
+        # print (LValue)
+        print ('%s=%s' % (AParameter, LValue))
     else:
         print ('%s[%s]="%s"' % (ASection, AParameter, LValue))
     #endif
