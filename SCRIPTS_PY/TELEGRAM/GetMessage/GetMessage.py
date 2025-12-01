@@ -738,10 +738,12 @@ def main ():
 
     LUConst.SET_LIB(__file__)
 
+
     LULog.STARTLogging (LULog.TTypeSETUPLOG.tslINI, 'console', '',
                         '', '')
     # LULog.LoggerAPPS.level = logging.INFO
     LULog.LoggerAPPS.level = 0
+
 
     #-------------------------------------------------
     # Отключить журнал 'telethon'
@@ -763,11 +765,11 @@ def main ():
     LArg = LArgParser.ArgParser.add_argument ('-O3', '--O3', type = str, default='telethon', help = 'LIB')
     Largs = LArgParser.ArgParser.parse_args ()
     GO1 = Largs.O1
-    # print(f'{GO1=}')
+    print(f'{GO1=}')
     GO2 = Largs.O2
-    # print(f'{GO2=}')
+    print(f'{GO2=}')
     GO3 = Largs.O3
-    # print(f'{GO3=}')
+    print(f'{GO3=}')
 
     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'GO1 = {GO1}')
     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'GO2 = {GO2}')
@@ -782,6 +784,7 @@ def main ():
     if Path (stop_file).is_file():
         os.remove (stop_file)
     pyperclip.copy ('')
+
     # ---------------------------------------------------------------
     # Ссылка на сообщение
     # ---------------------------------------------------------------
