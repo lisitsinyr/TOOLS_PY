@@ -72,25 +72,37 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    rem set O1=hhhhhhhhhhhh
-    call :GET_Ox "O1" "Ссылка на сообщение" "" || exit /b 1
-    if defined O1 (
-        set OPTION=!OPTION! -!Ox_Name! "!O1!"
+    rem -------------------------------------------------------------------
+    rem O1
+    rem -------------------------------------------------------------------
+    set VarName=O1
+    call :Read_P !VarName! "" "Ссылка на сообщение" "" || exit /b 1
+    rem echo O1:!O1!
+    if defined Read_P (
+        set OPTION=!OPTION! -!VarName! "!Read_P!"
     )
 
-    set O2="G:\___РАЗБОР\YOUTUBE"
-    call :GET_Ox "O2" "Каталог загрузки" "G:\___РАЗБОР\YOUTUBE\TELEGRAM" || exit /b 1
-    if defined O2 (
-        set OPTION=!OPTION! -!Ox_Name! !O2!
+    rem -------------------------------------------------------------------
+    rem O2
+    rem -------------------------------------------------------------------
+    set VarName=O2
+    call :Read_P !VarName! "" "Каталог загрузки" "G:\___РАЗБОР\YOUTUBE\TELEGRAM" || exit /b 1
+    rem echo O1:!O1!
+    if defined Read_P (
+        set OPTION=!OPTION! -!VarName! "!Read_P!"
     )
 
-    set O3=telethon
-    call :GET_Ox "O3" "LIB" "telethon" || exit /b 1
-    if defined O3 (
-        set OPTION=!OPTION! -!Ox_Name! !O3!
+    rem -------------------------------------------------------------------
+    rem O3
+    rem -------------------------------------------------------------------
+    set VarName=O3
+    call :Read_P !VarName! "" "LIB" "telethon" || exit /b 1
+    rem echo O1:!O1!
+    if defined Read_P (
+        set OPTION=!OPTION! -!VarName! "!Read_P!"
     )
 
-    rem echo OPTION:!OPTION!
+    echo OPTION:!OPTION!
  
     rem -------------------------------------
     rem ARGS
