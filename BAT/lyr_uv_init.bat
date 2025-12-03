@@ -72,31 +72,31 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    call :GET_python_version !python_version! || exit /b 1
+    call :GET_python_version python_version "python_version_caption" "3.13" || exit /b 1
     set OPTION=!OPTION! --python !python_version!
 
-    call :GET_project_type !project_type! || exit /b 1
+    call :GET_project_type project_type "project_type_caption" "app" || exit /b 1
     set OPTION=!OPTION! !project_type!
 
     if not !project_type!==script (
-        call :GET_package !package! || exit /b 1
+        call :GET_package package "package_caption" "Y" || exit /b 1
         set OPTION=!OPTION! !package!
 
-        call :GET_no-workspace !no-workspace! || exit /b 1
+        call :GET_no-workspace no-workspace "no-workspace_caption" "Y" || exit /b 1
         set OPTION=!OPTION! !no-workspace!
 
-        call :GET_projects_dir !projects_dir! || exit /b 1
+        call :GET_projects_dir projects_dir "projects_dir_caption" "!VarDefault!" || exit /b 1
         set OPTION=!OPTION! !projects_dir!
 
-        call :GET_project_name !project_name! || exit /b 1
+        call :GET_project_name project_name "project_name_caption" "" || exit /b 1
         set OPTION=!OPTION! !project_name!
     )
 
     if !project_type!==script (
-        call :GET_script_dir !script_dir! || exit /b 1
+        call :GET_script_dir script_dir "script_dir_caption" "!VarDefault!" || exit /b 1
         set OPTION=!OPTION! !script_dir!
 
-        call :GET_script !script! || exit /b 1
+        call :GET_script script "script_dir_caption" ""  || exit /b 1
         set OPTION=!OPTION! !script!
     )
 

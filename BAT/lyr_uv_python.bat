@@ -72,7 +72,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    call :GET_python_version !python_version! || exit /b 1
+    call :GET_python_version python_version "python_version_caption" "3.13" || exit /b 1
     set OPTION=!OPTION! --python !python_version!
 
     rem echo OPTION:!OPTION!

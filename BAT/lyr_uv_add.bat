@@ -72,7 +72,10 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    call :GET_project_dir !project_dir! || exit /b 1
+    call :CurrentDir || exit /b 1
+    set VarDefault=!CurrentDir!
+
+    call :GET_project_dir project_dir "project_dir_caption" "!VarDefault!" || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
     rem echo project_dir:!project_dir!
 

@@ -72,12 +72,15 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set OPTION=
 
-    call :GET_project_dir !project_dir! || exit /b 1
+    call :CurrentDir || exit /b 1
+    set VarDefault=!CurrentDir!
+
+    call :GET_project_dir project_dir "project_dir_caption" "!VarDefault!" || exit /b 1
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-    call :GET_python_dir !python_dir! || exit /b 1
+    call :GET_python_dir python_dir "project_dir_caption" "3.13" || exit /b 1
     rem echo GET_python_dir:!GET_python_dir!
     echo python_dir:!python_dir!
     rem set OPTION=!OPTION! -python_dir "!python_dir!"

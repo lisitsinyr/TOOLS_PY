@@ -82,12 +82,15 @@ rem ----------------------------------------------------------------------------
     rem set OPTION=!OPTION! -script "!script!"
 
     if defined script (
-        call :GET_project_dir !project_dir! || exit /b 1
+        call :CurrentDir || exit /b 1
+        set VarDefault=!CurrentDir!
+
+        call :GET_project_dir project_dir "project_dir_caption" "!VarDefault!" || exit /b 1
         rem echo GET_project_dir:!GET_project_dir!
         echo project_dir:!project_dir!
         rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-        call :GET_venv_dir !project_dir! !venv_dir! || exit /b 1
+        call :GET_VENV_DIR !project_dir! VENV_DIR "VENV_DIR_caption" "" || exit /b 1
         rem echo GET_venv_dir:!GET_venv_dir!
         echo venv_dir:!venv_dir!
         rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
