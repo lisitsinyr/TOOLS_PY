@@ -82,10 +82,10 @@ rem ----------------------------------------------------------------------------
     rem echo GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
 
-    call :GET_package_name !package_name! || exit /b 1
-    rem echo GET_package_name:!GET_package_name!
-    echo package_name:!package_name!
-    set OPTION=!OPTION!add !package_name!
+    call :GET_package_names package_names "package_names_caption" ""
+    rem echo GET_package_names:!GET_package_names!
+    echo package_names:!package_names!
+    set OPTION=!OPTION!add !package_names!
 
     echo OPTION:!OPTION!
 

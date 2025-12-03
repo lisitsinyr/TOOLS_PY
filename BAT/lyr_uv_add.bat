@@ -79,13 +79,13 @@ rem ----------------------------------------------------------------------------
     rem echo GET_project_dir:!GET_project_dir!
     rem echo project_dir:!project_dir!
 
-    call :GET_package_names !package_names! || exit /b 1
+    call :GET_package_names package_names "package_names_caption" ""
     rem echo GET_package_names:!GET_package_names!
     echo package_names:!package_names!
     set OPTION=!OPTION!add !package_names!
 
     if not defined package_names (
-        call :GET_requirements_file !requirements_file! || exit /b 1
+        call :GET_requirements_file requirements_file "requirements_file_caption" ""
         set OPTION=!OPTION!!requirements_file!
     )
   
