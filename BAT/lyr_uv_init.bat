@@ -76,7 +76,7 @@ rem ----------------------------------------------------------------------------
     set OPTION=!OPTION! --python !python_version!
 
     call :GET_project_type project_type "project_type_caption" "app" || exit /b 1
-    set OPTION=!OPTION! !project_type!
+    set OPTION=!OPTION! --!project_type!
 
     if not !project_type!==script (
         call :GET_package package "package_caption" "Y" || exit /b 1

@@ -76,7 +76,7 @@ rem ----------------------------------------------------------------------------
     rem O1
     rem -------------------------------------------------------------------
     set VarName=O1
-    call :Read_P !VarName! "" "Ссылка на сообщение" "" || exit /b 1
+    call :Read_P !VarName! "None" "Ссылка на сообщение" "" || exit /b 1
     if defined !VarName! (
         set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
@@ -85,7 +85,7 @@ rem ----------------------------------------------------------------------------
     rem O2
     rem -------------------------------------------------------------------
     set VarName=O2
-    call :Read_P !VarName! "" "Каталог загрузки" "G:\___РАЗБОР\YOUTUBE\TELEGRAM" || exit /b 1
+    call :Read_P !VarName! "G:\___РАЗБОР\YOUTUBE\TELEGRAM" "Каталог загрузки" "" || exit /b 1
     if defined !VarName! (
         set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
@@ -94,7 +94,7 @@ rem ----------------------------------------------------------------------------
     rem O3
     rem -------------------------------------------------------------------
     set VarName=O3
-    call :Read_P !VarName! "" "LIB" "telethon" || exit /b 1
+    call :Read_P !VarName! "telethon" "LIB" "" || exit /b 1
     rem echo O1:!O1!
     if defined !VarName! (
         set OPTION=!OPTION! -!VarName! "!%VarName%!"

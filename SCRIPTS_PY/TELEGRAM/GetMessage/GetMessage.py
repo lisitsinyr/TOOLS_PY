@@ -820,16 +820,13 @@ def main ():
     # get_telethon_chats ()
     # get_telethon_groups ()
     # get_telethon_users_group ()
-
-    if not Gmessage_url == '':
+    
+    print (f'Wait ...')
+    while True and not Path (stop_file).is_file ():
+        Gmessage_url = pyperclip.paste()
         check_link(Gmessage_url)
-    else:
-        print (f'Wait ...')
-        while True and not Path (stop_file).is_file ():
-            Gmessage_url = pyperclip.paste()
-            check_link(Gmessage_url)
-        #endwhile
-    #endif
+    #endwhile
+
     if Path (stop_file).is_file():
         os.remove (stop_file)
 
