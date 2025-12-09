@@ -145,11 +145,8 @@ rem ----------------------------------------------------------------------------
 
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
     rem echo VENV_DIR:!VENV_DIR!
-
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
-
     call :VENV_START !VENV_DIR! || exit /b 1
-
     rem call :VENV_UPDATE !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
