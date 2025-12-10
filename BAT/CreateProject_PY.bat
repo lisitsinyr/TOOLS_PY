@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem PROJECT_PYcreate.bat
+rem CreateProject_PY.bat
 rem -------------------------------------------------------------------
 rem 
 rem Description:
@@ -34,22 +34,27 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     call :MAIN_INIT %* || exit /b 1
 
-    rem Количество аргументов
-    call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
-
     call :SET_LIB %0 || exit /b 1
     rem echo CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
+    
     set OK=yes
+
     call :MAIN_SET %* || exit /b 1
-    if defined OK if not defined Read_N (
+
+    rem Количество аргументов
+    call :Read_N %* || exit /b 1
+    rem echo Read_N:!Read_N!
+
+    if not defined Read_N (
         call :MAIN_CHECK_PARAMETR %* || exit /b 1
     )
+    
     if defined OK (
         call :MAIN %* || exit /b 1
     )
+    
     call :StopLogFile || exit /b 1
 
     exit /b 0
@@ -124,48 +129,45 @@ rem beginfunction
     )
 
     if defined OK (
-        rem echo ProjectName: !PROJECT_NAME!
-        rem echo Directory: !Directory!
-
         echo Создание проекта !ProjectName! ...
-        echo Directory: !Directory!
-        if exist "!Directory!"\ (
-            echo INFO: Каталог проекта "!Directory!" существует...
+        echo ProjectsDirectory:!ProjectsDirectory!
+
+        set ProjectDirectory=!ProjectsDirectory!!ProjectName!
+        echo ProjectDirectory:!ProjectDirectory!
+
+        if exist "!ProjectDirectory!"\ (
+            echo INFO: Каталог проекта "!ProjectDirectory!" существует ...
+
+            rem rmdir "!ProjectDirectory!" /s /q
+
             set delete=N
             set PN_CAPTION=Удалить?
-            call :Read_F delete "yN" 5 || exit /b 1
-            if defined delete (
-                echo Удаление каталога проекта "!Directory!"
-                rmdir "!Directory!" /s
-                mkdir "!Directory!"
+            call :Read_F delete "yN" N "!PN_CAPTION!" 5 || exit /b 1
+            echo delete:!delete!
+            if !delete! EQU 1 (
+                echo delete:!delete!
+                echo Удаление каталога проекта "!ProjectDirectory!"
+                rmdir "!ProjectDirectory!" /s /q
+                mkdir "!ProjectDirectory!"
             )
-
-            set tomlFile="!Directory!"\pyproject.toml
-            call :CheckFile !tomlFile! || exit /b 1
-            if defined CheckFile (
-                cd /D "!Directory!"
-                rem call lyrpoetry_init.bat --name=!ProjectName!
-            ) else (
-                echo INFO: Файл !tomlFile! не существует ...
-                rem call lyrpoetry_new.bat --name=!ProjectName! --src "!Directory!"
-                mkdir "!Directory!"
-                cd /D "!Directory!"
-                rem call lyrpoetry_init.bat --name=!ProjectName!
-            )
-            set OK=yes
         ) else (
-            rem call lyrpoetry_new.bat --name=!ProjectName! --src "!Directory!"
-            mkdir "!Directory!"
-            cd /D "!Directory!"
-            rem call lyrpoetry_init.bat --name=!ProjectName!
-            set OK=yes
+            echo INFO: Каталог проекта "!ProjectDirectory!" не существует ...
+            mkdir "!ProjectDirectory!"
         )
+
+        rem call lyrpoetry_new.bat --name=!ProjectName! --src "!ProjectDirectory!"
+
+        cd /D "!ProjectDirectory!"
+        echo !cd!
 
         rem --------------------------
         rem Структура каталогов
         rem --------------------------
-        call PROJECT_PYupdate.bat !ProjectName!
+        rem call PROJECT_PYupdate.bat !ProjectName!
 
+        rem --------------------------
+        rem poetry
+        rem --------------------------
         set tomlFile=pyproject.toml
         call :CheckFile !tomlFile! || exit /b 1
         if not defined CheckFile (
@@ -176,10 +178,11 @@ rem beginfunction
         rem --------------------------
         rem GIT
         rem --------------------------
-        if exist ".git"\ (
+        echo !ProjectDirectory!\.git\
+        if exist !ProjectDirectory!\.git\ (
             echo INFO: Repository exist ...
         ) else (
-            rem call lyrgit_init.bat .\
+            call lyrgit_init.bat .\
         )
     )
 
@@ -196,6 +199,10 @@ rem beginfunction
         echo DEBUG: procedure !FUNCNAME! ...
     )
 
+    set ProjectsDirectory_PY=!CurrentDir!\
+    set ProjectsDirectory_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\
+    rem echo ProjectsDirectory_PY:!ProjectsDirectory_PY!
+
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
@@ -203,33 +210,50 @@ rem beginfunction
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
-    if not defined PROJECT_NAME (
-        set PN_CAPTION=Имя проекта
-        set ProjectName=PATTERN_PY
-        call :Read_P ProjectName %1 || exit /b 1
-        rem echo ProjectName: !ProjectName!
 
+    rem -------------------------------------------------------------------
+    rem ProjectName
+    rem -------------------------------------------------------------------
+    if not defined ProjectName (
+        set VarName=ProjectName
+        if not defined !%VarName%! (
+            call :Read_P_editenv !VarName! "" "Имя проекта" "" || exit /b 1
+        )
         if not defined ProjectName (
             echo ERROR: ProjectName not defined ...
             set OK=
-        ) else (
-            set OK=yes
-        )
-
-        set PN_CAPTION=Каталог проекта
-        set Directory=!ProjectName!
-        call :Read_P Directory %2 || exit /b 1
-        echo Directory: !Directory!
-        if not defined Directory (
-            echo ERROR: Directory not defined ...
-            set OK=
+            exit /b 1
         ) else (
             set OK=yes
         )
     ) else (
-        set ProjectName=!PROJECT_NAME!
-        set Directory=!CurrentDir!
+        set ProjectName=!ProjectName!
         set OK=yes
+    )
+
+    rem -------------------------------------------------------------------
+    rem ProjectsDirectory
+    rem -------------------------------------------------------------------
+    if not defined ProjectsDirectory (
+        set VarName=ProjectsDirectory
+        if not defined !%VarName%! (
+            rem call :Read_P_editenv !VarName! "" "Каталог проектов PY" "!ProjectsDirectory_PY!" || exit /b 1
+            call :Read_P !VarName! "" "Каталог проектов PY" "!ProjectsDirectory_PY!" || exit /b 1
+        )
+        if not defined ProjectsDirectory (
+            echo ERROR: ProjectDirectory not defined ...
+            set OK=
+            exit /b 1
+        ) else (
+            set OK=yes
+        )
+    ) else (
+        rem 
+    )
+    if not exist !ProjectsDirectory! (
+        echo ERROR: !ProjectDirectory! not exist ...
+        set OK=
+        exit /b 1
     )
 
     exit /b 0
@@ -366,6 +390,10 @@ exit /b 0
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 :Read_P
+%LIB_BAT%\LYRSupport.bat %*
+exit /b 0
+exit /b 0
+:Read_P_editenv
 %LIB_BAT%\LYRSupport.bat %*
 exit /b 0
 :Read_N
