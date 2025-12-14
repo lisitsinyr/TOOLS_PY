@@ -38,13 +38,21 @@ def CheckParameter (ASection: str, AParameter: str):
 #beginfunction
     global GINIFile
     global GParameter
-    LValue = GINIFile.get(ASection, AParameter, raw=False)
+    try:
+        LValue = GINIFile.get(ASection, AParameter, raw=False)
+    except:
+        LValue = ''
+    #endtry
+
     # print (AParameter+'='+LValue)
-    if GParameter != '':
+
+    print ('%s=%s' % (AParameter, LValue))
+
+    #if GParameter != '':
         # print (LValue)
-        print ('%s=%s' % (AParameter, LValue))
-    else:
-        print ('%s[%s]="%s"' % (ASection, AParameter, LValue))
+    #    print ('%s=%s' % (AParameter, LValue))
+    #else:
+    #    print ('%s[%s]="%s"' % (ASection, AParameter, LValue))
     #endif
 #endfunction
 
@@ -53,7 +61,7 @@ def CheckSection (ASection: str):
 #beginfunction
     global GINIFile
 
-    print ("declare -A %s" % (ASection))
+    # print ("declare -A %s" % (ASection))
 
     LParameters = GINIFile.options(ASection)
     for i in range (0,len(LParameters)):
@@ -84,38 +92,33 @@ def main ():
     global GSection
     global GParameter
 
-    N = not (len(sys.argv) in (1,4))
-    if N:
-        print ('GETINI1: getini1 <ini_file> <Section> <parameter>')
-    else:
-        try:
-            GINIFileName = sys.argv[1]
-        except IndexError as ERROR:
-            GINIFileName = ''
-        #endtry
-        try:
-            GSection = sys.argv[2]
-        except IndexError as ERROR:
-            GSection = ''
-        #endtry
-        try:
-            GParameter = sys.argv[3]
-        except IndexError as ERROR:
-            GParameter = ''
-        #endtry
+    try:
+        GINIFileName = sys.argv[1]
+    except IndexError as ERROR:
+        GINIFileName = ''
+    #endtry
+    try:
+        GSection = sys.argv[2]
+    except IndexError as ERROR:
+        GSection = ''
+    #endtry
+    try:
+        GParameter = sys.argv[3]
+    except IndexError as ERROR:
+        GParameter = ''
+    #endtry
 
-        if not os.path.isfile (GINIFileName):
-            print ('GETINI1: ini_file '+GINIFileName+' not found...')
+    if not os.path.isfile (GINIFileName):
+        print ('GETINI1: ini_file '+GINIFileName+' not found...')
+    else:
+        GINIFile.read(GINIFileName)
+        if GParameter != '':
+            CheckParameter (GSection, GParameter)
         else:
-            GINIFile.read(GINIFileName)
-            if GParameter != '':
-                CheckParameter (GSection, GParameter)
+            if GSection != '':
+                CheckSection (GSection)
             else:
-                if GSection != '':
-                    CheckSection (GSection)
-                else:
-                    CheckSections ()
-                #endif
+                CheckSections ()
             #endif
         #endif
     #endif
