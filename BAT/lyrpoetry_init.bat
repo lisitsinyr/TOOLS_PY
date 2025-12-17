@@ -56,11 +56,11 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
     call :SET_POETRY || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -97,14 +97,14 @@ rem beginfunction
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -117,7 +117,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_SRC_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -183,49 +183,49 @@ rem beginfunction
     set ProjectName=
     set PN_CAPTION=Name of the package
     call :Read_P ProjectName %1 || exit /b 1
-    rem echo ProjectName: !ProjectName!
+    rem echo ..P1.. ProjectName: !ProjectName!
     if defined name (
         set OPTION=!OPTION! --name=!ProjectName!
     )
     set description=Description of the package
     set PN_CAPTION=Description of the package
     call :Read_P description "" || exit /b 1
-    rem echo description: !description!
+    rem echo ..P1.. description: !description!
     if defined description (
         set OPTION=!OPTION! --description="!description!"
     )
     set author=lisitsinyr ^<lisitsinyr@gmail.com^>
     set PN_CAPTION=Author of the package
     call :Read_P author "" || exit /b 1
-    rem echo author: !author!
+    rem echo ..P1.. author: !author!
     if defined author (
         set OPTION=!OPTION! --author="!author!"
     )
     set python=
     set PN_CAPTION=Compatible Python versions
     call :Read_P python "" || exit /b 1
-    rem echo python: !python!
+    rem echo ..P1.. python: !python!
     if defined python (
         set OPTION=!OPTION! --python=!python!
     )
     set dependency=
     set PN_CAPTION=Package to require, with an optional version constraint, e.g. requests:^2.10.0 or requests=2.11.1. ^(multiple values allowed^)
     call :Read_P dependency "" || exit /b 1
-    rem echo dependency: !dependency!
+    rem echo ..P1.. dependency: !dependency!
     if defined dependency (
         set OPTION=!OPTION! --dependency=!dependency!
     )
     set dev-dependency=
     set PN_CAPTION=Package to require for development, with an optional version constraint, e.g. requests:^2.10.0 or requests=2.11.1. ^(multiple values allowed^)
     call :Read_P dev-dependency "" || exit /b 1
-    rem echo dev-dependency: !dev-dependency!
+    rem echo ..P1.. dev-dependency: !dev-dependency!
     if defined dev-dependency (
         set OPTION=!OPTION! --dev-dependency=!dev-dependency!
     )
     set license=
     set PN_CAPTION=License of the package
     call :Read_P license "" || exit /b 1
-    rem echo license: !license!
+    rem echo ..P1.. license: !license!
     if defined license (
         set OPTION=!OPTION! --license=!license!
     )

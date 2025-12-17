@@ -66,10 +66,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -107,14 +107,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -127,7 +127,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -196,7 +196,7 @@ rem beginfunction
     set command_name=show
     set PN_CAPTION=command
     call :Read_P command_name "" || exit /b 1
-    rem echo command_name: !command_name!
+    rem echo ..P1.. command_name: !command_name!
     if not "!command_name!"=="" (
         set ARGS=!ARGS! !command_name!
     ) else (

@@ -67,10 +67,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -108,14 +108,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -128,7 +128,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -196,21 +196,21 @@ rem beginfunction
     set list=Y
     set PN_CAPTION=List configuration settings
     call :Read_F list "yN" 0 || exit /b 1
-    rem echo list: !list!
+    rem echo ..P1.. list: !list!
     if defined list (
         set OPTION=!OPTION! --list
     )
     set unset=N
     set PN_CAPTION=Unset configuration setting
     call :Read_F unset "yN" 0 || exit /b 1
-    rem echo unset: !unset!
+    rem echo ..P1.. unset: !unset!
     if defined unset (
         set OPTION=!OPTION! --unset
     )
     set local=Y
     set PN_CAPTION=Set/Get from the project's local configuration
     call :Read_F local "yN" 0 || exit /b 1
-    rem echo local: !local!
+    rem echo ..P1.. local: !local!
     if defined local (
         set OPTION=!OPTION! --local
     )
@@ -222,7 +222,7 @@ rem beginfunction
     set key=
     set PN_CAPTION=Setting key
     call :Read_P key "" || exit /b 1
-    rem echo key: !key%
+    rem echo ..P1.. key: !key%
     if not "!key!"=="" (
         set ARGS=!ARGS! !key!
     ) else (
@@ -232,7 +232,7 @@ rem beginfunction
     set value=
     set PN_CAPTION=Setting value
     call :Read_P value "" || exit /b 1
-    rem echo value: !value!
+    rem echo ..P1.. value: !value!
     if not "!value!"=="" (
         set ARGS=!ARGS! !value!
     ) else (

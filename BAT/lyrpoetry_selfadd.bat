@@ -78,10 +78,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -119,14 +119,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -139,7 +139,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -200,35 +200,35 @@ rem beginfunction
     set editable=Y
     set PN_CAPTION=Add vcs/path dependencies as editable
     call :Read_F editable "yN" 0 || exit /b 1
-    rem echo editable: !editable!
+    rem echo ..P1.. editable: !editable!
     if defined editable (
         set OPTION=!OPTION! --editable
     )
     set extras=
     set PN_CAPTION=Extras to activate for the dependency. ^(multiple values allowed^)
     call :Read_P extras "" || exit /b 1
-    rem echo extras: !extras!
+    rem echo ..P1.. extras: !extras!
     if defined extras (
         set OPTION=!OPTION! --extras=!extras!
     )
     set source=
     set PN_CAPTION=Name of the source to use to install the package
     call :Read_P source "" || exit /b 1
-    rem echo source: !source!
+    rem echo ..P1.. source: !source!
     if defined source (
         set OPTION=!OPTION! --source=!source!
     )
     set allow-prereleases=N
     set PN_CAPTION=Accept prereleases
     call :Read_F allow-prereleases "yN" 0 || exit /b 1
-    rem echo allow-prereleases: !allow-prereleases!
+    rem echo ..P1.. allow-prereleases: !allow-prereleases!
     if defined allow-prereleases (
         set OPTION=!OPTION! --allow-prereleases
     )
     set dry-run=N
     set PN_CAPTION=Output the operations but do not execute anything ^(implicitly enables --verbose^)
     call :Read_F dry-run "yN" 0 || exit /b 1
-    rem echo dry-run: !dry-run!
+    rem echo ..P1.. dry-run: !dry-run!
     if defined dry-run (
         set OPTION=!OPTION! --dry-run
     )
@@ -240,7 +240,7 @@ rem beginfunction
     set name=
     set PN_CAPTION=The packages to add
     call :Read_P name "" || exit /b 1
-    rem echo name: !name!
+    rem echo ..P1.. name: !name!
     if defined name (
         set ARGS=!ARGS! !name!
     ) else (

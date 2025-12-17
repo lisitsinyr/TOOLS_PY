@@ -74,10 +74,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -115,14 +115,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -135,7 +135,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -203,91 +203,91 @@ rem beginfunction
     set without=
     set PN_CAPTION=The dependency groups to ignore. ^(multiple values allowed^)
     call :Read_P without "" || exit /b 1
-    rem echo without: !without!
+    rem echo ..P1.. without: !without!
     if defined without (
         set OPTION=!OPTION! --without=!without!
     )
     set with=
     set PN_CAPTION=The optional dependency groups to include. ^(multiple values allowed^)
     call :Read_P with "" || exit /b 1
-    rem echo with: !with!
+    rem echo ..P1.. with: !with!
     if defined with (
         set OPTION=!OPTION! --with=!with!
     )
     set only=
     set PN_CAPTION=The only dependency groups to include. ^(multiple values allowed^)
     call :Read_P only "" || exit /b 1
-    rem echo only: !only!
+    rem echo ..P1.. only: !only!
     if defined only (
         set OPTION=!OPTION! --only=!only!
     )
     set no-dev=Y
     set PN_CAPTION=Do not install the development dependencies. (Deprecated)
     call :Read_F no-dev "yN" 0 || exit /b 1
-    rem echo no-dev: !no-dev!
+    rem echo ..P1.. no-dev: !no-dev!
     if defined no-dev (
         set OPTION=!OPTION! --no-dev
     )
     set sync=N
     set PN_CAPTION=Synchronize the environment with the locked packages and the specified groups
     call :Read_F sync "yN" 0 || exit /b 1
-    rem echo sync: !sync!
+    rem echo ..P1.. sync: !sync!
     if defined sync (
         set OPTION=!OPTION! --sync
     )
     set no-root=Y
     set PN_CAPTION=Do not install the root package (the current project)
     call :Read_F no-root "yN" 0 || exit /b 1
-    rem echo no-root: !no-root!
+    rem echo ..P1.. no-root: !no-root!
     if defined no-root (
         set OPTION=!OPTION! --no-root
     )
     set no-directory=Y
     set PN_CAPTION=Do not install any directory path dependencies; useful to install dependencies without source code, e.g. for caching of Docker layers
     call :Read_F no-directory "yN" 0 || exit /b 1
-    rem echo no-directory: !no-directory!
+    rem echo ..P1.. no-directory: !no-directory!
     if defined no-directory (
         set OPTION=!OPTION! --no-directory
     )
     set dry-run=N
     set PN_CAPTION=Output the operations but do not execute anything ^(implicitly enables --verbose^)
     call :Read_F dry-run "yN" 0 || exit /b 1
-    rem echo dry-run: !dry-run!
+    rem echo ..P1.. dry-run: !dry-run!
     if defined dry-run (
         set OPTION=!OPTION! --dry-run
     )
     set remove-untracked=N
     set PN_CAPTION=Removes packages not present in the lock file. ^(Deprecated^)
     call :Read_F remove-untracked "yN" 0 || exit /b 1
-    rem echo remove-untracked: !remove-untracked!
+    rem echo ..P1.. remove-untracked: !remove-untracked!
     if defined remove-untracked (
         set OPTION=!OPTION! --remove-untracked
     )
     set extras=
     set PN_CAPTION=Extra sets of dependencies to install. ^(multiple values allowed^)
     call :Read_P extras "" || exit /b 1
-    rem echo extras: !extras!
+    rem echo ..P1.. extras: !extras!
     if defined extras (
         set OPTION=!OPTION! --extras=!extras!
     )
     set all-extras=Y
     set PN_CAPTION=Install all extra dependencies
     call :Read_F all-extras "yN" 0 || exit /b 1
-    rem echo all-extras: !all-extras!
+    rem echo ..P1.. all-extras: !all-extras!
     if defined all-extras (
         set OPTION=!OPTION! --all-extras
     )
     set only-root=N
     set PN_CAPTION=Exclude all dependencies
     call :Read_F only-root "yN" 0 || exit /b 1
-    rem echo only-root: !only-root!
+    rem echo ..P1.. only-root: !only-root!
     if defined only-root (
         set OPTION=!OPTION! --only-root
     )
     set compile=N
     set PN_CAPTION=Compile Python source files to bytecode. ^(This option has no effect if modern-installation is disabled because the old installer always compiles.^)
     call :Read_F compile "yN" 0 || exit /b 1
-    rem echo compile: !compile!
+    rem echo ..P1.. compile: !compile!
     if defined compile (
         set OPTION=!OPTION! --compile
     )

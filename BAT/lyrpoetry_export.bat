@@ -57,10 +57,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -98,14 +98,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -118,7 +118,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -186,77 +186,77 @@ rem beginfunction
     set format=
     set PN_CAPTION=Format to export to. Currently, only constraints.txt and requirements.txt are supported. [default: "requirements.txt"]
     call :Read_P format "" || exit /b 1
-    rem echo format: !format!
+    rem echo ..P1.. format: !format!
     if not "!format!"=="" (
         set OPTION=!OPTION! --format=!format!
     )
     set output=
     set PN_CAPTION=The name of the output file
     call :Read_P output "" || exit /b 1
-    rem echo output: !output!
+    rem echo ..P1.. output: !output!
     if not "!output!"=="" (
         set OPTION=!OPTION! --output=!output!
     )
     set without-hashes=Y
     set PN_CAPTION=Exclude hashes from the exported file
     call :Read_F without-hashes "yN" 0 || exit /b 1
-    rem echo without-hashes: !without-hashes!
+    rem echo ..P1.. without-hashes: !without-hashes!
     if not "!without-hashes!"=="" (
         set OPTION=!OPTION! --without-hashes
     )
     set without-urls=Y
     set PN_CAPTION=Exclude source repository urls from the exported file
     call :Read_F without-urls "yN" 0 || exit /b 1
-    rem echo without-urls: !without-urls!
+    rem echo ..P1.. without-urls: !without-urls!
     if not "!without-urls!"=="" (
         set OPTION=!OPTION! --without-urls
     )
     set dev=Y
     set PN_CAPTION=Include development dependencies. ^(Deprecated^)
     call :Read_F dev "yN" 0 || exit /b 1
-    rem echo dev: !dev!
+    rem echo ..P1.. dev: !dev!
     if not "!dev!"=="" (
         set OPTION=!OPTION! --dev
     )
     set without=
     set PN_CAPTION=The dependency groups to ignore. ^(multiple values allowed^)
     call :Read_P without "" || exit /b 1
-    rem echo without: !without!
+    rem echo ..P1.. without: !without!
     if not "!without!"=="" (
         set OPTION=!OPTION! --without=!without!
     )
     set with=
     set PN_CAPTION=The optional dependency groups to include. ^(multiple values allowed^)
     call :Read_P with "" || exit /b 1
-    rem echo with: !with!
+    rem echo ..P1.. with: !with!
     if not "!with!"=="" (
         set OPTION=!OPTION! --with=!with!
     )
     set only=
     set PN_CAPTION=The only dependency groups to include. ^(multiple values allowed^)
     call :Read_P only "" || exit /b 1
-    rem echo only: !only!
+    rem echo ..P1.. only: !only!
     if not "!only!"=="" (
         set OPTION=!OPTION! --only=!only!
     )
     set extras=
     set PN_CAPTION=Extra sets of dependencies to include. ^(multiple values allowed^)
     call :Read_P extras "" || exit /b 1
-    rem echo extras: !extras!
+    rem echo ..P1.. extras: !extras!
     if not "!extras!"=="" (
         set OPTION=!OPTION! --extras=!extras!
     )
     set all-extras=Y
     set PN_CAPTION=Include all sets of extra dependencies
     call :Read_F all-extras "yN" 0 || exit /b 1
-    rem echo all-extras: !all-extras!
+    rem echo ..P1.. all-extras: !all-extras!
     if not "!all-extras!"=="" (
         set OPTION=!OPTION! --all-extras
     )
     set with-credentials=Y
     set PN_CAPTION=Include credentials for extra indices
     call :Read_F with-credentials "yN" 0 || exit /b 1
-    rem echo with-credentials: !with-credentials!
+    rem echo ..P1.. with-credentials: !with-credentials!
     if not "!with-credentials!"=="" (
         set OPTION=!OPTION! --with-credentials
     )

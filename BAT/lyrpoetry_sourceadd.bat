@@ -59,10 +59,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -100,14 +100,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -120,7 +120,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -181,21 +181,21 @@ rem beginfunction
     set default=Y
     set PN_CAPTION=Set this source as the default (disable PyPI). A default source will also be the fallback source if you add other sources. ^(Deprecated, use --priority^)
     call :Read_F default "yN" 0 || exit /b 1
-    rem echo default: !default!
+    rem echo ..P1.. default: !default!
     if defined default (
         set OPTION=!OPTION! --default
     )
     set secondary=N
     set PN_CAPTION=Set this source as secondary. ^(Deprecated, use --priority^)
     call :Read_F secondary "yN" 0 || exit /b 1
-    rem echo secondary: !secondary!
+    rem echo ..P1.. secondary: !secondary!
     if defined secondary (
         set OPTION=!OPTION! --secondary
     )
     set priority=
     set PN_CAPTION=Set the priority of this source. One of: default, primary, secondary, supplemental, explicit. Defaults to primary.
     call :Read_P priority "" || exit /b 1
-    rem echo priority: !priority!
+    rem echo ..P1.. priority: !priority!
     if defined priority (
         set OPTION=!OPTION! --priority=%priority%
     )
@@ -207,7 +207,7 @@ rem beginfunction
     set name=
     set PN_CAPTION=Source repository name
     call :Read_P name "" || exit /b 1
-    rem echo name: !name!
+    rem echo ..P1.. name: !name!
     if defined name (
         set ARGS=!ARGS! !name!
     ) else (
@@ -216,7 +216,7 @@ rem beginfunction
     set url=
     set PN_CAPTION=Source repository URL. Required, except for PyPI, for which it is not allowed
     call :Read_P url "" || exit /b 1
-    rem echo url: !url!
+    rem echo ..P1.. url: !url!
     if defined url (
         set ARGS=!ARGS! !url!
     ) else (

@@ -11,16 +11,16 @@ setlocal enabledelayedexpansion
     rem -------------------------------------------------------------------
     rem set PROJECTS_LYR_ROOT=D:\WORK\WIN
     set PROJECTS_LYR_ROOT=D:
-    rem echo PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
+    rem echo ..P1.. PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
 
     rem -------------------------------------------------------------------
     rem PROJECTS_LYR_DIR - Каталог проектов LYR
     rem -------------------------------------------------------------------
     set PROJECTS_LYR_DIR=!PROJECTS_LYR_ROOT!\PROJECTS_LYR
-    rem echo PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
+    rem echo ..P1.. PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
     if not exist "!PROJECTS_LYR_DIR!"\ (
-        rem echo INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
-        rem echo INFO: Create "!PROJECTS_LYR_DIR!" ...
+        rem echo ..P1.. INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
+        rem echo ..P1.. INFO: Create "!PROJECTS_LYR_DIR!" ...
         rem mkdir "!PROJECTS_LYR_DIR!"
         exit /b 1
     )
@@ -32,7 +32,7 @@ setlocal enabledelayedexpansion
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
+    rem echo ..P1.. SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
@@ -40,7 +40,7 @@ setlocal enabledelayedexpansion
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
     )
-    rem echo LIB_BAT:!LIB_BAT!
+    rem echo ..P1.. LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
         exit /b 1
@@ -95,7 +95,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     set VarName=O3
     call :Read_P !VarName! "telethon" "LIB" "" || exit /b 1
-    rem echo O1:!O1!
+    rem echo ..P1.. O1:!O1!
     if defined !VarName! (
         set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
@@ -107,7 +107,7 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------
     set ARGS=
 
-    rem echo ARGS:!ARGS!
+    rem echo ..P1.. ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
@@ -115,7 +115,7 @@ rem ----------------------------------------------------------------------------
     if not defined SCRIPTS_DIR_PY (
         set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
     )
-    rem echo SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+    rem echo ..P1.. SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
     
     call :CurrentDir || exit /b 1
     echo CurrentDir:!CurrentDir!
@@ -144,7 +144,7 @@ rem ----------------------------------------------------------------------------
     )
 
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
-    rem echo VENV_DIR:!VENV_DIR!
+    rem echo ..P1.. VENV_DIR:!VENV_DIR!
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
     call :VENV_START !VENV_DIR! || exit /b 1
     rem call :VENV_UPDATE !VENV_DIR! || exit /b 1

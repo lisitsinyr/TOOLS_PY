@@ -63,10 +63,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -104,14 +104,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -124,7 +124,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -185,70 +185,70 @@ rem beginfunction
     set without=
     set PN_CAPTION=The dependency groups to ignore. ^(multiple values allowed^)
     call :Read_P without "" || exit /b 1
-    rem echo without: !without!
+    rem echo ..P1.. without: !without!
     if defined without (
         set OPTION=!OPTION! --without=!without!
     )
     set with=
     set PN_CAPTION=The optional dependency groups to include. ^(multiple values allowed^)
     call :Read_P with "" || exit /b 1
-    rem echo with: !with!
+    rem echo ..P1.. with: !with!
     if defined with (
         set OPTION=!OPTION! --with=!with!
     )
     set only=
     set PN_CAPTION=he only dependency groups to include. ^(multiple values allowed^)
     call :Read_P only "" || exit /b 1
-    rem echo only: !only!
+    rem echo ..P1.. only: !only!
     if not "!only!"=="" (
         set OPTION=!OPTION! --only=!only!
     )
     set no-dev=Y
     set PN_CAPTION=Do not list the development dependencies. ^(Deprecated^)
     call :Read_F no-dev "yN" 0 || exit /b 1
-    rem echo no-dev: !no-dev!
+    rem echo ..P1.. no-dev: !no-dev!
     if defined no-dev (
         set OPTION=!OPTION! --no-dev
     )
     set tree=Y
     set PN_CAPTION=List the dependencies as a tree
     call :Read_F tree "yN" 0 || exit /b 1
-    rem echo tree: !tree!
+    rem echo ..P1.. tree: !tree!
     if defined tree (
         set OPTION=!OPTION! --tree
     )
     set why=Y
     set PN_CAPTION=When showing the full list, or a --tree for a single package, display whether they are a direct dependency or required by other packages
     call :Read_F why "yN" 0 || exit /b 1
-    rem echo why: !why!
+    rem echo ..P1.. why: !why!
     if defined why (
         set OPTION=!OPTION! --why
     )
     set latest=E
     set PN_CAPTION=Show the latest version
     call :Read_F latest "yN" 0 || exit /b 1
-    rem echo latest: !latest!
+    rem echo ..P1.. latest: !latest!
     if defined latest (
         set OPTION=!OPTION! --latest
     )
     set outdated=Y
     set PN_CAPTION=Show the latest version but only for packages that are outdated
     call :Read_F outdated "yN" 0 || exit /b 1
-    rem echo outdated: !outdated!
+    rem echo ..P1.. outdated: !outdated!
     if defined outdated (
         set OPTION=!OPTION! --outdated
     )
     set all=Y
     set PN_CAPTION=Show all packages (even those not compatible with current system)
     call :Read_F all "yN" 0 || exit /b 1
-    rem echo all: !all!
+    rem echo ..P1.. all: !all!
     if defined all (
         set OPTION=!OPTION! --all
     )
     set top-level=Y
     set PN_CAPTION=Only show explicitly defined packages
     call :Read_F top-level "yN" 0 || exit /b 1
-    rem echo top-level: !top-level!
+    rem echo ..P1.. top-level: !top-level!
     if defined top-level (
         set OPTION=!OPTION! --top-level
     )
@@ -260,7 +260,7 @@ rem beginfunction
     set packages=
     set PN_CAPTION=The package to inspect
     call :Read_P packages "" || exit /b 1
-    rem echo packages: !packages!
+    rem echo ..P1.. packages: !packages!
     if defined packages (
         set ARGS=!ARGS! !packages!
     ) else (

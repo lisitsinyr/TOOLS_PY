@@ -35,10 +35,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -75,14 +75,14 @@ rem beginfunction
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -95,7 +95,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -294,10 +294,10 @@ rem beginfunction
 
     rem ------------------------------------------------------
     set DIR_TO=!CurrentDir!
-    rem echo DIR_TO: !DIR_TO!
+    rem echo ..P1.. DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
     set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\GIT\PROJECTS_GIT\TOOLS_GIT\BAT\A.WORK
-    rem echo DIR_FROM: !DIR_FROM!
+    rem echo ..P1.. DIR_FROM: !DIR_FROM!
     set LFileName=lyrgit_push_main.bat
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
@@ -306,7 +306,7 @@ rem beginfunction
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
 
     set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\PATTERN_PY
-    rem echo DIR_FROM: !DIR_FROM!
+    rem echo ..P1.. DIR_FROM: !DIR_FROM!
     set LFileName=.gitignore
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
@@ -319,25 +319,25 @@ rem beginfunction
 
     rem ------------------------------------------------------
     set DIR_TO=!CurrentDir!\SRC\!ProjectName!
-    rem echo DIR_TO: !DIR_TO!
+    rem echo ..P1.. DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
     set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\PATTERN_PY\SRC\PATTERN_PY
-    rem echo DIR_FROM: !DIR_FROM!
+    rem echo ..P1.. DIR_FROM: !DIR_FROM!
     set LFileName=PATTERN_PY.py
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!"\!ProjectName!.py > NUL
         
     rem ------------------------------------------------------
     set DIR_TO=!CurrentDir!\SRC
-    rem echo DIR_TO: !DIR_TO!
+    rem echo ..P1.. DIR_TO: !DIR_TO!
     rem ------------------------------------------------------
     set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\PATTERN_PY\SRC
-    rem echo DIR_FROM: !DIR_FROM!
+    rem echo ..P1.. DIR_FROM: !DIR_FROM!
     set LFileName=README.md
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
     set DIR_FROM=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\BATPY
-    rem echo DIR_FROM: !DIR_FROM!
+    rem echo ..P1.. DIR_FROM: !DIR_FROM!
     set LFileName=PROJECT_PYupdate.bat
     call :AddLog !loAll! !TEXT! CopyFile !LFileName! || exit /b 1
     copy "!DIR_FROM!\!LFileName!" "!DIR_TO!" > NUL
@@ -365,7 +365,7 @@ rem beginfunction
 
     rem call :AddLog !loAll! !TEXT! GetINIParametr !LFileName! || exit /b 1
     rem call :GetINIParametr !LFileName! name || exit /b 1
-    rem echo name: !name!
+    rem echo ..P1.. name: !name!
 
     exit /b 0
 :end
@@ -393,7 +393,7 @@ rem beginfunction
         set PN_CAPTION=Имя проекта
         set ProjectName=PATTERN_PY
         call :Read_P ProjectName %1 || exit /b 1
-        rem echo ProjectName: !ProjectName!
+        rem echo ..P1.. ProjectName: !ProjectName!
 
         if not defined ProjectName (
             echo ERROR: ProjectName not defined ...

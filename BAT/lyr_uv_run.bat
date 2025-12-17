@@ -11,16 +11,16 @@ setlocal enabledelayedexpansion
     rem -------------------------------------------------------------------
     rem set PROJECTS_LYR_ROOT=D:\WORK\WIN
     set PROJECTS_LYR_ROOT=D:
-    rem echo PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
+    rem echo ..P1.. PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
 
     rem -------------------------------------------------------------------
     rem PROJECTS_LYR_DIR - Каталог проектов LYR
     rem -------------------------------------------------------------------
     set PROJECTS_LYR_DIR=!PROJECTS_LYR_ROOT!\PROJECTS_LYR
-    rem echo PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
+    rem echo ..P1.. PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
     if not exist "!PROJECTS_LYR_DIR!"\ (
-        rem echo INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
-        rem echo INFO: Create "!PROJECTS_LYR_DIR!" ...
+        rem echo ..P1.. INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
+        rem echo ..P1.. INFO: Create "!PROJECTS_LYR_DIR!" ...
         rem mkdir "!PROJECTS_LYR_DIR!"
         exit /b 1
     )
@@ -32,7 +32,7 @@ setlocal enabledelayedexpansion
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
+    rem echo ..P1.. SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
@@ -40,7 +40,7 @@ setlocal enabledelayedexpansion
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
     )
-    rem echo LIB_BAT:!LIB_BAT!
+    rem echo ..P1.. LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
         exit /b 1
@@ -76,22 +76,22 @@ rem ----------------------------------------------------------------------------
     set VarDefault=!CurrentDir!
 
     call :GET_project_dir project_dir "project_dir_caption" "!VarDefault!" || exit /b 1
-    rem echo GET_project_dir:!GET_project_dir!
+    rem echo ..P1.. GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
 
     set venv_dir=
     call :GET_VENV_DIR !project_dir! VENV_DIR "VENV_DIR_caption" "" || exit /b 1
-    rem echo GET_venv_dir:!GET_venv_dir!
+    rem echo ..P1.. GET_venv_dir:!GET_venv_dir!
     echo venv_dir:!venv_dir!
 
-    rem echo OPTION:!OPTION!
+    rem echo ..P1.. OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
 
-    rem echo ARGS:!ARGS!
+    rem echo ..P1.. ARGS:!ARGS!
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -112,7 +112,7 @@ rem ----------------------------------------------------------------------------
     if defined TEST (
         set FULL_SCRIPT_NAME=!SCRIPT_NAME!
     )
-    rem echo FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
+    rem echo ..P1.. FULL_SCRIPT_NAME:!FULL_SCRIPT_NAME!
 
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
     echo VENV_DIR:!VENV_DIR!

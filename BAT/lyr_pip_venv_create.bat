@@ -11,16 +11,16 @@ setlocal enabledelayedexpansion
     rem -------------------------------------------------------------------
     rem set PROJECTS_LYR_ROOT=D:\WORK\WIN
     set PROJECTS_LYR_ROOT=D:
-    rem echo PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
+    rem echo ..P1.. PROJECTS_LYR_ROOT:!PROJECTS_LYR_ROOT!
 
     rem -------------------------------------------------------------------
     rem PROJECTS_LYR_DIR - Каталог проектов LYR
     rem -------------------------------------------------------------------
     set PROJECTS_LYR_DIR=!PROJECTS_LYR_ROOT!\PROJECTS_LYR
-    rem echo PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
+    rem echo ..P1.. PROJECTS_LYR_DIR:!PROJECTS_LYR_DIR!
     if not exist "!PROJECTS_LYR_DIR!"\ (
-        rem echo INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
-        rem echo INFO: Create "!PROJECTS_LYR_DIR!" ...
+        rem echo ..P1.. INFO: Dir "!PROJECTS_LYR_DIR!" not exist ...
+        rem echo ..P1.. INFO: Create "!PROJECTS_LYR_DIR!" ...
         rem mkdir "!PROJECTS_LYR_DIR!"
         exit /b 1
     )
@@ -32,7 +32,7 @@ setlocal enabledelayedexpansion
         rem set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         set SCRIPTS_DIR_SRC=!PROJECTS_LYR_DIR!\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC
     )
-    rem echo SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
+    rem echo ..P1.. SCRIPTS_DIR_SRC:!SCRIPTS_DIR_SRC!
 
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов BAT
@@ -40,7 +40,7 @@ setlocal enabledelayedexpansion
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR_SRC!\LIB
     )
-    rem echo LIB_BAT:!LIB_BAT!
+    rem echo ..P1.. LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
         exit /b 1
@@ -76,16 +76,16 @@ rem ----------------------------------------------------------------------------
     set VarDefault=!CurrentDir!
 
     call :GET_project_dir project_dir "project_dir_caption" "!VarDefault!" || exit /b 1
-    rem echo GET_project_dir:!GET_project_dir!
+    rem echo ..P1.. GET_project_dir:!GET_project_dir!
     echo project_dir:!project_dir!
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
     call :GET_python_dir python_dir "project_dir_caption" "3.13" || exit /b 1
-    rem echo GET_python_dir:!GET_python_dir!
+    rem echo ..P1.. GET_python_dir:!GET_python_dir!
     echo python_dir:!python_dir!
     rem set OPTION=!OPTION! -python_dir "!python_dir!"
 
-    rem echo OPTION:!OPTION!
+    rem echo ..P1.. OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
@@ -100,7 +100,7 @@ rem ----------------------------------------------------------------------------
     rem     set PN_CAPTION=!A1_Caption!
     rem     call :Read_P A1 !A1! || exit /b 1
     rem )
-    rem echo A1:!A1!
+    rem echo ..P1.. A1:!A1!
     rem if defined A1 (
     rem     set ARGS=!ARGS! "!A1!"
     rem ) else (
@@ -109,7 +109,7 @@ rem ----------------------------------------------------------------------------
     rem     exit /b 1
     rem )
     
-    rem echo ARGS:!ARGS!
+    rem echo ..P1.. ARGS:!ARGS!
 
     echo Создание каталога !Directory! ...
     set Directory=!project_dir!.venv

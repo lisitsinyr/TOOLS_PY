@@ -65,10 +65,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -106,14 +106,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -126,7 +126,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -194,63 +194,63 @@ rem beginfunction
     set repository=
     set PN_CAPTION=The repository to publish the package to
     call :Read_P repository "" || exit /b 1
-    rem echo repository: !repository!
+    rem echo ..P1.. repository: !repository!
     if defined repository (
         set OPTION=!OPTION! --repository=!repository!
     )
     set username=
     set PN_CAPTION=The username to access the repository
     call :Read_P username "" || exit /b 1
-    rem echo username: !username!
+    rem echo ..P1.. username: !username!
     if defined username (
         set OPTION=!OPTION! --username=!username!
     )
     set password=
     set PN_CAPTION=The password to access the repository
     call :Read_P password "" || exit /b 1
-    rem echo password: !password!
+    rem echo ..P1.. password: !password!
     if defined password (
         set OPTION=!OPTION! --password=!password!
     )
     set cert=
     set PN_CAPTION=Certificate authority to access the repository
     call :Read_P cert "" || exit /b 1
-    rem echo cert: !cert!
+    rem echo ..P1.. cert: !cert!
     if defined cert (
         set OPTION=!OPTION! --cert=!cert!
     )
     set client-cert=
     set PN_CAPTION=Client certificate to access the repository
     call :Read_P client-cert "" || exit /b 1
-    rem echo client-cert: !client-cert!
+    rem echo ..P1.. client-cert: !client-cert!
     if defined client-cert (
         set OPTION=!OPTION! --client-cert=!client-cert!
     )
     set dist-dir=
     set PN_CAPTION=Dist directory where built artifact are stored. Default is `dist`. [default: "dist"]
     call :Read_P dist-dir "" || exit /b 1
-    rem echo dist-dir: !dist-dir!
+    rem echo ..P1.. dist-dir: !dist-dir!
     if defined dist-dir (
         set OPTION=!OPTION! --dist-dir=!dist-dir!
     )
     set build=Y
     set PN_CAPTION=Build the package before publishing
     call :Read_F build "yN" 0 || exit /b 1
-    rem echo build: !build!
+    rem echo ..P1.. build: !build!
     if defined build (
         set OPTION=!OPTION! --build
     )
     set dry-run=Y
     set PN_CAPTION=Perform all actions except upload the package
     call :Read_F dry-run "yN" 0 || exit /b 1
-    rem echo dry-run: !dry-run!
+    rem echo ..P1.. dry-run: !dry-run!
     if defined dry-run (
         set OPTION=!OPTION! --dry-run
     )
     set skip-existing=N
     set PN_CAPTION=Ignore errors from files already existing in the repository
     call :Read_F skip-existing "yN" 0 || exit /b 1
-    rem echo skip-existing: !skip-existing!
+    rem echo ..P1.. skip-existing: !skip-existing!
     if defined skip-existing (
         set OPTION=!OPTION! --skip-existing
     )

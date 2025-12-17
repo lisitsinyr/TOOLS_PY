@@ -57,10 +57,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
 
@@ -98,14 +98,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -118,7 +118,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -186,28 +186,28 @@ rem beginfunction
     set group=
     set PN_CAPTION=The group to remove the dependency from
     call :Read_P group "" || exit /b 1
-    rem echo group: !group!
+    rem echo ..P1.. group: !group!
     if defined group (
         set OPTION=!OPTION! --group=!group!
     )
     set dev=N
     set PN_CAPTION=Remove a package from the development dependencies. ^(Deprecated^) Use --group=dev instead
     call :Read_F dev "yN" 0 || exit /b 1
-    rem echo dev: !dev!
+    rem echo ..P1.. dev: !dev!
     if defined dev (
         set OPTION=!OPTION! --dev
     )
     set dry-run=N
     set PN_CAPTION=Output the operations but do not execute anything ^(implicitly enables --verbose^)
     call :Read_F dry-run "yN" 0 || exit /b 1
-    rem echo dry-run: !dry-run!
+    rem echo ..P1.. dry-run: !dry-run!
     if defined dry-run (
         set OPTION=!OPTION! --dry-run
     )
     set lock=Y
     set PN_CAPTION=Do not perform operations (only update the lockfile)
     call :Read_F lock "yN" 0 || exit /b 1
-    rem echo lock: !lock!
+    rem echo ..P1.. lock: !lock!
     if defined lock (
         set OPTION=!OPTION! --lock
     )
@@ -219,7 +219,7 @@ rem beginfunction
     set packages=
     set PN_CAPTION=The path to create the project at
     call :Read_P packages "" || exit /b 1
-    rem echo packages: !packages!
+    rem echo ..P1.. packages: !packages!
     if defined packages (
         set ARGS=!ARGS! !packages!
     ) else (

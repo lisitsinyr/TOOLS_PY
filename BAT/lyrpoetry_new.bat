@@ -51,11 +51,11 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N:!Read_N!
+    rem echo ..P1.. Read_N:!Read_N!
 
     call :SET_LIB %0 || exit /b 1
     call :SET_POETRY || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -92,14 +92,14 @@ rem beginfunction
         set SCRIPTS_DIR=D:\TOOLS\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -112,7 +112,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_SRC_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -146,8 +146,8 @@ rem beginfunction
     echo !CAPTION!
     set COMMAND=new
     
-    rem echo OPTION:!OPTION!
-    rem echo ARGS:!ARGS!
+    rem echo ..P1.. OPTION:!OPTION!
+    rem echo ..P1.. ARGS:!ARGS!
 
     if not defined Read_N (
         set APPRUN=!APP! !COMMAND!!OPTION!!ARGS!
@@ -178,7 +178,7 @@ rem beginfunction
     set PN_CAPTION=Set the resulting package name
     set PN_CAPTION=Задайте имя результирующего пакета
     call :Read_P name "" || exit /b 1
-    rem echo name: !name!
+    rem echo ..P1.. name: !name!
     if defined name (
         set OPTION=!OPTION! --name=!name!
     )
@@ -186,7 +186,7 @@ rem beginfunction
     set PN_CAPTION=Use the src layout for the project
     set PN_CAPTION=Используйте макет src для проекта
     call :Read_F src "YN" 0 || exit /b 1
-    rem echo src: !src!
+    rem echo ..P1.. src: !src!
     if defined src (
         set OPTION=!OPTION! --src
     )
@@ -194,7 +194,7 @@ rem beginfunction
     set PN_CAPTION=Specify the readme file extension
     set PN_CAPTION=Укажите расширение файла readme
     call :Read_P readme !readme! || exit /b 1
-    rem echo readme: !readme!
+    rem echo ..P1.. readme: !readme!
     if not "!readme!"=="" (
         set OPTION=!OPTION! --readme=!readme!
     )

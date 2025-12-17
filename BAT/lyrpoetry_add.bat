@@ -76,10 +76,10 @@ rem ----------------------------------------------------------------------------
 
     rem Количество аргументов
     call :Read_N %* || exit /b 1
-    rem echo Read_N: !Read_N!
+    rem echo ..P1.. Read_N: !Read_N!
 
     call :SET_LIB %0 || exit /b 1
-    rem echo CURRENT_DIR: !CURRENT_DIR!
+    rem echo ..P1.. CURRENT_DIR: !CURRENT_DIR!
 
     call :StartLogFile || exit /b 1
     
@@ -117,14 +117,14 @@ rem beginfunction
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_BAT
         rem set SCRIPTS_DIR=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT
     )
-    rem echo SCRIPTS_DIR: %SCRIPTS_DIR%
+    rem echo ..P1.. SCRIPTS_DIR: %SCRIPTS_DIR%
     rem -------------------------------------------------------------------
     rem LIB_BAT - каталог библиотеки скриптов
     rem -------------------------------------------------------------------
     if not defined LIB_BAT (
         set LIB_BAT=!SCRIPTS_DIR!\SRC\LIB
         set LIB_BAT=!SCRIPTS_DIR!\LIB
-        rem echo LIB_BAT: !LIB_BAT!
+        rem echo ..P1.. LIB_BAT: !LIB_BAT!
     )
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
@@ -137,7 +137,7 @@ rem beginfunction
         set SCRIPTS_DIR_KIX=D:\TOOLS\TOOLS_KIX
         set SCRIPTS_DIR_KIX=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\KIX\PROJECTS_KIX\TOOLS_KIX
     )
-    rem echo SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
+    rem echo ..P1.. SCRIPTS_DIR_KIX: !SCRIPTS_DIR_KIX!
 
     exit /b 0
 rem endfunction
@@ -181,7 +181,7 @@ rem beginfunction
     set PN_CAPTION=The group to add the dependency to
     set PN_CAPTION=Группа, в которую нужно добавить зависимость
     call :Read_P group "" || exit /b 1
-    rem echo group: !group!
+    rem echo ..P1.. group: !group!
     if defined group (
         set OPTION=!OPTION! --group !group!
     )
@@ -189,7 +189,7 @@ rem beginfunction
     set PN_CAPTION=Add as a development dependency. (Deprecated) Use --group=dev instead
     set PN_CAPTION=Добавить в качестве зависимости от разработки. (Deprecated) Use --group=dev instead
     call :Read_F dev "yN" 0 || exit /b 1
-    rem echo dev: !dev!
+    rem echo ..P1.. dev: !dev!
     if defined editable (
         set OPTION=!OPTION! --dev
     )
@@ -197,7 +197,7 @@ rem beginfunction
     set PN_CAPTION=Add vcs/path dependencies as editable
     set PN_CAPTION=Добавьте зависимости vcs/path в качестве редактируемых
     call :Read_F editable "yN" 0 || exit /b 1
-    rem echo editable: !editable!
+    rem echo ..P1.. editable: !editable!
     if defined editable (
         set OPTION=!OPTION! --editable
     )
@@ -205,7 +205,7 @@ rem beginfunction
     set PN_CAPTION=Extras to activate for the dependency. ^(multiple values allowed^)
     set PN_CAPTION=Дополнительные функции, которые необходимо активировать для зависимости. ^(multiple values allowed^)
     call :Read_P extras "" || exit /b 1
-    rem echo extras: !extras!
+    rem echo ..P1.. extras: !extras!
     if defined extras  (
         set OPTION=!OPTION! --extras !extras!
     )
@@ -213,7 +213,7 @@ rem beginfunction
     set PN_CAPTION=Add as an optional dependency
     set PN_CAPTION=Добавить в качестве необязательной зависимости
     call :Read_F optional "yN" 0 || exit /b 1
-    rem echo optional: !optional!
+    rem echo ..P1.. optional: !optional!
     if defined optional (
         set OPTION=!OPTION! --optional
     )
@@ -221,7 +221,7 @@ rem beginfunction
     set PN_CAPTION=Python version for which the dependency must be installed
     set PN_CAPTION=Версия Python, для которой должна быть установлена зависимость
     call :Read_P python "" || exit /b 1
-    rem echo python: !python!
+    rem echo ..P1.. python: !python!
     if defined python (
         set OPTION=!OPTION! --python !python!
     )
@@ -229,7 +229,7 @@ rem beginfunction
     set PN_CAPTION=Platforms for which the dependency must be installed
     set PN_CAPTION=Платформы, для которых должна быть установлена зависимость
     call :Read_P platform "" || exit /b 1
-    rem echo platform: !platform!
+    rem echo ..P1.. platform: !platform!
     if defined platform (
         set OPTION=!OPTION! --platform !platform!
     )
@@ -237,7 +237,7 @@ rem beginfunction
     set PN_CAPTION=Name of the source to use to install the package
     set PN_CAPTION=Имя источника, используемого для установки пакета
     call :Read_P source "" || exit /b 1
-    rem echo source: !source!
+    rem echo ..P1.. source: !source!
     if defined source (
         set OPTION=!OPTION! --source !source!
     )
@@ -245,7 +245,7 @@ rem beginfunction
     set PN_CAPTION=Accept prereleases
     set PN_CAPTION=Принимать предварительные релизы
     call :Read_F allow-prereleases "yN" 0 || exit /b 1
-    rem echo allow-prereleases: !allow-prereleases!
+    rem echo ..P1.. allow-prereleases: !allow-prereleases!
     if defined allow-prereleases (
         set OPTION=!OPTION! --allow-prereleases
     )
@@ -253,7 +253,7 @@ rem beginfunction
     set PN_CAPTION=Output the operations but do not execute anything ^(implicitly enables -verbose^)
     set PN_CAPTION=Выводите операции, но ничего не выполняйте ^(implicitly enables -verbose^)
     call :Read_F dry-run "yN" 0 || exit /b 1
-    rem echo dry-run: !dry-run!
+    rem echo ..P1.. dry-run: !dry-run!
     if defined dry-run (
         set OPTION=!OPTION! --dry-run
     )
@@ -261,7 +261,7 @@ rem beginfunction
     set PN_CAPTION=Do not perform install [only update the lockfile]
     set PN_CAPTION=Не выполняйте установку [only update the lockfile]
     call :Read_F lock "yN" 0 || exit /b 1
-    rem echo lock: !lock!
+    rem echo ..P1.. lock: !lock!
     if defined lock (
         set OPTION=!OPTION! --lock
     )
@@ -274,7 +274,7 @@ rem beginfunction
     set PN_CAPTION=The packages to add
     set PN_CAPTION=Пакеты для добавления
     call :Read_P names "" || exit /b 1
-    rem echo names: !names!
+    rem echo ..P1.. names: !names!
     if defined names (
         set ARGS=!ARGS! !names!
     ) else (

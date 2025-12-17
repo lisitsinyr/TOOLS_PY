@@ -16,7 +16,7 @@ setlocal enabledelayedexpansion
     if not defined LIB_BAT (
         set LIB_BAT=D:\PROJECTS_LYR\CHECK_LIST\SCRIPT\BAT\PROJECTS_BAT\TOOLS_SRC_BAT\SRC\LIB
     )
-    rem echo LIB_BAT:!LIB_BAT!
+    rem echo ..P1.. LIB_BAT:!LIB_BAT!
     if not exist !LIB_BAT!\ (
         echo ERROR: Каталог библиотеки LYR !LIB_BAT! не существует...
         exit /b 1
@@ -44,7 +44,7 @@ setlocal enabledelayedexpansion
     )
     
     rem call :CurrentDir || exit /b 1
-    rem echo CurrentDir:!CurrentDir!
+    rem echo ..P1.. CurrentDir:!CurrentDir!
 
     set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
 
@@ -70,7 +70,7 @@ setlocal enabledelayedexpansion
 
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
     set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
-    rem echo VENV_DIR:!VENV_DIR!
+    rem echo ..P1.. VENV_DIR:!VENV_DIR!
 
     call :SET_VENV_DIR !project_dir! !VENV_DIR! || exit /b 1
 
