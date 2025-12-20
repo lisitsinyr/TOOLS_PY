@@ -22,6 +22,8 @@ __pycache__/
 *.rar
 *.egg-info
 *.ipynb_checkpoints
+*.jpg
+*.pdf
 ### *.bat
 
 ### -------------------------------------
@@ -33,6 +35,8 @@ __pycache__/
 *.cer
 *.crt
 *.pfx
+.pypirc*
+*lyr60*.session
 
 ### -------------------------------------
 # Исключить все файлы с расширение .a
@@ -70,3 +74,4 @@ EXE/
 WORK/
 Writerside/
 .INFO/
+.ARCH/
