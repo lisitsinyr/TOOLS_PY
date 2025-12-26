@@ -25,7 +25,6 @@ import re
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
-import asyncio
 from urllib.parse import urlparse
 from decouple import config
 import pyperclip
@@ -36,7 +35,8 @@ import pyperclip
 # import telethon
 import telethon.sync
 import telethon.tl.types
-from telethon.tl.types import PeerUser, PeerChat, PeerChannel
+from telethon.tl.types import PeerChannel
+from telethon.tl.types import Channel
 
 # # класс, позволяющий нам подключаться к клиенту мессенджера и работать с ним;
 # from telethon.sync import TelegramClient
@@ -70,11 +70,17 @@ import lyrpy.LUTelegram as LUTelegram
 #------------------------------------------
 #
 #------------------------------------------
+GO1 = ''
+GO2 = ''
+GO3 = ''
+
 Gapi_id = ''
 Gapi_hash = ''
 Gphone = ''
 Glogin = ''
 Gpassword = ''
+Gmessage_url = ''
+GlinkT = ''
 
 Gchannel_name = ''
 Gchannel_name_raw = ''
@@ -151,49 +157,49 @@ def get_telethon_mygroups ():
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
+    # me = LUTelegram.get_telethon_me (Tclient)
 
     LUTelegram.get_telethon_mygroups (Tclient)
 
     Tclient.disconnect ()
 # endfunction
 
-# ----------------------------------------------
-# get_telethon_chats ():
-# ----------------------------------------------
-def get_telethon_chats ():
-    """get_telethon_chats"""
-    # beginfunction
-    LIB_name = 'LIB:telethon'
-    LUTelegram.LIB_name = LIB_name
-
-    # print (f'{LIB_name:{'_'}<{60}}')
-    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
-    # -------------------------------------------
-    # Авторизация в Telegram
-    # -------------------------------------------
-    # Имя сессии (может быть любым)
-    session_name = 'lyr60_TELEGRAM'
-    print (f'{LIB_name}_session_name={session_name}')
-    Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
-                                              Gphone, Gpassword)
-    # -------------------------------------------
-    #
-    # -------------------------------------------
-    # LUTelegram.get_telethon_mygroups (Tclient)
-    # -------------------------------------------
-    #
-    # -------------------------------------------
-    # LUTelegram.get_telethon_chats (Tclient)
-    # -------------------------------------------
-    # Getting information about yourself
-    # -------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
-
-    LUTelegram.get_telethon_chats (Tclient)
-
-    Tclient.disconnect ()
-# endfunction
+# # ----------------------------------------------
+# # get_telethon_chats ():
+# # ----------------------------------------------
+# def get_telethon_chats ():
+#     """get_telethon_chats"""
+#     # beginfunction
+#     LIB_name = 'LIB:telethon'
+#     LUTelegram.LIB_name = LIB_name
+#
+#     # print (f'{LIB_name:{'_'}<{60}}')
+#     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
+#     # -------------------------------------------
+#     # Авторизация в Telegram
+#     # -------------------------------------------
+#     # Имя сессии (может быть любым)
+#     session_name = 'lyr60_TELEGRAM'
+#     print (f'{LIB_name}_session_name={session_name}')
+#     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash,
+#                                               Gphone, Gpassword)
+#     # -------------------------------------------
+#     #
+#     # -------------------------------------------
+#     # LUTelegram.get_telethon_mygroups (Tclient)
+#     # -------------------------------------------
+#     #
+#     # -------------------------------------------
+#     # LUTelegram.get_telethon_chats (Tclient)
+#     # -------------------------------------------
+#     # Getting information about yourself
+#     # -------------------------------------------
+#     me = LUTelegram.get_telethon_me (Tclient)
+#
+#     # LUTelegram.get_telethon_chats (Tclient)
+#
+#     Tclient.disconnect ()
+# # endfunction
 
 # ----------------------------------------------
 # get_telethon_groups ():
@@ -225,7 +231,7 @@ def get_telethon_groups ():
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
+    # me = LUTelegram.get_telethon_me (Tclient)
 
     # -------------------------------------------
     #
@@ -267,7 +273,7 @@ def get_telethon_users_group ():
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
+    # me = LUTelegram.get_telethon_me (Tclient)
 
     # -------------------------------------------
     #
@@ -320,7 +326,7 @@ def func_telethon ():
     #-------------------------------------------
     # Getting information about yourself
     #-------------------------------------------
-    me = LUTelegram.get_telethon_me (Tclient)
+    # me = LUTelegram.get_telethon_me (Tclient)
 
     #-------------------------------------------
     # channel
@@ -328,13 +334,13 @@ def func_telethon ():
     try:
         channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except:
-        channel: telethon.tl.types.Channel = None
+        channel = None
     #endtry
     if not channel:
         try:
             channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
         except:
-            channel: telethon.tl.types.Channel = None
+            channel = None
         #endtry
     #endif
 
@@ -390,7 +396,7 @@ def func_telethon ():
     if hasattr(message, 'media'):
         if message.media:
             # print (message.media)
-            grouped_id = message.grouped_id
+            # grouped_id = message.grouped_id
             # print (f'{LIB_name}_message.grouped_id={grouped_id}')
             # if message.audio:
             #     print (message.audio)
@@ -404,7 +410,7 @@ def func_telethon ():
                         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО пропущена ...')
                     else:
                         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО ...')
-                        file_path = Tclient.download_media (message, Gmessage_directory)
+                        # file_path = Tclient.download_media (message, Gmessage_directory)
                         # print (f"{LIB_name}_message.video: {file_path}")
                         # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.video: {file_path}")
                 except:
@@ -470,14 +476,14 @@ def func_pyrogram ():
     # Авторизация в Telegram
     #-------------------------------------------
     # # Имя сессии (может быть любым)
-    session_name = 'lyr60'
+    # session_name = 'lyr60'
     # print (f'{LIB_name}_session_name={session_name}')
     Tclient: pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
 
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
-    me: pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
+    # me: pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
     # print (f"{me=}")
 
     #-------------------------------------------
@@ -632,7 +638,7 @@ def write_message_file (content:str, filepath:str) -> None:
 # ----------------------------------------------
 #
 # ----------------------------------------------
-def get_channel_name_ (channel_id):
+def get_channel_name_ (channel_id) -> str:
     """get_channel_name_"""
 #beginfunction
     #-------------------------------------------
