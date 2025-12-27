@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem lyrpy.bat
+rem lyr_venv.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -93,24 +93,6 @@ rem ----------------------------------------------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-
-    rem if not defined O1 (
-    rem     set A1_Name=script
-    rem     set A1_Caption=script
-    rem     set A1_Default=
-    rem     set A1=!A1_Default!
-    rem     set PN_CAPTION=!A1_Caption!
-    rem     call :Read_P A1 !A1! || exit /b 1
-    rem )
-    rem echo ..P1.. A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
-    
     rem echo ..P1.. ARGS:!ARGS!
 
     cmd /k "!venv_dir!\Scripts\activate.bat"

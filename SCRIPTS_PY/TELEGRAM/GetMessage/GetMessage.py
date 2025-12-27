@@ -36,23 +36,7 @@ import pyperclip
 import telethon.sync
 import telethon.tl.types
 from telethon.tl.types import PeerChannel
-from telethon.tl.types import Channel
 
-# # класс, позволяющий нам подключаться к клиенту мессенджера и работать с ним;
-# from telethon.sync import TelegramClient
-# # PeerChannel - специальный тип, определяющий объекты типа «канал/чат»,
-# # с помощью которого можно обратиться к нужному каналу для парсинга сообщений.
-# from telethon.tl.types import Channel, PeerChannel, PeerChat, PeerUser, Message, User, MessageMediaPhoto, MessageMediaDocument
-# # конструктор для работы с InputPeer, который передаётся в качестве аргумента в GetDialogsRequest;
-# from telethon.tl.types import InputPeerEmpty
-# from telethon.tl.types import InputMessagesFilterPhotos
-# # функция, позволяющая работать с сообщениями в чате;
-# from telethon.tl.functions.messages import GetDialogsRequest
-# # метод, позволяющий получить сообщения пользователей из чата и работать с ним;
-# from telethon.tl.functions.messages import GetHistoryRequest
-# from telethon import TelegramClient, events, sync
-# import telethon.errors
-# import telethon.client.messages as messages
 #------------------------------------------
 # БИБЛИОТЕКА pyrogram
 #------------------------------------------
@@ -334,13 +318,15 @@ def func_telethon ():
     try:
         channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except:
-        channel = None
+        # channel = None
+        pass
     #endtry
     if not channel:
         try:
             channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
         except:
-            channel = None
+            # channel = None
+            pass
         #endtry
     #endif
 
