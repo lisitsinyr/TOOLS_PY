@@ -82,7 +82,7 @@ rem ----------------------------------------------------------------------------
     echo project_dir:!project_dir!
     rem set OPTION=!OPTION! -project_dir "!project_dir!"
 
-    call :GET_VENV_DIR !project_dir! VENV_DIR "VENV_DIR_caption" "" || exit /b 1
+    call :GET_VENV_DIR !project_dir! VENV_DIR "VENV_DIR_caption" ".venv" || exit /b 1
     rem echo ..P1.. GET_venv_dir:!GET_venv_dir!
     echo venv_dir:!venv_dir!
     rem set OPTION=!OPTION! -venv_dir "!venv_dir!"
