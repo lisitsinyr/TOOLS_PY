@@ -318,15 +318,13 @@ def func_telethon ():
     try:
         channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except:
-        # channel = None
-        pass
+        channel = None
     #endtry
     if not channel:
         try:
             channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
         except:
-            # channel = None
-            pass
+            channel = None
         #endtry
     #endif
 
