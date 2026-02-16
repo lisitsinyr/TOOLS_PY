@@ -1,6 +1,6 @@
 @echo off
 rem -------------------------------------------------------------------
-rem uv_install_pwsh.bat
+rem lyr_uv_install_pwsh.bat
 rem -------------------------------------------------------------------
 chcp 1251>NUL
 
@@ -13,13 +13,16 @@ rem ----------------------------------------------------------------------------
     set BATNAME=%~nx0
     echo Start !BATNAME! ...
 
+    rem "C:\Program Files\PowerShell\7\pwsh.exe"
+    rem C:\Users\lyr\AppData\Local\Microsoft\WindowsApps\pwsh.exe
+
     rem Changing the execution policy allows running a script from the internet.
     rem pwsh.exe -ExecutionPolicy ByPass
-    rem powershell -c "irm https://astral.sh/uv/install.ps1 | more"
-    rem powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   
+    pwsh.exe -WorkingDirectory ~ -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-    rem C:\Users\lyr\AppData\Local\Microsoft\WindowsApps\pwsh.exe
-    pwsh -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    rem powershell -WorkingDirectory ~ -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+    rem powershell -c "irm https://astral.sh/uv/install.ps1 | more"
 
     exit /b 0
 :end
