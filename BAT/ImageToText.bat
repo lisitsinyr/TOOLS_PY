@@ -135,7 +135,8 @@ rem ----------------------------------------------------------------------------
     set VENV_DIR=!VENV_DIR!\!PY_ENVNAME!
     rem echo ..P1.. VENV_DIR:!VENV_DIR!
 
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313\
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
     echo VENV_DIR:!VENV_DIR!
 
     if not exist !VENV_DIR! (
@@ -171,11 +172,11 @@ rem ----------------------------------------------------------------------------
         set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
     )
 
-    call :VENV_START || exit /b 1
+    call :VENV_START !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
-    call :VENV_STOP || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 
