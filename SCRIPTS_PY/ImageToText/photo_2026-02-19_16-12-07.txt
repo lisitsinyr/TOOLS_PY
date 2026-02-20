@@ -1,0 +1,4 @@
+def build_order(price, qty):
+total = price * qty
+currency = “USD”
+return locals()
