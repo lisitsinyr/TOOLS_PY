@@ -72,7 +72,8 @@ Gchannel_name_id = 0
 Gmessage_id = 0
 Gmessage_directory = ''
 
-Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
+# Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
+Gdownload_path = r'G:\___РАЗБОР\TELEGRAM'
 Gwidth = 60
 
 def sanitize_filename (filename, replacement = '_', platform = None):

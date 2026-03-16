@@ -13,7 +13,8 @@ rem ----------------------------------------------------------------------------
     set BATNAME=%~nx0
     echo Start !BATNAME! ...
     
-    set file_stop=G:\___ÐÀÇÁÎÐ\YOUTUBE\TELEGRAM\stop
+    rem set file_stop=G:\___ÐÀÇÁÎÐ\YOUTUBE\TELEGRAM\stop
+    set file_stop=G:\___ÐÀÇÁÎÐ\TELEGRAM\stop
 
     rem echo ..P1.. off > !file_stop! & echo on
 

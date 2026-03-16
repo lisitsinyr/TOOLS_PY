@@ -85,7 +85,8 @@ rem ----------------------------------------------------------------------------
     rem O2
     rem -------------------------------------------------------------------
     set VarName=O2
-    call :Read_P !VarName! "G:\___РАЗБОР\YOUTUBE\TELEGRAM" "Каталог загрузки" "" || exit /b 1
+    rem call :Read_P !VarName! "G:\___РАЗБОР\YOUTUBE\TELEGRAM" "Каталог загрузки" "" || exit /b 1
+    call :Read_P !VarName! "G:\___РАЗБОР\TELEGRAM" "Каталог загрузки" "" || exit /b 1
     if defined !VarName! (
         set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
