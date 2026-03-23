@@ -392,9 +392,10 @@ def func_telethon ():
                     # print (message.media.document.attributes [1].file_name)
                     # print (message.document.attributes [1].file_name)
                     if Gchannel_name_id is None:
-                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО пропущена ...')
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name} Gchannel_name_id is None')
                     else:
-                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО ...')
+                        LULog.LoggerAdd (LULog.LoggerAPPS,
+                                         LULog.TEXT, f'{LIB_name} ЗАГРУЗКА ВИДЕО пропущена ...')
                         # file_path = Tclient.download_media (message, Gmessage_directory)
                         # print (f"{LIB_name}_message.video: {file_path}")
                         # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.video: {file_path}")
@@ -408,10 +409,12 @@ def func_telethon ():
                 # print (message.photo)
                 try:
                     file_path = Tclient.download_media(message, Gmessage_directory)
-                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.photo: {file_path}")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT,
+                                     f"{LIB_name} message.photo: {file_path}")
                 except:
                     # print(f"{LIB_name}_message.photo: ERROR")
-                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.photo: ERROR")
+                    LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR,
+                                     f"{LIB_name} message.photo: ERROR")
                 # Чтобы объединить сгруппированные фотографии по параметру grouped_id в Telethon,
                 # можно использовать метод client.send_message с параметром file.
                 # Этот метод позволяет отправить группу фотографий как одно сообщение,
@@ -437,8 +440,9 @@ def func_telethon ():
 
         else:
             # print (f"{LIB_name}_В сообщении нет медиафайлов.")
-            # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_В сообщении нет медиафайлов.")
-            pass
+            LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT,
+                             f"{LIB_name} В сообщении нет медиафайлов ...")
+            # pass
         #endif
 
     Tclient.disconnect ()
@@ -486,7 +490,7 @@ def func_pyrogram ():
         chat = None
         # LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{Gchannel_name_raw=}")
     #endtry
-    if not chat:
+    if not chat is None:
         try:
             chat = Tclient.get_chat (Gchannel_name_id)
         except:
@@ -550,7 +554,12 @@ def func_pyrogram ():
                         os.remove (file_media_path)
                     #endif
                     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО {file_media_path} ...')
-                    file_media_path = Tclient.download_media (message, file_media_path)
+
+                    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT,
+                                     f'ЗАГРУЗКА ВИДЕО '
+                                     f'{file_media_path} пропущена ...')
+                    # file_media_path = Tclient.download_media (message, file_media_path)
+
                     # print (f"{LIB_name}_message.video: {file_media_path}")
                     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, file_media_path)
                 else:
@@ -563,7 +572,11 @@ def func_pyrogram ():
                     #endif
                     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'ЗАГРУЗКА ВИДЕО {message.video.file_name} ...')
                     try:
-                        file_media_path = Tclient.download_media (message, file_media_path)
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT,
+                                         f'ЗАГРУЗКА ВИДЕО '
+                                         f'{file_media_path} пропущена ...')
+                        # file_media_path = Tclient.download_media (message, file_media_path)
+
                         # print(f"{LIB_name}_message.video: {file_media_path}")
                         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{file_media_path}')
                     except:
@@ -574,8 +587,9 @@ def func_pyrogram ():
             #endif
         else:
             # print (f"{LIB_name}_В сообщении нет видеофайлов")
-            # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_В сообщении нет видеофайлов")
-            pass
+            LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT,
+                             f"{LIB_name} В сообщении нет видеофайлов ...")
+            # pass
         #endif
 
         # if message.photo:
