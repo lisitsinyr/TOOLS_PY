@@ -35,7 +35,7 @@ import pyperclip
 # import telethon
 import telethon.sync
 import telethon.tl.types
-from telethon.tl.types import PeerChannel
+# from telethon.tl.types import Channel
 
 #------------------------------------------
 # БИБЛИОТЕКА pyrogram
@@ -72,7 +72,6 @@ Gchannel_name_id = 0
 Gmessage_id = 0
 Gmessage_directory = ''
 
-# Gdownload_path = r'G:\___РАЗБОР\YOUTUBE\TELEGRAM'
 Gdownload_path = r'G:\___РАЗБОР\TELEGRAM'
 Gwidth = 60
 
@@ -296,8 +295,13 @@ def func_telethon ():
     #-------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
-    # print (f'{LIB_name}_session_name={session_name}')
+
+    # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+
+    # print (f'{LIB_name}_session_name={session_name}')
+
     #-------------------------------------------
     #
     #-------------------------------------------
@@ -318,16 +322,19 @@ def func_telethon ():
     #-------------------------------------------
     try:
         channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
-    except:
+    except Exception as e:
         channel = None
+        print (f'Ошибка: {e}')
     #endtry
     if not channel:
         try:
             channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
-        except:
+        except Exception as e:
             channel = None
+            print (f'Ошибка: {e}')
         #endtry
     #endif
+    print(channel)
 
     # -------------------------------------------
     # Получаем сообщение
@@ -645,8 +652,14 @@ def get_channel_name_ (channel_id) -> str:
     #-------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
+    print(f'{session_name=}')
+
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-    entity = Tclient.get_entity (PeerChannel (channel_id))
+
+    # entity = Tclient.get_entity (PeerChannel (channel_id))
+    entity = Tclient.get_entity (telethon.tl.types.Channel (channel_id))
+    print(f'{entity=}')
+
     Tclient.disconnect ()
 
     return entity.title
@@ -669,8 +682,12 @@ def set_message (url) -> None:
         # print(f'{Gmessage_id=}')
         Gchannel_name_id = int(url.path.split('/')[2])      # Получаем 9999999999999
         print(f'{Gchannel_name_id=}')
+
         # Gchannel_name = LUTelegram.get_channel_name (GlinkT,'lyr60_TELEGRAM', Gapi_id, Gapi_hash, Gphone)
+
         Gchannel_name_raw = get_channel_name_ (Gchannel_name_id)
+        # Gchannel_name_raw = ''
+
     else:
         Gmessage_id = int(url.path.split('/')[2])           # Получаем 9999
         # print(f'{Gmessage_id=}')
@@ -708,14 +725,17 @@ def check_link (link:str) -> None:
         # print (f'{parsed_url=}')
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{GlinkT}')
         set_message (parsed_url)
+
         error = func_telethon ()
         if error > 0:
             # print(f'{error=}')
             LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+
         error = func_pyrogram ()
         if error > 0:
             # print(f'{error=}')
             LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+
         pyperclip.copy ('')
         print (f'Wait ...')
     return None
