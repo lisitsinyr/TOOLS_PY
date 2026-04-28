@@ -693,10 +693,10 @@ def set_message (url) -> None:
         # print(f'{Gmessage_id=}')
         Gchannel_name_id = None
         Gchannel_name_raw = url.path.split('/')[1]              # Получаем "xx...xx"
-    # print (f'{Gchannel_name_raw=}')
+    print (f'{Gchannel_name_raw=}')
 
     Gchannel_name = sanitize_filename (Gchannel_name_raw, replacement = '_', platform = None)
-    # print(Gchannel_name)
+    print (f'{Gchannel_name=}')
 
     # s = re.sub (r'[^a-zA-Z0-9]', '', Gchannel_name)
     # Gchannel_name_s = sanitize_filename (Gchannel_name_raw, replacement = '_', platform = None)

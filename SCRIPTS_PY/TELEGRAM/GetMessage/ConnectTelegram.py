@@ -184,9 +184,9 @@ def func_telethon ():
     session_name = 'lyr60_TELEGRAM'
     # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
-    # Tclient = get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    Tclient = get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
-    Tclient = get_telethon_client_PROXY (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    # Tclient = get_telethon_client_PROXY (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
     print (f'{LIB_name}_session_name={session_name}')
 
