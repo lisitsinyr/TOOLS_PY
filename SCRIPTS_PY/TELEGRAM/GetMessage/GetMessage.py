@@ -42,6 +42,7 @@ import telethon.tl.types
 #------------------------------------------
 # from pyrogram import Client
 import pyrogram
+from pyrogram.raw.types import PeerChannel
 
 #------------------------------------------
 # БИБЛИОТЕКА lyrpy
@@ -334,7 +335,7 @@ def func_telethon ():
             print (f'Ошибка: {e}')
         #endtry
     #endif
-    print(channel)
+    # print(channel)
 
     # -------------------------------------------
     # Получаем сообщение
@@ -472,7 +473,7 @@ def func_pyrogram ():
     # Авторизация в Telegram
     #-------------------------------------------
     # # Имя сессии (может быть любым)
-    # session_name = 'lyr60'
+    session_name = 'lyr60'
     # print (f'{LIB_name}_session_name={session_name}')
     Tclient: pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
 
@@ -656,8 +657,9 @@ def get_channel_name_ (channel_id) -> str:
 
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
+    entity = Tclient.get_entity (channel_id)
     # entity = Tclient.get_entity (PeerChannel (channel_id))
-    entity = Tclient.get_entity (telethon.tl.types.Channel (channel_id))
+    # entity = Tclient.get_entity (telethon.tl.types.Channel (channel_id))
     print(f'{entity=}')
 
     Tclient.disconnect ()
@@ -726,12 +728,24 @@ def check_link (link:str) -> None:
         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{GlinkT}')
         set_message (parsed_url)
 
-        error = func_telethon ()
+        error = -1
+        try:
+            error = func_telethon ()
+        except Exception as e:
+            channel = None
+            print (f'Ошибка: {e}')
+        #endtry
         if error > 0:
             # print(f'{error=}')
             LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
 
-        error = func_pyrogram ()
+        error = -1
+        try:
+            error = func_pyrogram ()
+        except Exception as e:
+            channel = None
+            print (f'Ошибка: {e}')
+        #endtry
         if error > 0:
             # print(f'{error=}')
             LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')

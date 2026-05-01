@@ -16,7 +16,6 @@ __annotations__ = """
 # БИБЛИОТЕКИ python
 #------------------------------------------
 import logging
-import asyncio
 
 #------------------------------------------
 # БИБЛИОТЕКИ сторонние
@@ -30,6 +29,7 @@ from decouple import config
 import telethon.sync
 import telethon.tl.types
 # from telethon.tl.types import Channel
+from telethon import connection
 
 #------------------------------------------
 # БИБЛИОТЕКА pyrogram
@@ -42,6 +42,7 @@ import pyrogram
 #------------------------------------------
 import lyrpy.LUConst as LUConst
 import lyrpy.LULog as LULog
+import lyrpy.LUTelegram as LUTelegram
 
 #------------------------------------------
 #
@@ -105,9 +106,6 @@ def get_telethon_client (session_name, api_id, api_hash, phone, password) -> tel
 def get_telethon_client_PROXY (session_name, api_id, api_hash, phone, password) -> telethon.sync.TelegramClient:
     """get_telethon_client_PROXY"""
 # beginfunction
-    import os
-    from telethon import connection
-
     # proxy = (mtproto, 't.7.mazeram.com', 443, 'ee470cb2b8b29aeadfbdf8a2f7bee5ca3b62726f777365722e79616e6465782e636f6d')
 
     # Параметры MTProto прокси
@@ -185,9 +183,7 @@ def func_telethon ():
     # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
     Tclient = get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-
     # Tclient = get_telethon_client_PROXY (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-
     print (f'{LIB_name}_session_name={session_name}')
 
     #-------------------------------------------
@@ -210,6 +206,36 @@ def func_telethon ():
     return 0
 #endfunction
 
+# ----------------------------------------------
+# func_pyrogram ():
+# ----------------------------------------------
+def func_pyrogram ():
+    """func_pyrogram"""
+#beginfunction
+    LIB_name = 'LIB:pyrogram'
+    # LUTelegram.LIB_name = LIB_name
+
+    # print (f'{LIB_name:{'_'}<{60}}')
+    LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
+
+    # -------------------------------------------
+    # Авторизация в Telegram
+    # -------------------------------------------
+    # # Имя сессии (может быть любым)
+    session_name = 'lyr60'
+    # print (f'{LIB_name}_session_name={session_name}')
+    Tclient: pyrogram.Client = LUTelegram.get_pyrogram_client (Gapi_id, Gapi_hash, Glogin, Gphone)
+
+    # -------------------------------------------
+    # Getting information about yourself
+    # -------------------------------------------
+    # me: pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
+    # print (f"{me=}")
+
+    Tclient.stop ()
+
+    return 0
+#endfunction
 
 #------------------------------------------
 #  main ():
@@ -259,7 +285,26 @@ def main ():
     Gpassword = config ('password')
     # print(Gpassword)
 
-    func_telethon ()
+    error = -1
+    try:
+        error = func_telethon ()
+    except Exception as e:
+        print (f'Ошибка: {e}')
+    # endtry
+    if error > 0:
+        # print(f'{error=}')
+        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+
+    # error = -1
+    # try:
+    #     error = func_pyrogram ()
+    # except Exception as e:
+    #     channel = None
+    #     print (f'Ошибка: {e}')
+    # # endtry
+    # if error > 0:
+    #     # print(f'{error=}')
+    #     LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
 
     LULog.STOPLogging ()
 #endfunction
