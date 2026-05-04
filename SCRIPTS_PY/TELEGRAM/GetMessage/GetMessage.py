@@ -300,6 +300,9 @@ def func_telethon ():
     # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    print (f'{LIB_name}_user_authorized={Tclient.is_user_authorized()}')
+    me = Tclient.get_me ()
+    print (f"Успешный вход! Ваш ID: {me.id}, Имя: {me.first_name}")
 
     # print (f'{LIB_name}_session_name={session_name}')
 
@@ -480,8 +483,11 @@ def func_pyrogram ():
     # -------------------------------------------
     # Getting information about yourself
     # -------------------------------------------
+    print (f'{LIB_name}_user_authorized={Tclient.is_user_authorized()}')
     # me: pyrogram.User = LUTelegram.get_pyrogram_me (Tclient)
     # print (f"{me=}")
+    me = Tclient.get_me ()
+    print (f"Успешный вход! Ваш ID: {me.id}, Имя: {me.first_name}")
 
     #-------------------------------------------
     # Получаем сообщение

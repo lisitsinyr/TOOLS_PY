@@ -73,6 +73,9 @@ Gmessage_directory = ''
 def get_telethon_client (session_name, api_id, api_hash, phone, password) -> telethon.sync.TelegramClient:
     """get_telethon_client"""
 # beginfunction
+    LIB_name = 'LIB:telethon'
+    LUTelegram.LIB_name = LIB_name
+
     # result = telethon.sync.TelegramClient(session_name, api_id, api_hash, system_version="4.16.30-vxNAME ")
     result = telethon.sync.TelegramClient(session_name, api_id, api_hash, system_version="4.43.1-vxNAME ")
     #   Вместо NAME используйте любое сочетание букв на английском КАПСОМ Пример: vxXYI, vxABC, vxMYNAME
@@ -94,7 +97,7 @@ def get_telethon_client (session_name, api_id, api_hash, phone, password) -> tel
 
     result.start (phone=phone, password=password)
     result.connect ()
-    # print (f'{LIB_name}_user_authorized={result.is_user_authorized()}')
+    print (f'{LIB_name}_user_authorized={result.is_user_authorized()}')
 
     return result
 # endfunction
@@ -106,12 +109,14 @@ def get_telethon_client (session_name, api_id, api_hash, phone, password) -> tel
 def get_telethon_client_PROXY (session_name, api_id, api_hash, phone, password) -> telethon.sync.TelegramClient:
     """get_telethon_client_PROXY"""
 # beginfunction
+    LIB_name = 'LIB:telethon'
+    LUTelegram.LIB_name = LIB_name
     # proxy = (mtproto, 't.7.mazeram.com', 443, 'ee470cb2b8b29aeadfbdf8a2f7bee5ca3b62726f777365722e79616e6465782e636f6d')
 
     # Параметры MTProto прокси
-    PROXY_IP = 'he.de.ndkumtiumtmunja.mtproto.ru'
+    PROXY_IP = 'mtc4ljewnc4ymtmumjuz.he-de-24.mtproto.ru'
     PROXY_PORT = 443
-    PROXY_SECRET = 'ee2111222233334444555566667777888865756331312e706c61796c6973742e7474766e772e6e6574'  # Например: 'ee1234567890abcdef'
+    PROXY_SECRET = 'ee2111222233334444555566667777888865756331332e706c61796c6973742e7474766e772e6e6574'  # Например: 'ee1234567890abcdef'
 
     # Создаем клиента с поддержкой MTProto прокси
     client = telethon.TelegramClient (
@@ -137,13 +142,13 @@ def get_telethon_client_PROXY (session_name, api_id, api_hash, phone, password) 
     # except Exception as e:
     #     print (f'Ошибка: {e}')
 
-    client.start (phone=phone, password=password)
-
     print("✅ Подключено к Telegram через MTProto прокси!")
 
     client.connect ()
 
-    # print (f'{LIB_name}_user_authorized={result.is_user_authorized()}')
+    print (f'{LIB_name}_user_authorized={client.is_user_authorized()}')
+
+    # client.start (phone=phone, password=password)
 
     return client
 # endfunction
@@ -182,8 +187,9 @@ def func_telethon ():
     session_name = 'lyr60_TELEGRAM'
     # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
 
-    Tclient = get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-    # Tclient = get_telethon_client_PROXY (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    # Tclient = get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+    Tclient = get_telethon_client_PROXY (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+
     print (f'{LIB_name}_session_name={session_name}')
 
     #-------------------------------------------
