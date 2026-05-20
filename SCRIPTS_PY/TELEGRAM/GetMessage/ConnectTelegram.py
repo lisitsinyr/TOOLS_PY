@@ -21,6 +21,7 @@ import logging
 # БИБЛИОТЕКИ сторонние
 #------------------------------------------
 from decouple import config
+import asyncio
 
 #------------------------------------------
 # БИБЛИОТЕКА telethon
@@ -136,6 +137,12 @@ def get_telethon_client_PROXY (session_name, api_id, api_hash, phone, password) 
     #                                        #     '00000000000000000000000000000000'
     # proxy=('t.7.mazeram.com', 443, 'ee470cb2b8b29aeadfbdf8a2f7bee5ca3b62726f777365722e79616e6465782e636f6d'))
 
+    client.start ()
+
+    # Проверяем, что мы вошли
+    me = client.get_me ()
+    print (f"Успешный вход! Ваш ID: {me.id}, Имя: {me.first_name}")
+
     # try:
     #     result.start (phone=phone, password=password)
     #     result.run_until_disconnected ()
@@ -144,7 +151,7 @@ def get_telethon_client_PROXY (session_name, api_id, api_hash, phone, password) 
 
     print("✅ Подключено к Telegram через MTProto прокси!")
 
-    client.connect ()
+    # client.connect ()
 
     print (f'{LIB_name}_user_authorized={client.is_user_authorized()}')
 
@@ -207,7 +214,7 @@ def func_telethon ():
     #-------------------------------------------
     # me = get_telethon_me (Tclient)
 
-    Tclient.disconnect ()
+    # Tclient.disconnect ()
 
     return 0
 #endfunction
@@ -291,15 +298,17 @@ def main ():
     Gpassword = config ('password')
     # print(Gpassword)
 
-    error = -1
-    try:
-        error = func_telethon ()
-    except Exception as e:
-        print (f'Ошибка: {e}')
-    # endtry
-    if error > 0:
-        # print(f'{error=}')
-        LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+    func_telethon ()
+
+    # error = -1
+    # try:
+    #     error = func_telethon ()
+    # except Exception as e:
+    #     print (f'Ошибка: {e}')
+    # # endtry
+    # if error > 0:
+    #     # print(f'{error=}')
+    #     LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
 
     # error = -1
     # try:

@@ -64,6 +64,10 @@ Gapi_hash = ''
 Gphone = ''
 Glogin = ''
 Gpassword = ''
+GPROXY_IP = ''
+GPROXY_PORT = 0
+GPROXY_SECRET = ''
+
 Gmessage_url = ''
 GlinkT = ''
 
@@ -289,22 +293,20 @@ def func_telethon ():
     LIB_name = 'LIB:telethon'
     LUTelegram.LIB_name = LIB_name
 
-    # print (f'{LIB_name:{'_'}<{60}}')
     LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name:{'_'}<{60}}')
     #-------------------------------------------
     # Авторизация в Telegram
     #-------------------------------------------
     # Имя сессии (может быть любым)
     session_name = 'lyr60_TELEGRAM'
+    # print (f'{LIB_name}_session_name={session_name}')
 
     # print(session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
-
     Tclient = LUTelegram.get_telethon_client (session_name, Gapi_id, Gapi_hash, Gphone, Gpassword)
+
     print (f'{LIB_name}_user_authorized={Tclient.is_user_authorized()}')
     me = Tclient.get_me ()
     print (f"Успешный вход! Ваш ID: {me.id}, Имя: {me.first_name}")
-
-    # print (f'{LIB_name}_session_name={session_name}')
 
     #-------------------------------------------
     #
@@ -327,15 +329,15 @@ def func_telethon ():
     try:
         channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_raw)
     except Exception as e:
-        channel = None
         print (f'Ошибка: {e}')
+        channel = None
     #endtry
     if not channel:
         try:
             channel: telethon.tl.types.Channel = LUTelegram.get_telethon_channel (Tclient, Gchannel_name_id)
         except Exception as e:
-            channel = None
             print (f'Ошибка: {e}')
+            channel = None
         #endtry
     #endif
     # print(channel)
@@ -345,9 +347,11 @@ def func_telethon ():
     # -------------------------------------------
     message:telethon.tl.types.Message = LUTelegram.get_telethon_message (Tclient, channel, Gmessage_id)
     if not message:
+        print (f'not message ...')
         Tclient.disconnect ()
         return 1
     #endif
+
     # -------------------------------------------
     # message_file
     # -------------------------------------------
@@ -405,11 +409,11 @@ def func_telethon ():
                     if Gchannel_name_id is None:
                         LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f'{LIB_name} Gchannel_name_id is None')
                     else:
-                        LULog.LoggerAdd (LULog.LoggerAPPS,
-                                         LULog.TEXT, f'{LIB_name} ЗАГРУЗКА ВИДЕО пропущена ...')
-                        # file_path = Tclient.download_media (message, Gmessage_directory)
-                        # print (f"{LIB_name}_message.video: {file_path}")
-                        # LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.video: {file_path}")
+                        # LULog.LoggerAdd (LULog.LoggerAPPS,
+                        #                  LULog.TEXT, f'{LIB_name} ЗАГРУЗКА ВИДЕО пропущена ...')
+                        file_path = Tclient.download_media (message, Gmessage_directory)
+                        print (f"{LIB_name}_message.video: {file_path}")
+                        LULog.LoggerAdd (LULog.LoggerAPPS, LULog.TEXT, f"{LIB_name}_message.video: {file_path}")
                 except:
                     # print (f"{LIB_name}_message.video: ERROR")
                     LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f"{LIB_name}_message.video: ERROR")
@@ -745,16 +749,16 @@ def check_link (link:str) -> None:
             # print(f'{error=}')
             LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
 
-        error = -1
-        try:
-            error = func_pyrogram ()
-        except Exception as e:
-            channel = None
-            print (f'Ошибка: {e}')
-        #endtry
-        if error > 0:
-            # print(f'{error=}')
-            LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
+        # error = -1
+        # try:
+        #     error = func_pyrogram ()
+        # except Exception as e:
+        #     channel = None
+        #     print (f'Ошибка: {e}')
+        # #endtry
+        # if error > 0:
+        #     # print(f'{error=}')
+        #     LULog.LoggerAdd (LULog.LoggerAPPS, logging.ERROR, f'{error=}')
 
         pyperclip.copy ('')
         print (f'Wait ...')
@@ -776,6 +780,9 @@ def main ():
     global Gphone
     global Glogin
     global Gpassword
+    global GPROXY_IP
+    global GPROXY_PORT
+    global GPROXY_SECRET
 
     global Gmessage_url
 
@@ -860,6 +867,11 @@ def main ():
     # print(Glogin)
     Gpassword = config ('password')
     # print(Gpassword)
+
+    # Параметры MTProto прокси
+    GPROXY_IP = config ('PROXY_IP')
+    GPROXY_PORT = config ('PROXY_PORT')
+    GPROXY_SECRET = config ('PROXY_SECRET')
 
     # get_telethon_mygroups ()
     # get_telethon_chats ()
