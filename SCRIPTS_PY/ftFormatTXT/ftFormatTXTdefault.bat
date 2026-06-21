@@ -68,102 +68,49 @@ rem ----------------------------------------------------------------------------
 
     set /a LOG_FILE_ADD=0
 
-    call :CurrentDir || exit /b 1
-    rem echo ..P1.. CurrentDir:!CurrentDir!
-
     rem -------------------------------------
     rem OPTION
     rem -------------------------------------
     set OPTION=
-    set O1_Name=fp
-    set O1_Caption=FilePath
-    set O1_Default=!CurrentDir!
-    set O1_Default=
-    set O1=!O1_Default!
-    set PN_CAPTION=!O1_Caption!
-    rem call :Read_P O1 !O1! || exit /b 1
-    rem echo ..P1.. O1:!O1!
-    rem if defined O1 (
-    rem     set OPTION=!OPTION! -!O1_Name! "!O1!"
-    rem ) else (
-    rem     echo INFO: O1 [O1_Name:!O1_Name! O1_Caption:!O1_Caption!] not defined ...
-    rem )
-    set O2_Name=fm
-    set O2_Caption=FileMask
-    set O2_Default="^.*..*$"
-    set O2=!O2_Default!
-    set PN_CAPTION=!O2_Caption!
-    call :Read_P O2 !O2! || exit /b 1
-    rem echo ..P1.. O2:!O2!
-    if defined O2 (
-        set OPTION=!OPTION! -!O2_Name! "!O2!"
-    ) else (
-        echo INFO: O2 [O2_Name:!O2_Name! O2_Caption:!O2_Caption!] not defined ...
+
+    call :CurrentDir || exit /b 1
+    rem echo ..P1.. CurrentDir:!CurrentDir!
+
+    rem -------------------------------------------------------------------
+    rem O1
+    rem -------------------------------------------------------------------
+    set VarName=fp
+    call :Read_P !VarName! "!CurrentDir!" "FilePath" "" || exit /b 1
+    if defined !VarName! (
+        set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
-    set O3_Name=w
-    set O3_Caption=width
-    set O3_Default=60
-    set O3=!O3_Default!
-    set PN_CAPTION=!O3_Caption!
-    call :Read_P O3 !O3! || exit /b 1
-    rem echo ..P1.. O3:!O3!
-    if defined O3 (
-        set OPTION=!OPTION! -!O3_Name! !O3!
-    ) else (
-        echo INFO: O3 [O3_Name:!O3_Name! O3_Caption:!O3_Caption!] not defined ...
+
+    rem -------------------------------------------------------------------
+    rem O2
+    rem -------------------------------------------------------------------
+    set VarName=fm
+    call :Read_P !VarName! "^.*..*$" "FileMask" "" || exit /b 1
+    if defined !VarName! (
+        set OPTION=!OPTION! -!VarName! "!%VarName%!"
     )
-    rem echo ..P1.. OPTION:!OPTION!
+
+    rem -------------------------------------------------------------------
+    rem O3
+    rem -------------------------------------------------------------------
+    set VarName=w
+    call :Read_P !VarName! "60" "width" "" || exit /b 1
+    if defined !VarName! (
+        set OPTION=!OPTION! -!VarName! "!%VarName%!"
+    )
+
+    echo OPTION:!OPTION!
 
     rem -------------------------------------
     rem ARGS
     rem -------------------------------------
     set ARGS=
-    set A1_Name=
-    set A1_Caption=
-    set A1_Default=
-    set A1=!A1_Default!
-    set PN_CAPTION=!A1_Caption!
-    rem call :Read_P A1 !A1! || exit /b 1
-    rem echo ..P1.. A1:!A1!
-    rem if defined A1 (
-    rem     set ARGS=!ARGS! "!A1!"
-    rem ) else (
-    rem     echo ERROR: A1 [A1_Name:!A1_Name! A1_Caption:!A1_Caption!] not defined ... 
-    rem     set OK=
-    rem     exit /b 1
-    rem )
+
     rem echo ..P1.. ARGS:!ARGS!
-
-    rem -------------------------------------------------------------------
-    rem ENV - 
-    rem -------------------------------------------------------------------
-
-    rem set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-    rem set PY_ENVNAME=%PY_ENVNAME%
-    rem if not defined PY_ENVNAME (
-    rem     set PY_ENVNAME=P313
-    rem )
-    rem if not exist !VENV_DIR!\!PY_ENVNAME! (
-    rem     echo INFO: Dir !VENV_DIR!\!PY_ENVNAME! not exist ...
-    rem     exit /b 1
-    rem )
-
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV
-
-    set PY_ENVNAME=%PY_ENVNAME%
-    if not defined PY_ENVNAME (
-        set PY_ENVNAME=P313
-    )
-    set VENV_DIR=!VENV_DIR!\!PY_ENVNAME!
-    rem echo ..P1.. VENV_DIR:!VENV_DIR!
-
-    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\VENV\P313
-    echo VENV_DIR:!VENV_DIR!
-
-    if not exist !VENV_DIR! (
-        echo INFO: Dir !VENV_DIR! not exist ...
-        exit /b 1
-    )
 
     rem -------------------------------------------------------------------
     rem SCRIPTS_DIR_PY - Каталог скриптов PY
@@ -172,6 +119,11 @@ rem ----------------------------------------------------------------------------
         set SCRIPTS_DIR_PY=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY
     )
     rem echo ..P1.. SCRIPTS_DIR_PY:!SCRIPTS_DIR_PY!
+    
+    call :CurrentDir || exit /b 1
+    echo CurrentDir:!CurrentDir!
+
+    set project_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\
 
     rem -------------------------------------------------------------------
     rem TEST - 
@@ -182,22 +134,27 @@ rem ----------------------------------------------------------------------------
     rem -------------------------------------------------------------------
     set SCRIPT_NAME=ftFormatTXT
     rem -------------------------------------------------------------------
-    rem SCRIPT_DIR - 
+    rem script_dir - 
     rem -------------------------------------------------------------------
-    set SCRIPT_DIR=!SCRIPT_NAME!
+    rem set script_dir=!SCRIPT_NAME!
+    set script_dir=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\SRC\SCRIPTS_PY\ftFormatTXT\
     rem -------------------------------------------------------------------
     rem FULL_SCRIPT_NAME - 
     rem -------------------------------------------------------------------
-    set FULL_SCRIPT_NAME=!SCRIPTS_DIR_PY!\!SCRIPT_DIR!\!SCRIPT_NAME!.py
+    set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     if defined TEST (
-        set FULL_SCRIPT_NAME=.\!SCRIPT_NAME!.py
+        set FULL_SCRIPT_NAME=!script_dir!!script_name!.py
     )
 
-    call :VENV_START || exit /b 1
+    set VENV_DIR=D:\PROJECTS_LYR\CHECK_LIST\DESKTOP\Python\PROJECTS_PY\SCRIPTS_PY\.venv\
+    rem echo ..P1.. VENV_DIR:!VENV_DIR!
+    call :SET_VENV_DIR !project_dir! VENV_DIR !VENV_DIR! || exit /b 1
+    call :VENV_START !VENV_DIR! || exit /b 1
+    rem call :VENV_UPDATE !VENV_DIR! || exit /b 1
 
     python "!FULL_SCRIPT_NAME!" !OPTION! !ARGS!
 
-    call :VENV_STOP || exit /b 1
+    call :VENV_STOP !VENV_DIR! || exit /b 1
 
     rem call :PressAnyKey || exit /b 1
 

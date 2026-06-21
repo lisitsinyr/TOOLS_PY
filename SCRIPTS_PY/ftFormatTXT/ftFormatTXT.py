@@ -161,7 +161,8 @@ def WorkFileName (AFilePath: str, Awidth: int):
 #beginfunction
     LFileName = LUFile.ExtractFileName (AFilePath)
     LExt = LUFile.ExtractFileExt (AFilePath)
-    # print (LFileName, LExt)
+    print (LFileName, LExt)
+
     if (LExt not in cExt) and (LFileName not in cFileName):
         if is_text_file_by_content (AFilePath):
             # Это текстовый файл
